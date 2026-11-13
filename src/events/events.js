@@ -1,5 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { currentBuild } from "../builds/context.js";
+import { buildVersions } from "../builds/detect.js";
 import { season4Overrides } from "./season4flags.js";
 
 // The seasonal events Core runs. A build runs the event its own update shipped, for as long as it is played: Epic
@@ -667,6 +668,31 @@ export function hasEventEnded(name, changelist = currentBuild()) {
   // had before the later run was known, and isn't over on a build that runs it.
   return runs.length > 0 && Number.isInteger(number) && runs.some((event) => number > event.lastBuild)
     && !runs.some((event) => runsOn(event, number));
+}
+
+// An event's runs, oldest first: its builds, with the ranges of its rows merged where they overlap or follow each other
+// with no build Core knows between them (Spring It On!'s phases are one run, the Mutant Storms' 1.9.1 and 1.10 one), and
+// split where builds that don't run it come between (Fortnitemares: 1.8 to 1.9 in 2017, then 6.20 and 6.21 in 2018).
+export function eventRuns(name) {
+  const ranges = events.filter((event) => event.name === name).map(({ firstBuild, lastBuild }) => ({ firstBuild, lastBuild }))
+    .sort((a, b) => a.firstBuild - b.firstBuild);
+  const known = Object.keys(buildVersions).map(Number);
+  const runs = [];
+  for (const range of ranges) {
+    const last = runs.at(-1);
+    if (last && !known.some((build) => build > last.lastBuild && build < range.firstBuild)) last.lastBuild = Math.max(last.lastBuild, range.lastBuild);
+    else runs.push({ ...range });
+  }
+  return runs;
+}
+
+// The run of an event the requesting build belongs to: the last that began at or before it (a build after a run, or
+// between two, that the admin panel makes run the event plays the run before it), the first for an earlier build.
+export function eventRunOf(name, changelist = currentBuild()) {
+  const runs = eventRuns(name);
+  const number = Number(changelist);
+  const begun = Number.isInteger(number) ? runs.filter((run) => run.firstBuild <= number) : [];
+  return begun.at(-1) ?? runs[0];
 }
 
 // When the client is told an event ends: never, as far as Core goes (FDateTime's largest day).

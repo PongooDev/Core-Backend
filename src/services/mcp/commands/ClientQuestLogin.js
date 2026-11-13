@@ -2,7 +2,7 @@ import { activeEventFlags } from "../../../events/events.js";
 import { eventQuests } from "../../../events/fortnitemares.js";
 import { settleFounderHeroes2018 } from "../../../events/fortnitemares2018.js";
 import { convertEventLeftovers } from "../../../events/leftovers.js";
-import { eventQuestsToRestore, removeEndedEventQuests } from "../../../events/quests.js";
+import { eventQuestsToRestore, removeEndedEventQuests, startEventRuns } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
 import { missedStormShieldQuests, missedStormShieldResources } from "../../../profiles/outposts.js";
@@ -21,7 +21,9 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // flags, so a build that runs an event gets them in this response; the others' responses are as before.
 //
 // An ended event's unfinished quests leave the quest log here and in QueryProfile (events/quests.js, Core-Backend #127),
-// and one that runs again gives back the quests it took. An ended event's unspent tickets become its llamas, once
+// and one that runs again gives back the quests it took. A later run of an event (6.20's Fortnitemares after 2017's) starts
+// its quest line over, once per account and run, before the event's starting quests are granted (events/quests.js
+// startEventRuns, #347). An ended event's unspent tickets become its llamas, once
 // (events/leftovers.js, #129, #174).
 //
 // A Storm Shield Defense already claimed grants the quests a newer build's data added to it, such as 3.0's Hoverboard
@@ -33,6 +35,7 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 export function clientQuestLogin({ session, notifications, profileId }) {
   if (profileId === "athena") athenaQuestLogin(session);
   else {
+    startEventRuns(session);
     removeEndedEventQuests(session);
     convertEventLeftovers(session);
     for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
