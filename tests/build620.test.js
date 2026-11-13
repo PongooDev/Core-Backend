@@ -19,7 +19,7 @@ import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athe
 import { getItem } from "../src/gamedata/items.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { parseBucket, playlistTeamsOf } from "../src/matchmaking/service.js";
-import { athenaQuestLogin, grantCosmetic, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
+import { advanceAthenaObjectives, athenaQuestLogin, grantCosmetic, recordMatchProgress, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
 import { isStylesCategory, originalOwnerStyles, settleChallengeSchedules, styleSchedules, weekPlan } from "../src/profiles/challenges.js";
 import { buildOfSeason, buyBattlePass } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
@@ -176,6 +176,27 @@ test("the Fortnitemares Challenges: Schedule_Fortnitemares while LTM_Fortnitemar
   });
   // 6.10 has no such schedule, and is given nothing of it.
   assert.equal(inBuild(v610, athenaChallengeSchedules).schedule_fortnitemares, undefined);
+});
+
+test("the Fortnitemares Challenges: the Cube Monsters a player destroys are the gameserver's to count (UpdateQuests), not the match results' player eliminations", () => {
+  // killingblow_athena_deimos_monster (Kill, source Homebase.Class, no condition) has an NPC.CharacterType target: the
+  // results count players only, so its kills come with UpdateQuests, as its damage, visits and dances do.
+  withConfig(replay, () => withSession(v620, "fnm620kills", (session) => {
+    setUpAthena(session);
+    athenaQuestLogin(session);
+    settleChallengeSchedules(session, seasonRewardFunctions(), at("2018-10-25T12:00:00Z"));
+    const completion = (questId, objective) => Object.values(session.profile("athena").profile.items)
+      .find(({ templateId }) => templateId === `Quest:${questId}`)?.attributes[`completion_${objective}`] ?? 0;
+    advanceAthenaObjectives(session, [{ statName: "fortnitemares_killingblow_athena_ai", count: 3 }, { statName: "fortnitemares_damage_athena_ai_ar_pistol", count: 250 },
+      { statName: "fortnitemares_visit_athena_location_seals", count: 1 }, { statName: "fortnitemares_dance_location_gargoyles_04", count: 1 }]);
+    assert.equal(completion("quest_fnm_elim_ai", "fortnitemares_killingblow_athena_ai"), 3);
+    assert.equal(completion("quest_fnm_dam_pistolar_ai", "fortnitemares_damage_athena_ai_ar_pistol"), 250);
+    assert.equal(completion("quest_fnm_visit_corruptedareas", "fortnitemares_visit_athena_location_seals"), 1);
+    assert.equal(completion("quest_fnm_dance_scavengerhunt_gargoyles", "fortnitemares_dance_location_gargoyles_04"), 1);
+    // A Deimos match's player eliminations don't move it.
+    recordMatchProgress(session, 47, { place: 3, kills: 5 });
+    assert.equal(completion("quest_fnm_elim_ai", "fortnitemares_killingblow_athena_ai"), 3);
+  }));
 });
 
 test("6.20's event flags: Fortnitemares (its quest map's Part 1, the Mini-Bosses, the challenges, the Halloween lobby and bus) beside 6.10's; Cram Session over", () => {

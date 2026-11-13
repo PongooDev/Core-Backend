@@ -1083,11 +1083,14 @@ const playlistTagOf = (playlistId) => playlistTags[playlistId]
 const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((one) => one.trim())
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
 
+const onlyPlayers = (tags) => (tags ?? "").split(",").map((one) => one.trim().toLowerCase()).filter(Boolean).join(",") === "homebase.class";
 function countedFromResults(stat) {
   const row = stat && athenaObjectiveStat(stat);
   // A kill row with a condition is a kill somewhere (3.0's challenges: "Source.Tags HasTag Athena.Location.POI.FatalFields
-  // || ..."), which the match results can't tell, so the gameserver counts it.
-  return row?.type === "AthenaRank" || (row?.type === "Kill" && row.sourceTags === "Homebase.Class" && !row.condition);
+  // || ..."), which the match results can't tell, so the gameserver counts it. The results' kills are players: a row whose
+  // target isn't one (6.20's Fortnitemares Cube Monsters, killingblow_athena_deimos_monster, _fiend and _brute: target
+  // NPC.CharacterType) is the gameserver's too, which sends its kills with UpdateQuests.
+  return row?.type === "AthenaRank" || (row?.type === "Kill" && onlyPlayers(row.sourceTags) && onlyPlayers(row.targetTags) && !row.condition);
 }
 
 // An AthenaRank row's condition: the match's place (Athena.Rank <=25) or, from 2.2's "Play matches with a friend"
