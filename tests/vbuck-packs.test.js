@@ -101,6 +101,34 @@ test("the game config points the purchase flow at this backend, from 1.8, while 
   }
 });
 
+// Core-Backend #346: from 6.02 the pak's [EpicPurchaseFlow] has ProdAltDomains, and the flow sets its cookie on each
+// after the page's own, swapping the URL's domain (GetUrlDomain, 6.20 0x1FD08B0) for the other one; with Prod's triple
+// slash that domain is empty, so the next cookie was never set, the flow never went on, and 6.20's Store stayed black
+// with a spinner. The section clears them, on every build with the Store tab, after Prod as the launcher writes it.
+const urlDomain = (url) => {
+  // FGenericPlatformHttp::GetUrlDomain: after "://", up to the first "/", ":" or "?".
+  const rest = url.includes("://") ? url.slice(url.indexOf("://") + 3) : url;
+  return rest.slice(0, rest.search(/[/:?]|$/));
+};
+test("the game config clears the purchase flow's other domains, so 6.20's flow goes on past the page's cookie (#346)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "AltDomains");
+    for (const build of ["Release-1.8-CL-3724489", "Release-3.1-CL-3915963", "Release-5.41-CL-4363240", "Release-6.02-CL-4461277",
+      "Release-6.10-CL-4480234", "Release-6.20-CL-4497486", "Release-6.21-CL-4526925"]) {
+      const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
+      const body = (await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, userAgent)).body;
+      const section = /\[EpicPurchaseFlow\]\r\n((?:[^[\r\n][^\r\n]*\r\n)*)/.exec(body)?.[1].split("\r\n").filter(Boolean);
+      assert.deepEqual(section, [`Prod=http:///127.0.0.1:${backend.port}/purchase`, "!ProdAltDomains=ClearArray"], build);
+      // The page's domain as the flow takes it is empty, which is why no other domain may follow.
+      assert.equal(urlDomain(section[0].slice("Prod=".length)), "", build);
+    }
+    assert.equal(urlDomain("https://launcher-website-prod07.ol.epicgames.com/purchase"), "launcher-website-prod07.ol.epicgames.com");
+  } finally {
+    backend.close();
+  }
+});
+
 // Core-Backend #244: the purchase flow's browser (CEF) goes straight to the page's address, so the page is at the address
 // the game reached the backend at (its Host header), not this PC's own view of itself: a name, a VPN address, a
 // forwarded or tunnelled port of another number.

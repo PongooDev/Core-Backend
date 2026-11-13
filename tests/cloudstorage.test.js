@@ -235,7 +235,7 @@ test("the system hotfix keeps stats answers for a minute from 1.8.1 on, and for 
       assert.equal(download.status, 200);
       assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash, build);
       // From 1.8 the Store tab's purchase flow page follows (Core-Backend #223, services/fortnite/purchase.js).
-      const purchaseFlow = Number(build.split("-CL-")[1]) >= 3724489 ? ["[EpicPurchaseFlow]", `Prod=http:///127.0.0.1:${backend.port}/purchase`] : [];
+      const purchaseFlow = Number(build.split("-CL-")[1]) >= 3724489 ? ["[EpicPurchaseFlow]", `Prod=http:///127.0.0.1:${backend.port}/purchase`, "!ProdAltDomains=ClearArray"] : [];
       assert.deepEqual(download.body.toString("utf8").split("\r\n"),
         ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ...athenaGlobalChat, ...purchaseFlow, ""], build);
     }

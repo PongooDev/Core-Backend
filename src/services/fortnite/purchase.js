@@ -43,10 +43,22 @@ export function purchaseFlowUrl(req, network) {
   return `http:///${requestHost(req) ?? network.directHost(req)}/purchase`;
 }
 
+// The page's other domains, [EpicPurchaseFlow] <environment>AltDomains, cleared (Core-Backend #346). The flow reads them
+// with its URL (UFortMcpContext::RegisterForEpicPurchasingDisplay, 6.20 0x11339F0) and, after the page's own cookie, sets
+// the same cookie on each of them (6.20 0x7F0150): it takes the page's domain from the URL (FGenericPlatformHttp::
+// GetUrlDomain, 0x1FD08B0), swaps in the other domain and sets that cookie, and only after the last one opens the page or
+// falls back to the sign-on. The triple slash makes that domain empty, and with an empty domain the next cookie is never
+// set and nothing else is done (0x7E9400): the flow never opens anything, and the Store sits on its black screen with a
+// spinner. The pak's DefaultGame.ini has one for Prod (launcher-website-prod.ak.epicgames.com) from at least 6.02 (CL-4461277)
+// to 6.21; cleared, the page's own cookie is the only one, as on a build without them, and a build that has none is as
+// before. Like Prod, the launcher writes it to the build's NoRedist\DefaultGame.ini, as the flow reads both before this
+// file arrives; here it keeps the hotfix the same as what the launcher writes.
+const altDomainsKey = "!ProdAltDomains=ClearArray";
+
 // The game config's [EpicPurchaseFlow] section, for builds with the Store tab while the packs are on.
 export function purchaseFlowSection(req, network, { build, enabled }) {
   if (!enabled || !hasCurrencyStore(build)) return "";
-  return ["[EpicPurchaseFlow]", `Prod=${purchaseFlowUrl(req, network)}`, ""].join("\r\n");
+  return ["[EpicPurchaseFlow]", `Prod=${purchaseFlowUrl(req, network)}`, altDomainsKey, ""].join("\r\n");
 }
 
 const pageMinutes = 15;
