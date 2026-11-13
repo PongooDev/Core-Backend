@@ -379,6 +379,68 @@ test("a 5.30 solo match from a Core gameserver shows on 5.30's Score, Placed Top
   }
 });
 
+// Core-Backend #337: 6.00 (CL-4395664, the report's) and 6.02 (CL-4461277) ask for the squad boards as 5.30 does
+// (the 6.02 IDB): the cohort "pc_m0_p9" (sub_2D57E70, "p%d" 9), then a weekly group board with the cohort's ids for
+// Score, Placed Top 6 and Placed Top 3 (sub_2D58330 into sub_10E3250) and a global board, page 0 of 50, for Global Wins
+// (sub_2D75AE0). The answer is read by sub_10C8570 (statName, statWindow, entries [{accountId, value, rank}]). For a
+// group board sub_2D76160 makes one row per entry, its value the entry's, and the bottom row from the same entry, the
+// one whose account is the player's: the list and the bottom row always get one value. The list's rows are reused as
+// on 4.2 and 5.30 (sub_2D76D60: RowProxies back to RowProxiesFreeList and out again; UListView's ClearListItems and
+// SetListItems, sub_21F9920 and sub_21F4920, only swap the items; LeaderboardRowWidget redraws in OnListItemObjectSet),
+// so a list row keeps the value of the first tab it showed, the Score, while the bottom row is redrawn every time.
+test("6.00 and 6.02's squad boards give the player's own entry each tab's own stat", async () => {
+  const backend = await startBackend();
+  try {
+    const [v600, v602] = ["4395664", "4461277"];
+    const coreV2 = (urlPath, token, body) => {
+      const text = JSON.stringify(body);
+      return send({ host: "127.0.0.1", port: backend.port, method: "POST", path: urlPath, headers: { "User-Agent": "Core V2",
+        Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+    };
+    const [player, mate] = [await userLogin(backend.port, "Squad602"), await userLogin(backend.port, "Mate602")];
+    for (const { accountId, token } of [player, mate]) {
+      await as(v602, backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/QueryProfile?profileId=athena&rvn=-1`, token, {});
+    }
+    const server = await userLogin(backend.port, "CoreServer602");
+    const session = (await as(v602, backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer602", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "1", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    await as(v602, backend.port, `/fortnite/api/matchmaking/session/${session.id}/players`, server.token,
+      { publicPlayers: [player.accountId, mate.accountId], privatePlayers: [] });
+    const dedicated = await dedicatedServerToken(backend.port);
+    // Two squad matches: 2nd (top 3 and 6) and 5th (top 6), 3,700 score; the mate's 9th, 400.
+    for (const [matchId, results] of [
+      ["M337a", [{ accountId: player.accountId, place: 2, kills: 4, secondsAlive: 1500, score: 2600 }]],
+      ["M337b", [{ accountId: player.accountId, place: 5, kills: 1, secondsAlive: 900, score: 1100 },
+        { accountId: mate.accountId, place: 9, kills: 0, secondsAlive: 600, score: 400 }]]
+    ]) {
+      assert.equal((await coreV2("/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+        { playlistId: 9, countWins: true, matchId, results })).status, 200);
+    }
+
+    for (const build of [v600, v602]) {
+      const cohort = (await as(build, backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${player.accountId}?playlist=pc_m0_p9`,
+        player.token)).body;
+      assert.deepEqual(cohort.cohortAccounts, [player.accountId, mate.accountId], build);
+      const own = async (type, statName, body, query = "") => {
+        const response = await as(build, backend.port, `/fortnite/api/leaderboards/type/${type}/stat/${statName}/window/weekly?ownertype=1${query}`,
+          player.token, body);
+        assert.equal(response.status, 200);
+        assert.deepEqual([response.body.statName, response.body.statWindow], [statName, "weekly"]);
+        return response.body.entries.find(({ accountId }) => accountId === player.accountId);
+      };
+      assert.deepEqual(await own("group", "br_score_pc_m0_p9", cohort.cohortAccounts), { accountId: player.accountId, value: 3700, rank: 1 }, build);
+      assert.deepEqual(await own("group", "br_placetop6_pc_m0_p9", cohort.cohortAccounts), { accountId: player.accountId, value: 2, rank: 1 }, build);
+      assert.deepEqual(await own("group", "br_placetop3_pc_m0_p9", cohort.cohortAccounts), { accountId: player.accountId, value: 1, rank: 1 }, build);
+      // No win this week: not on Global Wins.
+      assert.equal(await own("global", "br_placetop1_pc_m0_p9", [], "&pageNumber=0&itemsPerPage=50"), undefined, build);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 test("a season's stats are its own matches; Season 1's are the career's less the later seasons'", () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-seasons-"));
   try {
