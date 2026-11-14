@@ -1,3 +1,4 @@
+import { payPlayerOnSession } from "../../tournaments/payouts.js";
 import { isShowdownPlaylist, tournamentsCompleteMessage } from "../../tournaments/showdown.js";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
@@ -257,6 +258,9 @@ export function battleRoyaleRoutes(context) {
           build: build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null) }) ?? []) {
         log("Battle Royale", `${result.accountId} scored ${points} points in tournament event ${eventId}`);
         if (showdown) context.xmpp?.notify(result.accountId, tournamentsCompleteMessage, {});
+        // The event's points prizes the player now reaches (#361, tournaments/payouts.js), once each, saved with the match.
+        const event = context.tournaments.get(eventId);
+        if (event) payPlayerOnSession(context.tournaments, event, session);
       }
       // A custom matchmaking key's match (Core-Backend #186) gives no V-Bucks, season XP or challenge progress while the
       // admin panel's "Custom matches give no challenge progress or rewards" is on (its default), as Epic's custom matches

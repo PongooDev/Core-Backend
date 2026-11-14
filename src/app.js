@@ -20,6 +20,7 @@ import { createPurchaseCodeStore } from "./store/purchasecodes.js";
 import { botsOn, createTournamentStore } from "./tournaments/store.js";
 import { botModeFor, matchBots } from "./matchmaking/botmodes.js";
 import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
+import { createPayoutSettler } from "./tournaments/payouts.js";
 import { eventRoutes } from "./services/fortnite/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
@@ -198,6 +199,12 @@ export function createApp(config, context = createContext(config)) {
   if (context.tournaments && context.xmpp && !context.showdownRefresh) {
     context.showdownRefresh = createShowdownRefresh({ store: context.tournaments, xmpp: context.xmpp, accounts: context.accounts });
     context.showdownRefresh.schedule();
+  }
+  // The tournament events' placement prizes at their ends, and those of events that ended while the backend was down
+  // (tournaments/payouts.js, Core-Backend #361).
+  if (context.tournaments && context.profiles && !context.payoutSettler) {
+    context.payoutSettler = createPayoutSettler(context);
+    context.payoutSettler.schedule();
   }
   app.use(originForm);
   // The IP each request came from, through the reverse proxy only when the admin panel says the backend is behind one

@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
 import { newsImageUrl } from "../services/content/images.js";
+import { payoutLines, rewardTableOf } from "./payouts.js";
 import { matchPoints, scoringOf, statusOf } from "./store.js";
 
 // 6.10's in-game tournaments (CL-4464155, CL-4476098 and CL-4480234; Update v6.10, 16 October 2018): "A new 'Events' tab
@@ -137,8 +138,10 @@ import { matchPoints, scoringOf, statusOf } from "./store.js";
 // points from the matches the game server reports (services/fortnite/battleroyale.js recordresults, by the playlist). With
 // no such event the list is empty, which is what a 6.10 lobby gets by default: the tab is there, as shipped, with no
 // tournament on it. Epic's pictures were on its CDN, not in the build: an event shows the admin's pictures, or Core's
-// own, made from the build's own textures (showdownImageSlots). Not served, for want of Epic's data: a reward table (the
-// client reads none) and regions or platforms (every player is offered every event).
+// own, made from the build's own textures (showdownImageSlots). The event's prizes (Core-Backend #361,
+// tournaments/payouts.js): its points prizes as the window's rewardTable, which no screen shows, and every prize in the
+// EVENT DETAILS text, which does; Core gives them. Not served, for want of Epic's data: regions or platforms (every
+// player is offered every event).
 export const showdownBuild = 4464155;
 export const tournamentsCompleteMessage = "com.epicgames.tournaments.complete";
 export const placementStat = "PLACEMENT_STAT_INDEX";
@@ -283,7 +286,7 @@ export function tournamentOf(event) {
       beginTime: window.beginTime,
       endTime: window.endTime,
       bIsTBD: false,
-      eventData: { playlistId: ltm.playlistName, scoringRules: scoringRulesOf(event), rewardTable: [] }
+      eventData: { playlistId: ltm.playlistName, scoringRules: scoringRulesOf(event), rewardTable: rewardTableOf(event) }
     }]
   };
 }
@@ -342,7 +345,8 @@ function rulesText(event) {
   const elims = rules.pointsPerElimination > 0 ? ` and ${rules.pointsPerElimination} for each elimination` : "";
   const steps = (rules.eliminationPoints ?? []).length
     ? `, ${rules.eliminationPoints.map(([count, points]) => `${points} at ${count} eliminations`).join(", ")}` : "";
-  return `Points for placement${elims}${steps}. ${counted}`.trim();
+  const prizes = payoutLines(event);
+  return `Points for placement${elims}${steps}. ${counted}${prizes.length ? ` Prizes: ${prizes.join("; ")}.` : ""}`.replace(/\s+/g, " ").trim();
 }
 // The content page's tournamentinformation for a build (services/content/pages.js): an entry for each listed event,
 // keyed by its displayDataId, with its texts, the colours (showdownColors) and its pictures (showdownImageUrl; origin is
@@ -377,7 +381,8 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     _noIndex: false,
     _activeDate: "2018-10-16T08:00:00.000Z",
     lastModified: new Date(Math.max(Date.parse("2026-11-13T00:00:00.000Z"),
-      ...showdownEvents(build, now, store).map((event) => Math.max(Date.parse(event.endedAt ?? event.createdAt), event.imagesSetAt ? Date.parse(event.imagesSetAt) : 0)))).toISOString(),
+      ...showdownEvents(build, now, store).map((event) => Math.max(Date.parse(event.endedAt ?? event.createdAt), event.imagesSetAt ? Date.parse(event.imagesSetAt) : 0,
+      event.payoutsSetAt ? Date.parse(event.payoutsSetAt) : 0)))).toISOString(),
     _locale: "en-US"
   };
 }

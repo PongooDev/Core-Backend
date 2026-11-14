@@ -28,7 +28,8 @@ export function rewardItem(templateId) {
   return known ? { cosmetic: false, build: known.build, templateId: known.templateId } : null;
 }
 
-const itemName = (item) => {
+// A code's item as the panel names it (its DisplayName in the build that has it), or its template id.
+export const itemName = (item) => {
   try {
     return inBuild(item.build, () => describeItem(item.templateId).name) || item.templateId;
   } catch {

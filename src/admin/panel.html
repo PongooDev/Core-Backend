@@ -8936,6 +8936,47 @@
               if (await act(api(`/admin/api/tournaments/${event.id}/settings`, { servers: [], bots: null }), "Event back on the normal pool and the Matchmaking tab's bots")) rerender();
             }, "ghost")));
       };
+      // An event's prizes (Core-Backend #361, tournaments/payouts.js): rows for reaching a number of points (given the
+      // moment a player's points reach them, as Epic's in-game tournaments' rewards and pins were) or for a final place
+      // (given when the event is over, to the players who qualified, as Solo Showdown's were), each V-Bucks and/or items.
+      const payoutsEditor = (initial = []) => {
+        const rowsBox = el("div", { style: "display:grid; gap:6px; margin-top:8px;" });
+        let rows = [];
+        const numberOf = (input) => (input.value.trim() === "" ? NaN : Number(input.value));
+        const addRow = ({ scoringType = "value", threshold = "", vbucks = "", items = [] } = {}) => {
+          const row = {
+            type: el("select", { class: "field", "aria-label": "Prize for" },
+              el("option", { value: "value", text: "Reach points" }),
+              el("option", { value: "rank", text: "Final place up to" })),
+            threshold: el("input", { class: "field", type: "number", min: "1", step: "1", value: String(threshold), style: "width:100px;", "aria-label": "Points or place" }),
+            vbucks: el("input", { class: "field", type: "number", min: "0", step: "1", value: String(vbucks), placeholder: "0", style: "width:110px;", "aria-label": "V-Bucks" }),
+            items: el("input", { class: "field mono", value: items.join(", "), placeholder: "Items (optional), e.g. AthenaCharacter:CID_028_Athena_Commando_F", style: "flex:1 1 260px;", "aria-label": "Items" })
+          };
+          row.type.value = scoringType;
+          row.node = el("div", { class: "actions", style: "gap:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap;" },
+            row.type, row.threshold, el("span", { class: "muted", text: "V-Bucks" }), row.vbucks, row.items,
+            btn("Remove", () => { rows = rows.filter((other) => other !== row); row.node.remove(); }, "ghost"));
+          rows.push(row);
+          rowsBox.append(row.node);
+        };
+        const load = (table) => {
+          rows = [];
+          rowsBox.replaceChildren();
+          (table || []).forEach(addRow);
+        };
+        load(initial);
+        return {
+          load,
+          value: () => rows.map((row) => ({ scoringType: row.type.value, threshold: numberOf(row.threshold),
+            vbucks: row.vbucks.value.trim() === "" ? 0 : Number(row.vbucks.value), items: row.items.value.split(/[\s,]+/).filter(Boolean) })),
+          node: el("div", {},
+            el("div", { class: "note", style: "margin-top:8px;", text: "Reach points: given to each player the moment their points in the event reach the number (in the match report that gets them there). Final place up to: given when the event ends (End event, or its end time) to each player who qualified and finished at that place or better; tied players share a place. Each prize is V-Bucks and/or items (template ids, separated by commas: an outfit, a glider and so on, as a redeem code's), once per player per event. From 6.10 the game's EVENT DETAILS text lists them." }),
+            rowsBox,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+              btn("Add prize", () => addRow(), "ghost")))
+        };
+      };
+      const createPayouts = payoutsEditor();
       const createServersBots = serversBotsEditor();
       const createScoring = scoringEditor(presetScoring(rulesSelect.value));
       const createHudNote = el("div", { class: "note", style: "margin-top:8px;" });
@@ -8984,6 +9025,22 @@
               }, "ghost"),
               inGame && inGamePreset && event.ruleset !== inGamePreset
                 ? btn("Load Epic's in-game points", () => editor.load(presetScoring(inGamePreset)), "ghost") : null)));
+      };
+
+      // An event's prizes (#361): saved, the points prizes already reached are given at once.
+      const eventPayouts = (event) => {
+        const editor = payoutsEditor(event.payoutTable);
+        const given = Object.values(event.paidPlayers || {}).reduce((total, keys) => total + keys.length, 0);
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Prizes" }),
+            chip(event.payoutTable.length ? `${event.payoutTable.length} prize${event.payoutTable.length === 1 ? "" : "s"}, ${given} given` : "None", event.payoutTable.length ? "accent" : "")),
+          event.payoutLines.length ? el("div", { class: "note", text: event.payoutLines.join(" · ") }) : null,
+          event.payoutsSettledAt ? el("div", { class: "note", text: `Placement prizes given ${when(event.payoutsSettledAt)}.` }) : null,
+          editor.node,
+          el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+            btn("Save prizes", async () => {
+              if (await act(api(`/admin/api/tournaments/${event.id}/payouts`, { payoutTable: editor.value() }), "Event prizes saved")) rerender();
+            }, "primary")));
       };
 
       // An in-game event's pictures (#336): for each slot the game shows, an http(s) URL or an uploaded PNG/JPEG (the
@@ -9092,6 +9149,7 @@
             el("div", { class: "panel-head" }, el("h2", { text: "Points & Server Rules" })),
             eventScoring(event),
             eventServersBots(event)),
+          eventPayouts(event),
           inGameOf(event.playlist) ? eventImages(event) : null,
           el("section", { class: "panel", style: "margin-top:16px;" },
             el("div", { class: "panel-head" },
@@ -9105,7 +9163,8 @@
               ["Wins", (row) => String(row.wins), "num"],
               ["Eliminations", (row) => String(row.eliminations), "num"],
               ["Avg. place", (row) => (row.averagePlacement === null ? "-" : String(row.averagePlacement)), "num"],
-              ["Qualified", (row) => chip(row.qualified ? "Yes" : "Not yet", row.qualified ? "good" : "")]
+              ["Qualified", (row) => chip(row.qualified ? "Yes" : "Not yet", row.qualified ? "good" : "")],
+              ...(event.payoutTable.length ? [["Prizes given", (row) => String((event.paidPlayers[row.accountId] || []).length), "num"]] : [])
             ], event.leaderboard, "No matches played in this event yet."))
         );
         return;
@@ -9150,6 +9209,7 @@
               const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value,
                 scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, startsAt: isoOf(startInput), endsAt: isoOf(endInput),
                 ...(inGameOf(playlistSelect.value) && pinInput.value ? { pinScore: Number(pinInput.value) } : {}),
+                payoutTable: createPayouts.value(),
                 ...createServersBots.value() };
               if (await act(api("/admin/api/tournaments", body), "Event created")) rerender();
             }, "primary")),
@@ -9160,6 +9220,9 @@
             createScoring.node,
             el("div", { class: "actions", style: "margin-top:8px; justify-content:flex-start;" },
               btn("Reset to default", () => createScoring.load(presetScoring(rulesSelect.value)), "ghost"))),
+          el("details", { style: "margin-top:8px;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: "Prizes (optional)" }),
+            createPayouts.node),
           el("details", { style: "margin-top:8px;" },
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Servers and bots (optional)" }),
             createServersBots.node)),

@@ -82,6 +82,7 @@ import { giftingFriendDays } from "../store/gifting.js";
 import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
+import { payEvent, payoutLines, settleEvent, unknownPayoutItems } from "../tournaments/payouts.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -2565,8 +2566,11 @@ export function adminRoutes(context) {
   // Tournaments (Core-Backend #263, tournaments/store.js): the tournament playlists, their events with each one's
   // leaderboard of points, and the admin's create, reset, end and delete; and an event's custom scoring (#280): its own
   // placement table and points an elimination, or back to its preset's.
-  const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event), scoring: event.scoring ?? null,
+  const tournamentView = (event) => ({ ...event, players: undefined, paid: undefined, status: statusOf(event), scoring: event.scoring ?? null,
     servers: event.servers ?? [], bots: event.bots ?? null,
+    // Its prizes (#361, tournaments/payouts.js), as they read, and who was given which (account: [payoutKey]).
+    payoutTable: event.payoutTable ?? [], payoutLines: payoutLines(event),
+    paidPlayers: Object.fromEntries(Object.entries(event.paid ?? {}).map(([accountId, keys]) => [accountId, Object.keys(keys)])),
     effectiveScoring: (({ placementPoints, pointsPerElimination, eliminationPoints = [] }) => ({ placementPoints, pointsPerElimination,
       ...(eliminationPoints.length ? { eliminationPoints } : {}) }))(scoringOf(event)),
     playerCount: Object.keys(event.players ?? {}).length,
@@ -2588,10 +2592,21 @@ export function adminRoutes(context) {
     events: context.tournaments.list().map(tournamentView)
   });
   // The game's lobbies ask again for their events (#336, tournaments/showdown.js createShowdownRefresh).
-  const tournamentsChanged = () => context.showdownRefresh?.changed();
+  // The prizes' timer follows the events' ends too (#361, tournaments/payouts.js createPayoutSettler).
+  const tournamentsChanged = () => {
+    context.showdownRefresh?.changed();
+    context.payoutSettler?.schedule();
+  };
+  // A prize's items must be ones some build has (friendcodes/rewards.js rewardItem). Answers the refusal, or null.
+  const unknownItemsError = (table) => {
+    const unknown = unknownPayoutItems(table);
+    return unknown.length ? `No build has ${[...new Set(unknown)].join(", ")}: a prize can't give it.` : null;
+  };
   router.get("/admin/api/tournaments", (req, res) => res.json(tournamentsPayload()));
   router.post("/admin/api/tournaments", (req, res) => {
     try {
+      const refused = unknownItemsError(req.body?.payoutTable);
+      if (refused) return invalid(res, refused);
       const event = context.tournaments.create(req.body ?? {});
       log("Admin", `Tournament event ${event.name} (${event.id}) created`);
       tournamentsChanged();
@@ -2604,7 +2619,11 @@ export function adminRoutes(context) {
     const event = context.tournaments[action](req.params.id);
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
     log("Admin", `Tournament event ${event.name} (${event.id}) ${verb}`);
-    if (action === "end") tournamentsChanged();
+    // An event ended gives its placement prizes (#361).
+    if (action === "end") {
+      settleEvent(context, event.id);
+      tournamentsChanged();
+    }
     res.json({ event: tournamentView(event), ...tournamentsPayload() });
   };
   // An in-game event's pictures (#336): body {images: {posterFront, posterBack, playlistTile, loadingScreen}}, each an
@@ -2653,6 +2672,25 @@ export function adminRoutes(context) {
     log("Admin", `Tournament event ${event.name} (${event.id}): ${event.servers.length ? `servers ${event.servers.join(", ")}` : "the normal server pool"}, `
       + (event.bots ? (event.bots.enabled ? `${event.bots.count} bots` : "no bots") : "the Matchmaking tab's bots"));
     res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
+  // An event's prizes (#361): body {payoutTable: [{scoringType: "value" (points reached) or "rank" (final place), threshold,
+  // vbucks, items: [templateId]}]}, [] or null for none (tournaments/store.js validatePayoutTable). The points prizes
+  // already reached are given at once; an event already over gives its placement prizes too, if it hasn't yet.
+  router.post("/admin/api/tournaments/:id/payouts", (req, res) => {
+    const refused = unknownItemsError(req.body?.payoutTable);
+    if (refused) return invalid(res, refused);
+    let event;
+    try {
+      event = context.tournaments.setPayoutTable(req.params.id, req.body?.payoutTable ?? null);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}) prizes: ${payoutLines(event).join("; ") || "none"}`);
+    if (event.payoutsSettledAt) payEvent(context, event, { final: true });
+    else if (!settleEvent(context, event.id)) payEvent(context, event);
+    tournamentsChanged();
+    res.json({ event: tournamentView(context.tournaments.get(event.id)), ...tournamentsPayload() });
   });
   router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));
   router.post("/admin/api/tournaments/:id/end", tournamentAction("end", "ended"));

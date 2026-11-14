@@ -176,6 +176,50 @@ export function validateImages(images, current = {}, dataDir = null) {
   return next;
 }
 
+// An event's prizes (Core-Backend #361, given by tournaments/payouts.js). Epic's tournaments gave theirs two ways, and an
+// event's payoutTable holds rows of either:
+// - "value": for reaching a number of points. 6.10's in-game tournaments carry these in their windows' eventData as
+//   rewardTable: [{pointsEarned, mcpTokenRewards}] (FShowdownEventData's RewardTable of FEventReward, the SDK of 6.10 to
+//   6.31): what the MCP grants a player whose window score reaches pointsEarned. The golden pin (pinScore) is one too.
+// - "rank": for a final place on the leaderboard (Solo Showdown's prizes, May and July 2018: by rank among the players
+//   who qualified, once the event was over; the later events service's payoutTable has the same two scoringTypes).
+// A row is {scoringType, threshold (the points to reach, or the last place it pays), vbucks, items: [templateId]}: V-Bucks
+// (Currency:MtxGiveaway, as the panel's other V-Bucks) and items (a Battle Royale cosmetic or another item some build
+// has, as a redeem code's, friendcodes/rewards.js). A row gives something; the rows of a kind each have their own
+// threshold. Nothing else of Epic's prizes (cash, hardware) is something a profile can hold.
+export const payoutScoringTypes = ["value", "rank"];
+export const maxPayoutRows = 50;
+export const maxPayoutItems = 10;
+export const maxPayoutVbucks = 1000000;
+const templateIdPattern = /^[A-Za-z]+:[A-Za-z0-9_.-]{1,128}$/;
+// Checks and normalises an event's prizes: [] for none. Throws an Error with the reason. (Whether each item exists in a
+// build is checked by the admin routes, tournaments/payouts.js unknownPayoutItems.)
+export function validatePayoutTable(table) {
+  if (table === undefined || table === null) return [];
+  if (!Array.isArray(table) || table.length > maxPayoutRows) throw new Error(`Prizes are a list of at most ${maxPayoutRows} rows.`);
+  const rows = table.map((row, index) => {
+    const name = `Prize ${index + 1}`;
+    if (!row || typeof row !== "object" || Array.isArray(row)) throw new Error(`${name} is {scoringType, threshold, vbucks, items}.`);
+    if (!payoutScoringTypes.includes(row.scoringType)) throw new Error(`${name} is for points reached ("value") or a final place ("rank").`);
+    const threshold = Number(row.threshold);
+    const most = row.scoringType === "value" ? maxPinScore : 1000;
+    if (!isWhole(threshold, 1, most)) throw new Error(`${name}'s ${row.scoringType === "value" ? "points" : "place"} is a whole number from 1 to ${most}.`);
+    const vbucks = row.vbucks === undefined || row.vbucks === null || row.vbucks === "" ? 0 : Number(row.vbucks);
+    if (!isWhole(vbucks, 0, maxPayoutVbucks)) throw new Error(`${name}'s V-Bucks are a whole number from 0 to ${maxPayoutVbucks}.`);
+    const items = (Array.isArray(row.items) ? row.items : []).map((item) => String(item ?? "").trim()).filter(Boolean);
+    if (items.length > maxPayoutItems) throw new Error(`${name} gives at most ${maxPayoutItems} items.`);
+    const bad = items.find((item) => !templateIdPattern.test(item));
+    if (bad) throw new Error(`${name}: ${bad} isn't an item's template id (such as AthenaCharacter:CID_028_Athena_Commando_F).`);
+    if (!vbucks && !items.length) throw new Error(`${name} gives nothing: set V-Bucks or an item, or remove it.`);
+    return { scoringType: row.scoringType, threshold, vbucks, items: [...new Set(items)] };
+  });
+  for (const type of payoutScoringTypes) {
+    const thresholds = rows.filter((row) => row.scoringType === type).map((row) => row.threshold);
+    if (new Set(thresholds).size !== thresholds.length) throw new Error(`Two prizes are for the same ${type === "value" ? "points" : "place"}: put their rewards in one row.`);
+  }
+  return rows.sort((a, b) => payoutScoringTypes.indexOf(a.scoringType) - payoutScoringTypes.indexOf(b.scoringType) || a.threshold - b.threshold);
+}
+
 const maxEvents = 100;
 const maxName = 64;
 const isDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
@@ -245,7 +289,8 @@ export function createTournamentStore(dataDir) {
     // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
     // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
     // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional), images (an in-game event's
-    // pictures, validateImages; optional, Core's own where left out)}. Throws an Error with the reason.
+    // pictures, validateImages; optional, Core's own where left out), payoutTable (its prizes, #361,
+    // tournaments/payouts.js validatePayoutTable; optional, none)}. Throws an Error with the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -264,9 +309,10 @@ export function createTournamentStore(dataDir) {
       const bots = validateBots(options.bots);
       const pinScore = playlist.inGame ? validatePinScore(options.pinScore) : null;
       const images = playlist.inGame && options.images ? validateImages(options.images, {}, dataDir) : {};
+      const payoutTable = validatePayoutTable(options.payoutTable);
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), payoutTable, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
       load().events[event.id] = event;
       save();
       return event;
@@ -278,6 +324,37 @@ export function createTournamentStore(dataDir) {
       const event = get(id);
       if (!event) return null;
       event.scoring = scoring === null || scoring === undefined ? null : validateScoring(scoring);
+      save();
+      return event;
+    },
+
+    // Sets an event's prizes (Core-Backend #361, tournaments/payouts.js validatePayoutTable; [] or null for none). Prizes
+    // already given stay given. Throws an Error with the reason; null when there's no such event.
+    setPayoutTable(id, table, now = new Date()) {
+      const event = get(id);
+      if (!event) return null;
+      event.payoutTable = validatePayoutTable(table);
+      event.payoutsSetAt = now.toISOString();
+      save();
+      return event;
+    },
+
+    // Notes the prizes (tournaments/payouts.js payoutKey) given to a player, so that none is given twice. Kept apart from
+    // the player's matches: a reset of the points doesn't give a prize again.
+    markPaid(id, accountId, keys, now = new Date()) {
+      const event = get(id);
+      if (!event || !keys.length) return event;
+      const paid = ((event.paid ??= {})[accountId] ??= {});
+      for (const key of keys) paid[key] ??= now.toISOString();
+      save();
+      return event;
+    },
+
+    // Notes that an ended event's placement prizes were given (tournaments/payouts.js settleEvent).
+    markSettled(id, now = new Date()) {
+      const event = get(id);
+      if (!event) return null;
+      event.payoutsSettledAt ??= now.toISOString();
       save();
       return event;
     },
