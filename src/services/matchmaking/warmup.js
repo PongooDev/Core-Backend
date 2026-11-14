@@ -3,7 +3,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { stormDestructionPercent } from "../../events/stormdestruction.js";
-import { botModeOf, botsInMode, matchBots } from "../../matchmaking/botmodes.js";
+import { botModeOf, botsInMode, matchBots, noBotsInCustomMatch } from "../../matchmaking/botmodes.js";
 
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
@@ -34,6 +34,9 @@ import { botModeOf, botsInMode, matchBots } from "../../matchmaking/botmodes.js"
 // A match of a tournament playlist (Core-Backend #282) plays with its running event's own bots when it has them: on with
 // the event's count, or off (tournaments/store.js effectiveBots); the Matchmaking tab's otherwise, and for a report the
 // service can't place in a match yet (no players connected: the gameserver brings no bots in before one is).
+// A match with a custom matchmaking key plays without the Matchmaking tab's bots while its "No bots in custom matchmaking
+// matches" (bots.noCustomMatchBots) is on, its default (#352): bots null, botsMode.enabled false; a tournament event's own
+// bots stay, and a match without a key is unchanged.
 // The Matchmaking tab's bots play only in the game modes it has them on in (Core-Backend #352, matchmaking/botmodes.js):
 // in one that is off, bots is null. The match's mode is its playlist's: the matchmaking service's for a match it placed,
 // else the one the gameserver reports (playlistId, the game mode's CurrentPlaylistId, or from 5.30 playlistName, its
@@ -64,7 +67,9 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
     const reported = Number(req.body?.playlistId);
     const mode = botModeOf(match?.playlistId ?? (Number.isInteger(reported) && reported > 0 ? reported
       : typeof req.body?.playlistName === "string" && req.body.playlistName.length <= 128 ? req.body.playlistName : null));
-    const bots = matchBots(current.bots, event, mode);
+    // The match's custom matchmaking key (#186, the session's), for "No bots in custom matchmaking matches" (#352).
+    const customKey = match?.sessionId ? sessions.get(match.sessionId)?.customKey ?? null : null;
+    const bots = matchBots(current.bots, event, mode, customKey);
     const forced = bots?.forcePlayerAIs === true && bots.count > 0;
     const teams = bots?.fillPlayerTeams === true;
     res.json({
@@ -81,7 +86,7 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
         ? { count: forced ? bots.count : 0, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests,
           fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
         : null,
-      botsMode: mode === null ? null : { id: mode, enabled: event ? true : botsInMode(current.bots, mode) },
+      botsMode: mode === null ? null : { id: mode, enabled: event ? true : !noBotsInCustomMatch(current.bots, customKey) && botsInMode(current.bots, mode) },
       stormDestructionPercent: stormDestructionPercent(current.events)
     });
   });

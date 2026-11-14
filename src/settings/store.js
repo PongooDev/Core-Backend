@@ -145,9 +145,10 @@ const defaults = {
   // build before 8.30). Off by default. fillPlayerTeams ("Fill players' teams with bots") puts bots in the empty places on
   // the teams of players whose party fills, in duos and squads; unlike forcePlayerAIs it isn't tied to the backport.
   // modes: the game modes they play in (Core-Backend #352, matchmaking/botmodes.js), every one by default; fillLobby: the
-  // modes whose lobbies bots fill to the match's size, none by default.
+  // modes whose lobbies bots fill to the match's size, none by default. noCustomMatchBots ("No bots in custom matchmaking
+  // matches", #352): a match with a custom matchmaking key plays without the panel's bots; on by default.
   bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false,
-    modes: defaultBotModes(), modeCounts: {}, fillLobby: {} },
+    modes: defaultBotModes(), modeCounts: {}, fillLobby: {}, noCustomMatchBots: true },
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
@@ -580,7 +581,9 @@ function botsValue(value, base) {
     // Each mode's own count (#352), none by default: the shared count.
     modeCounts: sanitizeBotModeCounts(given.modeCounts, base.modeCounts),
     // The modes whose lobbies bots fill (#352), none by default.
-    fillLobby: sanitizeBotFillLobby(given.fillLobby, base.fillLobby)
+    fillLobby: sanitizeBotFillLobby(given.fillLobby, base.fillLobby),
+    // No bots in custom matchmaking matches (#352), on unless turned off.
+    noCustomMatchBots: typeof given.noCustomMatchBots === "boolean" ? given.noCustomMatchBots : base.noCustomMatchBots !== false
   };
 }
 function warmupSecondsValue(value) {
@@ -657,7 +660,7 @@ export function createSettingsStore(dataDir) {
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
-    bots: { ...defaults.bots, modes: defaultBotModes(), modeCounts: {}, fillLobby: {} },
+    bots: { ...defaults.bots, modes: defaultBotModes(), modeCounts: {}, fillLobby: {}, noCustomMatchBots: true },
     creators: []
   };
 

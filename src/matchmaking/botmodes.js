@@ -90,4 +90,12 @@ export function botsForMode(bots, mode) {
 
 // The bots a match plays with: its tournament event's own ({enabled, count}, tournaments/store.js botsFor) over the panel's
 // when it has them, else the panel's in the match's mode.
-export const matchBots = (general, event, mode) => (event ? effectiveBots(general, event) : botsForMode(general, mode));
+// A match with a custom matchmaking key (#186) plays without the panel's bots (#352) while "No bots in custom matchmaking
+// matches" (bots.noCustomMatchBots) is on, its default: Force player AIs, the count, team filling and lobby filling off.
+// A tournament event's own bots win over it, as over the rest of the panel's; a match without a key is unchanged.
+export const noBotsInCustomMatch = (bots, customKey) => !!customKey && bots?.noCustomMatchBots !== false;
+export function matchBots(general, event, mode, customKey = null) {
+  if (event) return effectiveBots(general, event);
+  if (general && noBotsInCustomMatch(general, customKey)) return { ...general, forcePlayerAIs: false, count: 0, fillPlayerTeams: false, fillLobby: {} };
+  return botsForMode(general, mode);
+}

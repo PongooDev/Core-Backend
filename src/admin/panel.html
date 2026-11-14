@@ -5200,6 +5200,9 @@
       const botsFillTeamsToggle = toggleSwitch(form.bots.fillPlayerTeams === true, (checked) => {
         form.bots.fillPlayerTeams = checked;
       });
+      const botsNoCustomToggle = toggleSwitch(form.bots.noCustomMatchBots !== false, (checked) => {
+        form.bots.noCustomMatchBots = checked;
+      });
       const botsQuestsToggle = toggleSwitch(form.bots.eliminationsCountForQuests !== false, (checked) => {
         form.bots.eliminationsCountForQuests = checked;
       });
@@ -5477,6 +5480,11 @@
                   el("span", { class: "muted font-semibold", text: "Fill players' teams with bots" }),
                   el("div", { class: "sub", text: "Duos and squads: bots take the empty places on the teams of players with Squad Fill on, and count toward the match size. Works without Force player AIs." })),
                 botsFillTeamsToggle),
+              el("div", { style: "margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+                el("div", {},
+                  el("span", { class: "muted font-semibold", text: "No bots in custom matchmaking matches" }),
+                  el("div", { class: "sub", text: "A match played with a custom matchmaking key gets no bots; public matches keep them. A tournament event's own bots stay." })),
+                botsNoCustomToggle),
               el("div", { style: "margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
                 el("span", { class: "muted font-semibold", text: "Bot eliminations count for quests" }),
                 botsQuestsToggle),

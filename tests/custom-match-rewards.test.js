@@ -179,3 +179,48 @@ test("a custom key's match gives no challenge progress, XP or V-Bucks; a public 
     backend.close();
   }
 });
+
+// Core-Backend #352: a custom key's match gets none of the panel's bots ("No bots in custom matchmaking matches",
+// bots.noCustomMatchBots, on by default); a public match keeps them.
+test("the warmup answer has no bots in a custom key's match, bots in a public one, and the switch off restores them (#352)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    assert.equal((await get(backend.port, "/admin/api/matchmaking/overview")).body.bots.noCustomMatchBots, true);
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { bots: { forcePlayerAIs: true, count: 30, fillPlayerTeams: true, fillLobby: { solo: true, duo: true, squad: true } } });
+    const first = await gameServer(backend, "CoreServer1");
+    const second = await gameServer(backend, "CoreServer2");
+    connections.push(first.connection, second.connection);
+    const custom = await userLogin(backend.port, "CustomPlayer");
+    const normal = await userLogin(backend.port, "PublicPlayer");
+    assert.equal((await post(backend.port, `/admin/api/accounts/${custom.accountId}/custom-matchmaking`, undefined, { allowed: true })).status, 200);
+    const players = [await queue(backend, custom, "CoreKey1"), await queue(backend, normal, null)];
+    connections.push(...players);
+    for (const server of [first, second]) {
+      const assign = await nextOf(server.connection, "AssignMatch");
+      server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    }
+    for (const [player, connection] of [[custom, players[0]], [normal, players[1]]]) {
+      const { sessionId } = (await nextOf(connection, "Play")).payload;
+      assert.equal((await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${player.accountId}/session/${sessionId}`, player.token)).status, 200);
+    }
+    const dedicated = await dedicatedServerToken(backend.port);
+    const ask = async (player) => (await post(backend.port, "/fortnite/api/game/v2/matchmakingservice/warmup", dedicated,
+      { phase: "Setup", accountIds: [player.accountId], playlistId: 2 })).body;
+
+    // The custom match: no bots at all. The public one: the panel's.
+    let answer = await ask(custom);
+    assert.deepEqual([answer.bots, answer.botsMode], [null, { id: "duo", enabled: false }]);
+    answer = await ask(normal);
+    assert.deepEqual([answer.bots.count, answer.bots.teams, answer.botsMode.enabled], [100, true, true]);
+
+    // Switched off, the custom match has them again.
+    const saved = await post(backend.port, "/admin/api/matchmaking/config", undefined, { bots: { noCustomMatchBots: false } });
+    assert.equal(saved.body.bots.noCustomMatchBots, false);
+    answer = await ask(custom);
+    assert.deepEqual([answer.bots.count, answer.botsMode.enabled], [100, true]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});

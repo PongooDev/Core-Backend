@@ -2218,7 +2218,7 @@ export function adminRoutes(context) {
       // modeCounts: each mode's own bot count, {<id>: 0 to 100}; a mode left out plays with the shared count. fillLobby:
       // the modes whose lobbies bots fill to the match's size, {<id>: true}.
       bots: { ...s.bots, modes: sanitizeBotModes(s.bots?.modes), modeCounts: sanitizeBotModeCounts(s.bots?.modeCounts),
-        fillLobby: sanitizeBotFillLobby(s.bots?.fillLobby) },
+        fillLobby: sanitizeBotFillLobby(s.bots?.fillLobby), noCustomMatchBots: s.bots?.noCustomMatchBots !== false },
       rewards: {
         enabled: s.battleRoyaleVbucks === true,
         modes: s.battleRoyaleRewards ?? {}
