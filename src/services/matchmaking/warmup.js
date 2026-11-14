@@ -27,7 +27,9 @@ import { botModeOf, botsInMode, matchBots } from "../../matchmaking/botmodes.js"
 // count is the bots on teams of their own (0 with Force player AIs off): the match's mode's own count when the panel
 // sets one (Core-Backend #352, bots.modeCounts), else the shared one, the requested one as is: the gameserver applies
 // the cap itself (bots = min(count, match capacity - connected players - bots on players' teams), re-checked before the
-// bus leaves). teams: whether bots fill the empty places on players' teams in duos and squads; noFill: the match's
+// bus leaves). In a mode whose "Fill the lobby with bots" is on (#352, bots.fillLobby), count is 100 with Force player AIs
+// off or on: the gameserver's cap fills the places the match's players leave, to the playlist's most players, in whole
+// teams, and takes bots out again as players join (matchmaking/botmodes.js botsForMode). teams: whether bots fill the empty places on players' teams in duos and squads; noFill: the match's
 // players whose party doesn't fill (the party leader's player.option.fillTeam false), whose teams get none.
 // A match of a tournament playlist (Core-Backend #282) plays with its running event's own bots when it has them: on with
 // the event's count, or off (tournaments/store.js effectiveBots); the Matchmaking tab's otherwise, and for a report the

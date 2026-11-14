@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotModeCounts, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
+import { botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { dedicatedServerToken, get, post, startBackend } from "./helpers.js";
 
@@ -166,6 +166,61 @@ test("a settings file from before the per-mode counts has none, and one saved af
     assert.deepEqual(createSettingsStore(dataDir).get().bots.modeCounts, {});
     fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { count: 40, modeCounts: { solo: 15, nope: 3 } } }));
     assert.deepEqual(createSettingsStore(dataDir).get().bots.modeCounts, { solo: 15 });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+// The follow-up: each mode's "Fill the lobby with bots" (bots.fillLobby), off by default.
+test("each mode's lobby filling: set, kept and cleared, and the bots it asks for (#352)", () => {
+  assert.deepEqual(sanitizeBotFillLobby({ solo: true, duo: "yes", nope: true, squad: false }, { duo: true, squad: true }), { solo: true, duo: true });
+  assert.deepEqual(sanitizeBotFillLobby(undefined), {});
+  const bots = { forcePlayerAIs: false, count: 10, fillPlayerTeams: false, modes: { duo: false }, modeCounts: { solo: 5 }, fillLobby: { solo: true, duo: true, squad: true } };
+  // It asks for 100 whatever the counts and Force player AIs: the gameserver caps them to the match's room.
+  assert.deepEqual([botsForMode(bots, "solo").forcePlayerAIs, botsForMode(bots, "solo").count], [true, 100]);
+  assert.equal(botsForMode(bots, "squad").count, 100);
+  // A mode that is off stays off, one that doesn't fill keeps its counts, and an unknown mode doesn't fill.
+  assert.equal(botsForMode(bots, "duo").forcePlayerAIs, false);
+  assert.deepEqual([botsForMode(bots, "fiftyFifty").forcePlayerAIs, botsForMode(bots, null).forcePlayerAIs], [false, false]);
+  // A tournament event's bots win.
+  assert.equal(matchBots(bots, { enabled: true, count: 7 }, "solo").count, 7);
+});
+
+test("the panel's lobby filling and the warmup answer: 100 bots asked for in a mode that fills, off by default (#352)", async () => {
+  const backend = await startBackend();
+  try {
+    assert.deepEqual((await overview(backend)).bots.fillLobby, {});
+    const token = await dedicatedServerToken(backend.port);
+    const ask = async (body) => (await post(backend.port, "/fortnite/api/game/v2/matchmakingservice/warmup", token, { phase: "Warmup", accountIds: [], secondsLeft: 60, ...body })).body;
+    // Off by default: no bots, as before.
+    assert.equal((await ask({ playlistId: 9 })).bots, null);
+
+    let res = await mmConfig(backend, { bots: { fillPlayerTeams: true, fillLobby: { squad: true, fiftyFifty: true } } });
+    assert.deepEqual(res.body.bots.fillLobby, { squad: true, fiftyFifty: true });
+    assert.deepEqual((await overview(backend)).bots.fillLobby, res.body.bots.fillLobby);
+    const squad = (await ask({ playlistId: 9 })).bots;
+    assert.deepEqual([squad.count, squad.teams], [100, true]);
+    // Solo doesn't fill: only its team filling, which solo has no room for.
+    assert.equal((await ask({ playlistId: 2 })).bots.count, 0);
+    // Unticked, and the bot count and switches left as they were.
+    res = await mmConfig(backend, { bots: { fillLobby: { squad: false } } });
+    assert.deepEqual(res.body.bots.fillLobby, { fiftyFifty: true });
+    assert.equal((await ask({ playlistId: 9 })).bots.count, 0);
+
+    res = await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {});
+    assert.deepEqual(res.body.bots.fillLobby, {});
+  } finally {
+    backend.close();
+  }
+});
+
+test("a settings file from before the lobby filling fills none, and one saved after keeps it (#352)", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-352c-"));
+  try {
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { forcePlayerAIs: true, count: 40, modeCounts: { solo: 15 } } }));
+    assert.deepEqual(createSettingsStore(dataDir).get().bots.fillLobby, {});
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { fillLobby: { duo: true, nope: true, solo: false } } }));
+    assert.deepEqual(createSettingsStore(dataDir).get().bots.fillLobby, { duo: true });
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
   }

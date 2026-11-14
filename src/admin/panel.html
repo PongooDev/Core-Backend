@@ -5232,6 +5232,10 @@
       // Each mode's own bot count (#352), blank for the shared Bot count above; a cleared one is sent as null.
       form.bots.modeCounts = { ...(data.bots?.modeCounts || {}) };
       const botModeCount = (id) => (Number.isInteger(form.bots.modeCounts[id]) ? form.bots.modeCounts[id] : null);
+      // Each mode's "Fill the lobby with bots" (#352), off by default: bots fill the match's places its players leave, up to
+      // the playlist's most players, whatever the count; an unticked one is sent as false.
+      form.bots.fillLobby = { ...(data.bots?.fillLobby || {}) };
+      const botModeFills = (id) => form.bots.fillLobby[id] === true;
       let botModesSeason = String(ltmSeason);
       let botModesQuery = "";
       const botModesChip = chip("", "good");
@@ -5246,7 +5250,9 @@
       const updateBotModesChip = () => {
         const off = modeKeys.filter((m) => !botModeOn(m.id)).length;
         const own = modeKeys.filter((m) => botModeOn(m.id) && botModeCount(m.id) !== null).length;
-        botModesChip.textContent = (off ? `Off in ${off} of ${modeKeys.length} modes` : "Every mode") + (own ? ` · ${own} with their own count` : "");
+        const fills = modeKeys.filter((m) => botModeOn(m.id) && botModeFills(m.id)).length;
+        botModesChip.textContent = (off ? `Off in ${off} of ${modeKeys.length} modes` : "Every mode") + (own ? ` · ${own} with their own count` : "")
+          + (fills ? ` · ${fills} filling the lobby` : "");
         botModesChip.className = `chip ${off ? "warn" : "good"}`;
       };
       const renderBotModes = () => {
@@ -5263,6 +5269,17 @@
               }
             }),
             el("span", { text: m.name })),
+          el("label", { class: "check", title: "Fill the lobby with bots: once the players are in, bots take every place left, up to the mode's most players", style: "flex:none; margin-left:auto;" },
+            el("input", {
+              type: "checkbox",
+              checked: botModeFills(m.id),
+              "aria-label": `Fill the lobby with bots in ${m.name}`,
+              onchange: (e) => {
+                form.bots.fillLobby[m.id] = e.target.checked;
+                updateBotModesChip();
+              }
+            }),
+            el("span", { class: "muted", text: "Fill" })),
           el("input", {
             class: "field num",
             type: "number",
@@ -5311,7 +5328,7 @@
         el("summary", { style: "cursor:pointer;" },
           el("span", { class: "muted font-semibold", style: "margin-right:8px;", text: "Game modes with bots" }),
           botModesChip),
-        el("div", { class: "sub", style: "margin-top:6px;", text: "Bots join only the matches of the modes ticked here, as Force player AIs and Fill players' teams with bots set them. Every mode is ticked until you untick it. The number next to a mode is its own bot count (0 – 100) for Force player AIs; leave it blank to use the Bot count above. Level, health, shield, fight chance and team filling stay shared. A tournament event's own bots (Tournaments tab) aren't affected." }),
+        el("div", { class: "sub", style: "margin-top:6px;", text: "Bots join only the matches of the modes ticked here, as Force player AIs and Fill players' teams with bots set them. Every mode is ticked until you untick it. The number next to a mode is its own bot count (0 – 100) for Force player AIs; leave it blank to use the Bot count above. Tick Fill to fill that mode's lobby with bots: once the players have joined, bots take every place left up to the mode's most players (100, or the mode's own, such as Team Terror's 64), in whole teams, and leave again as more players join; it doesn't need Force player AIs and wins over the counts. Level, health, shield, fight chance and team filling stay shared. A tournament event's own bots (Tournaments tab) aren't affected." }),
         el("div", { style: "display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:8px;" },
           botModesSeasonSelect,
           botModesSearch,

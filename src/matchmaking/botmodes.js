@@ -38,6 +38,19 @@ export function sanitizeBotModeCounts(input, current = null) {
   return counts;
 }
 
+// Each mode's "Fill the lobby with bots" (Core-Backend #352: once the real players have joined, bots fill the match's
+// remaining places up to its size), in the settings' bots.fillLobby: {<mode id>: true}. Off in every mode by default, so a
+// settings file from before it plays as it did. Given: a boolean sets a mode's, anything else keeps the current one; only
+// the modes it is on in are kept.
+export function sanitizeBotFillLobby(input, current = null) {
+  const given = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+  const fill = {};
+  for (const id of botModeIds) {
+    if (typeof given[id] === "boolean" ? given[id] : current?.[id] === true) fill[id] = true;
+  }
+  return fill;
+}
+
 // The mode of a match's playlist on a build: the default modes by their ids (Playlist_DefaultSolo/Duo/Squad, 2, 10 and 9),
 // an LTM's by events/ltms.js (the build's, as 3.5.1 gave some ids to other modes). The playlist is its id (a number, or
 // its digits) or, from 4.4's buckets and 5.30's game mode, its PlaylistName. null for a playlist Core doesn't know.
@@ -56,10 +69,21 @@ export function botModeOf(playlist, build) {
 export const botsInMode = (bots, mode) => mode === null || mode === undefined || bots?.modes?.[mode] !== false;
 
 // The bots a match of the mode plays with, in the settings' shape: in a mode that is off, Force player AIs and Fill
-// players' teams with bots are off; in one with a count of its own, that count.
+// players' teams with bots are off; in one that fills its lobby, Force player AIs with the most bots a match takes; in one
+// with a count of its own, that count.
+// Filling the lobby asks the gameserver for 100 bots and leaves the rest to its cap (CoreV2 CoreAthenaBotManager
+// WantedBotCount), the one place that knows the match: bots = min(asked, MatchCapacity - connected players - bots on
+// players' teams), MatchCapacity being the playlist's MaxPlayers (100; Team Terror's 64, Food Fight's 48, Playground's 4),
+// in whole teams of the playlist's team size and never more teams than no player is on. It re-checks it every frame until
+// the bus leaves and takes out the surplus (RemoveSurplusBots), so a player who connects later (a late party, or one still
+// loading in) takes a bot's place and the match never goes past its size; the bots come in once a player is connected.
+// The backend can't count it alone: it knows the players it placed, not the playlist's team size, the players connected
+// or the bots on their teams. A gameserver from before the setting caps the same way (CoreV2 #256; at 100 before 3.5's
+// playlist MaxPlayers).
 export function botsForMode(bots, mode) {
   if (!bots) return null;
   if (!botsInMode(bots, mode)) return { ...bots, forcePlayerAIs: false, fillPlayerTeams: false };
+  if (mode !== null && mode !== undefined && bots.fillLobby?.[mode] === true) return { ...bots, forcePlayerAIs: true, count: maxModeBots };
   const own = mode === null || mode === undefined ? undefined : bots.modeCounts?.[mode];
   return Number.isInteger(own) ? { ...bots, count: own } : bots;
 }

@@ -234,8 +234,9 @@ test("the player bots settings: defaults, sanitizing, the config round-trip and 
   try {
     const defaults = { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false };
     // The game modes they play in (#352) are their own test (bot-modes.test.js): every one on here.
-    const plain = ({ modes, modeCounts, ...rest }) => {
+    const plain = ({ modes, modeCounts, fillLobby, ...rest }) => {
       assert.deepEqual(modeCounts, {}, "no mode has a count of its own");
+      assert.deepEqual(fillLobby, {}, "no mode fills its lobby");
       assert.ok(modes && Object.values(modes).every((on) => on === true), "every mode keeps its bots");
       return rest;
     };

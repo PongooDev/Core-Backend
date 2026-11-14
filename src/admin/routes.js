@@ -14,7 +14,7 @@ import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { log, recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
-import { sanitizeBotModeCounts, sanitizeBotModes } from "../matchmaking/botmodes.js";
+import { sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
 import { invalidPingServers, maxPingServers } from "../matchmaking/qos.js";
 import { regionLabels, regionList, serverRegionCodes } from "../matchmaking/regions.js";
@@ -2215,8 +2215,10 @@ export function adminRoutes(context) {
       },
       // The player bots (CoreV2 #233), with the game modes they play in (#352: {<playlists' id>: boolean}, every one on
       // unless turned off).
-      // modeCounts: each mode's own bot count, {<id>: 0 to 100}; a mode left out plays with the shared count.
-      bots: { ...s.bots, modes: sanitizeBotModes(s.bots?.modes), modeCounts: sanitizeBotModeCounts(s.bots?.modeCounts) },
+      // modeCounts: each mode's own bot count, {<id>: 0 to 100}; a mode left out plays with the shared count. fillLobby:
+      // the modes whose lobbies bots fill to the match's size, {<id>: true}.
+      bots: { ...s.bots, modes: sanitizeBotModes(s.bots?.modes), modeCounts: sanitizeBotModeCounts(s.bots?.modeCounts),
+        fillLobby: sanitizeBotFillLobby(s.bots?.fillLobby) },
       rewards: {
         enabled: s.battleRoyaleVbucks === true,
         modes: s.battleRoyaleRewards ?? {}
