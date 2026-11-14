@@ -4,7 +4,6 @@ import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { grantItem } from "../profiles/items.js";
 import { buildOfSeason, namesAthenaBuild, seasonNumber } from "../profiles/seasons.js";
-import { seasonMoment } from "./itemshop.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223): Epic's four real-money packs, which a player "buys" in a simulated
 // purchase that gives the pack's V-Bucks for nothing. From 1.8 the lobby's Store tab is StoreMain_Root
@@ -100,8 +99,9 @@ const acePack = {
   displayAssetPath: displayAsset("DA_Featured_CID_195_Athena_Commando_F_Bling"),
   season: 5,
   // Core-Backend #356: Epic sold it on into Season 6, its last day 5 November 2018 ("Today is the LAST CHANCE to grab the
-  // Ace Starter Pack!", Epic's tweet that day), so a Season 6 build offers it up to that day of the season's replay.
-  sold: [{ season: 5 }, { season: 6, until: Date.UTC(2018, 10, 6) }],
+  // Ace Starter Pack!", Epic's tweet that day), so a Season 6 build whose cosmetics lack the Summit Striker Pack's (6.00 to
+  // 6.10) offers it in that pack's place.
+  sold: [{ season: 5 }, { season: 6, unlessOffered: "core_starter_br_s6" }],
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_195_Athena_Commando_F_Bling", "AthenaBackpack:BID_101_BlingFemale"]
 };
@@ -111,8 +111,11 @@ const acePack = {
 // it in the store on 6 November 2018 (Update v6.22's day; the wiki's Item Shop History of that day), in The Ace Pack's
 // place, and sold it until 29 January 2019, past Season 6's end. 6.20's paks (CL-4497486) are the first with both
 // cosmetics and its featured display asset (DA_Featured_CID_253_Athena_Commando_M_MilitaryFashion2, its art here as the
-// packs' before it); 6.00's to 6.10's have neither. So a Season 6 build whose cosmetics have both offers it from 6 November
-// on the season's replay (store/itemshop.js seasonMoment), The Ace Pack before that day.
+// packs' before it); 6.00's to 6.10's have neither. So, as the Wingman's and The Ace's, it is offered on a Season 6 build
+// whose cosmetics have both, for the whole season: 6.20 to 6.31. It used to be offered only from 6 November on the
+// season's replay, The Ace Pack before that day, which left a player who had bought The Ace Pack in Season 5 with no
+// starter pack in a Season 6 Store tab for the replay's first 40 days (Core-Backend #356's 6.30 report). 6.00 to 6.10 offer
+// The Ace Pack instead.
 const summitStrikerPack = {
   ...pack(600, 100, 499),
   offerId: "core_starter_br_s6",
@@ -120,7 +123,6 @@ const summitStrikerPack = {
   description: "Summit Striker outfit, Top Notch back bling and 600 V-Bucks",
   displayAssetPath: displayAsset("DA_Featured_CID_253_Athena_Commando_M_MilitaryFashion2"),
   season: 6,
-  sold: [{ season: 6, from: Date.UTC(2018, 10, 6) }],
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_253_Athena_Commando_M_MilitaryFashion2", "AthenaBackpack:BID_134_MilitaryFashion"]
 };
@@ -185,21 +187,19 @@ export function parseAppStoreId(appStoreId) {
 export const purchaseCount = (profile0, offerId) => profile0?.stats?.attributes?.in_app_purchases?.fulfillmentCounts?.[offerId] ?? 0;
 
 // Whether the offer is on sale to the account on the requesting build: a season's offer only on that season's builds that
-// have its cosmetics, a one-per-account offer until it is bought. An offer with sale windows ({season, from, until}, Epic's
-// moments, UTC ms) is on sale on a build of a window's season while the season's replay stands inside the window.
-const onSale = (offer, now) => {
+// have its cosmetics, a one-per-account offer until it is bought. An offer sold in more than one season lists them
+// ({season, unlessOffered}): a season whose builds sell another starter pack in its place, where they have that pack's
+// cosmetics, offers it only on the builds without them.
+const hasCosmetics = (offer) => (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId));
+const onSale = (offer) => {
   if (!offer.season) return true;
   if (!namesAthenaBuild()) return false;
   const season = seasonNumber();
-  return (offer.sold ?? [{ season: offer.season }]).some((window) => {
-    if (window.season !== season) return false;
-    if (window.from === undefined && window.until === undefined) return true;
-    const moment = seasonMoment(now, null, season).getTime();
-    return (window.from === undefined || moment >= window.from) && (window.until === undefined || moment < window.until);
-  });
+  return (offer.sold ?? [{ season: offer.season }]).some((window) => window.season === season
+    && !(window.unlessOffered && hasCosmetics(findRealMoneyOffer(window.unlessOffered))));
 };
-export const isOffered = (offer, profile0, now = new Date()) => onSale(offer, now)
-  && (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId))
+export const isOffered = (offer, profile0) => onSale(offer)
+  && hasCosmetics(offer)
   && (!offer.foundersEdition || Number(currentBuild()) >= foundersSaleBuild)
   && !offerBlocked(offer, profile0);
 
