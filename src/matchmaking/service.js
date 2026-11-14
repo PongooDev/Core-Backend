@@ -1019,7 +1019,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // The game's warmup length, for the countdowns of the next matches on servers of this build (#160).
     const reportedBucket = match?.bucketId ?? entry?.bucketId;
     // The match's playlist, for its tournament event's bots (#282).
-    const playlistId = reportedBucket ? parseBucket(reportedBucket).playlistId : null;
+    const playlistId = reportedBucket ? parseBucket(reportedBucket, parseBucket(reportedBucket).netcl).playlistId : null;
+    // The match's build (its bucket's changelist), for the playlist's mode there (#352: the gameserver's own requests name
+    // no build, and Playground's PlaylistId 35 is two modes, Season 4's and Season 5's and 6's).
+    const build = reportedBucket ? parseBucket(reportedBucket).netcl : null;
     if (reportedBucket && warmupSeconds() === null && secondsLeft > 0) {
       const netcl = parseBucket(reportedBucket).netcl;
       gameWarmups.set(netcl, Math.max(gameWarmups.get(netcl) ?? 0, Math.ceil(secondsLeft)));
@@ -1027,14 +1030,14 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // A Playground match takes nobody but its party (#299): closed, its room the party's.
     if (match?.partyOnly) {
       if (lateJoins.delete(sessionId)) say(`Match ${match.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, playlistId, open: false, partyOnly: true, maxPlayers: match.maxPlayers, parties: [], noFill };
+      return { sessionId, playlistId, build, open: false, partyOnly: true, maxPlayers: match.maxPlayers, parties: [], noFill };
     }
     if (!open || !lateJoin() || !(secondsLeft > 0)) {
       if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, playlistId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
+      return { sessionId, playlistId, build, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
     }
     if (!entry) {
-      if (!match) return { sessionId, playlistId, open: false, maxPlayers: null, parties: [], noFill };
+      if (!match) return { sessionId, playlistId, build, open: false, maxPlayers: null, parties: [], noFill };
       const session = sessions.get(sessionId);
       entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
         parties: [] };
@@ -1046,7 +1049,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     entry.heard = now;
     entry.until = now + secondsLeft * 1000;
     placeWaiting();
-    return { sessionId, playlistId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
+    return { sessionId, playlistId, build, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
   }
 
   // Whether a custom key is open (#186): a party allowed to use keys queues with it, waiting for a server or in its forming

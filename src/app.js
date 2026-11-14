@@ -17,7 +17,7 @@ import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
 import { botsOn, createTournamentStore } from "./tournaments/store.js";
-import { botModeOf, matchBots } from "./matchmaking/botmodes.js";
+import { botModeFor, matchBots } from "./matchmaking/botmodes.js";
 import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
 import { eventRoutes } from "./services/fortnite/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
@@ -156,7 +156,7 @@ export function createContext(config) {
       playerBots: (bucketId) => {
         const bucket = bucketId ? parseBucket(bucketId) : null;
         const playlistId = bucket ? bucket.playlistId : null;
-        const mode = playlistId === null ? null : botModeOf(playlistId, bucket.netcl);
+        const mode = playlistId === null ? null : botModeFor(settings.get().bots, playlistId, bucket.netcl);
         return botsOn(matchBots(settings.get().bots, playlistId === null ? null : tournaments.botsFor(playlistId), mode));
       },
       serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,

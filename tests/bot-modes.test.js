@@ -1,11 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
+import { botModeCandidates, botModeFor, botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { createSettingsStore } from "../src/settings/store.js";
-import { dedicatedServerToken, get, post, startBackend } from "./helpers.js";
+import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #352: the game modes the player bots play in, the Matchmaking tab's Player bots card's "Game modes with
 // bots" (settings bots.modes), every mode on by default.
@@ -223,5 +225,154 @@ test("a settings file from before the lobby filling fills none, and one saved af
     assert.deepEqual(createSettingsStore(dataDir).get().bots.fillLobby, { duo: true });
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+// The bug report (#352, 6.x): Playground's bots came with "Playground v2" off. Playground's PlaylistId 35 is two modes,
+// Season 4's playground (4.2 to 5.0) and Season 5's and 6's playgroundV2 (5.10 on), and CoreV2's own requests name no
+// build ("Core V2"), so the warmup answer took Season 4's, which was still on.
+test("Playground's mode: Season 4's or Season 5's and 6's by the build, both where the build isn't known (#352)", () => {
+  for (const build of [4072250, 4117433, 4166199, 4214610]) {
+    assert.deepEqual([botModeOf(35, build), botModeOf("playlist_playground", build), botModeOf("Playlist_Playground", build)], ["playground", "playground", "playground"], String(build));
+  }
+  for (const build of [4240749, 4288479, 4305896, 4352937, 4363240, 4402180, 4424678, 4461277, 4480234, 4497486, 4526925]) {
+    assert.deepEqual([botModeOf(35, build), botModeOf("playlist_playground", build), botModeOf("Playlist_Playground", build)], ["playgroundV2", "playgroundV2", "playgroundV2"], String(build));
+  }
+  assert.deepEqual(botModeCandidates(35, "unknown"), ["playground", "playgroundV2"]);
+  assert.deepEqual(botModeCandidates("Playlist_Playground", "unknown"), ["playground", "playgroundV2"]);
+  // Not known: the one with bots off, either way round; else the newest.
+  assert.equal(botModeFor({ modes: { playgroundV2: false } }, 35, "unknown"), "playgroundV2");
+  assert.equal(botModeFor({ modes: { playground: false } }, 35, "unknown"), "playground");
+  assert.equal(botModeFor({ modes: {} }, 35, "unknown"), "playgroundV2");
+  // Known: the build's, whatever the other's switch.
+  assert.equal(botModeFor({ modes: { playground: false } }, 35, "4497486"), "playgroundV2");
+  assert.equal(botModeFor({ modes: { playgroundV2: false } }, 35, "4117433"), "playground");
+  // A playlist of one mode stays that mode.
+  assert.equal(botModeFor({ modes: { duo: false } }, 10, "unknown"), "duo");
+});
+
+const coreV2Report = (backend, token, body) => {
+  const text = JSON.stringify({ phase: "Setup", accountIds: [], ...body });
+  return send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/fortnite/api/game/v2/matchmakingservice/warmup",
+    headers: { "User-Agent": "Core V2", Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+};
+
+test("a Playground server's report with no build gets no bots with the panel's Playground v2 off: by id, by name (#352)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await dedicatedServerToken(backend.port);
+    await mmConfig(backend, { bots: { forcePlayerAIs: true, count: 30, fillPlayerTeams: true, modes: { playgroundV2: false } } });
+    for (const body of [{ playlistId: 35 }, { playlistId: 0, playlistName: "Playlist_Playground" }]) {
+      const answer = (await coreV2Report(backend, token, body)).body;
+      assert.deepEqual([answer.bots, answer.botsMode], [null, { id: "playgroundV2", enabled: false }], JSON.stringify(body));
+    }
+    // Season 4's off instead: the same.
+    await mmConfig(backend, { bots: { modes: { playgroundV2: true, playground: false } } });
+    assert.deepEqual((await coreV2Report(backend, token, { playlistId: 35 })).body.botsMode, { id: "playground", enabled: false });
+    // Both on: bots.
+    await mmConfig(backend, { bots: { modes: { playground: true } } });
+    assert.equal((await coreV2Report(backend, token, { playlistId: 35 })).body.bots.count, 30);
+  } finally {
+    backend.close();
+  }
+});
+
+function matchmakingClient(port, authorization) {
+  return new Promise((resolve, reject) => {
+    const request = http.request({ host: "127.0.0.1", port, path: "/", headers: { Connection: "Upgrade", Upgrade: "websocket",
+      "Sec-WebSocket-Version": "13", "Sec-WebSocket-Key": crypto.randomBytes(16).toString("base64"), Authorization: authorization } });
+    request.on("error", reject);
+    request.on("upgrade", (response, socket, head) => {
+      const messages = [];
+      const waiters = [];
+      let buffer = Buffer.alloc(0);
+      const deliver = (text) => (waiters.length ? waiters.shift()(text) : messages.push(text));
+      const receive = (chunk) => {
+        buffer = Buffer.concat([buffer, chunk]);
+        while (buffer.length >= 2) {
+          let length = buffer[1] & 0x7f;
+          let offset = 2;
+          if (length === 126) {
+            length = buffer.readUInt16BE(2);
+            offset = 4;
+          }
+          if (buffer.length < offset + length) return;
+          if ((buffer[0] & 0x0f) === 0x1) deliver(buffer.subarray(offset, offset + length).toString("utf8"));
+          buffer = buffer.subarray(offset + length);
+        }
+      };
+      receive(head);
+      socket.on("data", receive);
+      socket.on("close", () => {
+        while (waiters.length) waiters.shift()(null);
+      });
+      resolve({
+        send: (text) => {
+          const payload = Buffer.from(text);
+          const mask = crypto.randomBytes(4);
+          const header = payload.length < 126 ? Buffer.from([0x81, 0x80 | payload.length])
+            : Buffer.from([0x81, 0x80 | 126, payload.length >> 8, payload.length & 0xff]);
+          socket.write(Buffer.concat([header, mask, Buffer.from(payload.map((byte, index) => byte ^ mask[index % 4]))]));
+        },
+        next: () => (messages.length ? Promise.resolve(messages.shift()) : new Promise((done) => waiters.push(done))),
+        close: () => socket.destroy()
+      });
+    });
+    request.end();
+  });
+}
+const authorizationOf = ({ ticketType, payload, signature }) => `Epic-Signed ${ticketType} ${payload} ${signature}`;
+async function nextOf(connection, name) {
+  for (;;) {
+    const text = await connection.next();
+    if (text === null) return null;
+    const message = JSON.parse(text);
+    if (message.name === name || message.payload?.state === name) return message;
+  }
+}
+
+test("a placed 6.20 Playground match gets no bots with Playground v2 off, though its server's reports name no build (#352)", async () => {
+  const build = 4497486;
+  const agent = `Fortnite/++Fortnite+Release-6.20-CL-${build} Windows/10.0.19045.1.256.64bit`;
+  const as = (port, urlPath, token, method = "GET", body) => {
+    const text = body === undefined ? undefined : JSON.stringify(body);
+    const headers = { "User-Agent": agent, Authorization: `bearer ${token}` };
+    if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+    return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+  };
+  const backend = await startBackend({ matchmakingGatherMs: 100 });
+  const clients = [];
+  try {
+    // Season 4's Playground on (as by default), Season 5's and 6's off, as in the report.
+    await mmConfig(backend, { bots: { forcePlayerAIs: true, count: 30, fillPlayerTeams: true, modes: { playgroundV2: false } } });
+    const server = await userLogin(backend.port, "Server620pg");
+    const session = (await as(backend.port, "/fortnite/api/matchmaking/session", server.token, "POST", {
+      ownerId: server.accountId, ownerName: "Core", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: build, attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NAE" }
+    })).body;
+    const gameserver = await matchmakingClient(backend.port, authorizationOf((await as(backend.port,
+      `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent(`${build}:0:NAE:**`)}&minPlayers=1&maxPlayers=100`,
+      server.token)).body));
+    clients.push(gameserver);
+    await nextOf(gameserver, "Registered");
+    const player = await userLogin(backend.port, "PlaygroundPlayer");
+    const ticket = await as(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+      `&bucketId=${build}:0:NAE:playlist_playground&player.platform=Windows&player.option.fillTeam=true`, player.token);
+    assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+    const client = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+    clients.push(client);
+    const assign = await nextOf(gameserver, "AssignMatch");
+    gameserver.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    await nextOf(client, "Play");
+    const token = await dedicatedServerToken(backend.port);
+    const answer = (await coreV2Report(backend, token, { phase: "Warmup", accountIds: [player.accountId], secondsLeft: 60, playlistId: 35 })).body;
+    assert.deepEqual([answer.bots, answer.botsMode], [null, { id: "playgroundV2", enabled: false }]);
+    // Its build known, Season 4's switch doesn't touch it.
+    await mmConfig(backend, { bots: { modes: { playgroundV2: true, playground: false } } });
+    const on = (await coreV2Report(backend, token, { phase: "Warmup", accountIds: [player.accountId], secondsLeft: 60, playlistId: 35 })).body;
+    assert.deepEqual([on.bots?.teams, on.botsMode], [true, { id: "playgroundV2", enabled: true }]);
+  } finally {
+    for (const client of clients) client.close();
+    backend.close();
   }
 });

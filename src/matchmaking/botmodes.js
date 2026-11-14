@@ -1,4 +1,5 @@
-import { ltmIds, ltmOfPlaylist, playlistIdOfName } from "../events/ltms.js";
+import { currentBuild } from "../builds/context.js";
+import { hasLtm, ltmIds, ltms, playlistIdOfName } from "../events/ltms.js";
 import { effectiveBots } from "../tournaments/store.js";
 
 // The game modes the player bots play in (Core-Backend #352): the admin panel's Player bots card turns them on or off by
@@ -54,14 +55,39 @@ export function sanitizeBotFillLobby(input, current = null) {
 // The mode of a match's playlist on a build: the default modes by their ids (Playlist_DefaultSolo/Duo/Squad, 2, 10 and 9),
 // an LTM's by events/ltms.js (the build's, as 3.5.1 gave some ids to other modes). The playlist is its id (a number, or
 // its digits) or, from 4.4's buckets and 5.30's game mode, its PlaylistName. null for a playlist Core doesn't know.
-export function botModeOf(playlist, build) {
-  if (playlist === null || playlist === undefined || playlist === "") return null;
+// The modes a playlist can be (#352): the default modes by their ids (Playlist_DefaultSolo/Duo/Squad, 2, 10 and 9), an
+// LTM's by events/ltms.js. One PlaylistId can be several LTMs: Playground's 35 is Season 4's playground and Season 5's and
+// 6's playgroundV2, and 3.5.1 gave some ids to other modes. On a known build, the build's LTM; on a build no LTM of the
+// playlist is in (none known: CoreV2's own requests carry no changelist, "Core V2"), every one of them, oldest first.
+// The playlist is its id (a number, or its digits) or, from 4.4's buckets and 5.30's game mode, its PlaylistName.
+export function botModeCandidates(playlist, build = currentBuild()) {
+  if (playlist === null || playlist === undefined || playlist === "") return [];
   const number = Number(playlist);
   const playlistId = Number.isInteger(number) && number > 0 ? number : playlistIdOfName(String(playlist), build);
-  if (!Number.isInteger(playlistId) || playlistId <= 0) return null;
-  if (Object.hasOwn(defaultModeOfPlaylist, playlistId)) return defaultModeOfPlaylist[playlistId];
-  const id = ltmOfPlaylist(playlistId, build)?.id ?? null;
-  return id && known.has(id) ? id : null;
+  if (!Number.isInteger(playlistId) || playlistId <= 0) return [];
+  if (Object.hasOwn(defaultModeOfPlaylist, playlistId)) return [defaultModeOfPlaylist[playlistId]];
+  const of = ltms.filter((ltm) => ltm.playlistId === playlistId && known.has(ltm.id));
+  const onBuild = of.filter((ltm) => hasLtm(ltm.id, build));
+  return (onBuild.length ? onBuild.slice(0, 1) : of).map((ltm) => ltm.id);
+}
+
+// The mode of a match's playlist on a build, or null for a playlist Core doesn't know. On a build none of the playlist's
+// LTMs is known on, its newest.
+export function botModeOf(playlist, build) {
+  const candidates = botModeCandidates(playlist, build);
+  return candidates.length ? candidates[candidates.length - 1] : null;
+}
+
+// The mode whose bot settings a match plays with: botModeOf's, but where the build doesn't tell the playlist's modes
+// apart, one of them the panel has the bots off in, if any (an admin turns off the one the panel lists for their season:
+// Season 6's "Playground v2" kept bots in a Playground match whose server named no build, as Season 4's "Playground" was
+// on, #352), else one with its own settings (count or lobby fill), else the newest.
+export function botModeFor(bots, playlist, build) {
+  const candidates = botModeCandidates(playlist, build);
+  if (candidates.length <= 1) return candidates[0] ?? null;
+  return candidates.find((id) => bots?.modes?.[id] === false)
+    ?? [...candidates].reverse().find((id) => Number.isInteger(bots?.modeCounts?.[id]) || bots?.fillLobby?.[id] === true)
+    ?? candidates[candidates.length - 1];
 }
 
 // Whether the panel's bots play in a mode: on unless its switch is off. A match whose mode isn't known (no playlist yet,

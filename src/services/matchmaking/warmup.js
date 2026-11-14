@@ -3,7 +3,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { stormDestructionPercent } from "../../events/stormdestruction.js";
-import { botModeOf, botsInMode, matchBots, noBotsInCustomMatch } from "../../matchmaking/botmodes.js";
+import { botModeFor, botsInMode, matchBots, noBotsInCustomMatch } from "../../matchmaking/botmodes.js";
 
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
@@ -78,8 +78,10 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
     const match = accountIds.length ? matchmaker.warmup({ accountIds, open, secondsLeft }) : null;
     const event = match?.playlistId !== null && match?.playlistId !== undefined ? tournaments?.botsFor?.(match.playlistId) ?? null : null;
     const reported = Number(req.body?.playlistId);
-    const mode = botModeOf(match?.playlistId ?? (Number.isInteger(reported) && reported > 0 ? reported
-      : typeof req.body?.playlistName === "string" && req.body.playlistName.length <= 128 ? req.body.playlistName : null));
+    // On the match's build (its bucket's changelist), else the request's: CoreV2's own requests name none ("Core V2"),
+    // so a playlist that is several modes (Playground's 35) takes the one of them the panel has bots off in (#352).
+    const mode = botModeFor(current.bots, match?.playlistId ?? (Number.isInteger(reported) && reported > 0 ? reported
+      : typeof req.body?.playlistName === "string" && req.body.playlistName.length <= 128 ? req.body.playlistName : null), match?.build ?? undefined);
     // The match's custom matchmaking key (#186, the session's), for "No bots in custom matchmaking matches" (#352).
     const customKey = match?.sessionId ? sessions.get(match.sessionId)?.customKey ?? null : null;
     const bots = matchBots(current.bots, event, mode, customKey);
