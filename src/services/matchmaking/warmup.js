@@ -10,7 +10,11 @@ import { botModeOf, botsInMode, matchBots, noBotsInCustomMatch } from "../../mat
 //   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>,
 //    playlistId, playlistName}
 //   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], noFill: [accountId], bots,
-//       botsMode: {id, enabled}, stormDestructionPercent}
+//       botsMode: {id, enabled}, stormDestructionPercent[, takenBotNames]}
+// botNames (CoreV2 #446, optional): the names the server's player bots may take this match. The answer's takenBotNames
+// is those a registered account has as its display name, compared without case as accounts are, so no bot plays under a
+// player's name; it is there only when the report has botNames (a server from before it sends none and gets none), and
+// costs a lookup per name (at most maxBotNames), not a list of every account.
 // The server asks from its world's start, every 30 seconds until its warmup begins, then every second until the bus
 // leaves, and once more after. warmupSeconds (null: the game's own) is how long its warmup lasts: the game mode's
 // WarmupCountdownDuration, which the game has from its config and no match option sets (1.9's OnGivenMatchAssignment
@@ -49,7 +53,16 @@ import { botModeOf, botsInMode, matchBots, noBotsInCustomMatch } from "../../mat
 // Only the DedicatedServer client (CoreV2's requests) or a gameserver account hosting a session may ask.
 const maxAccountIds = 200;
 
-export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournaments }) {
+const maxBotNames = 256;
+
+// The reported bot names a registered account has as its display name (CoreV2 #446).
+export function takenBotNames(accounts, names) {
+  if (!Array.isArray(names)) return undefined;
+  return [...new Set(names.filter((name) => typeof name === "string" && name.length > 0 && name.length <= 64).slice(0, maxBotNames))]
+    .filter((name) => accounts?.findByName?.(name) !== undefined);
+}
+
+export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournaments, accounts }) {
   const router = express.Router();
 
   router.post("/fortnite/api/game/v2/matchmakingservice/warmup", requireAuth(tokens), (req, res) => {
@@ -87,7 +100,8 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
           fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
         : null,
       botsMode: mode === null ? null : { id: mode, enabled: event ? true : !noBotsInCustomMatch(current.bots, customKey) && botsInMode(current.bots, mode) },
-      stormDestructionPercent: stormDestructionPercent(current.events)
+      stormDestructionPercent: stormDestructionPercent(current.events),
+      takenBotNames: takenBotNames(accounts, req.body?.botNames)
     });
   });
 
