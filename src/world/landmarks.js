@@ -49,6 +49,16 @@ export const landmarkMissions = [
     questId: "cannyvalley_landmark_highnoon",
     missionGenerator: "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_FightTheGunslinger.MissionGen_FightTheGunslinger_C",
     zoneTheme: "/Game/World/ZoneThemes/ZT_GhostTown/BP_ZT_GhostTown_HighNoon.BP_ZT_GhostTown_HighNoon_C"
+  },
+  // 6.31's (CL-4573279) Act 2 landmark: CannyValley_Landmark_Rift (given by CannyValley_Reactive_Dredgers; objective
+  // Stat.Mission.Primary.Landmark.Rift, Zone.Difficulty >=28) is MissionGen_StabilizeTheRift ("Stabilize the Rift", "Use
+  // lasers to stabilize a rift"; StR_Landmark) in BP_ZT_StabilizeTheRift ("The Desert", Zone_StabilizeTheRift, the desert
+  // tile BP_Hex_Arid01), 6.31's FModel. 28 is zone 4's (Theater_Hard_Zone4), so it goes there, among world/cannyvalley.js's
+  // Ghost Town zones. Builds before 6.31 have neither the generator nor the quest.
+  {
+    questId: "cannyvalley_landmark_rift",
+    missionGenerator: "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_StabilizeTheRift.MissionGen_StabilizeTheRift_C",
+    zoneTheme: "/Game/World/ZoneThemes/Landmarks/ZT_StabilizeTheRift/BP_ZT_StabilizeTheRift.BP_ZT_StabilizeTheRift_C"
   }
 ];
 
@@ -61,7 +71,7 @@ const zoneOf = (region) => Number((region.regionTags?.gameplayTags ?? [])
 
 // Places the build's landmark missions on Canny Valley's layout (a theater's FFortTheaterMapData, changed in place),
 // before its tiles are linked to their quests. world is the build's world data (missionGenerators, zoneThemes). Builds
-// before 5.10 have none of the generators: their layouts stay as they were.
+// before 5.10 have none of the generators (and before 6.31 not Stabilize the Rift's): those layouts stay as they were.
 export function placeLandmarks(data, world) {
   if (!isCannyValley(data)) return;
   const zones = data.regions.filter((region) => zoneOf(region) && region.missionData?.difficultyWeights?.length === 1)

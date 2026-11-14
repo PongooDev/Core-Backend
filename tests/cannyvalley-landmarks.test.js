@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
-import { landmarkMissions } from "../src/world/landmarks.js";
+import { landmarkMissions as allLandmarks } from "../src/world/landmarks.js";
 import { difficultyOf, missionMeets, missionObjectives, questPath } from "../src/world/quests.js";
 import { worldInfo } from "../src/world/theaters.js";
 import { send, startBackend, userLogin } from "./helpers.js";
@@ -12,6 +12,8 @@ import { send, startBackend, userLogin } from "./helpers.js";
 const now = new Date("2026-11-13T12:00:00Z");
 // 5.10 (CL-4240749), 6.02.0 (CL-4442095, the reporter's, on 6.02's data), 6.02 (CL-4461277), 6.10 (CL-4480234), 6.20 (CL-4497486) and 6.21 (CL-4526925).
 const actOneBuilds = ["4240749", "4442095", "4461277", "4480234", "4497486", "4526925"];
+// Act 1's three (6.31's Stabilize the Rift is cannyvalley-act2.test.js's).
+const landmarkMissions = allLandmarks.filter(({ questId }) => questId !== "cannyvalley_landmark_rift");
 const zoneTag = (region) => (region.regionTags?.gameplayTags ?? []).map(({ tagName }) => /^Stat\.Theater\.PvE03\.Difficulty0(\d)$/.exec(tagName)?.[1]).find(Boolean);
 const cannyValleyOf = (info) => {
   const index = info.theaters.findIndex((theater) => theater.runtimeInfo.theaterTags.gameplayTags.some(({ tagName }) => tagName === "Stat.Theater.PvE03"));
