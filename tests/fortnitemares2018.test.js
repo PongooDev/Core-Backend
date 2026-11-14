@@ -4,11 +4,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
-import { activeEventFlags, configureEvents, eventsActiveUntil, islandCrack, islandDrain, islandPoi, ltmFortnitemares } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, eventsActiveUntil, islandCrack, islandDrain, islandPoi, ltmFortnitemares, ltmLilKevin } from "../src/events/events.js";
 import { butterflyStates, leakyLakeState } from "../src/events/butterfly.js";
 import { datedFlagsStatus } from "../src/events/datedflags.js";
 import { eventSchedules, scheduleEventPatch } from "../src/admin/eventschedules.js";
-import { fortnitemaresActiveUntil } from "../src/events/fortnitemares2018.js";
+import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../src/events/fortnitemares2018.js";
 import { defaultReplacements, ltmFrontEndPlaylists, ltmOn } from "../src/events/ltms.js";
 import { athenaQuestLogin, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
 import { configureChallenges, eventChallengeUnlock, eventDaySchedules, eventPlan, settleChallengeSchedules } from "../src/profiles/challenges.js";
@@ -77,8 +77,41 @@ test("#345: the calendar serves LTM_Fortnitemares' end to 6.20 and 6.21 (the cha
       assert.match(own.activeUntil, /T18:00:00\.000Z$/, version);
       const until = Date.parse(own.activeUntil);
       assert.ok(until > before && until <= before + 70 * 86400000, `${version}: ${own.activeUntil}`);
-      assert.ok(events.filter((event) => event.eventType !== ltmFortnitemares && event.eventType.startsWith("EventFlag.") && !event.activeSince)
+      assert.ok(events.filter((event) => ![ltmFortnitemares, ltmLilKevin].includes(event.eventType) && event.eventType.startsWith("EventFlag.") && !event.activeSince)
         .every((event) => event.activeUntil === eventsActiveUntil), version);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #358: 6.30's challenges tab read "2,912,125 Days" for the Lil' Kev Challenges, the calendar's never-ending
+// activeUntil of EventFlag.LTM_LilKevin. Epic's end: 11 November 2018 18:00 UTC.
+test("#358: LTM_LilKevin ends on 11 November 2018 18:00 UTC on Season 6's replay, on 6.21 to 6.30", () => {
+  withConfig(replay, () => {
+    for (const build of [v621, "4543176", "4573096"]) {
+      assert.equal(inBuild(build, () => lilKevinActiveUntil(ltmLilKevin, at("2018-11-05T12:00:00Z"))), "2018-11-11T18:00:00.000Z", build);
+      // Past it, the replay's next lap (70 days).
+      assert.equal(inBuild(build, () => lilKevinActiveUntil(ltmLilKevin, at("2018-11-20T00:00:00Z"))), "2019-01-20T18:00:00.000Z", build);
+    }
+    assert.equal(inBuild(v621, () => lilKevinActiveUntil(ltmFortnitemares, at("2018-11-05T12:00:00Z"))), eventsActiveUntil);
+    assert.equal(inBuild(v610, () => lilKevinActiveUntil(ltmLilKevin, at("2018-11-05T12:00:00Z"))), eventsActiveUntil, "6.10 runs no Fortnitemares");
+  });
+});
+
+test("#358: the calendar serves LTM_LilKevin's end to 6.21 and 6.30 (the Lil' Kev challenges header's days)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Calendar358");
+    for (const [build, version] of [[v621, "6.21"], ["4573096", "6.30"]]) {
+      const before = Date.now();
+      const events = (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+        headers: { "User-Agent": agentOf(build, version), Authorization: `bearer ${token}` } })).body.channels["client-events"].states[0].activeEvents;
+      const own = events.find((event) => event.eventType === ltmLilKevin);
+      assert.ok(own, version);
+      assert.match(own.activeUntil, /T18:00:00\.000Z$/, version);
+      const until = Date.parse(own.activeUntil);
+      assert.ok(until > before && until <= before + 70 * 86400000, `${version}: ${own.activeUntil}`);
     }
   } finally {
     backend.close();

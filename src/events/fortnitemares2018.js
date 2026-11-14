@@ -1,7 +1,7 @@
 import { getItem } from "../gamedata/items.js";
 import { foundersEditionOf } from "../profiles/founders.js";
 import { nextReplayOf } from "../store/itemshop.js";
-import { eventsActiveUntil, fortnitemares2018, isEventActive, ltmFortnitemares } from "./events.js";
+import { eventsActiveUntil, fortnitemares2018, isEventActive, ltmFortnitemares, ltmLilKevin } from "./events.js";
 
 // 6.20's Fortnitemares (CL-4497486, events/events.js fortnitemares2018), Update v6.20: "All Founders will receive a pair of
 // new Heroes when they log in during the first few weeks of Fortnitemares: Skull Ranger Ramirez, Brainiac Jonesy", and the
@@ -44,4 +44,18 @@ export const fortnitemares2018EndedAt = Date.parse("2018-11-04T18:00:00.000Z");
 export function fortnitemaresActiveUntil(flag, now = new Date()) {
   if (flag !== ltmFortnitemares || !isEventActive(fortnitemares2018)) return eventsActiveUntil;
   return nextReplayOf(fortnitemares2018EndedAt, now, null, 6).toISOString();
+}
+
+// When the Lil' Kev Challenges end (Core-Backend #358: on 6.30 the challenges tab's LIL' KEV CHALLENGES header read
+// "2,912,125 Days", the count to the calendar's never-ending activeUntil, as Fortnitemares' did on #345). The header is the
+// same GetExpirationDate of the category's schedule (Schedule_LTM_LilKevin: EventFlag.LTM_LilKevin), so the calendar's
+// activeUntil for that flag. Epic's end, its tweets of 4 and 5 November 2018 (the Fortnite Wiki's Lil' Kev Challenges):
+// "Complete the challenges before 1 PM ET, November 11 (6PM UTC) to earn the Lil' Kev Back Bling", 11 November 2018
+// 18:00 UTC. On Season 6's replay the flag ends when the replay next stands at that moment, as the Fortnitemares
+// Challenges' end. Only while the build runs the event (6.21 to 6.30, events/events.js); a flag the admin panel switches
+// on outside it keeps the never-ending end.
+export const lilKevinEndedAt = Date.parse("2018-11-11T18:00:00.000Z");
+export function lilKevinActiveUntil(flag, now = new Date()) {
+  if (flag !== ltmLilKevin || !isEventActive(fortnitemares2018)) return eventsActiveUntil;
+  return nextReplayOf(lilKevinEndedAt, now, null, 6).toISOString();
 }
