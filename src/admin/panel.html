@@ -4599,6 +4599,7 @@
         customMatchServers: (data.customMatchServers || []).map((entry) => ({ address: entry.address, keys: [...entry.keys],
           accounts: entry.accounts.map((account) => account.displayName) })),
         customMatchFallback: data.customMatchFallback === true,
+        customMatchNoRewards: data.customMatchNoRewards !== false,
         timing: { ...data.timing },
         bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
@@ -5491,7 +5492,7 @@
 
       const sectionHostingIps = regionHostingIpsSection(form, regions, regionLabels);
       const sectionPingServers = regionPingServersSection(form, regions, regionLabels, data.qosPingPort ?? null);
-      const sectionCustomKeys = customMatchmakingSection(data.customMatchmaking || []);
+      const sectionCustomKeys = customMatchmakingSection(data.customMatchmaking || [], form);
       const sectionCustomServers = customServersSection(form);
 
       // Section 4: Battle Royale V-Bucks Rewards
@@ -5650,7 +5651,9 @@
     }
 
     // The players allowed to open custom matchmaking keys (Core-Backend #186), granted or revoked per player.
-    function customMatchmakingSection(players) {
+    function customMatchmakingSection(players, form) {
+      // Saved with Save Matchmaking Config, as the custom servers' fallback is.
+      const noRewards = toggleSwitch(form.customMatchNoRewards !== false, (checked) => { form.customMatchNoRewards = checked; });
       const nameInput = el("input", { class: "field", placeholder: "Player name", style: "flex:1 1 220px" });
       const setAllowed = async (id, allowed, message) => {
         if (await act(api(`/admin/api/accounts/${id}/custom-matchmaking`, { allowed }), message)) showMatchmaking();
@@ -5674,7 +5677,12 @@
           ...(players.length ? players.map((player) => el("span", { class: "actions", style: "gap:6px" },
             chip(player.displayName, "sky"),
             btn("Revoke", () => setAllowed(player.id, false, `${player.displayName} can no longer open custom matchmaking keys`), "ghost small")))
-            : [el("span", { class: "muted", text: "No players are allowed yet." })])));
+            : [el("span", { class: "muted", text: "No players are allowed yet." })])),
+        el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
+          el("div", {},
+            el("span", { class: "muted font-semibold", text: "Custom matches give no challenge progress or rewards" }),
+            el("div", { class: "sub", text: "On, a custom key's match gives no challenge progress, no season XP and no V-Bucks for kills, wins or placements, as Epic's custom matches gave none. Its stats are still recorded. Off, it counts as a public match does. Saved with Save Matchmaking Config." })),
+          noRewards));
     }
 
     /* ---------- play with friends ---------- */

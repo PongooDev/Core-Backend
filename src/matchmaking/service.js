@@ -940,6 +940,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)),
       // A Playground match's room is its party (#299).
       partyOnly: Boolean(forming.partyOnly), maxPlayers: forming.partyOnly ? forming.players : server.maxPlayers });
+    // The session keeps its match's custom key, which its players' results and quest progress are counted by (#186,
+    // matchmaking/sessions.js rewardlessMatch).
+    sessions.setCustomKey?.(server.sessionId, forming.customKey ?? null);
     for (const party of forming.parties) play(party, server.sessionId, forming.matchId);
     placeWaiting();
   }

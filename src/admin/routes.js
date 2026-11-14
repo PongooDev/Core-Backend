@@ -2204,6 +2204,7 @@ export function adminRoutes(context) {
       customMatchServers: (s.customMatchServers ?? []).map((entry) => ({ ...entry,
         accounts: entry.accounts.map((id) => ({ id, displayName: accounts.get(id)?.displayName ?? id })) })),
       customMatchFallback: s.customMatchFallback === true,
+      customMatchNoRewards: s.customMatchNoRewards !== false,
       timing: {
         gatherSeconds: s.matchmakingGatherSeconds ?? 10,
         warmupSeconds: s.warmupSeconds ?? null,
@@ -2291,6 +2292,7 @@ export function adminRoutes(context) {
       update.customMatchServers = entries;
     }
     if (typeof req.body.customMatchFallback === "boolean") update.customMatchFallback = req.body.customMatchFallback;
+    if (typeof req.body.customMatchNoRewards === "boolean") update.customMatchNoRewards = req.body.customMatchNoRewards;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
     // 6.20's and 6.21's Fortnitemares modes in the default modes' place while on (#348, events/ltms.js defaultReplacements).
     if (typeof req.body.fortnitemaresReplacesDefaults === "boolean") update.fortnitemaresReplacesDefaults = req.body.fortnitemaresReplacesDefaults;

@@ -174,6 +174,10 @@ const defaults = {
   // servers of its own plays on a public server when none of its own is free (off: it waits for one).
   customMatchServers: [],
   customMatchFallback: false,
+  // Whether a custom matchmaking key's match (#186) counts for nothing beyond its stats: no challenge progress, no season
+  // XP and no Battle Royale V-Bucks (services/fortnite/battleroyale.js, services/mcp/commands/server.js), as Epic's
+  // custom matches gave none. On by default; off, a custom match counts as a public one does.
+  customMatchNoRewards: true,
   // The builds that may use this backend (Core-Backend #164, builds/allowed.js): null for all of them, else their
   // changelists and "other" for builds Core doesn't know. A refused build's version check answers HARD_UPDATE, and its
   // logins and matchmaking tickets are refused; gameservers are exempt.
@@ -712,6 +716,7 @@ export function createSettingsStore(dataDir) {
       settings.regionPingServers = regionPingServers(loaded.regionPingServers) ?? {};
       settings.customMatchServers = customMatchServers(loaded.customMatchServers) ?? [];
       settings.customMatchFallback = loaded.customMatchFallback === true;
+      settings.customMatchNoRewards = loaded.customMatchNoRewards !== false;
       settings.allowedBuilds = allowedBuildList(loaded.allowedBuilds) ?? null;
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
@@ -786,6 +791,7 @@ export function createSettingsStore(dataDir) {
         regionPingServers: JSON.parse(JSON.stringify(settings.regionPingServers ?? {})),
         customMatchServers: JSON.parse(JSON.stringify(settings.customMatchServers ?? [])),
         customMatchFallback: settings.customMatchFallback === true,
+        customMatchNoRewards: settings.customMatchNoRewards !== false,
         allowedBuilds: settings.allowedBuilds ? [...settings.allowedBuilds] : null,
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
@@ -895,6 +901,7 @@ export function createSettingsStore(dataDir) {
       settings.regionPingServers = regionPingServers(partial.regionPingServers) ?? settings.regionPingServers;
       settings.customMatchServers = customMatchServers(partial.customMatchServers) ?? settings.customMatchServers;
       if (typeof partial.customMatchFallback === "boolean") settings.customMatchFallback = partial.customMatchFallback;
+      if (typeof partial.customMatchNoRewards === "boolean") settings.customMatchNoRewards = partial.customMatchNoRewards;
       const builds = allowedBuildList(partial.allowedBuilds);
       if (partial.allowedBuilds !== undefined && builds !== undefined) settings.allowedBuilds = builds;
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {

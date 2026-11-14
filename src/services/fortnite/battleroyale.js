@@ -6,7 +6,7 @@ import { currentBuild, inBuild } from "../../builds/context.js";
 import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { teamsOfPlaylist } from "../../matchmaking/service.js";
-import { sessionMembers } from "../../matchmaking/sessions.js";
+import { customKeyOf, rewardlessMatch, sessionMembers } from "../../matchmaking/sessions.js";
 import { athenaSeason, seasonLevels } from "../../gamedata/athena.js";
 import { addSeasonXp, awardVictory, matchXp, matchXpAwards, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
 import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber, takeUpSeason } from "../../profiles/seasons.js";
@@ -154,6 +154,10 @@ function rewardResult(session, accountId, before, awards, seasonXp) {
   };
 }
 
+// rewardResult's form for a match that gave nothing (a custom match, #186).
+const nothingGained = (accountId) => ({ accountId, levelsGained: 0, bookLevelsGained: 0, totalSeasonXpGained: 0, totalBookXpGained: 0,
+  prePenaltySeasonXpGained: 0, xpMultipliers: [], rewards: [] });
+
 export function battleRoyaleRoutes(context) {
   const { tokens, accounts, sessions, stats, profiles } = context;
   const router = express.Router();
@@ -253,6 +257,15 @@ export function battleRoyaleRoutes(context) {
           build: build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null) }) ?? []) {
         log("Battle Royale", `${result.accountId} scored ${points} points in tournament event ${eventId}`);
         if (showdown) context.xmpp?.notify(result.accountId, tournamentsCompleteMessage, {});
+      }
+      // A custom matchmaking key's match (Core-Backend #186) gives no V-Bucks, season XP or challenge progress while the
+      // admin panel's "Custom matches give no challenge progress or rewards" is on (its default), as Epic's custom matches
+      // gave none; its stats above still count. The player's end-of-match screen is answered with nothing gained.
+      if (rewardlessMatch(sessions, rewards, result.accountId)) {
+        log("Battle Royale", `${result.accountId}'s match was a custom match (key ${customKeyOf(sessions, result.accountId)}): no V-Bucks, XP or challenge progress`);
+        if (session.hasProfile("athena")) answered.push(nothingGained(result.accountId));
+        session.commit();
+        continue;
       }
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills }, build);
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);

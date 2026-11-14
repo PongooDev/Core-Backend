@@ -104,6 +104,24 @@ const players = (session) => [...session.publicPlayers, ...session.privatePlayer
 export const sessionMembers = (session) => [...new Set([...Object.keys(session.keys), ...players(session)])];
 const currentPlayers = (session) => players(session).length;
 
+// The custom matchmaking key (#186) of the match a player is playing, null for a public match or a player on no session.
+// The gameserver's reports name no session (CoreV2's recordresults has its own match id, UpdateQuests only the progress),
+// so the player's session is the one they are registered on now, else the latest they were on (as their keys stay).
+export function customKeyOf(sessions, accountId) {
+  const latest = (list) => list.sort((a, b) => Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated))[0];
+  const live = sessions?.list?.() ?? [];
+  const session = latest(live.filter((entry) => players(entry).includes(accountId)))
+    ?? latest(live.filter((entry) => sessionMembers(entry).includes(accountId)));
+  return session?.customKey ?? null;
+}
+
+// Whether a player's match gives no challenge progress, season XP or V-Bucks: a custom matchmaking key's match while the
+// admin panel's "Custom matches give no challenge progress or rewards" (settings.customMatchNoRewards) is on, its
+// default. Epic's custom matches gave none.
+export function rewardlessMatch(sessions, settings, accountId) {
+  return settings?.customMatchNoRewards !== false && customKeyOf(sessions, accountId) !== null;
+}
+
 // The open slots follow the lists: each list's maximum less the players in it. The server checks the counts it gets back
 // against its own ("OSS: Open slots count mismatch").
 function countOpenSlots(session) {
@@ -162,7 +180,10 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
         // The IP the create request came from, this PC's too (127.0.0.1): what the admin panel's region hosting IPs and
         // custom matchmaking servers are matched against (Core-Backend #227).
         sourceAddress: normalizeAddress(connectionAddress),
-        hostBuild: String(build ?? "")
+        hostBuild: String(build ?? ""),
+        // Core's: the custom matchmaking key (#186) of the match the matchmaking service last gave the session, null
+        // for a public one (setCustomKey).
+        customKey: null
       };
       if (session.remoteHost) session.serverAddress = session.hostAddress;
       apply(session, body);
@@ -239,6 +260,14 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
     setZoneDifficulty(id, rowName) {
       const session = this.get(id);
       if (session) session.zoneDifficulty = rowName;
+      return session;
+    },
+
+    // Core's: the custom matchmaking key of the match the session was given (the matchmaking service's AssignMatch), null
+    // for a public match. Each match the session is given sets it again.
+    setCustomKey(id, customKey) {
+      const session = this.get(id);
+      if (session) session.customKey = customKey || null;
       return session;
     },
 
@@ -335,7 +364,7 @@ const defaultNetwork = createNetwork();
 // A session hosted on another PC (Core-Backend #125) is handed out with that PC's address as it is: this machine's
 // addresses would send the player to the wrong PC.
 export function sessionJson(session, viewer, network = defaultNetwork) {
-  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, sourceAddress, ...json } = session;
+  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, sourceAddress, customKey, ...json } = session;
   if (!remoteHost) json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
 }

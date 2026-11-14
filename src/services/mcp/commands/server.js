@@ -14,6 +14,7 @@ import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCor
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
 import { atDifficulty, findMission, missionLootLevel, missionPackSource, missionRewardQuantity } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
+import { customKeyOf, rewardlessMatch } from "../../../matchmaking/sessions.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
 // SDK's FDedicatedServerUrlContext functions. Parameters are the UFunction's with the first letter lowered.
@@ -24,6 +25,14 @@ function advance(session, updates, held = null) {
   for (const { statName, count } of Array.isArray(updates) ? updates : []) {
     if (typeof statName === "string" && Number.isInteger(count) && count > 0) advanceObjective(session, statName, count, held);
   }
+}
+
+// Whether a player's Battle Royale quest progress is skipped as their match is a custom matchmaking key's (#186,
+// matchmaking/sessions.js rewardlessMatch); logged when it is.
+function customMatchSkips(context, accountId, command) {
+  if (!rewardlessMatch(context.sessions, context.settings?.get?.(), accountId)) return false;
+  log("MCP", `${command} for ${accountId}: a custom match (key ${customKeyOf(context.sessions, accountId)}), no challenge progress`);
+  return true;
 }
 
 // The mission a game session is playing: the server's ZONEINSTANCEID_s attribute is FFortZoneInstanceInfo
@@ -255,8 +264,10 @@ export const serverCommands = {
 
   // On athena, 1.8's Battle Royale challenges (profiles/athena.js); the objectives Core counts from the match results
   // are skipped there.
+  // A custom matchmaking key's match (Core-Backend #186) advances none of them while the admin panel's "Custom matches give
+  // no challenge progress or rewards" is on (its default), as Epic's custom matches gave no challenge progress.
   UpdateQuests({ req, session, context, profileId }) {
-    if (profileId === "athena") return advanceAthenaObjectives(session, req.body?.advance);
+    if (profileId === "athena") return customMatchSkips(context, req.params.accountId, "UpdateQuests") || advanceAthenaObjectives(session, req.body?.advance);
     advance(session, req.body?.advance, context.primaryMissions.heldOrStart(req.params.accountId));
   },
 
@@ -264,9 +275,9 @@ export const serverCommands = {
   // medals}: a player's match as the 1.8 server would report it. 1.8's code never sends it (no wrapper calls it: its FName,
   // 0x662E1A0, is only referenced where it is made), so the match's stats and XP come from Core's recordresults
   // (services/fortnite/battleroyale.js) and only its quest progress counts here.
-  EndBattleRoyaleGame({ req, session, profileId }) {
+  EndBattleRoyaleGame({ req, session, context, profileId }) {
     log("MCP", `EndBattleRoyaleGame for ${req.params.accountId}: ${JSON.stringify({ ...req.body, advance: undefined })}`);
-    if (profileId === "athena") advanceAthenaObjectives(session, req.body?.advance);
+    if (profileId === "athena" && !customMatchSkips(context, req.params.accountId, "EndBattleRoyaleGame")) advanceAthenaObjectives(session, req.body?.advance);
   },
 
   // UFortMcpProfileAthena::ReportConsumableUsed {usedQuantity, itemType}: Battle Royale's consumables aren't kept in a
