@@ -15,11 +15,13 @@ import { post, send, startBackend, userLogin } from "./helpers.js";
 // (PurchaseOrUpgradeHomebaseNode_Mocked 0x11CF7C0, PurchaseResearchStatUpgrade_Mocked 0x11CFE50) and the respec dialogs'
 // texts (a token each, every point back).
 const v630 = "4573096";
-const agent = `Fortnite/++Fortnite+Release-6.30-CL-${v630} Windows/10.0.19045.1.256.64bit`;
+const v622 = "4543176";
+const agentOf = (build, version) => `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.19045.1.256.64bit`;
+const agent630 = agentOf(v630, "6.30");
 const upgradePoints = "Token:homebasepoints";
 const researchPoints = "Token:collectionresource_nodegatetoken01";
 
-function client(port, token, accountId) {
+function client(port, token, accountId, agent = agent630) {
   const mcp = (name, body, rvn) => {
     const text = JSON.stringify(body);
     return send({ host: "127.0.0.1", port, method: "POST",
@@ -35,9 +37,9 @@ function client(port, token, accountId) {
   return { call, profile, held, admin, give: (templateId, quantity) => admin("grant", { templateId, quantity }) };
 }
 
-async function signIn(backend, name) {
+async function signIn(backend, name, agent = agent630) {
   const { token, accountId } = await userLogin(backend.port, name);
-  const account = client(backend.port, token, accountId);
+  const account = client(backend.port, token, accountId, agent);
   await account.profile();
   return account;
 }
@@ -85,9 +87,7 @@ test("6.30's Upgrades page: buy and upgrade a node by its level's cost and MinCo
     assert.equal(maxed.status, 400);
     assert.match(maxed.body.errorMessage, /MaxLevel is 6/);
 
-    // Respec: no token, no respec.
-    assert.equal((await call("RespecUpgrades")).status, 400);
-    await give("Token:upgrades_respec", 1);
+    // Respec, with the token the account's first 6.30 login gave.
     await give("HomebaseNode:questreward_pickaxe", 1);
     const respec = await call("RespecUpgrades");
     assert.equal(respec.status, 200);
@@ -96,7 +96,7 @@ test("6.30's Upgrades page: buy and upgrade a node by its level's cost and MinCo
     for (const node of ["skilltree_adrenalinerush", "skilltree_banner", "skilltree_airstrike"]) assert.equal(await held(`HomebaseNode:${node}`), 0, node);
     assert.equal(await held("HomebaseNode:questreward_pickaxe"), 1, "a Hidden node stays");
     assert.equal(await held("Token:upgrades_respec"), 0, "the token is used up");
-    assert.equal((await call("RespecUpgrades")).status, 400);
+    assert.equal((await call("RespecUpgrades")).status, 400, "no token, no respec");
   } finally {
     backend.close();
   }
@@ -145,8 +145,7 @@ test("6.30's Research page: a level costs its _cost in Research Points and adds 
     assert.deepEqual((await profile()).stats.attributes.research_levels, { fortitude: 3, technology: 10 });
 
     // Respec: a token, every point back, research's stats taken back (the account levels' stay), every level at 0.
-    assert.equal((await call("RespecResearch")).status, 400, "no token");
-    await give("Token:research_respec", 2);
+    await give("Token:research_respec", 1);
     await give("Stat:fortitude", 3);
     const respec = await call("RespecResearch");
     assert.equal(respec.status, 200);
@@ -178,5 +177,28 @@ test("6.30's account levels give CommanderLevel_RPCollection a level each time, 
     });
   } finally {
     fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+});
+
+test("6.30's first login gives one Upgrades and one Research respec token, once per account; 6.22's gives none", async () => {
+  const backend = await startBackend();
+  try {
+    const name = "Tokens630";
+    const first = await signIn(backend, name);
+    assert.equal(await first.held("Token:upgrades_respec"), 1);
+    assert.equal(await first.held("Token:research_respec"), 1);
+    assert.equal((await first.call("RespecUpgrades")).status, 200, "the token works");
+    const next = await signIn(backend, name);
+    assert.equal(await next.held("Token:upgrades_respec"), 0, "not given again on the next login");
+    assert.equal(await next.held("Token:research_respec"), 1);
+
+    const older = await signIn(backend, "Tokens622", agentOf(v622, "6.22"));
+    assert.equal(await older.held("Token:upgrades_respec"), 0);
+    assert.equal(await older.held("Token:research_respec"), 0);
+    const later = await signIn(backend, "Tokens622");
+    assert.equal(await later.held("Token:upgrades_respec"), 1, "6.22 didn't note it, so 6.30 gives it");
+    assert.equal(await later.held("Token:research_respec"), 1);
+  } finally {
+    backend.close();
   }
 });

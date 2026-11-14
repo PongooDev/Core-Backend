@@ -14,6 +14,7 @@ import { foundersNeedSetUp, foundersTokensNeedSetUp, setUpFounders, setUpFounder
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
 import { giveLootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
+import { respecTokensNeedSetUp, setUpRespecTokens } from "./respec.js";
 import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -64,6 +65,8 @@ import { levelStartXp, settleLevel, switchXpScale, xpScaleNeedsSwitch } from "./
 //   cosmetic when the host gives them all (giveAllCosmetics); the locker lists them (profiles/athena.js).
 // - The Mini Reward Llama voucher the "Loot Llamas" onboarding quest needs, when the account is on that step with no
 //   voucher or llama to open (profiles/lootllamas.js): the Loot tab otherwise shows nothing and the UI stays locked.
+// - From 6.30, one Upgrades and one Research respec token, once per account (profiles/respec.js, Core's choice: nothing
+//   in the game's data grants them).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -103,7 +106,7 @@ export function needsSetUp(profile, settings = {}) {
     || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
     || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile)
-    || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile);
+    || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile) || respecTokensNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -184,4 +187,6 @@ export function setUpProfile(session, profileId = "profile0") {
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);
   giveLootLlamaVoucher(session);
+  // 6.30's Upgrades and Research respec tokens, one each, once (profiles/respec.js).
+  setUpRespecTokens(session);
 }

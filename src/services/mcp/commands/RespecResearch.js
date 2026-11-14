@@ -1,11 +1,8 @@
 import { McpError } from "../../../errors.js";
 import { grant } from "../../../profiles/progress.js";
 import { heldQuantity, takeQuantity } from "../../../profiles/homebase.js";
+import { researchRespecToken } from "../../../profiles/respec.js";
 import { researchLevel, researchLevels, researchPointsTemplate, researchStatCurves } from "../../../research/stats.js";
-
-// The Research page's token, UResearchScreen_C ResearchRespecToken (Items/Tokens/Research_Respec); the page offers a
-// respec only while one is held (AreResearchRespecTokensAvailable).
-export const researchRespecToken = "Token:research_respec";
 
 // Takes up to quantity from a stat's items (the account levels' FORT shares the stack with research's).
 function lowerStat(tracker, templateId, quantity) {

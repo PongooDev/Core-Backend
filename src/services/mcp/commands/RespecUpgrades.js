@@ -2,10 +2,7 @@ import { getNodeByTemplateId, isUpgradesPageNode, nodeLevels } from "../../../ga
 import { McpError } from "../../../errors.js";
 import { grant } from "../../../profiles/progress.js";
 import { heldQuantity, takeQuantity } from "../../../profiles/homebase.js";
-
-// The Upgrades page's token, UUpgradesRoot_C UpgradesRespecToken (Items/Tokens/Upgrades_Respec, "Use these to reset your
-// upgrades!"); the page offers a respec only while one is held (AreUpgradesRespecTokensAvailable).
-export const upgradesRespecToken = "Token:upgrades_respec";
+import { upgradesRespecToken } from "../../../profiles/respec.js";
 
 // 6.30's (CL-4573096) UFortMcpProfileCampaign::RespecUpgrades, no fields, on campaign (profile0), sent by
 // UFortUpgradeScreenBase::UseUpgradesRespecToken (0x31A02F0). The client doesn't predict it; UpgradesRoot's dialog says
