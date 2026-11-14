@@ -294,3 +294,23 @@ test("#354: a 6.21 lobby's hotfix after the Butterfly has the default modes back
     backend.close();
   }
 });
+
+test("#354: the hotfix listing's DefaultGame.ini hash changes with the Butterfly, so a 6.21 client coming back to the lobby downloads the new mode list", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Hash354");
+    const hashOf = async (build, version) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/cloudstorage/system",
+      headers: { "User-Agent": agentOf(build, version), Authorization: `bearer ${token}` } })).body.find(({ filename }) => filename === "DefaultGame.ini").hash;
+    const before = await hashOf(v621, "6.21");
+    const before620 = await hashOf(v620, "6.20");
+    assert.equal(await hashOf(v621, "6.21"), before, "the same list, the same hash: the client skips the apply phase");
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", undefined, { event: "butterfly", mode: "now" })).status, 200);
+    const after = await hashOf(v621, "6.21");
+    assert.notEqual(after, before, "the Butterfly: the client re-downloads and applies DefaultGame.ini");
+    assert.equal(await hashOf(v620, "6.20"), before620, "6.20 has no Butterfly");
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", undefined, { event: "butterfly", mode: "before" })).status, 200);
+    assert.equal(await hashOf(v621, "6.21"), before, "Before the event: the Fortnitemares list again");
+  } finally {
+    backend.close();
+  }
+});

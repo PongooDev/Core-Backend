@@ -72,6 +72,15 @@ export const playlistImagesBuild = 4039451;
 // (its strings against 6.30's). Its Team Rumble (Playlist_Respawn_24) has the Season 6 tile Epic's later page names for it,
 // BR06_ModeTile_TDM (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 477,366 bytes, the hash in its name the file's
 // SHA-1), with no border.
+// The default modes' tiles (Core-Backend #354 asked for each season's own). Seasons 1 to 3 (before 4.0) read no tile from
+// the page: their tiles are the client's. From 4.0 the tile's own picture is one texture for every mode
+// (UI/Foundation/Textures/Tiles/T_Athena_Tile_Matchmaking_Default, 6.21's paks), so a mode's art is the page's. Every copy of
+// Epic's pages found names BR_LobbyTileArt_Solo, _Duo and _Squad (playlisttiles, 512x512) for the three, the Season 4 to 6
+// pages' and later ones' alike (LawinServer's and other backends' copies, the Wayback Machine's captures of the CDN's
+// playlisttiles and playlistinformation folders, searched 2026-11-14): no BR04_, BR05_ or BR06_ default-mode tile is in any
+// of them. The first season tiles for the default modes there are Season X's and 11's (playlistinformation/v94/
+// 10BR_Launch_ModeTiles_* and 11BR_Launch_ModeTiles_*, still on the CDN), for builds Core doesn't run. So Seasons 4 to 6 keep
+// Epic's BR_LobbyTileArt, and the admin panel's News page sets a season's own picture for any mode.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";

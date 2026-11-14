@@ -88,6 +88,19 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // mode select's pick (CL-4497486 0x2F009D0) takes a playlist the player had when the mode select's own entries hold it,
 // else the first of its entries with both of its flags (+8 clear, +9 set), else Playlist_DefaultSolo. 🟡 Read statically:
 // that a hidden default isn't among those entries, so a lobby whose Solo is hidden opens on Fortnitemares Solo, needs a client.
+// How a running client takes a change of the list (Core-Backend #354: 6.21's Fortnitemares modes end at the Butterfly), as
+// Epic changed modes live: the client checks its hotfixes again each time it comes back to the lobby and before each
+// matchmaking, and applies the ones whose hash changed. 6.21 (CL-4526925): destroying the match's game session calls back
+// 0x10F3270, which sets a next-tick timer on the frontend player controller's 0x1100700; once the frontend game mode is up,
+// it binds its completion handlers (0x10F8290, 0x10F4460) on UFortGameInstance's UpdateManager (+0x598) and calls its
+// UUpdateManager::StartCheck (vtable +0x240) with bInCheckHotfixOnly false; the hotfix part ends in 0x10F4190 ("Hotfix
+// check complete, nothing to do." / "need to restart."), then AFortGameModeFrontEnd::OnUpdateCheckComplete.
+// UFortMatchmakingContext's matchmaking starts (0x111DA10, 0x114AF10, 0x114CF20 ...) run the same check through 0x112D820
+// (IsWaitingOnUpdateManager is its pending handle, +0x1B8), and UFortMatchmakingV2::OnUpdateCheckComplete cancels the
+// matchmaking "to receive update" when it brought one. The hotfix manager compares the listing's hashes with the last
+// files it applied ("Returned hotfix data is the same as last application, skipping the apply phase", seen in Core's
+// client logs on every return to the lobby) and downloads and applies the changed ones; the listing hashes each file's
+// content (header below), so the list the backend serves at that moment is the one the lobby gets.
 const frontEndDefaults = [["Playlist_DefaultDuo", 1], ["Playlist_DefaultSquad", 2], ["Playlist_DefaultSolo", 0]];
 const advertiseTypeBuild = 4225813;
 const defaultFiftyFiftyBuild = 4464155;
