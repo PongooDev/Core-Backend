@@ -29,10 +29,14 @@ import { openCardPack } from "./OpenCardPack.js";
 import { openCardPackBatch } from "./OpenCardPackBatch.js";
 import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
+import { purchaseOrUpgradeHomebaseNode } from "./PurchaseOrUpgradeHomebaseNode.js";
+import { purchaseResearchStatUpgrade } from "./PurchaseResearchStatUpgrade.js";
 import { queryProfile } from "./QueryProfile.js";
 import { refundMtxPurchase } from "./RefundMtxPurchase.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
+import { respecResearch } from "./RespecResearch.js";
+import { respecUpgrades } from "./RespecUpgrades.js";
 import { setAffiliateName } from "./SetAffiliateName.js";
 import { setBansViewed } from "./SetBansViewed.js";
 import { removeGiftBox } from "./RemoveGiftBox.js";
@@ -110,6 +114,8 @@ export const clientCommands = {
   OpenCardPackBatch: openCardPackBatch,
   PurchaseCatalogEntry: purchaseCatalogEntry,
   PurchaseHomebaseNode: purchaseHomebaseNode,
+  PurchaseOrUpgradeHomebaseNode: purchaseOrUpgradeHomebaseNode,
+  PurchaseResearchStatUpgrade: purchaseResearchStatUpgrade,
   QueryProfile: queryProfile,
   RecycleItem: recycleItemCommand,
   RecycleItemBatch: recycleItemBatchCommand,
@@ -117,6 +123,8 @@ export const clientCommands = {
   RefundMtxPurchase: refundMtxPurchase,
   ResearchItemFromCollectionBook: researchItemFromCollectionBook,
   RespecAlteration: respecAlteration,
+  RespecResearch: respecResearch,
+  RespecUpgrades: respecUpgrades,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
   SetAffiliateName: setAffiliateName,

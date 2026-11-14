@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { unlockPage } from "../collectionbook/pages.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
+import { getNodeByTemplateId, nodeLevels, nodeTemplateId } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { isEndedEventQuest } from "../events/quests.js";
 import { McpError } from "../errors.js";
@@ -182,6 +183,28 @@ function ownedOnceTemplate(templateId) {
   return bannerTemplateId(templateId) ?? (templateId.split(":")[0].toLowerCase() === "homebasenode" ? templateId : undefined);
 }
 
+// A HomebaseNode template whose node has more than one level (only 6.30's data has levels), as {templateId, levels}.
+function leveledNode(templateId) {
+  if (templateId.split(":")[0].toLowerCase() !== "homebasenode") return undefined;
+  const node = getNodeByTemplateId(templateId);
+  const levels = nodeLevels(node).length;
+  return levels > 1 ? { templateId: nodeTemplateId(node.id), levels } : undefined;
+}
+
+function grantNodeLevels(session, { templateId, levels }, quantity, options) {
+  const tracker = session.profile("profile0");
+  const itemId = findItem(tracker.profile, templateId);
+  if (!itemId) {
+    const amount = Math.min(quantity, levels);
+    return [{ profileId: "profile0", itemId: addItem(tracker, templateId, amount, itemInfo(templateId), options), templateId, quantity: amount }];
+  }
+  const before = tracker.profile.items[itemId].quantity;
+  const after = Math.max(before, Math.min(before + quantity, levels));
+  if (after === before) return [];
+  tracker.setQuantity(itemId, after);
+  return [{ profileId: "profile0", itemId, templateId: tracker.profile.items[itemId].templateId, quantity: after - before }];
+}
+
 // grantItem gives none of an owned-once template the account already has. This is the one it holds, as a grant entry
 // (quantity 1), for what has to show it anyway (an opened pack, OpenCardPack.js); undefined when it holds none.
 export function heldOwnedOnce(session, templateId) {
@@ -219,6 +242,12 @@ export function grantItem(session, templateId, quantity, options = {}) {
     if (!unlockPage(session, name)) log("Items", `No collection book page ${name}, not granted`);
     return [];
   }
+
+  // 6.30's (CL-4573096) nodes have levels, the item's quantity (gamedata/homebase.js nodeLevels): a grant raises it, to
+  // the last level, as the client's PurchaseOrUpgradeHomebaseNode_Mocked does (0x11CF7C0: the held item + 1, else a new
+  // one of quantity 1). The account levels give CommanderLevel_RPCollection's nine levels one by one this way.
+  const leveled = leveledNode(templateId);
+  if (leveled) return grantNodeLevels(session, leveled, quantity, options);
 
   // A skill tree node or a banner is owned or not; quest rewards can grant one the player already bought.
   const owned = ownedOnceTemplate(templateId);
