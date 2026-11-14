@@ -14,7 +14,7 @@ import { regionPingServers } from "../matchmaking/qos.js";
 import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
-import { defaultBotModes, sanitizeBotModes } from "../matchmaking/botmodes.js";
+import { defaultBotModes, sanitizeBotModeCounts, sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { battleRoyaleSeasons } from "../builds/detect.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
@@ -146,7 +146,7 @@ const defaults = {
   // the teams of players whose party fills, in duos and squads; unlike forcePlayerAIs it isn't tied to the backport.
   // modes: the game modes they play in (Core-Backend #352, matchmaking/botmodes.js), every one by default.
   bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false,
-    modes: defaultBotModes() },
+    modes: defaultBotModes(), modeCounts: {} },
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
@@ -281,7 +281,9 @@ const defaults = {
 export const defaultMatchmakingModes = defaults.matchmakingModes;
 export const defaultServerLimits = defaults.serverLimits;
 export const defaultWarmupSeconds = defaults.warmupSeconds;
-export const defaultBots = () => ({ ...defaults.bots, modes: defaultBotModes() });
+// The default bots as an update (the Matchmaking tab's Reset Defaults): every mode's own count cleared (null), as an
+// update keeps the counts it doesn't name.
+export const defaultBots = () => ({ ...defaults.bots, modes: defaultBotModes(), modeCounts: Object.fromEntries(Object.keys(defaultBotModes()).map((id) => [id, null])) });
 
 export function sanitizeMatchmakingModes(input, current = defaultMatchmakingModes) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
@@ -568,7 +570,9 @@ function botsValue(value, base) {
     fillPlayerTeams: typeof given.fillPlayerTeams === "boolean" ? given.fillPlayerTeams : base.fillPlayerTeams,
     // The game modes they play in (Core-Backend #352), each switch on its own: a settings file from before them, and a
     // mode added since, take the base's (every mode on by default).
-    modes: sanitizeBotModes(given.modes, base.modes)
+    modes: sanitizeBotModes(given.modes, base.modes),
+    // Each mode's own count (#352), none by default: the shared count.
+    modeCounts: sanitizeBotModeCounts(given.modeCounts, base.modeCounts)
   };
 }
 function warmupSecondsValue(value) {
@@ -645,7 +649,7 @@ export function createSettingsStore(dataDir) {
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
-    bots: { ...defaults.bots, modes: defaultBotModes() },
+    bots: { ...defaults.bots, modes: defaultBotModes(), modeCounts: {} },
     creators: []
   };
 

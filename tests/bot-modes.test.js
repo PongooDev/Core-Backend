@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
+import { botModeIds, botModeOf, botsForMode, botsInMode, matchBots, sanitizeBotModeCounts, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { dedicatedServerToken, get, post, startBackend } from "./helpers.js";
 
@@ -112,5 +112,61 @@ test("the warmup answer has no bots in a mode the panel has them off in, by the 
     assert.deepEqual([answer.bots.count, answer.botsMode], [30, { id: "duo", enabled: true }]);
   } finally {
     backend.close();
+  }
+});
+
+// The follow-up: each mode's own bot count (bots.modeCounts), blank for the shared count.
+test("each mode's own bot count: set, kept, cleared and checked (#352)", () => {
+  assert.deepEqual(sanitizeBotModeCounts({ solo: 20, duo: "35", squad: 101, nope: 5, fiftyFifty: -1 }, { squad: 40 }), { solo: 20, duo: 35, squad: 40 });
+  // A partial update keeps the others; null or "" clears one.
+  assert.deepEqual(sanitizeBotModeCounts({ duo: null, squad: "" }, { solo: 20, duo: 35, squad: 40 }), { solo: 20 });
+  assert.deepEqual(sanitizeBotModeCounts(undefined, { solo: 0 }), { solo: 0 });
+  const bots = { forcePlayerAIs: true, count: 30, modes: { duo: false }, modeCounts: { solo: 12, duo: 50, squad: 0 } };
+  assert.equal(botsForMode(bots, "solo").count, 12);
+  assert.equal(botsForMode(bots, "squad").count, 0);
+  assert.equal(botsForMode(bots, "fiftyFifty").count, 30);
+  assert.equal(botsForMode(bots, null).count, 30);
+  // A mode that is off stays off whatever its count.
+  assert.equal(botsForMode(bots, "duo").forcePlayerAIs, false);
+  // A tournament event's count wins.
+  assert.equal(matchBots(bots, { enabled: true, count: 7 }, "solo").count, 7);
+});
+
+test("the panel's per-mode bot counts and the warmup answer's count (#352)", async () => {
+  const backend = await startBackend();
+  try {
+    assert.deepEqual((await overview(backend)).bots.modeCounts, {});
+    let res = await mmConfig(backend, { bots: { forcePlayerAIs: true, count: 30, modeCounts: { solo: 12, squad: 0, duo: 200 } } });
+    assert.deepEqual(res.body.bots.modeCounts, { solo: 12, squad: 0 });
+    res = await mmConfig(backend, { bots: { modeCounts: { squad: null, fiftyFifty: 60 } } });
+    assert.deepEqual(res.body.bots.modeCounts, { solo: 12, fiftyFifty: 60 });
+    assert.deepEqual((await overview(backend)).bots.modeCounts, res.body.bots.modeCounts);
+
+    const token = await dedicatedServerToken(backend.port);
+    const ask = async (body) => (await post(backend.port, "/fortnite/api/game/v2/matchmakingservice/warmup", token, { phase: "Setup", accountIds: [], ...body })).body;
+    assert.equal((await ask({ playlistId: 2 })).bots.count, 12);
+    assert.equal((await ask({ playlistId: 10 })).bots.count, 30);
+    // A server that reports no playlist gets the shared count, as before.
+    assert.equal((await ask({})).bots.count, 30);
+    // A mode's count of 0 is no bots on teams of their own there.
+    await mmConfig(backend, { bots: { modeCounts: { duo: 0 } } });
+    assert.equal((await ask({ playlistId: 10 })).bots, null);
+
+    res = await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {});
+    assert.deepEqual(res.body.bots.modeCounts, {});
+  } finally {
+    backend.close();
+  }
+});
+
+test("a settings file from before the per-mode counts has none, and one saved after keeps them (#352)", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-352b-"));
+  try {
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { forcePlayerAIs: true, count: 40, modes: { duo: false } } }));
+    assert.deepEqual(createSettingsStore(dataDir).get().bots.modeCounts, {});
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { count: 40, modeCounts: { solo: 15, nope: 3 } } }));
+    assert.deepEqual(createSettingsStore(dataDir).get().bots.modeCounts, { solo: 15 });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });

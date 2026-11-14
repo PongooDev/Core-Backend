@@ -20,6 +20,24 @@ export function sanitizeBotModes(input, current = null) {
   return Object.fromEntries(botModeIds.map((id) => [id, typeof given[id] === "boolean" ? given[id] : current?.[id] !== false]));
 }
 
+// Each mode's own bot count (Core-Backend #352: "a different number of ais for each game mode"), in the settings'
+// bots.modeCounts: {<mode id>: 0 to 100}. A mode without one plays with the shared count (bots.count), as every mode did
+// before. Given: a whole number from 0 to 100 sets it, null or "" clears it, anything else keeps the current one. Only
+// the count is per mode; the level, health, shield, fight chance and "Fill players' teams with bots" stay shared.
+export const maxModeBots = 100;
+export function sanitizeBotModeCounts(input, current = null) {
+  const given = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+  const counts = {};
+  for (const id of botModeIds) {
+    const value = Object.hasOwn(given, id) ? given[id] : undefined;
+    const number = typeof value === "string" && value.trim() ? Number(value) : value;
+    if (value === null || value === "") continue;
+    if (Number.isInteger(number) && number >= 0 && number <= maxModeBots) counts[id] = number;
+    else if (Number.isInteger(current?.[id])) counts[id] = current[id];
+  }
+  return counts;
+}
+
 // The mode of a match's playlist on a build: the default modes by their ids (Playlist_DefaultSolo/Duo/Squad, 2, 10 and 9),
 // an LTM's by events/ltms.js (the build's, as 3.5.1 gave some ids to other modes). The playlist is its id (a number, or
 // its digits) or, from 4.4's buckets and 5.30's game mode, its PlaylistName. null for a playlist Core doesn't know.
@@ -38,10 +56,12 @@ export function botModeOf(playlist, build) {
 export const botsInMode = (bots, mode) => mode === null || mode === undefined || bots?.modes?.[mode] !== false;
 
 // The bots a match of the mode plays with, in the settings' shape: in a mode that is off, Force player AIs and Fill
-// players' teams with bots are off.
+// players' teams with bots are off; in one with a count of its own, that count.
 export function botsForMode(bots, mode) {
-  if (!bots || botsInMode(bots, mode)) return bots ?? null;
-  return { ...bots, forcePlayerAIs: false, fillPlayerTeams: false };
+  if (!bots) return null;
+  if (!botsInMode(bots, mode)) return { ...bots, forcePlayerAIs: false, fillPlayerTeams: false };
+  const own = mode === null || mode === undefined ? undefined : bots.modeCounts?.[mode];
+  return Number.isInteger(own) ? { ...bots, count: own } : bots;
 }
 
 // The bots a match plays with: its tournament event's own ({enabled, count}, tournaments/store.js botsFor) over the panel's

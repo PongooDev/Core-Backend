@@ -24,7 +24,8 @@ import { botModeOf, botsInMode, matchBots } from "../../matchmaking/botmodes.js"
 // team unless the party plays without fill).
 // bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests, fights, teams, noFill}, when the
 // admin panel's Force player AIs is on and its count is above 0, or its "Fill players' teams with bots" is on, else null.
-// count is the bots on teams of their own (0 with Force player AIs off), the requested one as is: the gameserver applies
+// count is the bots on teams of their own (0 with Force player AIs off): the match's mode's own count when the panel
+// sets one (Core-Backend #352, bots.modeCounts), else the shared one, the requested one as is: the gameserver applies
 // the cap itself (bots = min(count, match capacity - connected players - bots on players' teams), re-checked before the
 // bus leaves). teams: whether bots fill the empty places on players' teams in duos and squads; noFill: the match's
 // players whose party doesn't fill (the party leader's player.option.fillTeam false), whose teams get none.
