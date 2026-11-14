@@ -346,6 +346,44 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   LMG's slot loadout), `quests.json` (Fortnitemares Part 2's rewards: HalloweenQuest_KillVlad's Sanguine Dusk,
   HID_Outlander_018, and the fetch quests' Candy, Candy Corn LMG schematic and choice of heroes), `objectivestats.json` and
   `world.json` (MissionGen_AthenaEvent8, 36 and 37 gone); the rest are 6.21's.
+  6.30's (CL-4573096, UE 4.21; its files are dated 19 November 2018, the eve of Content Update v6.30, whose Wild West
+  playlists and Dynamite are in its paks) is `4.21.0-4573096+++Fortnite+Release-6.30` (no `Build.version`; the build
+  folder is `6.30-CL-4573096\Fortnite`) with 6.22's full data (Cert's files with `gamedata/4543176` applied) as the fifth
+  argument, and the main key FModel's settings hold for its build folder. Its install has 9 paks (230,489 files): pakchunk0
+  and its s1 to s6, and pakchunk1000 and 1001, on keys of their own that the backend's keychain has; no pakchunk1 (62 of 63
+  primary missions' tags come from the fifth argument), no language paks, no Core server-assets pak in its folder. Its
+  DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument). Three extractor
+  changes, for Update v6.30's Save the World front end:
+  - its homebase manager (CommandConsole_Manager) names no HomebaseNodeDataTable or HomebaseNodePageDataTable: the skill
+    and research trees are gone. Its nodes are items, the FortHomebaseNodeItemDefinition assets of Items/HomebaseNodes
+    (`HomebaseNode:<asset>`, DefaultGame.ini's new HomebaseNode asset type): the Upgrades page's SkillTree_* (Utility and
+    Gadget), the quests' QuestReward_* and the account levels' CommanderLevel_RPCollection (Hidden), StartNode_CommandCenter.
+    Each has LevelData, one FHomebaseNodeLevelData per level. `homebasenodes.json` writes each node's first level as a skill
+    tree row was (`tags`, `cost`, `squadSlots`: what owning the node gives) and, for these nodes only, `displayType`
+    (EHomebaseNodeType; unset is Gadget) and `levels`, each {minCommanderLevel, cost, effects, tags, squadSlots,
+    abilityKit}; `pages` is empty. `research.json`'s and `inventory.json`'s node sums are their first level's. Its effect
+    rows are CommandConsole_GEImporter_NewSkillTree.
+  - the Research page's ResearchSystemUpgradesTable (Research/ResearchSystem, a curve table) is `research.json`'s `stats`:
+    each FORT stat's cost, personal and team bonus and their cumulative sums by level (fortitude_cost...).
+  - the account levels are Balance/DataTables/AccountLevels (DefaultGameData XPAccountLevelsTable; XPAccountLevels is gone),
+    FortLevelUpDataV2 rows whose Rewards are template ids: `accountlevels.json`'s `rewards` are {templateId, quantity} on
+    6.30 ({asset, quantity} before); FORT stats (Stat:fortitude...), Upgrade Points, schematics, survivors, heroes, nodes.
+    And FortStatItemDefinition (`Stat:`) and FortCampaignHeroLoadoutItemDefinition (`CampaignHeroLoadout:`) are account
+    items.
+  Against 6.22 eighteen files change: `athena.json` (27 cosmetics: Castor and Elmira with Spellbinder, Tome Pouch,
+  Spellslinger, Magic Wings and Llamacadabra, Maki Master with Shrimpy, Taro and Nara with Trusty Tusks, White Fang,
+  Gatekeeper and Flying Carp, Tender Defender with Hatchback, Scrambler and Flappy Flyer, Riot, Night Slicer, Bombastic,
+  Knee Slapper, Time Out, Hot Marat, Hyper and the Disco Baller spray; none gone; 16 display assets; Season 6's weeks 8 to
+  10; 30 quests and 49 objective stats; the loot tables with the Mounted Turret, TID_Floor_MountedTurret_Athena, in the
+  traps, Legendary vending machines and supply drops, and the Dynamite, Athena_TNT, at weight 0), `items.json` and
+  `characters.json` (the HomebaseNode and Stat items, the respec tokens Token:research_respec and upgrades_respec, the
+  Last Word revolver, the Mounted Turret, the new outfits' heroes and harvesting tools, the trainers' survivors
+  Worker:nid_trainer_*, Refuel the Homebase's items), `homebasenodes.json`, `research.json`, `inventory.json` and
+  `accountlevels.json` (above), `quests.json` and `objectivestats.json` (the reworked Stonewood and Plankerton questlines
+  with their tutorials, Canny Valley's new quests), `collectionbook.json` (levels to 500, reworked rewards), `world.json`
+  (Plank Harbor, Build Off! and Refuel the Homebase), `squads.json` (Squad_Combat_NewHeroSquad and
+  Squad_Defender_MissionDefender; three defender squads gone), `upgrades.json`, `expeditions.json`, `alterations.json`,
+  `banners.json`, `cardpacks.json` and `fabricator.json`; the rest are 6.22's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

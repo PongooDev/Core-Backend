@@ -192,6 +192,21 @@ const playlistTeams620Build = 4497486;
 // side Disco Domination). Its other playlists have the teams above (events/ltms.js).
 const playlistTeamsFrom622 = { 450: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 } };
 const playlistTeams622Build = 4543176;
+// 6.30's (CL-4573096) Food Fight (204, Playlist_Barrier: 2 × 24; 206, Playlist_Barrier_12: 2 × 12; both in squads of 4,
+// large team games), Wild West (900 to 902, Playlist_WW_Solo, _Duos and _Squads: 100 teams of 1, 2 and 4) and the Scavenger
+// Pop-Up Cup's tournament playlists (58074 to 58076, Playlist_ShowdownAlt_Solo, _Duos and _Squads, the same). Its Disco
+// Domination (32 v 32, Alt), 232, is 6.20's above, and its other playlists have the teams above (events/ltms.js).
+const playlistTeamsFrom630 = {
+  204: { maxTeamCount: 2, maxTeamSize: 24, maxSquadSize: 4 },
+  206: { maxTeamCount: 2, maxTeamSize: 12, maxSquadSize: 4 },
+  900: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  901: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  902: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  58074: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  58075: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  58076: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams630Build = 4573096;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -367,6 +382,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams630Build && playlistTeamsFrom630[playlistId]) return playlistTeamsFrom630[playlistId];
   if (Number(build) >= playlistTeams622Build && playlistTeamsFrom622[playlistId]) return playlistTeamsFrom622[playlistId];
   if (Number(build) >= playlistTeams620Build && playlistTeamsFrom620[playlistId]) return playlistTeamsFrom620[playlistId];
   if (Number(build) >= playlistTeams610Build && playlistTeamsFrom610[playlistId]) return playlistTeamsFrom610[playlistId];

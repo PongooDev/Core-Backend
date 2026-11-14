@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { McpError } from "../errors.js";
 import { nodeTemplateId } from "../gamedata/homebase.js";
 import { getQuest } from "../gamedata/quests.js";
-import { caseInsensitive, readGameData } from "../gamedata/read.js";
+import { caseInsensitive, perBuild } from "../gamedata/read.js";
 import { heldQuantity, ownsNode } from "../profiles/homebase.js";
 import { lootEntry } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
@@ -27,12 +27,19 @@ import { isDone, questIdOf } from "../profiles/quests.js";
 // player is away fills the collector up to its capacity; the backend only touches last_updated when it banks or claims.
 // Profiles that owned the node before Core had collectors (issue #20) get one that has been filling since the node was
 // bought, as far as the profile shows (rateSince); the empty ones Core gave them before that start then too, once.
-const { collectors = {}, nodes = {}, buffs = {} } = readGameData("research", {});
-const collectorsById = caseInsensitive(collectors);
-const nodeEffects = Object.entries(nodes);
-const buffEffects = Object.entries(buffs);
-const affectsResearch = new Set([...nodeEffects.map(([id]) => `homebasenode:${id}`), ...buffEffects.map(([id]) => id)]
-  .map((templateId) => templateId.toLowerCase()));
+// Per build: 6.30 (CL-4573096) has nodes of its own (its HomebaseNode items, extractor README).
+const researchData = perBuild((read) => {
+  const { collectors = {}, nodes = {}, buffs = {} } = read("research", {});
+  const nodeEffects = Object.entries(nodes);
+  const buffEffects = Object.entries(buffs);
+  return {
+    collectorsById: caseInsensitive(collectors),
+    nodeEffects,
+    buffEffects,
+    affectsResearch: new Set([...nodeEffects.map(([id]) => `homebasenode:${id}`), ...buffEffects.map(([id]) => id)]
+      .map((templateId) => templateId.toLowerCase()))
+  };
+});
 
 const isCollector = (item) => item.templateId.toLowerCase().startsWith("collectedresource:");
 const secondsOf = (time) => Math.floor(time / 1000);
@@ -43,6 +50,7 @@ const timestamp = (now) => new Date(secondsOf(now.getTime()) * 1000).toISOString
 // the held account buffs' multipliers (GAS: (base + sum of adds) x (1 + sum of (factor - 1)); base 0), in float.
 export function homebaseAttribute(profile, attribute) {
   let added = 0;
+  const { nodeEffects, buffEffects } = researchData();
   for (const [nodeId, effects] of nodeEffects) {
     if (effects[attribute] && ownsNode(profile, nodeId)) added = Math.fround(added + effects[attribute]);
   }
@@ -55,7 +63,7 @@ export function homebaseAttribute(profile, attribute) {
 
 // The rate per second, the capacity (the client truncates it to an int) and the payout's wallet cap (Infinity without one).
 export function collectorRates(profile, templateId) {
-  const collector = collectorsById.get(templateId.toLowerCase());
+  const collector = researchData().collectorsById.get(templateId.toLowerCase());
   if (!collector) return { rate: 0, capacity: 0, walletCap: Infinity };
   return {
     rate: homebaseAttribute(profile, collector.rateAttribute),
@@ -80,7 +88,7 @@ function bank(tracker, itemId, value, now) {
 
 // The collectors the profile has a rate for but doesn't hold yet.
 export function missingCollectors(profile) {
-  return [...collectorsById.values()].map((collector) => collector.id)
+  return [...researchData().collectorsById.values()].map((collector) => collector.id)
     .filter((templateId) => collectorRates(profile, templateId).rate > 0
       && !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === templateId.toLowerCase()));
 }
@@ -99,6 +107,7 @@ export function addCollectors(session, now = new Date(), { since = false } = {})
 // owned node that gives the rate (HomebaseQuest_UnlockResearch: Acquire HomebaseNode:t1_main_fabc7c290). That is when the
 // quest completed or was claimed, so never before the node was bought. Undefined without one.
 function rateSince(profile, templateId) {
+  const { collectorsById, nodeEffects } = researchData();
   const collector = collectorsById.get(templateId.toLowerCase());
   if (!collector) return undefined;
   const rateNodes = new Set(nodeEffects.filter(([nodeId, effects]) => effects[collector.rateAttribute] && ownsNode(profile, nodeId))
@@ -144,7 +153,7 @@ export function setUpCollectors(session, now = new Date()) {
   }
 }
 
-export const changesResearch = (templateId) => affectsResearch.has(String(templateId).toLowerCase());
+export const changesResearch = (templateId) => researchData().affectsResearch.has(String(templateId).toLowerCase());
 
 // Runs a change to the homebase (a node or buff grant) with the collectors banked at their old rates first, and adds
 // any collector the change unlocks.
@@ -169,7 +178,7 @@ export function claimCollectedResources(session, collectorIds, notifications, no
   const loot = [];
   for (const itemId of ids) {
     const item = tracker.profile.items[itemId];
-    const collector = collectorsById.get(item.templateId.toLowerCase());
+    const collector = researchData().collectorsById.get(item.templateId.toLowerCase());
     const total = gathered(tracker.profile, item, now);
     let amount = collector ? Math.floor(total) : 0;
     if (collector) {

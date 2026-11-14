@@ -130,7 +130,11 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // and Touchdown in a third, the whole featured section from 10 to 13 November ("NFL themed Outfits debut in the Store
 // starting November 9 at 7 PM ET", Update v6.22: the shop of 10 November, UTC); Spike It (11 November), Denied (12
 // November) and A.X.E. (20 November). A.I.M. and E.L.I.M. are Season 6's cumulative challenges' reward (7 of them done).
-// Only 6.22's data has them, so 6.00's to 6.21's days are as they were. A build's season is its athena data's
+// Only 6.22's data has them, so 6.00's to 6.21's days are as they were. 6.30 (CL-4573096) adds its sixteen the shop sold,
+// on 9 days, the same way: Night Slicer (15 November), Castor and Elmira with Spellslinger and Magic Wings (16 and 17
+// November), Llamacadabra (17 November), Maki Master (21 November), Tender Defender with Scrambler and Flappy Flyer (23 and
+// 24 November), Taro and Nara with Gatekeeper and Flying Carp (25 and 26 November), Bombastic (26 November) and Riot (28
+// November). Only 6.30's data has them, so 6.00's to 6.22's days are as they were. A build's season is its athena data's
 // seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;

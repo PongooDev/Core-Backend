@@ -1,5 +1,5 @@
 import { getItem } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 import { heldQuantity, ownsNode } from "./homebase.js";
 
 // The item limits (inventory.json: what skill tree nodes and account buffs add to the FortHomebaseSet attributes).
@@ -29,10 +29,12 @@ import { heldQuantity, ownsNode } from "./homebase.js";
 // (sub_5DF090, "Backpack full!" / "Can't hold more of this item!", sub_5E5080).
 // 🟡 Core: world items MCP grants (rewards, the admin panel) that don't fit the backpack are put in its overflow, as the
 // zone does with items it has to keep; nothing past the 512-stack cap is granted.
-const { nodes = {}, buffs = {} } = readGameData("inventory", {});
+// Per build: 6.30 (CL-4573096) has nodes of its own (its HomebaseNode items, extractor README).
+const inventoryData = perBuild((read) => read("inventory", {}));
 export const worldStackCap = 512;
 
 function attribute(profile, name) {
+  const { nodes = {}, buffs = {} } = inventoryData();
   let total = 0;
   for (const [nodeId, effects] of Object.entries(nodes)) if (effects[name] && ownsNode(profile, nodeId)) total = Math.fround(total + effects[name]);
   for (const [buff, effects] of Object.entries(buffs)) if (effects[name] && heldQuantity(profile, buff) > 0) total = Math.fround(total + effects[name]);

@@ -40,6 +40,8 @@ import { currentEventsConfig } from "./events.js";
 // 6.22's (CL-4543176) are 6.21's less Fortnitemares_Part4 (events/events.js): every flag that runs to 6.21 runs to 6.22 but
 // that one. 6.22 serves by itself Save the World's Fortnitemares with Part 2 (FortnitemaresPhase2), LTM_Fortnitemares,
 // LTM_LilKevin and POI1; Battle Royale's Fortnitemares lobby and bus and POI0 are its switches only.
+// 6.30's (CL-4573096) are 6.22's less Horde (events/events.js): every flag that runs to 6.22 runs to 6.30 but the Cube's
+// end (POI0, POI1, the crack and the drain), which nothing in 6.30's paks watches any more (its island scripting is gone).
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -64,6 +66,7 @@ const b610 = 4480234;
 const b620 = 4497486;
 const b621 = 4526925;
 const b622 = 4543176;
+const b630 = 4573096;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -107,10 +110,10 @@ export const oddities = oddityProps.map(([prop, rift, tell, event], index) => ({
 
 export const season4FlagGroups = [
   { id: "blockbuster", name: "Save the World: Blockbuster", flags: [
-    flag("Blockbuster2018Phase1", [b40, b622], "Part 1, Origin Story: the front end's View Event and the quest map's Part 1 page"),
-    flag("Blockbuster2018Phase2", [b40, b622], "Part 2, A Hero Is Born: the quest map's Part 2 page"),
-    flag("Blockbuster2018Phase3", [b40, b622], "Part 3, The Cloaked Star: the quest map's side bar"),
-    flag("Blockbuster2018Phase4", [b440, b622], "Part 4, The Finale: the quest map's side bar (4.5's pages)")
+    flag("Blockbuster2018Phase1", [b40, b630], "Part 1, Origin Story: the front end's View Event and the quest map's Part 1 page"),
+    flag("Blockbuster2018Phase2", [b40, b630], "Part 2, A Hero Is Born: the quest map's Part 2 page"),
+    flag("Blockbuster2018Phase3", [b40, b630], "Part 3, The Cloaked Star: the quest map's side bar"),
+    flag("Blockbuster2018Phase4", [b440, b630], "Part 4, The Finale: the quest map's side bar (4.5's pages)")
   ] },
   // 5.0's Road Trip (events/roadtrip2018.js, Core-Backend #298): its quests, tickets, llama and Event Store go with
   // RoadTrip2018, Challenge the Horde's theater and alerts with Horde (below), each served by 5.0 itself.
@@ -124,35 +127,35 @@ export const season4FlagGroups = [
   { id: "birthday", name: "Fortnite Birthday (5.10)", flags: [
     flag("Anniversary2018_BR", [b5100, b521], "The Birthday Challenges (Schedule_Birthday2018_BR) and Save the World's Birthday quests, Birthday Llama and Urban Assault Sledgehammer"),
     flag("BirthdayBattleBus", [b5100, b600], "The birthday Battle Bus (BR_Decor_BirthdayBus)"),
-    flag("SupplyDropBDay", [b5100, b622], "Birthday supply drops (BR_Decor_SupplyDropBDay)")
+    flag("SupplyDropBDay", [b5100, b630], "Birthday supply drops (BR_Decor_SupplyDropBDay)")
   ] },
   { id: "alerts", name: "Save the World: mission alerts", flags: [
-    flag("ActiveMiniBosses", [b40, b622], "Mini-Boss alerts with Blockbuster Tickets (MiniBossCategory, quota 10; 6.00's to 6.10's Cram Session, with Gold; 6.20's Fortnitemares, with Candy)"),
-    flag("FortnitemaresPhase1", [b620, b622], "6.20: Fortnitemares Part 1, the quest map's Fortnitemares page and side bar (FortnitemaresQuestMap)"),
-    flag("FortnitemaresPhase2", [b620, b622], "Fortnitemares Part 2's quest map page: Update v6.22's, served by 6.22 itself (on 6.20 and 6.21 by this switch only; 6.21 has Part 2's heroes and Candy Corn LMG, none of its quests' rewards)"),
-    flag("PassiveMiniBosses", [b40, b622], "Mini-Boss alerts without tickets"),
-    flag("ActiveStorms", [b40, b622], "Mutant Storm alerts with tickets"),
-    flag("PassiveStorms", [b40, b622], "Mutant Storm alerts without tickets (StormLowCategory)"),
+    flag("ActiveMiniBosses", [b40, b630], "Mini-Boss alerts with Blockbuster Tickets (MiniBossCategory, quota 10; 6.00's to 6.10's Cram Session, with Gold; 6.20's Fortnitemares, with Candy)"),
+    flag("FortnitemaresPhase1", [b620, b630], "6.20: Fortnitemares Part 1, the quest map's Fortnitemares page and side bar (FortnitemaresQuestMap)"),
+    flag("FortnitemaresPhase2", [b620, b630], "Fortnitemares Part 2's quest map page: Update v6.22's, served by 6.22 and 6.30 themselves (on 6.20 and 6.21 by this switch only; 6.21 has Part 2's heroes and Candy Corn LMG, none of its quests' rewards)"),
+    flag("PassiveMiniBosses", [b40, b630], "Mini-Boss alerts without tickets"),
+    flag("ActiveStorms", [b40, b630], "Mutant Storm alerts with tickets"),
+    flag("PassiveStorms", [b40, b630], "Mutant Storm alerts without tickets (StormLowCategory)"),
     // 5.40's and 5.41's group missions carry Mega Alerts instead (Core-Backend #317), so the switch stops at 5.30.
     flag("GroupMission", [b42, b530], "Group mission alerts (GroupMissionCategory, quota 10; 5.40's and 5.41's group missions carry Mega Alerts)"),
-    flag("SurviveTheStorm", [b40, b622], "Survive the Storm's alerts"),
-    flag("Fortnitemares", [b40, b622], "Fortnitemares' alert rows; 6.20's quest map Fortnitemares page (QuestMapScreen), Hexsylvania and its quests"),
+    flag("SurviveTheStorm", [b40, b630], "Survive the Storm's alerts"),
+    flag("Fortnitemares", [b40, b630], "Fortnitemares' alert rows; 6.20's quest map Fortnitemares page (QuestMapScreen), Hexsylvania and its quests"),
     flag("Horde", [b40, b541], "Challenge the Horde: the Horde Skill Tree page (CCNodePages) and, on 5.0 to 5.41, the horde theater and its alerts (HordeCategory, quota 10)")
   ] },
   { id: "lobby", name: "Lobby", flags: [
     flag("LobbySeason4", [b40, b541], "The Season 4 lobby (Frontend_Lobby_Season4)"),
     flag("LobbyHalloweenDecor", [b40, b541], "The Halloween lobby"),
     flag("LobbyWinterDecor", [b40, b541], "The winter lobby"),
-    flag("LobbySeason6", [b6000, b622], "The Season 6 lobby (Frontend_Lobby_Season6_D), 6.00's to 6.22's own"),
-    flag("LobbySeason6Halloween", [b620, b622], "6.20 and 6.21: the Fortnitemares lobby (Frontend_Lobby_Season6_B), over LobbySeason6 (6.22: by this switch only)")
+    flag("LobbySeason6", [b6000, b630], "The Season 6 lobby (Frontend_Lobby_Season6_D), 6.00's to 6.30's own"),
+    flag("LobbySeason6Halloween", [b620, b630], "6.20 and 6.21: the Fortnitemares lobby (Frontend_Lobby_Season6_B), over LobbySeason6 (6.22 and 6.30: by this switch only)")
   ] },
   { id: "battleRoyale", name: "Battle Royale: items and modes", flags: [
     flag("BR.CandyCaneGuns", [b40, b610], "Candy cane guns (BR_Winter_CandyCaneGuns; gone from 6.20's paks)"),
-    flag("HalloweenBattleBus", [b620, b622], "6.20 and 6.21: the Halloween Battle Bus (BR_Decor_HalloweenBus, BBID_HalloweenBus; 6.22: by this switch only)"),
-    flag("LTM_Fortnitemares", [b620, b622], "6.20: the Fortnitemares Challenges (Schedule_Fortnitemares)"),
-    flag("LTM_LilKevin", [b621, b622], "6.21 and 6.22: the Lil' Kev challenges (Schedule_LTM_LilKevin: play matches, earn season XP, outlast opponents; the Lil' Kev back bling)"),
+    flag("HalloweenBattleBus", [b620, b630], "6.20 and 6.21: the Halloween Battle Bus (BR_Decor_HalloweenBus, BBID_HalloweenBus; 6.22 and 6.30: by this switch only)"),
+    flag("LTM_Fortnitemares", [b620, b630], "6.20: the Fortnitemares Challenges (Schedule_Fortnitemares)"),
+    flag("LTM_LilKevin", [b621, b630], "6.21 to 6.30: the Lil' Kev challenges (Schedule_LTM_LilKevin: play matches, earn season XP, outlast opponents; the Lil' Kev back bling)"),
     flag("Fortnitemares_Part4", [b621, b621], "6.21: Fortnitemares' Part 4 (BP_HauntedObject_Rework watches it; nothing it does shows)"),
-    flag("SupplyDropGift", [b40, b622], "Supply drops as presents"),
+    flag("SupplyDropGift", [b40, b630], "Supply drops as presents"),
     flag("BR.Allow50v50", [b40, b42], "Allows the 50v50 playlist"),
     flag("BR.DisallowSolo", [b40, b42], "Takes Solo off the lobby"),
     flag("BR.DisallowDuo", [b40, b42], "Takes Duos off the lobby"),
@@ -162,7 +165,7 @@ export const season4FlagGroups = [
   // 5.40's and 5.41's only the drive-in's, as 6.00's to 6.10's.
   { id: "season5Map", name: "Battle Royale map: Season 5 (5.10 – 6.10)", flags: [
     flag("BR_S5_Rift_Shrink", [b5100, b530], "The sky's rift shrinks (BP_Athena_Event_Components)"),
-    flag("BR_S5_RiskyReels_Event", [b5100, b622], "Risky Reels' drive-in projector event (DriveIn_Projector)")
+    flag("BR_S5_RiskyReels_Event", [b5100, b630], "Risky Reels' drive-in projector event (DriveIn_Projector)")
   ] },
   // 5.21's Tomato Town rift (Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, events/tomatorift.js): served by
   // their dates on Season 5's replay, or always or never by their switch.

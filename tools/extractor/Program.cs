@@ -565,19 +565,77 @@ var nodes = new SortedDictionary<string, object>(StringComparer.Ordinal);
 // What a node unlocks are the gameplay tags its effect rows grant (HomebaseNodeGameplayEffectDataTable
 // GrantedTagsContainer): Unlocks.Class.*, Unlocks.Recycler.*, Evolution.*, Expedition.* and so on.
 var nodeEffects = LoadRows(provider, manager["HomebaseNodeGameplayEffectDataTable"]);
-foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+// 6.30 (CL 4573096, Update v6.30's Save the World front end) drops the skill and research trees: its homebase manager
+// names no HomebaseNodeDataTable or HomebaseNodePageDataTable (its effect rows are CommandConsole_GEImporter_NewSkillTree,
+// and a ResearchSystemUpgradesTable is new). Its nodes are items, FortHomebaseNodeItemDefinition assets in
+// Items/HomebaseNodes (HomebaseNode:<asset>): the Upgrades page's SkillTree_*, the quests' QuestReward_* and the account
+// levels' CommanderLevel_*, StartNode_CommandCenter among them. Each has LevelData, one FHomebaseNodeLevelData per level
+// (DisplayDataId, MinCommanderLevel, Cost, GameplayEffectRowNames, AbilityKit, UnlockedSquadSlots), and a DisplayType
+// (EHomebaseNodeType). A node's first level stands in for a skill tree row (what owning the node gives), and every level
+// is written as `levels`. No node has prerequisites, quests or a page any more.
+var nodeRows = new List<(string Id, JsonNode Row)>();
+var nodeLevels = new Dictionary<string, JsonArray>(StringComparer.Ordinal);
+var nodeDisplayTypes = new Dictionary<string, string>(StringComparer.Ordinal);
+if (manager["HomebaseNodeDataTable"] is not null)
+{
+    foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"])) nodeRows.Add((id, row!));
+}
+else
+{
+    foreach (var file in provider.Files.Values.Where(f => f.Path.StartsWith("FortniteGame/Content/Items/HomebaseNodes/", StringComparison.OrdinalIgnoreCase)
+        && f.Extension.Equals("uasset", StringComparison.OrdinalIgnoreCase)).OrderBy(f => f.Path, StringComparer.Ordinal))
+    {
+        if (!provider.TryLoadPackage(file.Path, out var package)) continue;
+        var name = file.NameWithoutExtension;
+        var export = package.GetExports().FirstOrDefault(e => e.ExportType == "FortHomebaseNodeItemDefinition" && e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        if (export is null) continue;
+        var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"];
+        var levels = properties?["LevelData"]?.AsArray() ?? [];
+        if (levels.Count == 0) continue;
+        nodeRows.Add((name, levels[0]!));
+        nodeLevels[name] = levels;
+        // Unset is the enum's first value, Gadget (the Upgrades page's gadgets: SkillTree_Airstrike, _SupplyDrop...).
+        nodeDisplayTypes[name] = Enum(properties!["DisplayType"]) ?? "Gadget";
+    }
+}
+List<string> NodeTags(JsonNode row) => Strings(row["GameplayEffectRowNames"])
+    .SelectMany(effect => Strings(nodeEffects[effect]?["GrantedTagsContainer"]))
+    .Distinct(StringComparer.Ordinal).OrderBy(tag => tag, StringComparer.Ordinal).ToList();
+List<SortedDictionary<string, object>> NodeCost(JsonNode row) => (row["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["templateId"] = ItemAndCountTemplateId(c!, assetTypes),
+    ["quantity"] = c["Quantity"]?.GetValue<int>() ?? 0
+}).ToList();
+List<SortedDictionary<string, object>> NodeSquadSlots(JsonNode row) => (row["UnlockedSquadSlots"]?.AsArray() ?? []).Select(slot => new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["squadId"] = slot!["SquadId"]!.GetValue<string>(),
+    ["slot"] = slot["SquadSlotIndex"]?.GetValue<int>() ?? 0
+}).ToList();
+foreach (var (id, row) in nodeRows)
 {
     var node = new SortedDictionary<string, object>(StringComparer.Ordinal);
-    var grantedTags = Strings(row!["GameplayEffectRowNames"])
-        .SelectMany(effect => Strings(nodeEffects[effect]?["GrantedTagsContainer"]))
-        .Distinct(StringComparer.Ordinal).OrderBy(tag => tag, StringComparer.Ordinal).ToList();
+    var grantedTags = NodeTags(row);
     if (grantedTags.Count > 0) node["tags"] = grantedTags;
-    var cost = (row["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
-    {
-        ["templateId"] = ItemAndCountTemplateId(c!, assetTypes),
-        ["quantity"] = c["Quantity"]?.GetValue<int>() ?? 0
-    }).ToList();
+    var cost = NodeCost(row);
     if (cost.Count > 0) node["cost"] = cost;
+    if (nodeLevels.TryGetValue(id, out var levelData))
+    {
+        node["displayType"] = nodeDisplayTypes[id];
+        node["levels"] = levelData.Select(level =>
+        {
+            var entry = new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["minCommanderLevel"] = level!["MinCommanderLevel"]?.GetValue<int>() ?? 0,
+                ["effects"] = Strings(level["GameplayEffectRowNames"])
+            };
+            if (NodeTags(level) is { Count: > 0 } levelTags) entry["tags"] = levelTags;
+            if (NodeCost(level) is { Count: > 0 } levelCost) entry["cost"] = levelCost;
+            if (NodeSquadSlots(level) is { Count: > 0 } levelSlots) entry["squadSlots"] = levelSlots;
+            var kit = level["AbilityKit"]?["AssetPathName"]?.GetValue<string>() ?? "None";
+            if (kit != "None") entry["abilityKit"] = assetTypes.TemplateId(kit);
+            return entry;
+        }).ToList();
+    }
     var prerequisites = (row["OR_Prerequisites"]?.AsArray() ?? []).Select(group => (group!["AND_Prerequisites"]?.AsArray() ?? []).Select(a =>
     {
         var nodeId = a!["NodeInstanceId"]?.GetValue<string>() ?? "None";
@@ -602,7 +660,10 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
     nodes[id] = node;
 }
 var pages = new SortedDictionary<string, object>(StringComparer.Ordinal);
-foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodePageDataTable"])) pages[id] = Strings(row!["NodeList"]);
+if (manager["HomebaseNodePageDataTable"] is not null)
+{
+    foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodePageDataTable"])) pages[id] = Strings(row!["NodeList"]);
+}
 
 // Research points come from a resource collector (UFortCollectedResourceItem, profile0 CollectedResource:<X>). The
 // client's rate and capacity for it are the homebase attributes rate_per_second_collector_<X> and
@@ -613,9 +674,9 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodePageDataTable"
 const string ratePrefix = "rate_per_second_collector_", capacityPrefix = "max_capacity_collector_", walletAttribute = "ResearchPointMaxBonus";
 static bool ResearchAttribute(string attribute) => attribute.StartsWith(ratePrefix) || attribute.StartsWith(capacityPrefix) || attribute == walletAttribute;
 var researchNodes = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
-foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+foreach (var (id, row) in nodeRows)
 {
-    foreach (var effect in Strings(row!["GameplayEffectRowNames"]))
+    foreach (var effect in Strings(row["GameplayEffectRowNames"]))
     {
         var modifier = nodeEffects[effect];
         var attribute = modifier?["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
@@ -630,9 +691,9 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
 // inventory bonus tokens), the backpack's WorldInventorySizeBonus and the storage vault's StorageInventorySizeBonus.
 string[] inventoryAttributes = ["InventorySizeBonus", "WorldInventorySizeBonus", "StorageInventorySizeBonus"];
 var inventoryNodes = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
-foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+foreach (var (id, row) in nodeRows)
 {
-    foreach (var effect in Strings(row!["GameplayEffectRowNames"]))
+    foreach (var effect in Strings(row["GameplayEffectRowNames"]))
     {
         var modifier = nodeEffects[effect];
         var attribute = modifier?["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
@@ -1061,11 +1122,20 @@ foreach (var (id, row) in LoadRows(provider, book["BookXPData"]).OrderBy(entry =
 
 // Account levels (FortLevelUpData): the total XP each level needs, how XP shows in the UI, and what reaching it gives
 // ("/Game/Items/Tokens/HomebasePoints.HomebasePoints=1", comma separated).
+// 6.30 (CL 4573096) moves them to Balance/DataTables/AccountLevels (DefaultGameData XPAccountLevelsTable), FortLevelUpDataV2
+// rows whose Rewards are {TemplateId, Quantity} (Update v6.30: "You will now receive FORT stats, Upgrade Points, Research
+// Point Generation, Heroes, Schematics, or other items and resources every time your Account Level increases"), written
+// as {templateId, quantity}; a row with an empty TemplateId gives nothing.
 var accountLevels = new List<object>();
-foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/DataTables/XPAccountLevels.XPAccountLevels"))
+foreach (var (id, row) in LoadRows(provider, gameData["Properties"]!["XPAccountLevelsTable"] ?? JsonValue.Create("/Game/Balance/DataTables/XPAccountLevels.XPAccountLevels"))
     .OrderBy(entry => int.Parse(entry.Key)))
 {
-    var rewards = (row!["ItemRewardsText"]?.GetValue<string>() ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    var rewards = row!["Rewards"] is JsonArray rewardsV2
+        ? rewardsV2.Select(reward => (templateId: reward!["TemplateId"]?.GetValue<string>() ?? "", quantity: reward["Quantity"]?.GetValue<int>() ?? 1))
+            .Where(reward => reward.templateId != "")
+            .Select(reward => new SortedDictionary<string, object>(StringComparer.Ordinal) { ["templateId"] = reward.templateId, ["quantity"] = reward.quantity })
+            .ToList()
+        : (row["ItemRewardsText"]?.GetValue<string>() ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Select(reward => reward.Split('='))
         .Select(parts => new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
@@ -1167,10 +1237,14 @@ File.WriteAllText(Path.Combine(output, "inventory.json"), JsonSerializer.Seriali
 {
     ["nodes"] = inventoryNodes, ["buffs"] = inventoryBuffs
 }, options) + "\n");
-File.WriteAllText(Path.Combine(output, "research.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+var research = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["collectors"] = collectors, ["nodes"] = researchNodes, ["buffs"] = researchBuffs
-}, options) + "\n");
+};
+// 6.30's (CL 4573096) Research page: the homebase manager's ResearchSystemUpgradesTable (Research/ResearchSystem, a curve
+// table: each FORT stat's cost and bonus by level, e.g. fortitude_cost) as `stats`, rows by level as the other curves.
+if (manager["ResearchSystemUpgradesTable"] is { } researchTable) research["stats"] = Curves(provider, PackageFile(researchTable));
+File.WriteAllText(Path.Combine(output, "research.json"), JsonSerializer.Serialize(research, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
 File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize(banners, options) + "\n");
 File.WriteAllText(Path.Combine(output, "transmog.json"), JsonSerializer.Serialize(transmogKeys, options) + "\n");
@@ -1956,6 +2030,10 @@ static class ItemClasses
         ["FortHomebaseBannerColorItemDefinition"] = "FortAccountItemDefinition",
         ["FortHomebaseBannerIconItemDefinition"] = "FortAccountItemDefinition",
         ["FortHomebaseNodeItemDefinition"] = "FortAccountItemDefinition",
+        // 6.30's (CL 4573096) FORT stats (Stat:fortitude...: the account levels' and the Research page's rewards) and
+        // Save the World hero loadouts (CampaignHeroLoadout:, Items/Loadouts).
+        ["FortStatItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCampaignHeroLoadoutItemDefinition"] = "FortAccountItemDefinition",
         ["FortPersistentResourceItemDefinition"] = "FortAccountItemDefinition",
         ["FortQuestItemDefinition"] = "FortAccountItemDefinition",
         ["FortQuotaItemDefinition"] = "FortAccountItemDefinition",
@@ -2006,7 +2084,10 @@ static class ItemClasses
         ["FortIngredientItemDefinition"] = 999,
         ["FortNeverPersistItemDefinition"] = int.MaxValue,
         ["FortPersistentResourceItemDefinition"] = -1,
-        ["FortResourceItemDefinition"] = int.MaxValue
+        ["FortResourceItemDefinition"] = int.MaxValue,
+        // 6.30's (CL-4573096) FORT stats: one stack each, its quantity the stat (🟡 not read from the constructor: Epic's
+        // campaign profiles hold one Stat:fortitude item whose quantity is the sum of the rewards, e.g. 540).
+        ["FortStatItemDefinition"] = -1
     };
 
     // bHasDisintegrationValue / bUsesCraftingRecipeToGetDisintegrationValue as each class's constructor sets them: consumables

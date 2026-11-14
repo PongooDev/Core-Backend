@@ -258,7 +258,28 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // 6.20 (CL-4497486; Update v6.20) names no Weekly Store item: its Fortnitemares weapons, the Rat Rod set (Swan, Drifter,
 // Axle, Two Step, Crankshot), are "available in the Fortnitemares Llama" (events/candyllamas.js, store/catalog.js), so 6.20
 // keeps 6.10's weeks (🟡 the Rat King and the Grave Digger stay after 24 October).
+// 6.30's (CL-4573096; Update v6.30 and its Content Update): "Last Word Revolver added to the weekly store ... Available
+// Wednesday, November 14 at 7 PM EST until Wednesday, November 21 at 7 PM EST" (SID_Pistol_Revolver_SingleAction_SR_Ore_T01,
+// "Last Word", new in 6.30's data), then "8 Bit Demo returns to the Weekly Store ... Available Wednesday, November 21 at 7 PM
+// EST until Wednesday, November 28 at 7 PM EST" (Hero:HID_Constructor_016_M_V1_BlockBuster_SR_T01, "8-Bit Demo") and "Ghost
+// Pistol added to the Weekly Store" for the same week (SID_Pistol_Halloween_HandCannon_SR_Ore_T01, "Ghost Pistol", 6.21's
+// Halloween hand cannon): from 15 and 22 November 00:00 UTC on Season 6's replay, 6.10's weeks before them, the schematics
+// at a legendary schematic's 1,680 Gold and the hero at a legendary hero's 2,800, one each (🟡 Epic's prices and limits
+// aren't recorded).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4573096, season: 6, weeks: [
+    { from: "2018-11-22T00:00:00.000Z", items: [{ templateId: "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01", price: 2800, limit: 1 },
+      { templateId: "Schematic:sid_pistol_halloween_handcannon_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-11-15T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_revolver_singleaction_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-18T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_ratrod_slug_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_assault_auto_halloween_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-11T00:00:00.000Z", items: [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_shotgun_standard_vt_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-04T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_hammer_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_sniper_military_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_pistol_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01", price: 600, limit: 1 }] }
+  ] },
   { firstBuild: 4464155, season: 6, weeks: [
     { from: "2018-10-18T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_ratrod_slug_sr_ore_t01", price: 1680, limit: 1 },
       { templateId: "Schematic:sid_assault_auto_halloween_sr_ore_t01", price: 1680, limit: 1 }] },

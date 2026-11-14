@@ -61,7 +61,14 @@ export const playlistImagesBuild = 4039451;
 // keeps the same names (its strings against 6.21's). Its Team Terror (Playlist_Deimos_50) has the tile Epic's later page
 // names for it, playlist_name "playlist_deimos_50" (the tile's FName compare ignores case),
 // BR06_In-GamePlaylist_TeamTerror_1024x512 (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 481,922 bytes, the hash
-// in its name the file's SHA-1), with no border.
+// in its name the file's SHA-1), with no border. 6.30's exe (CL-4573096) keeps the same names (playlistinformation,
+// playlist_info, special_border, tournamentinformation; its strings against 6.22's). Its Food Fight (Playlist_Barrier and
+// Playlist_Barrier_12) has the tile Epic's later page names for Playlist_Barrier_12, BR06_LobbyTile_FoodFight (the page's
+// Playlist_Barrier_16 tile, BR_LTM_FoodFight16, is a later season's), and its Wild West (Playlist_WW_Solo, _Duos and
+// _Squads) the Season 6 tile that page names for Playlist_WW_Duos, BR06_ModeTile_LTM_WildWest (its Solo and Squads have a
+// later rerun's BR_LTM_WildWest there); both on Epic's CDN, checked 2026-11-14: 200, image/png and image/jpeg, 489,196 and
+// 330,155 bytes, the hash in each name the file's SHA-1; no border. Its Disco Domination (32 v 32, Alt) takes the mode's
+// tile, as 6.20's did (the page's BR_LTM_HolidayDisco is a later season's).
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -89,6 +96,8 @@ const fortnitemaresDuosTile = `${cdn}/playlistinformation/BR06_Fortnitemares_In-
 const fortnitemaresSquadsTile = `${cdn}/playlistinformation/BR06_Fortnitemares_In-GamePlaylist_1024x512_Squads-1024x512-783a0812f6acf1f5931c8015e6ad13c0b76c5a9c.jpg`;
 const teamTerrorTile = `${cdn}/playlistinformation/BR06_In-GamePlaylist_TeamTerror-1024x512-310430bdaf1b1dd0ecb4d3b180bb6409b7ff6e27.jpg`;
 const discoDominationTile = `${cdn}/playlistinformation/BR06_LobbyTile_LTM_DiscoDomination-1024x512-c79f07de78d8283656fcf4d1ee757f880911d775.jpg`;
+const foodFightTile = `${cdn}/playlistinformation/BR06_LobbyTile_FoodFight-1024x512-5e1540a0a2ba0a1f663d32c60cfec3a360278672.png`;
+const wildWestTile = `${cdn}/playlistinformation/BR06_ModeTile_LTM_WildWest-1024x512-f67d9d1dd2ca0b290c92b1380240429f0f257a10.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -142,7 +151,12 @@ export const epicPlaylistImages = {
   Playlist_Deimos_Solo: fortnitemaresSoloTile,
   Playlist_Deimos_Duo: fortnitemaresDuosTile,
   Playlist_Deimos_Squad: fortnitemaresSquadsTile,
-  Playlist_Deimos_50: teamTerrorTile
+  Playlist_Deimos_50: teamTerrorTile,
+  Playlist_Barrier: foodFightTile,
+  Playlist_Barrier_12: foodFightTile,
+  Playlist_WW_Solo: wildWestTile,
+  Playlist_WW_Duos: wildWestTile,
+  Playlist_WW_Squads: wildWestTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

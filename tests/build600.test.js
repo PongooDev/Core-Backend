@@ -55,9 +55,9 @@ test("6.00's two changelists are known, both play on CL-4402180's data, Season 6
   assert.equal(allowedBuildList(["6.00.0"]).join(), v6000);
   assert.equal(dataBuild("4380000"), v541, "a build between 5.41 and 6.00 Core doesn't know plays on 5.41's");
   // Season 6's newest data is 6.22's now (tests/build622.test.js).
-  assert.equal(buildOfSeason(6), "4543176");
+  assert.equal(buildOfSeason(6), "4573096");
   assert.equal(buildOfSeason(5), v541);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.22)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.30)");
   for (const build of builds600) {
     const season = inBuild(build, athenaSeason);
     assert.deepEqual([season.seasonNumber, season.numSeasonLevels, season.numBookLevels, season.storefront], [6, 100, 100, "BRSeason6"]);
@@ -106,7 +106,7 @@ test("6.00's event flags: LobbySeason6, the ticketless storms and Cram Session's
   }
   assert.equal(inBuild(v541, () => isEventActive(cramSession2018)), false);
   for (const flag of [cubeTurnOn, ltmHeist, "EventFlag.RoadTrip2018", "EventFlag.Horde"]) assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [Number(v6000), 4543176], "LobbySeason6 runs on to 6.22");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [Number(v6000), 4573096], "LobbySeason6 runs on to 6.30");
   withConfig(replay, () => {
     assert.deepEqual(inBuild(v600, () => cubeStates(at("2018-10-01T00:00:00Z"))), []);
     assert.deepEqual(inBuild(v600, () => highStakesStates(at("2018-10-01T00:00:00Z"))), []);
@@ -161,8 +161,10 @@ test("6.00's shop: Season 6's history from 27 September 2018, 70 days, with Airh
   const c621 = inBuild("4526925", athenaCosmetics);
   assert.equal(later.filter((id) => !c620[id] && c621[id]).length, 14, "6.21's");
   const c622 = inBuild("4543176", athenaCosmetics);
-  assert.equal(later.filter((id) => !c621[id]).length, 17, "6.22's");
-  assert.ok(later.every((id) => c622[id]), "and nothing later");
+  assert.equal(later.filter((id) => !c621[id] && c622[id]).length, 17, "6.22's");
+  const c630 = inBuild("4573096", athenaCosmetics);
+  assert.equal(later.filter((id) => !c622[id]).length, 16, "6.30's");
+  assert.ok(later.every((id) => c630[id]), "and nothing later");
   for (const iso of ["2018-09-30T12:00:00Z", "2018-10-05T12:00:00Z", "2018-10-07T12:00:00Z", "2018-11-15T12:00:00Z"]) {
     const offers = inBuild(v600, () => itemShopOffers(at(iso), { mode: "fnbr", rotationHour: 0, seasonStarts: { 6: "2018-09-27" } }));
     assert.ok([...offers.BRWeeklyStorefront, ...offers.BRDailyStorefront].every(({ templateId }) => c600[templateId]), `6.00's own on ${iso}`);

@@ -1,0 +1,69 @@
+{
+  "Squad_Defender_DefenderSquadFour": null,
+  "Squad_Defender_DefenderSquadThree": null,
+  "Squad_Defender_DefenderSquadTwo": null,
+  "Squad_Combat_NewHeroSquad": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "CombatSquad"
+  },
+  "Squad_Defender_MissionDefender": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "DefenderSquad"
+  }
+}

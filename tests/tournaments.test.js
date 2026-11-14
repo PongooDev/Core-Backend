@@ -11,9 +11,11 @@ const may = rulesets.soloShowdownMay2018;
 const july = rulesets.soloShowdownJuly2018;
 
 test("Solo Showdown's placement table, and July 2018's 6 points an elimination (#263)", () => {
-  // 6.10's three and 6.20's three are the in-game ones (tests/build610.test.js, tests/build620.test.js).
+  // 6.10's three, 6.20's three and 6.30's three are the in-game ones (tests/build610.test.js, tests/build620.test.js,
+  // tests/build630.test.js).
   assert.deepEqual(tournamentPlaylists.map(({ id, playlistId }) => [id, playlistId]), [["soloShowdown", 51], ["showdownSolo", 58071], ["showdownDuos", 58072], ["showdownSquads", 58073],
-    ["fortnitemaresShowSolo", 59071], ["fortnitemaresShowDuos", 59072], ["fortnitemaresShowSquads", 59073]]);
+    ["fortnitemaresShowSolo", 59071], ["fortnitemaresShowDuos", 59072], ["fortnitemaresShowSquads", 59073],
+    ["scavengerSolo", 58074], ["scavengerDuos", 58075], ["scavengerSquads", 58076]]);
   for (const [place, points] of [[1, 100], [2, 94], [3, 91], [4, 88], [5, 85], [6, 80], [7, 75], [8, 70], [9, 65], [10, 60],
     [11, 55], [15, 55], [16, 50], [20, 50], [21, 45], [30, 45], [31, 40], [40, 40], [41, 35], [50, 35], [51, 30], [75, 30], [76, 25], [100, 25]]) {
     assert.equal(placementPoints(may, place), points, `place ${place}`);

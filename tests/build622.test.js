@@ -69,15 +69,15 @@ const asBuild = (build, version = "6.22") => (port, urlPath, token, method = "GE
   return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
 };
 
-test("6.22 is known, on its own data, Season 6's newest", () => {
+test("6.22 is known, on its own data, in Season 6", () => {
   assert.equal(versionOf(v622), "6.22");
   assert.equal(allowedBuildList(["6.22"]).join(), v622);
   assert.equal(dataBuild(v622), v622);
   assert.equal(dataBuild("4535000"), v621, "a build between 6.21 and 6.22 plays on 6.21's");
   assert.equal(dataBuild(v621), v621, "6.21 keeps its own data");
-  assert.equal(dataBuild("4600000"), v622, "a later build Core doesn't know plays on 6.22's");
-  assert.equal(buildOfSeason(6), v622);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.22)");
+  assert.equal(dataBuild("4560000"), v622, "a build between 6.22 and 6.30 plays on 6.22's");
+  assert.equal(buildOfSeason(6), "4573096", "Season 6's newest data is 6.30's now (tests/build630.test.js)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.30)");
   assert.equal(inBuild(v622, athenaSeason).seasonNumber, 6);
   assert.deepEqual({ ...inBuild(v622, athenaSeason), seasonRewards: null }, { ...inBuild(v621, athenaSeason), seasonRewards: null }, "AthenaSeason6's tiers are 6.21's");
 });
@@ -125,11 +125,11 @@ test("6.22's event flags: Save the World's Fortnitemares with Part 2, the challe
   assert.equal(activeEventFlags(v621).includes(fortnitemaresPhase2), false, "6.21 is as it was");
   assert.ok(activeEventFlags(v621).includes(islandPoi(0)));
   assert.equal(activeEventFlags(v621).includes(islandPoi(1)), false);
-  for (const flag of [islandPoi(0), islandPoi(1), islandCrack, ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, fortnitemaresPhase2]) {
-    assert.equal(season4Flag(flag).builds[1], Number(v622), flag);
-  }
+  for (const flag of [islandPoi(0), islandPoi(1), islandCrack]) assert.equal(season4Flag(flag).builds[1], Number(v622), flag);
+  // and on to 6.30 (tests/build630.test.js), but the Cube's end.
+  for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, fortnitemaresPhase2]) assert.equal(season4Flag(flag).builds[1], 4573096, flag);
   assert.deepEqual(season4Flag(islandDrain).builds, [Number(v621), Number(v622)]);
-  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), Number(v622)]);
+  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4573096]);
   assert.deepEqual(season4Flag(fortnitemaresPart4).builds, [Number(v621), Number(v621)], "gone from 6.22's paks");
   assert.equal(inBuild(v622, () => isEventActive(fortnitemares)), true);
   assert.equal(inBuild(v622, () => isEventActive(fortnitemares2018)), true);
@@ -237,8 +237,10 @@ test("6.22's shop: the NFL outfits, their referees and tools from 10 November, S
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c622, c621] = [inBuild(v622, athenaCosmetics), inBuild(v621, athenaCosmetics)];
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c622[id])), "only 6.22's cosmetics");
-  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c621[id]))];
+  // The history holds 6.30's sixteen too (tests/build630.test.js); 6.22 is shown its own.
+  const c630 = inBuild("4573096", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c630[id])), "only 6.30's cosmetics");
+  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c621[id] && c622[id]))];
   assert.equal(own.length, 17);
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaCharacter:cid_207_athena_commando_m_footballdudea"), ["11-10", "11-11", "11-12", "11-13"]);

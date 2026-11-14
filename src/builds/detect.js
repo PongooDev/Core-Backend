@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22", 4573096: "6.30" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -84,13 +84,19 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // outfits and Fortnitemares Part 2 in Save the World) is one build, CL-4543176 (its paks are dated 6 November), whose data
 // is gamedata/4543176 (a full install again: pakchunk1 and pakchunk1_s1, Save the World's mission maps and tiles, and the
 // language paks are back). It keeps AthenaSeason6.
+// 6.30 (++Fortnite+Release-6.30, UE 4.21, Update v6.30, 14 November 2018: Food Fight, the Mounted Turret and Save the
+// World's new front end; Content Update v6.30, 20 November: Wild West and the Dynamite) is CL-4573096, whose files are
+// dated 19 November, the Content Update's eve, with Wild West's playlists and the Dynamite in its paks: the one build
+// both of 6.30's dates are served by here. Its data is gamedata/4573096. Its install has pakchunk0 and its s1 to s6 and
+// two keyed paks, pakchunk1000 and 1001 (the backend's keychain has their keys): no pakchunk1 (Save the World's mission
+// maps and tiles) and no language paks. It keeps AthenaSeason6.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
   { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
   { season: 4, firstVersion: "4.0", lastVersion: "4.5" },
   { season: 5, firstVersion: "5.0", lastVersion: "5.41" },
-  { season: 6, firstVersion: "6.00", lastVersion: "6.22" }
+  { season: 6, firstVersion: "6.00", lastVersion: "6.30" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {

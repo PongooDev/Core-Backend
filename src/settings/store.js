@@ -57,15 +57,18 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 6.20's (CL-4497486) Fortnitemares (Solo, Duos, Squads) and two more Disco Dominations.
   "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "discoDomination40Alt", "discoDomination32Alt",
   // 6.22's (CL-4543176) Team Terror.
-  "teamTerror"];
+  "teamTerror",
+  // 6.30's (CL-4573096) Food Fight (24 and 12 a side), Wild West (Solo, Duos, Squads) and Disco Domination (32 v 32, Alt).
+  "foodFight", "foodFight12", "wildWestSolo", "wildWestDuos", "wildWestSquads", "discoDomination32Alt630"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
 // 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos, 6.00's 50v50 and 6.02's Disco Domination are on by default from the
 // start: a settings file without its key takes the default. So are 6.20's Fortnitemares and 6.22's Team Terror (a server
-// owner's request: "enable the playlist by default").
+// owner's request: "enable the playlist by default"), and 6.30's Food Fight and Wild West, the modes 6.30 shipped with.
 const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6", "discoDomination602",
-  "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "teamTerror"];
+  "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "teamTerror",
+  "foodFight", "wildWestSolo", "wildWestDuos", "wildWestSquads"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.

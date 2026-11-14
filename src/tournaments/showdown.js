@@ -413,7 +413,8 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
   const event = named ?? events.find((own) => statusOf(own, now) === "running");
   if (!event || statusOf(event, now) !== "running") return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
   const ltm = showdownPlaylistOf(event);
-  const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4 }[ltm.id];
+  const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4,
+    scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4 }[ltm.id];
   if (partySize !== teamSize) return refuse("wrong_number_of_event_players", "You need to be in a full party for this tournament.");
   return { event };
 }

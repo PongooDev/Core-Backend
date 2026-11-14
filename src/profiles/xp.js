@@ -74,8 +74,8 @@ export function settleLevel(session) {
     xp -= xpForLevel(level);
     level += 1;
     gained.push(level);
-    for (const { asset, quantity } of levelData(level).rewards) {
-      const templateId = rewardTemplate(asset);
+    for (const { asset, templateId: rewardId, quantity } of levelData(level).rewards) {
+      const templateId = rewardId ?? rewardTemplate(asset);
       if (templateId) grant(session, templateId, quantity, { packSource: "LevelUp" });
     }
   }
@@ -85,7 +85,9 @@ export function settleLevel(session) {
   return gained;
 }
 
-// Level-up rewards name assets ("HomebasePoints"); items are keyed "Type:name".
+// Level-up rewards name assets ("HomebasePoints"); items are keyed "Type:name". 6.30's (CL-4573096, Balance/DataTables/
+// AccountLevels, FortLevelUpDataV2) name their template ids ("Stat:fortitude", "Schematic:sid_...", "HomebaseNode:..."),
+// granted as they are.
 const rewardTemplate = (asset) => itemIds().find((id) => id.split(":")[1] === asset.toLowerCase());
 
 // Match score to account XP: UFortGameData ScoreToXPLinearRate 0.612901 up to LinearEnd 18,300,000 score
