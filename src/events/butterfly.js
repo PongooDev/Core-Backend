@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedEventOn, datedParts, datedSettings, datedWindows } from "./datedflags.js";
-import { currentEventsConfig, seasonalEventsOn } from "./events.js";
+import { activeEventFlags, currentEventsConfig, islandPoi, seasonalEventsOn } from "./events.js";
 import { season4Overrides } from "./season4flags.js";
 
 // The Butterfly, Season 6's end-of-Fortnitemares live event (6.21, CL-4526925; 4 November 2018, 18:00 UTC). How 6.21 plays
@@ -33,7 +33,9 @@ import { season4Overrides } from "./season4flags.js";
 // running then, and a match that starts in POI0's last 30 minutes has its storm close on the Butterfly's place.
 // Off (the default), 6.21 serves POI0 by itself and POI1, the crack and the drain only by their switches
 // (events/season4flags.js); on Epic's dates or the admin's times, POI0 is the schedule's, until the Butterfly
-// (events/events.js activeEventFlags).
+// (events/events.js activeEventFlags). "Before the event" (Core-Backend #354, the Events page's Butterfly card) puts the map
+// back to its pre-event state and holds it there: POI0 served, POI1, the crack and the drain not, whatever their switches
+// say, so 6.21's Fortnitemares modes are back too (leakyLakeState).
 export const butterflyEvent = datedEvent("butterfly");
 export const butterflyBuilds = [4526925];
 
@@ -48,4 +50,18 @@ export function butterflyStates(now = new Date(), changelist = currentBuild(), c
   const windows = datedWindows(datedEventOn(butterflyEvent, changelist), datedSettings(config).butterfly, nowMs, seasonMoment(now, null, 6).getTime());
   if (!windows.length) return [];
   return datedParts(windows, nowMs, butterflyEvent.parts, new Set([...off, ...on]));
+}
+
+// The Leaky Lake's state on 6.21 now, as its island scripting reads it (BP_IslandServerOnly's EventBinding1, ["POI0",
+// "POI1"]): "after" once POI1 is served (the Butterfly has happened: by its schedule, butterflyStates, or by the POI1 switch,
+// season4Overrides), else "before" (Fortnitemares' Cube Monsters' days, POI0's); null on a build without the Butterfly
+// (6.20's island scripting has the bindings but no Butterfly, 6.22's lake is after it by itself). Epic's Fortnitemares in
+// Battle Royale ended at the Butterfly (Update v6.21: "ends on Sunday, November 4 at 1 PM Eastern Time", the Butterfly's
+// moment), so 6.21's Fortnitemares modes follow this state (events/ltms.js `untilButterfly`, Core-Backend #354): the
+// calendar's POI events and the lobby's modes come from the one state and can't disagree.
+export function leakyLakeState(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  if (!butterflyBuilds.includes(Number(changelist))) return null;
+  const served = activeEventFlags(changelist).includes(islandPoi(1))
+    || (butterflyStates(now, changelist, config)[0]?.events ?? []).some(({ eventType }) => eventType === islandPoi(1));
+  return served ? "after" : "before";
 }

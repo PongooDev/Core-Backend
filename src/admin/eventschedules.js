@@ -67,11 +67,11 @@ export const eventCards = [
     flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2 (6.22, 6.30)", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween (6.20, 6.21)", "EventFlag.HalloweenBattleBus (6.20, 6.21)", "POI0 (6.20, 6.21)", "POI1 (6.22)", "EventFlag.LTM_LilKevin (6.21 – 6.30)", "EventFlag.Fortnitemares_Part4 (6.21)"] },
   { id: "butterfly", kind: "dated", dated: "butterfly", seasons: [6], name: "The Butterfly (the Cube's end)", builds: "6.21", ranges: [[4526925, 4526925]],
     key: "butterfly", startLabel: "The Butterfly happens",
-    about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it." }
+    about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
-const modeLabels = { off: "Off", dates: "Epic's dates", custom: "Custom", build: "As the build ran it", launch: "After the rocket launch", always: "Always on",
+const modeLabels = { off: "Off", before: "Before the event", dates: "Epic's dates", custom: "Custom", build: "As the build ran it", launch: "After the rocket launch", always: "Always on",
   season: "Epic's dates", all: "All on" };
 export const meteorStrikePhases = [["none", "Comet only"], ["broadcast", "TVs show static"], ["meteors", "Meteors"], ["impact", "Meteors at their most"]];
 const eventModeNames = { force_fortnitemares: "forces Fortnitemares 2017", force_mutantstorms: "forces the Mutant Storms", force_winter2017: "forces Survive the Holidays",
@@ -161,6 +161,10 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
     }
     if (event.mode === "build") return { tone: "dates", nowLabel: "on", onRanges: [[4225813, 4240749]], text: "As the build ran it: on in 5.10 (counting down to 7 August on Season 5's replay), off in 5.21" };
     if (mode !== "auto") return { tone: "off", text: "Paused: runs in the Automatic event mode only" };
+    // The Butterfly held before the event (Core-Backend #354): the map's pre-event state, with 6.21's Fortnitemares modes.
+    if (event.mode === "before") {
+      return { tone: "on", nowLabel: "before the event", text: "On now: the map before the event (Fortnitemares' Cube Monsters' days, POI0), and the Fortnitemares modes back with it; the Butterfly doesn't play" };
+    }
     const state = stepsState(event.steps.map((step) => ({ label: step.label, ...(step.current ?? { startAt: null, endAt: null }) })).filter((step) => step.startAt), nowMs);
     return event.mode === "dates" ? datesPrefix(state) : state;
   };

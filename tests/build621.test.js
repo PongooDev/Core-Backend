@@ -233,6 +233,9 @@ test("a 6.21 gameserver's calendar has POI0 among the active events, until the a
 
 test("6.21's modes are 6.20's: Fortnitemares on by default to 4 November, the tournament playlists, the Disco Dominations by their switches", () => {
   const defaults = createSettingsStore(null).get();
+  // The default events config: a backend test before this one leaves its own configured (6.21's Fortnitemares modes follow
+  // the Leaky Lake's state, Core-Backend #354).
+  configureEvents(null);
   assert.deepEqual(ltmFrontEndPlaylists(v621, defaults), ltmFrontEndPlaylists(v620, defaults));
   assert.deepEqual([47, 48, 49, 231, 232, 59071, 59072, 59073, 58071, 202, 50, 35, 53, 36].map((id) => ltmOfPlaylist(id, v621)?.id),
     [47, 48, 49, 231, 232, 59071, 59072, 59073, 58071, 202, 50, 35, 53, 36].map((id) => ltmOfPlaylist(id, v620)?.id));

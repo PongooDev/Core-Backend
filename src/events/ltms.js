@@ -1,6 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
+import { leakyLakeState } from "./butterfly.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
 //
@@ -449,6 +450,11 @@ const build610 = 4480234;
 //   it takes the default's place (defaultReplacements, services/fortnite/cloudstorage.js), unless the admin panel turns
 //   that off (settings fortnitemaresReplacesDefaults, on by default). 🟡 Epic's exact access values for them aren't in any
 //   file read; Core gives them the defaults' own (bIsDefaultPlaylist, the defaults' priorities, no limited time banner).
+//   On 6.21 they end at the Butterfly, as Epic's did (Core-Backend #354; `untilButterfly`): they follow the Leaky Lake's
+//   state (events/butterfly.js leakyLakeState) rather than the dates. Before the event (POI0) they are on by their switch,
+//   whatever Original dates says, and after it (POI1) off, so Solo, Duos and Squads are back; the Butterfly card's "Before
+//   the event" brings them back with the pre-event map. Without POI0 6.21's Cube Monster spawners don't run anyway
+//   (events/events.js). 6.20 (no Butterfly) keeps its dates.
 // - Playlist_Deimos_SoloCN, _DuoCN and _SquadCN (147 to 149): the same for China's region, no mode here.
 // - Playlist_Deimos_SoloShow, _DuoShow and _SquadShow (59071 to 59073, "Tournament"): Fortnitemares' tournament playlists,
 //   which the shipped DefaultGame.ini lists disabled at 53 to 55 beside the Showdown ones' 50 to 52, so in-game
@@ -912,13 +918,13 @@ export const ltms = [
     teams: "100 Teams × 4", description: "The in-game tournaments' Squads playlist, for full squads (Playlist_Showdown_Squads, 6.10's)." },
   // 6.20's (above): Fortnitemares, on by default by its Original dates, and two more Disco Dominations by their switches.
   { id: "fortnitemares2018Solo", name: "Fortnitemares (Solo)", playlistId: 47, playlistName: "Playlist_Deimos_Solo", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultSolo",
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultSolo",
     teams: "100 Teams × 1", description: "Battle Royale with the Cube Monsters: Cube Fragments spawn Fiends and Brutes that drop loot and give shield (Playlist_Deimos_Solo, 6.20's)." },
   { id: "fortnitemares2018Duos", name: "Fortnitemares (Duos)", playlistId: 48, playlistName: "Playlist_Deimos_Duo", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultDuo",
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultDuo",
     teams: "100 Teams × 2", description: "Battle Royale with the Cube Monsters, in duos (Playlist_Deimos_Duo, 6.20's)." },
   { id: "fortnitemares2018Squads", name: "Fortnitemares (Squads)", playlistId: 49, playlistName: "Playlist_Deimos_Squad", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultSquad",
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultSquad",
     teams: "100 Teams × 4", description: "Battle Royale with the Cube Monsters, in squads (Playlist_Deimos_Squad, 6.20's)." },
   { id: "discoDomination40Alt", name: "Disco Domination (40 v 40, Alt)", playlistId: 231, playlistName: "Playlist_Disco_40_Alt", eventFlag: null, builds: [build620, build621], seasons: [6],
     teams: "2 Teams × 40", description: "Disco Domination with two teams of forty on DiscoGameModifierNoA (Playlist_Disco_40_Alt, 6.20's)." },
@@ -1060,7 +1066,11 @@ export function ltmOn(id, build, settingsValue = settingsProvider(), now = new D
   const ltm = byId.get(id);
   if (!ltm || !hasLtm(id, build) || ltm.tournament) return false;
   if (isNewIn(ltm, build)) return true;
-  const modes = ltmModes(build, settingsValue, now);
+  // 6.21's Fortnitemares modes (Core-Backend #354): the Leaky Lake's state, not the dates; off once the Butterfly has
+  // happened, by the admin's switch before it.
+  const lake = ltm.untilButterfly ? leakyLakeState(now, build) : null;
+  if (lake === "after") return false;
+  const modes = lake === "before" ? settingsValue?.matchmakingModes : ltmModes(build, settingsValue, now);
   return ltm.defaultOn ? modes?.[id] !== false : modes?.[id] === true;
 }
 

@@ -8007,7 +8007,7 @@
       const datedAction = async (payload, message) => {
         if (await act(api("/admin/api/events/dated-flags", payload), message)) showEvents();
       };
-      const datedLabels = { dates: "Epic's dates on Season 5's replay", custom: "My own times (set below)", off: "Off: not served (switch the flags above by hand)" };
+      const datedLabels = { dates: "Epic's dates on Season 5's replay", custom: "My own times (set below)", off: "Off: not served (switch the flags above by hand)", before: "Before the event: the map's pre-event state, held (the Butterfly)" };
       // The event challenges' (Core-Backend #316): on means given at the quest login while their flag is served.
       const challengeLabels = { build: "On, as the build serves them (5.10: always, counting down to 7 August on the replay)",
         dates: "On, on Epic's dates on Season 5's replay", custom: "On, at my own times (set below)", off: "Off: not given (their event flag isn't served)" };

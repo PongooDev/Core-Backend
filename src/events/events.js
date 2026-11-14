@@ -593,8 +593,8 @@ const forcedMiniBosses = (changelist) => Number(changelist) >= miniBossFlagBuild
 
 // The Birthday Challenges' modes that schedule its flag apart from the build (events/datedflags.js; "build" is the default).
 const birthdayDatedModes = ["dates", "custom", "off"];
-// 6.21's Butterfly on a schedule (events/butterfly.js; "off", its default, leaves POI0 the build's own): POI0 is then
-// one of its steps, served until the Butterfly, not the build's own for good.
+// 6.21's Butterfly on a schedule (events/butterfly.js; "off", its default, and "before" leave POI0 the build's own): POI0
+// is then one of its steps, served until the Butterfly, not the build's own for good.
 const butterflyScheduledModes = ["dates", "custom"];
 
 let eventsConfigProvider = null;
@@ -647,7 +647,11 @@ export function activeEventFlags(changelist = currentBuild()) {
   const butterflyScheduled = number === build621 && butterflyScheduledModes.includes(config?.datedFlags?.butterfly?.mode);
   const own = events.filter((event) => runsOn(event, number) && !(birthdayDated && event.flag === anniversary2018BR)
     && !(butterflyScheduled && event.flag === islandPoi(0))).map((event) => event.flag);
-  return [...new Set([...own, ...on])].filter((flag) => !off.includes(flag));
+  // 6.21's Butterfly held before the event (Core-Backend #354, events/butterfly.js): the map's pre-event state over the
+  // switches, POI0 served and none of what comes after it.
+  const butterflyHeld = number === build621 && config?.datedFlags?.butterfly?.mode === "before";
+  const held = butterflyHeld ? [islandPoi(1), islandCrack, islandDrain] : [];
+  return [...new Set([...own, ...on])].filter((flag) => !held.includes(flag) && !(off.includes(flag) && !(butterflyHeld && flag === islandPoi(0))));
 }
 
 // Whether the requesting build runs an event, by its name (fortnitemares, mutantStorms) or by an event flag (a mission

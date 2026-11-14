@@ -4,9 +4,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
-import { configureEvents, eventsActiveUntil, ltmFortnitemares } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, eventsActiveUntil, islandCrack, islandDrain, islandPoi, ltmFortnitemares } from "../src/events/events.js";
+import { butterflyStates, leakyLakeState } from "../src/events/butterfly.js";
+import { datedFlagsStatus } from "../src/events/datedflags.js";
+import { eventSchedules, scheduleEventPatch } from "../src/admin/eventschedules.js";
 import { fortnitemaresActiveUntil } from "../src/events/fortnitemares2018.js";
-import { defaultReplacements, ltmFrontEndPlaylists } from "../src/events/ltms.js";
+import { defaultReplacements, ltmFrontEndPlaylists, ltmOn } from "../src/events/ltms.js";
 import { athenaQuestLogin, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
 import { configureChallenges, eventChallengeUnlock, eventDaySchedules, eventPlan, settleChallengeSchedules } from "../src/profiles/challenges.js";
 import { openSession } from "../src/profiles/session.js";
@@ -210,6 +213,83 @@ test("#348: with the replacement off, 6.20's hotfix keeps the defaults and lists
       .filter((line) => line.includes("FrontEndPlaylistData"));
     assert.ok(after.find((line) => line.includes("PlaylistName=Playlist_DefaultSquad,")).includes("bEnabled=false"), "6.21 too");
     assert.ok(after.find((line) => line.includes("PlaylistName=Playlist_Deimos_Squad,")).includes("bIsDefaultPlaylist=true"));
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #354: on 6.21 Fortnitemares' modes end at the Butterfly, as Epic's did, and come back with the map's pre-event
+// state (the Butterfly card's "Before the event"); both follow the Leaky Lake's state (events/butterfly.js leakyLakeState).
+const butterflyConfig = (mode, extra = {}) => ({ ...replay, datedFlags: { butterfly: { mode } }, ...extra });
+const ltmsOf = (build, config, now, settingsValue = {}) => withConfig(config, () => inBuild(build, () =>
+  ({ lake: leakyLakeState(now, build), replaced: Object.keys(defaultReplacements(build, settingsValue, now)).sort(), solo: ltmOn("fortnitemares2018Solo", build, settingsValue, now) })));
+const allReplaced = ["Playlist_DefaultDuo", "Playlist_DefaultSolo", "Playlist_DefaultSquad"];
+
+test("#354: on Epic's dates, 6.21's Fortnitemares modes replace the defaults until the Butterfly and end with it", () => {
+  const dates = butterflyConfig("dates");
+  assert.deepEqual(ltmsOf(v621, dates, at("2018-11-04T17:40:00Z")), { lake: "before", replaced: allReplaced, solo: true });
+  assert.deepEqual(ltmsOf(v621, dates, at("2018-11-04T18:00:00Z")), { lake: "after", replaced: [], solo: false }, "Solo, Duos and Squads are back");
+  assert.deepEqual(ltmsOf(v621, dates, at("2018-11-20T12:00:00Z")), { lake: "after", replaced: [], solo: false });
+});
+
+test("#354: Start now on the Butterfly ends them whatever the dates say; Before the event brings them back, over Original dates and the switches", () => {
+  const now = at("2026-11-14T12:00:00Z");
+  const { patch } = scheduleEventPatch({ event: "butterfly", mode: "now" }, {}, now);
+  const started = { mode: "auto", ...patch };
+  assert.deepEqual(ltmsOf(v621, started, now), { lake: "after", replaced: [], solo: false });
+  // The POI1 switch (Advanced) is the Butterfly too.
+  assert.deepEqual(ltmsOf(v621, { mode: "auto", season4Flags: { overrides: { POI0: "off", POI1: "on" } } }, now), { lake: "after", replaced: [], solo: false });
+  // Before the event: POI0 served and POI1, the crack and the drain not, even with their switches on.
+  const before = scheduleEventPatch({ event: "butterfly", mode: "before" }, started, now);
+  assert.deepEqual(before.patch, { datedFlags: { butterfly: { mode: "before" } } });
+  const held = { ...butterflyConfig("before"), season4Flags: { overrides: { POI0: "off", POI1: "on", [islandCrack]: "on", [islandDrain]: "on" } } };
+  const flags = withConfig(held, () => inBuild(v621, () => activeEventFlags(v621)));
+  assert.ok(flags.includes(islandPoi(0)));
+  assert.deepEqual([islandPoi(1), islandCrack, islandDrain].filter((flag) => flags.includes(flag)), []);
+  assert.deepEqual(withConfig(held, () => inBuild(v621, () => butterflyStates(now))), [], "nothing scheduled");
+  assert.deepEqual(ltmsOf(v621, held, now), { lake: "before", replaced: allReplaced, solo: true });
+  // Original dates past 4 November on the replay doesn't end them while the map is before the event.
+  assert.deepEqual(ltmsOf(v621, held, at("2018-11-20T12:00:00Z"), { ltmOriginalDates: true }), { lake: "before", replaced: allReplaced, solo: true });
+  // The admin's Matchmaking switches still turn one off.
+  assert.deepEqual(ltmsOf(v621, held, now, { matchmakingModes: { fortnitemares2018Solo: false } }).replaced, ["Playlist_DefaultDuo", "Playlist_DefaultSquad"]);
+  // The Events page shows it.
+  const card = eventSchedules({ now, config: butterflyConfig("before"), dated: withConfig(held, () => datedFlagsStatus(now.getTime(), () => now.getTime(), held)) })
+    .find(({ id }) => id === "butterfly");
+  assert.ok(card.modes.includes("before"));
+  assert.equal(card.modeLabels.before, "Before the event");
+  assert.equal(card.mode, "before");
+  assert.equal(card.state.nowLabel, "before the event");
+});
+
+test("#354: 6.20 (no Butterfly) keeps its dates and 6.22 (no Fortnitemares playlists) its defaults, whatever the Butterfly does", () => {
+  const now = at("2018-10-30T12:00:00Z");
+  for (const mode of ["dates", "before", "off"]) {
+    assert.deepEqual(ltmsOf(v620, butterflyConfig(mode), now), { lake: null, replaced: allReplaced, solo: true }, mode);
+    assert.deepEqual(ltmsOf(v620, butterflyConfig(mode), at("2018-12-01T12:00:00Z"), { ltmOriginalDates: true }), { lake: null, replaced: [], solo: false }, mode);
+    assert.deepEqual(ltmsOf("4543176", butterflyConfig(mode), now), { lake: null, replaced: [], solo: false }, mode);
+  }
+  const started = { mode: "auto", season4Flags: { overrides: { POI1: "on" } } };
+  assert.deepEqual(ltmsOf(v620, started, now).replaced, allReplaced, "6.20's POI1 switch plays no Butterfly");
+});
+
+test("#354: a 6.21 lobby's hotfix after the Butterfly has the default modes back, and Before the event the Fortnitemares ones again", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Lobby354");
+    const lines = async (build, version) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/cloudstorage/system/DefaultGame.ini",
+      headers: { "User-Agent": agentOf(build, version), Authorization: `bearer ${token}` } })).body.toString().split("\r\n").filter((line) => line.includes("FrontEndPlaylistData"));
+    const of = (list, name) => list.find((line) => line.includes(`PlaylistName=${name},`));
+    assert.ok(of(await lines(v621, "6.21"), "Playlist_DefaultSolo").includes("bEnabled=false"), "Fortnitemares in Solo's place before it");
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", undefined, { event: "butterfly", mode: "now" })).status, 200);
+    const after = await lines(v621, "6.21");
+    assert.ok(of(after, "Playlist_DefaultSolo").includes("bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true"));
+    assert.ok(of(after, "Playlist_Deimos_Solo").includes("bEnabled=false"), "Fortnitemares Solo is over");
+    assert.ok(of(await lines(v620, "6.20"), "Playlist_DefaultSolo").includes("bEnabled=false"), "6.20 has no Butterfly");
+    const held = await post(backend.port, "/admin/api/events/schedule", undefined, { event: "butterfly", mode: "before" });
+    assert.equal(held.status, 200, JSON.stringify(held.body));
+    const back = await lines(v621, "6.21");
+    assert.ok(of(back, "Playlist_DefaultSolo").includes("bEnabled=false"));
+    assert.ok(of(back, "Playlist_Deimos_Solo").includes("bEnabled=true, bIsDefaultPlaylist=true"));
   } finally {
     backend.close();
   }

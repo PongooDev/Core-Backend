@@ -111,8 +111,10 @@ export const datedEvents = [
   // 6.21's Butterfly (events/butterfly.js): opt-in, as the rocket's launch is. Its steps run to the Butterfly, after which
   // the Leaky Lake is POI1's; "Start now" (or any time on the Butterfly's step) plays it then, the crack and drain before it at
   // Epic's spacing.
+  // "before" (Core-Backend #354) holds the map in its pre-event state: no steps of its own here, and 6.21 serves POI0 and
+  // none of POI1, the crack or the drain whatever their switches say (events/events.js activeEventFlags).
   { id: "butterfly", name: "the Butterfly (6.21)", season: 6, flag: islandPoi(1), anchor: "butterfly", parts: 4,
-    modes: ["off", "dates", "custom"], defaultMode: "off", steps: [
+    modes: ["off", "before", "dates", "custom"], defaultMode: "off", steps: [
       step("deimos", "Fortnitemares' Leaky Lake: the Cube Monsters' days", [islandPoi(0)], season6FirstDay, butterflyAt),
       step("crack", "The Cube cracks (its last crack 8 seconds before the drain)", [islandCrack], butterflyCrackAt, butterflyDrainAt),
       step("drain", "The Cube drains into the lake, a drip each hour", [islandDrain], butterflyDrainAt, butterflyAt),
@@ -232,10 +234,14 @@ export function datedEventOn(event, changelist) {
   return { ...event, steps: event.steps.map((own) => (flagsOf(own.id) ? { ...own, flags: flagsOf(own.id) } : own)) };
 }
 
+// The modes that schedule none of an event's steps: "off", "build" (the build serves the flag itself) and the Butterfly's
+// "before" (the build holds its pre-event state, events/events.js activeEventFlags).
+const unscheduledModes = ["off", "build", "before"];
+
 // The event's windows [{eventType, since, until (ms, Infinity: for good)}] by its mode: Epic's dates on the laps around
-// now, or the admin's times (none in the "build" mode: the build serves the flag itself).
+// now, or the admin's times (none in the unscheduled modes).
 export function datedWindows(event, setting, nowMs, momentNowMs) {
-  if (setting.mode === "off" || setting.mode === "build") return [];
+  if (unscheduledModes.includes(setting.mode)) return [];
   if (setting.mode === "custom") {
     return setting.schedule.flatMap(({ step: id, startAt, endAt }) => event.steps.find((own) => own.id === id).flags
       .map((eventType) => ({ eventType, since: Date.parse(startAt), until: endAt === null ? Infinity : Date.parse(endAt) })));
@@ -418,7 +424,7 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
         original: { startAt: iso(start), endAt: end === null ? null : iso(end) },
         dates: { startAt: lap[index].startAt, endAt: end === null ? null : lap[index].endAt },
         custom: custom.get(id) ?? null,
-        current: setting.mode === "off" || setting.mode === "build" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
+        current: unscheduledModes.includes(setting.mode) ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
       }));
       return {
         id: event.id, name: event.name, season: datedSeasonOf(event), mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,

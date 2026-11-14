@@ -70,13 +70,17 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       }
       tournamentEvent = event;
     }
-    const off = tournamentEvent ? false : ltm && !ltm.defaultOn ? !ltmOn(ltm.id, currentBuild(), settingsValue) : modes && modes[mode] === false;
+    // 6.21's Fortnitemares modes follow the Leaky Lake's state (Core-Backend #354, events/ltms.js untilButterfly), as the
+    // lobby lists them.
+    const off = tournamentEvent ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
+      : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
       // connect to the match." (EMatchmakingErrorV2::FailedToContactGameServices, 5.30), so the console names it
       // (Core-Backend #313).
       log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: ${ltm?.name ?? mode} is off ` +
-        "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on)");
+        "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on; " +
+        "6.21's Fortnitemares modes: after the Butterfly, Events page)");
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
     // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill
