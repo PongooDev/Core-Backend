@@ -565,6 +565,7 @@ for (const [build, userAgent] of [["5.30", agent530], ["5.40", agent540]]) {
 const agent602 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.02-CL-4461277";
 const agent621 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.21-CL-4526925";
 const agent630 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.30-CL-4573096";
+const agent631 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.31-CL-4573279";
 const summitCosmetics = ["AthenaCharacter:CID_253_Athena_Commando_M_MilitaryFashion2", "AthenaBackpack:BID_134_MilitaryFashion"];
 const summitOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_starter_br_s6");
 // The events config's Season 6 start that puts today on the replay's day of Epic's season (Season 6's first is 27 September 2018).
@@ -579,7 +580,7 @@ test("#356: the Summit Striker Pack is Season 6's from 6 November 2018, The Ace 
   assert.deepEqual(summit.cosmetics, summitCosmetics);
   assert.deepEqual(summit.grants, [{ templateId: "Currency:MtxPurchased", quantity: 500 }, { templateId: "Currency:MtxPurchaseBonus", quantity: 100 }]);
   for (const build of ["4402180", "4480234"]) assert.equal(inBuild(build, () => lockerCosmeticId(summitCosmetics[0])), undefined, build);
-  for (const build of ["4497486", "4526925", "4543176", "4573096"]) {
+  for (const build of ["4497486", "4526925", "4543176", "4573096", "4573279"]) {
     for (const templateId of summitCosmetics) assert.ok(inBuild(build, () => lockerCosmeticId(templateId)), `${build} ${templateId}`);
   }
 
@@ -589,9 +590,9 @@ test("#356: the Summit Striker Pack is Season 6's from 6 November 2018, The Ace 
     const offered = async (userAgent) => currencyOf(await catalog(backend.port, player.token, userAgent)).catalogEntries
       .map((entry) => entry.offerId).filter((id) => id.startsWith("core_starter_"));
 
-    // 10 November 2018 on the replay: the Summit Striker Pack on 6.21 and 6.30; nothing on 6.02, whose paks lack it.
+    // 10 November 2018 on the replay: the Summit Striker Pack on 6.21, 6.30 and 6.31; nothing on 6.02, whose paks lack it.
     assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: season6StartFor("2018-11-10") } })).status, 200);
-    for (const userAgent of [agent621, agent630]) {
+    for (const userAgent of [agent621, agent630, agent631]) {
       assert.deepEqual(await offered(userAgent), ["core_starter_br_s6"], userAgent);
       const offer = summitOf(await catalog(backend.port, player.token, userAgent));
       assert.equal(offer.title, "The Summit Striker Pack");
@@ -604,7 +605,7 @@ test("#356: the Summit Striker Pack is Season 6's from 6 November 2018, The Ace 
 
     // 20 October 2018: The Ace Pack, on every Season 6 build, as Epic sold it to 5 November.
     await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: season6StartFor("2018-10-20") } });
-    for (const userAgent of [agent602, agent621, agent630]) assert.deepEqual(await offered(userAgent), ["core_starter_br_s5"], userAgent);
+    for (const userAgent of [agent602, agent621, agent630, agent631]) assert.deepEqual(await offered(userAgent), ["core_starter_br_s5"], userAgent);
     // Season 5 still has its Ace Pack whatever Season 6's replay says.
     assert.deepEqual(await offered(agent540), ["core_starter_br_s5"]);
 

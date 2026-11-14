@@ -87,9 +87,9 @@ test("#345: the calendar serves LTM_Fortnitemares' end to 6.20 and 6.21 (the cha
 
 // Core-Backend #358: 6.30's challenges tab read "2,912,125 Days" for the Lil' Kev Challenges, the calendar's never-ending
 // activeUntil of EventFlag.LTM_LilKevin. Epic's end: 11 November 2018 18:00 UTC.
-test("#358: LTM_LilKevin ends on 11 November 2018 18:00 UTC on Season 6's replay, on 6.21 to 6.30", () => {
+test("#358: LTM_LilKevin ends on 11 November 2018 18:00 UTC on Season 6's replay, on 6.21 to 6.31", () => {
   withConfig(replay, () => {
-    for (const build of [v621, "4543176", "4573096"]) {
+    for (const build of [v621, "4543176", "4573096", "4573279"]) {
       assert.equal(inBuild(build, () => lilKevinActiveUntil(ltmLilKevin, at("2018-11-05T12:00:00Z"))), "2018-11-11T18:00:00.000Z", build);
       // Past it, the replay's next lap (70 days).
       assert.equal(inBuild(build, () => lilKevinActiveUntil(ltmLilKevin, at("2018-11-20T00:00:00Z"))), "2019-01-20T18:00:00.000Z", build);
@@ -99,11 +99,11 @@ test("#358: LTM_LilKevin ends on 11 November 2018 18:00 UTC on Season 6's replay
   });
 });
 
-test("#358: the calendar serves LTM_LilKevin's end to 6.21 and 6.30 (the Lil' Kev challenges header's days)", async () => {
+test("#358: the calendar serves LTM_LilKevin's end to 6.21 to 6.31 (the Lil' Kev challenges header's days)", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "Calendar358");
-    for (const [build, version] of [[v621, "6.21"], ["4573096", "6.30"]]) {
+    for (const [build, version] of [[v621, "6.21"], ["4573096", "6.30"], ["4573279", "6.31"]]) {
       const before = Date.now();
       const events = (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
         headers: { "User-Agent": agentOf(build, version), Authorization: `bearer ${token}` } })).body.channels["client-events"].states[0].activeEvents;

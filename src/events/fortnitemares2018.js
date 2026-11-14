@@ -52,7 +52,7 @@ export function fortnitemaresActiveUntil(flag, now = new Date()) {
 // activeUntil for that flag. Epic's end, its tweets of 4 and 5 November 2018 (the Fortnite Wiki's Lil' Kev Challenges):
 // "Complete the challenges before 1 PM ET, November 11 (6PM UTC) to earn the Lil' Kev Back Bling", 11 November 2018
 // 18:00 UTC. On Season 6's replay the flag ends when the replay next stands at that moment, as the Fortnitemares
-// Challenges' end. Only while the build runs the event (6.21 to 6.30, events/events.js); a flag the admin panel switches
+// Challenges' end. Only while the build runs the event (6.21 to 6.31, events/events.js); a flag the admin panel switches
 // on outside it keeps the never-ending end.
 export const lilKevinEndedAt = Date.parse("2018-11-11T18:00:00.000Z");
 export function lilKevinActiveUntil(flag, now = new Date()) {
