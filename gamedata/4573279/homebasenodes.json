@@ -1,0 +1,4472 @@
+{
+  "nodes": {
+    "NOPAYLOADMESSAGE_09CEB8D51": null,
+    "OVERRIDEHACK_0039DF9D1": null,
+    "T1_Main_0011CCD10": null,
+    "T1_Main_0336AC827": null,
+    "T1_Main_0828407D3": null,
+    "T1_Main_0ABACB4E2": null,
+    "T1_Main_0CBF7FEC0": null,
+    "T1_Main_0D681A741": null,
+    "T1_Main_1637F10C4": null,
+    "T1_Main_195C3EF52": null,
+    "T1_Main_1B6486FC0": null,
+    "T1_Main_2051EFB31": null,
+    "T1_Main_20D6FB134": null,
+    "T1_Main_243215D30": null,
+    "T1_Main_2546ECFC0": null,
+    "T1_Main_254CFA5515": null,
+    "T1_Main_266068670": null,
+    "T1_Main_27C02FC60": null,
+    "T1_Main_2996F5C10": null,
+    "T1_Main_2E3589B80": null,
+    "T1_Main_38E8A5BF4": null,
+    "T1_Main_38EAD7850": null,
+    "T1_Main_3E84C12D0": null,
+    "T1_Main_3FFC8E9D7": null,
+    "T1_Main_448295574": null,
+    "T1_Main_4658A42D3": null,
+    "T1_Main_498AB88F0": null,
+    "T1_Main_4BDCB2465": null,
+    "T1_Main_566BFEA11": null,
+    "T1_Main_58591E630": null,
+    "T1_Main_59607C6F0": null,
+    "T1_Main_5FAA4C765": null,
+    "T1_Main_609C8A9A8": null,
+    "T1_Main_640195112": null,
+    "T1_Main_6E6F74400": null,
+    "T1_Main_702F364C0": null,
+    "T1_Main_7064C2440": null,
+    "T1_Main_77F7B7826": null,
+    "T1_Main_7A5E40920": null,
+    "T1_Main_826346530": null,
+    "T1_Main_82EFDDB312": null,
+    "T1_Main_849930D55": null,
+    "T1_Main_88F02D792": null,
+    "T1_Main_8991222D1": null,
+    "T1_Main_8A41E9920": null,
+    "T1_Main_8B125D0F0": null,
+    "T1_Main_8D2C3C4D0": null,
+    "T1_Main_904080840": null,
+    "T1_Main_911D30562": null,
+    "T1_Main_92E3E2179": null,
+    "T1_Main_986B7D201": null,
+    "T1_Main_9FDB916E6": null,
+    "T1_Main_A16A56111": null,
+    "T1_Main_A7E71BED0": null,
+    "T1_Main_AD1499E010": null,
+    "T1_Main_AD1D66991": null,
+    "T1_Main_B1A3A3771": null,
+    "T1_Main_B1AEF23D10": null,
+    "T1_Main_B4F394680": null,
+    "T1_Main_BA01A2361": null,
+    "T1_Main_BD2B45B61": null,
+    "T1_Main_BF8F555F0": null,
+    "T1_Main_C06961E711": null,
+    "T1_Main_D0B070910": null,
+    "T1_Main_D1C9E5993": null,
+    "T1_Main_D4ED4A3C4": null,
+    "T1_Main_DCB242B70": null,
+    "T1_Main_E05F04D75": null,
+    "T1_Main_E9C41E050": null,
+    "T1_Main_F1EB76072": null,
+    "T1_Main_F681AB1F0": null,
+    "T1_Main_F6FA8ECB3": null,
+    "T1_Main_FABC7C290": null,
+    "T1_Main_FAEE79B10": null,
+    "T1_Main_FD10816B3": null,
+    "T1_Main_FF2595300": null,
+    "T1_Research_04B2A68A4": null,
+    "T1_Research_0B612C970": null,
+    "T1_Research_11C82B1D0": null,
+    "T1_Research_1538CA901": null,
+    "T1_Research_1BC2BE641": null,
+    "T1_Research_248FC3870": null,
+    "T1_Research_2D0F29AB1": null,
+    "T1_Research_307838811": null,
+    "T1_Research_369E5EAC1": null,
+    "T1_Research_3E28BB331": null,
+    "T1_Research_43A8F68C0": null,
+    "T1_Research_5201143F2": null,
+    "T1_Research_6114FC651": null,
+    "T1_Research_700F196A3": null,
+    "T1_Research_7382D2480": null,
+    "T1_Research_790BDD533": null,
+    "T1_Research_7C7638680": null,
+    "T1_Research_8707AF440": null,
+    "T1_Research_A157C8E30": null,
+    "T1_Research_A4F269D10": null,
+    "T1_Research_A5CF39400": null,
+    "T1_Research_A8DB35494": null,
+    "T1_Research_AD50DB9E1": null,
+    "T1_Research_B0D9537A1": null,
+    "T1_Research_B543610A1": null,
+    "T1_Research_B5B8EB7C0": null,
+    "T1_Research_C3D05C4B2": null,
+    "T1_Research_D2CE27910": null,
+    "T1_Research_E9F394960": null,
+    "T1_Research_ED5B34D91": null,
+    "T1_Research_EECD426C1": null,
+    "T1_Research_F01D00360": null,
+    "T2_Main_01F9D82A0": null,
+    "T2_Main_04D5C4430": null,
+    "T2_Main_079EDD2C0": null,
+    "T2_Main_07D55D6A0": null,
+    "T2_Main_07E641121": null,
+    "T2_Main_117540212": null,
+    "T2_Main_134007C27": null,
+    "T2_Main_166C29DC2": null,
+    "T2_Main_180921FB0": null,
+    "T2_Main_19A17BDE3": null,
+    "T2_Main_1F8F85AE0": null,
+    "T2_Main_1FDF39DB5": null,
+    "T2_Main_2006052B6": null,
+    "T2_Main_21CE15E51": null,
+    "T2_Main_221229060": null,
+    "T2_Main_2367C82F1": null,
+    "T2_Main_25EFB8C70": null,
+    "T2_Main_26F4FB891": null,
+    "T2_Main_2A17D7306": null,
+    "T2_Main_2D6993922": null,
+    "T2_Main_3C068CFB0": null,
+    "T2_Main_3D00CB840": null,
+    "T2_Main_41217F7D2": null,
+    "T2_Main_4C8171671": null,
+    "T2_Main_4C95A7D12": null,
+    "T2_Main_4D442C140": null,
+    "T2_Main_4E74E6F91": null,
+    "T2_Main_5346207C0": null,
+    "T2_Main_5B37C9358": null,
+    "T2_Main_636F167A0": null,
+    "T2_Main_63F751711": null,
+    "T2_Main_69A5836F0": null,
+    "T2_Main_6A6764682": null,
+    "T2_Main_6BEDE9B65": null,
+    "T2_Main_71B7C8AA0": null,
+    "T2_Main_74699C1B1": null,
+    "T2_Main_75F1308C1": null,
+    "T2_Main_88D0C6DE0": null,
+    "T2_Main_93D6486A6": null,
+    "T2_Main_9670DF2A7": null,
+    "T2_Main_9BBF38680": null,
+    "T2_Main_9D4C8CD511": null,
+    "T2_Main_9D7FA9270": null,
+    "T2_Main_9FC3978C3": null,
+    "T2_Main_9FD8CEE49": null,
+    "T2_Main_9FE51ADF0": null,
+    "T2_Main_A0995FCB0": null,
+    "T2_Main_A1487C230": null,
+    "T2_Main_A225639B4": null,
+    "T2_Main_A3A5DA870": null,
+    "T2_Main_A454A2615": null,
+    "T2_Main_A50295643": null,
+    "T2_Main_A84A13C07": null,
+    "T2_Main_A9644DDD1": null,
+    "T2_Main_AC3B8CE810": null,
+    "T2_Main_AEBC27E24": null,
+    "T2_Main_AEEEF5183": null,
+    "T2_Main_B2A944EC4": null,
+    "T2_Main_B2E063FC1": null,
+    "T2_Main_B75EFFC64": null,
+    "T2_Main_B8A9E7CC2": null,
+    "T2_Main_B8E0A6A91": null,
+    "T2_Main_B98656430": null,
+    "T2_Main_B99A48BE2": null,
+    "T2_Main_BA14281E0": null,
+    "T2_Main_BAAA5FA10": null,
+    "T2_Main_BE95EBE17": null,
+    "T2_Main_BF1AE4C87": null,
+    "T2_Main_BF56C52E2": null,
+    "T2_Main_C4BBDFF80": null,
+    "T2_Main_C677C3AF0": null,
+    "T2_Main_CBBB2FF11": null,
+    "T2_Main_CC1A24D76": null,
+    "T2_Main_CF49A9C40": null,
+    "T2_Main_CF6FD83E3": null,
+    "T2_Main_D192EEC22": null,
+    "T2_Main_D20A597A4": null,
+    "T2_Main_D26651800": null,
+    "T2_Main_D289C7C75": null,
+    "T2_Main_D2FB71B12": null,
+    "T2_Main_D52B4F3E0": null,
+    "T2_Main_D76888E98": null,
+    "T2_Main_D80BA2E80": null,
+    "T2_Main_D8D12ECF8": null,
+    "T2_Main_DFA624051": null,
+    "T2_Main_E0E4352B0": null,
+    "T2_Main_E1D78B190": null,
+    "T2_Main_E321E3463": null,
+    "T2_Main_EC26C41D0": null,
+    "T2_Main_F4E138243": null,
+    "T2_Main_F625D4F20": null,
+    "T2_Main_F657B25C9": null,
+    "T2_Main_F70BA14A0": null,
+    "T2_Main_F782A9CF3": null,
+    "T2_Main_FA6884911": null,
+    "T2_Main_FA6F27881": null,
+    "T2_Main_FB4378A61": null,
+    "T2_Main_FBC34AA68": null,
+    "T2_Main_FC5809C05": null,
+    "T2_Main_FE2869370": null,
+    "T2_Research_00E5B7763": null,
+    "T2_Research_04F33FDD2": null,
+    "T2_Research_11FC257C5": null,
+    "T2_Research_15F1DC0B3": null,
+    "T2_Research_163260621": null,
+    "T2_Research_1986CE6E1": null,
+    "T2_Research_371F90623": null,
+    "T2_Research_3AFD81BA3": null,
+    "T2_Research_4384865E3": null,
+    "T2_Research_45306C490": null,
+    "T2_Research_49280C800": null,
+    "T2_Research_5D47FE190": null,
+    "T2_Research_5F21793E0": null,
+    "T2_Research_5FB50D871": null,
+    "T2_Research_676EA9075": null,
+    "T2_Research_69D354CA3": null,
+    "T2_Research_6C377C7B6": null,
+    "T2_Research_6C56AEA04": null,
+    "T2_Research_72F6C6DE0": null,
+    "T2_Research_794309E80": null,
+    "T2_Research_816377AF1": null,
+    "T2_Research_81C6B0432": null,
+    "T2_Research_861D8EE12": null,
+    "T2_Research_8C57445F1": null,
+    "T2_Research_8D3A925A1": null,
+    "T2_Research_941ABAAC5": null,
+    "T2_Research_A0AF3E194": null,
+    "T2_Research_ACF00FD11": null,
+    "T2_Research_B3F93C620": null,
+    "T2_Research_BA7B225B0": null,
+    "T2_Research_BC4833EE0": null,
+    "T2_Research_C4DCB3993": null,
+    "T2_Research_C682FDD51": null,
+    "T2_Research_C90F99E71": null,
+    "T2_Research_CDC67FA60": null,
+    "T2_Research_D71CC3522": null,
+    "T2_Research_D74CAB422": null,
+    "T2_Research_DC6F1EE52": null,
+    "T2_Research_DE7035662": null,
+    "T2_Research_E29CC2D33": null,
+    "T2_Research_E31381504": null,
+    "T2_Research_EA43FDB41": null,
+    "T2_Research_EB4AF8030": null,
+    "T2_Research_EB75BBD01": null,
+    "T2_Research_EC48272D2": null,
+    "T2_Research_EE4D092F5": null,
+    "T2_Research_F583EED84": null,
+    "T2_Research_F8BDEEBB0": null,
+    "T3_Main_05EE62252": null,
+    "T3_Main_0830E2535": null,
+    "T3_Main_0CEA80C20": null,
+    "T3_Main_0F646E3E2": null,
+    "T3_Main_0F7CDF126": null,
+    "T3_Main_114D8AD91": null,
+    "T3_Main_12DEAE460": null,
+    "T3_Main_16213C9D1": null,
+    "T3_Main_1650B98B5": null,
+    "T3_Main_1D1190E83": null,
+    "T3_Main_1D3614B63": null,
+    "T3_Main_211972050": null,
+    "T3_Main_21BAEBB70": null,
+    "T3_Main_223DB7781": null,
+    "T3_Main_22DB38500": null,
+    "T3_Main_2E9E28772": null,
+    "T3_Main_38ADE9320": null,
+    "T3_Main_392B5C050": null,
+    "T3_Main_3A06BC390": null,
+    "T3_Main_3DCEC5D44": null,
+    "T3_Main_3E101B6A5": null,
+    "T3_Main_3EA832246": null,
+    "T3_Main_3F0E7B000": null,
+    "T3_Main_41C374291": null,
+    "T3_Main_4363B46C1": null,
+    "T3_Main_47FDEBF30": null,
+    "T3_Main_4900856E7": null,
+    "T3_Main_4BB06AC83": null,
+    "T3_Main_4ECA66830": null,
+    "T3_Main_5147BFC91": null,
+    "T3_Main_51FBB5B30": null,
+    "T3_Main_5203AC5A1": null,
+    "T3_Main_5272EBF85": null,
+    "T3_Main_54016F663": null,
+    "T3_Main_5973F0934": null,
+    "T3_Main_5BBDCA774": null,
+    "T3_Main_5F1FF8F01": null,
+    "T3_Main_62511CB01": null,
+    "T3_Main_642745262": null,
+    "T3_Main_67DAD5FE1": null,
+    "T3_Main_68DB04EE0": null,
+    "T3_Main_70C759670": null,
+    "T3_Main_78CB0B021": null,
+    "T3_Main_7AAE50F90": null,
+    "T3_Main_7B6AD6772": null,
+    "T3_Main_7CD55E053": null,
+    "T3_Main_81657C2A0": null,
+    "T3_Main_844582E68": null,
+    "T3_Main_8A85E0460": null,
+    "T3_Main_8AEC0C687": null,
+    "T3_Main_8C8C10DE9": null,
+    "T3_Main_924E29D91": null,
+    "T3_Main_931CDF301": null,
+    "T3_Main_9341DEF82": null,
+    "T3_Main_93B01CC71": null,
+    "T3_Main_94BEADE00": null,
+    "T3_Main_95A061850": null,
+    "T3_Main_9CFF8ACB8": null,
+    "T3_Main_A2EB05DE0": null,
+    "T3_Main_A4C742E90": null,
+    "T3_Main_A9BDF1C40": null,
+    "T3_Main_A9CD47110": null,
+    "T3_Main_A9FEE26B3": null,
+    "T3_Main_AA2BD6745": null,
+    "T3_Main_AA546FD04": null,
+    "T3_Main_AAF369514": null,
+    "T3_Main_AD53DF901": null,
+    "T3_Main_AE0417420": null,
+    "T3_Main_B22284A80": null,
+    "T3_Main_B2F8126F4": null,
+    "T3_Main_B31485F76": null,
+    "T3_Main_B3EC767E5": null,
+    "T3_Main_B98F78C61": null,
+    "T3_Main_B9E79E910": null,
+    "T3_Main_BA0F64D00": null,
+    "T3_Main_BB09D9260": null,
+    "T3_Main_BB28968A1": null,
+    "T3_Main_BBE9C2383": null,
+    "T3_Main_C0C07FD02": null,
+    "T3_Main_C1C21E346": null,
+    "T3_Main_C55707977": null,
+    "T3_Main_C583B74E0": null,
+    "T3_Main_CC393D8C0": null,
+    "T3_Main_CDD911FA1": null,
+    "T3_Main_D111A2EE0": null,
+    "T3_Main_D17065500": null,
+    "T3_Main_D259FE9E0": null,
+    "T3_Main_D9B9C4A80": null,
+    "T3_Main_DA33A8740": null,
+    "T3_Main_DC39D9A60": null,
+    "T3_Main_DF62B4190": null,
+    "T3_Main_E3C7C83C1": null,
+    "T3_Main_E5013A630": null,
+    "T3_Main_E591A24B0": null,
+    "T3_Main_F6B1C09C1": null,
+    "T3_Main_F6BCC2AC0": null,
+    "T3_Main_F9620A490": null,
+    "T3_Main_FA382D2A2": null,
+    "T3_Main_FDEA96100": null,
+    "T3_Main_FF1800780": null,
+    "T3_Research_0095DC2C3": null,
+    "T3_Research_0356C8B05": null,
+    "T3_Research_0AC5CCFD6": null,
+    "T3_Research_18366F893": null,
+    "T3_Research_1EF0F9B86": null,
+    "T3_Research_202D50112": null,
+    "T3_Research_2066C9CE7": null,
+    "T3_Research_244E0BAE1": null,
+    "T3_Research_24CDE2F34": null,
+    "T3_Research_296889EA0": null,
+    "T3_Research_2989E24E1": null,
+    "T3_Research_2A7F438C2": null,
+    "T3_Research_2E0654DB1": null,
+    "T3_Research_330E09826": null,
+    "T3_Research_3A1909AB4": null,
+    "T3_Research_3BBA74012": null,
+    "T3_Research_40DCA0BC1": null,
+    "T3_Research_4877E8553": null,
+    "T3_Research_4898C79D3": null,
+    "T3_Research_4ED9F84A6": null,
+    "T3_Research_57056E764": null,
+    "T3_Research_5D0CB6CF0": null,
+    "T3_Research_60B83C472": null,
+    "T3_Research_62E106C43": null,
+    "T3_Research_66AD113A1": null,
+    "T3_Research_6EF8FB684": null,
+    "T3_Research_6F0EF6CA5": null,
+    "T3_Research_72A6A9015": null,
+    "T3_Research_868B67A00": null,
+    "T3_Research_86C896DF3": null,
+    "T3_Research_87634D530": null,
+    "T3_Research_877423D00": null,
+    "T3_Research_88DDAFB05": null,
+    "T3_Research_8BCCB9037": null,
+    "T3_Research_8E5BF50B8": null,
+    "T3_Research_97EE240B1": null,
+    "T3_Research_99D650340": null,
+    "T3_Research_9A55874D0": null,
+    "T3_Research_9B20CC2A3": null,
+    "T3_Research_9B544A970": null,
+    "T3_Research_9CDE36052": null,
+    "T3_Research_9DAC24CC1": null,
+    "T3_Research_9DBEF7D52": null,
+    "T3_Research_A1E8D6A12": null,
+    "T3_Research_A2C489547": null,
+    "T3_Research_A3701B970": null,
+    "T3_Research_A39241861": null,
+    "T3_Research_A78DD3873": null,
+    "T3_Research_A7D38AEA4": null,
+    "T3_Research_AA1DA8210": null,
+    "T3_Research_AEB9B0780": null,
+    "T3_Research_AF4DC7FB4": null,
+    "T3_Research_B43852611": null,
+    "T3_Research_B708B4253": null,
+    "T3_Research_BA83CA3A3": null,
+    "T3_Research_BEB49E403": null,
+    "T3_Research_BF9440313": null,
+    "T3_Research_C60271AF5": null,
+    "T3_Research_C82820E21": null,
+    "T3_Research_CB48078A1": null,
+    "T3_Research_CEBB3B219": null,
+    "T3_Research_CF78A5F20": null,
+    "T3_Research_CF908A9F2": null,
+    "T3_Research_D3CC6C383": null,
+    "T3_Research_DB4C9CF95": null,
+    "T3_Research_DDCAA1041": null,
+    "T3_Research_E1A249502": null,
+    "T3_Research_E558C1F41": null,
+    "T3_Research_E63953BC2": null,
+    "T3_Research_E8CB49191": null,
+    "T3_Research_E920B5567": null,
+    "T3_Research_EB7B4E453": null,
+    "T3_Research_EC3512538": null,
+    "T3_Research_EF9604C70": null,
+    "T3_Research_F48DE6842": null,
+    "T3_Research_F49975212": null,
+    "T3_Research_FCCD6F5F9": null,
+    "T3_Research_FE0BC1210": null,
+    "T4_Main_02652EDE4": null,
+    "T4_Main_03BC55D00": null,
+    "T4_Main_08545F6C0": null,
+    "T4_Main_08666D8D6": null,
+    "T4_Main_0A5D56161": null,
+    "T4_Main_0B169C105": null,
+    "T4_Main_0C7672723": null,
+    "T4_Main_111C734D0": null,
+    "T4_Main_11D1BB631": null,
+    "T4_Main_13F4802B0": null,
+    "T4_Main_140B284C0": null,
+    "T4_Main_146871B30": null,
+    "T4_Main_152DB9C30": null,
+    "T4_Main_155A29BA1": null,
+    "T4_Main_170F375F1": null,
+    "T4_Main_1FC4328C1": null,
+    "T4_Main_20F255B61": null,
+    "T4_Main_2210EDD55": null,
+    "T4_Main_223600910": null,
+    "T4_Main_2270189F0": null,
+    "T4_Main_22983E241": null,
+    "T4_Main_234E42F51": null,
+    "T4_Main_294C621C1": null,
+    "T4_Main_2A05CE670": null,
+    "T4_Main_2C576F893": null,
+    "T4_Main_2FB647A80": null,
+    "T4_Main_33A623670": null,
+    "T4_Main_362079E30": null,
+    "T4_Main_384F84F57": null,
+    "T4_Main_3D8125FA3": null,
+    "T4_Main_44036CC70": null,
+    "T4_Main_476E9F060": null,
+    "T4_Main_477EABF92": null,
+    "T4_Main_49DF3CFD1": null,
+    "T4_Main_4B1D51060": null,
+    "T4_Main_4EED13AE1": null,
+    "T4_Main_5406B8760": null,
+    "T4_Main_5968FE123": null,
+    "T4_Main_5DA04F861": null,
+    "T4_Main_62BCC9A02": null,
+    "T4_Main_631DBFA62": null,
+    "T4_Main_64CEDC561": null,
+    "T4_Main_6572170A0": null,
+    "T4_Main_65A3A1DE2": null,
+    "T4_Main_65B1BCF51": null,
+    "T4_Main_66ADEDF16": null,
+    "T4_Main_6AD9A53A0": null,
+    "T4_Main_6C92B3622": null,
+    "T4_Main_6CE978810": null,
+    "T4_Main_6DAC1DFD4": null,
+    "T4_Main_6E14C9711": null,
+    "T4_Main_7003C8704": null,
+    "T4_Main_70213E0D4": null,
+    "T4_Main_72793BD96": null,
+    "T4_Main_751262F92": null,
+    "T4_Main_7C7F5F5B1": null,
+    "T4_Main_7CD9FDA30": null,
+    "T4_Main_8014D8830": null,
+    "T4_Main_888A664C0": null,
+    "T4_Main_8B174C410": null,
+    "T4_Main_8D4F9BED1": null,
+    "T4_Main_908DD2BE0": null,
+    "T4_Main_94A92D3E7": null,
+    "T4_Main_95489EF50": null,
+    "T4_Main_96C918A20": null,
+    "T4_Main_9AFB1FD60": null,
+    "T4_Main_9B36B5171": null,
+    "T4_Main_9D72E3E50": null,
+    "T4_Main_9F152D8C6": null,
+    "T4_Main_A07CCEFA0": null,
+    "T4_Main_A1A4F7617": null,
+    "T4_Main_A1CFB4AB3": null,
+    "T4_Main_A23E778A0": null,
+    "T4_Main_A29F04970": null,
+    "T4_Main_A30E056A0": null,
+    "T4_Main_B2B288DB0": null,
+    "T4_Main_B854D25D2": null,
+    "T4_Main_BC0E6F120": null,
+    "T4_Main_BD23D0AF0": null,
+    "T4_Main_BE19D3D22": null,
+    "T4_Main_C1E85D7B4": null,
+    "T4_Main_C6AE84EB0": null,
+    "T4_Main_C76C04C11": null,
+    "T4_Main_C8A839111": null,
+    "T4_Main_CD327EAA1": null,
+    "T4_Main_CED279315": null,
+    "T4_Main_D1DA41AB0": null,
+    "T4_Main_D9295A610": null,
+    "T4_Main_D94772630": null,
+    "T4_Main_DA1126E08": null,
+    "T4_Main_DC7E2B381": null,
+    "T4_Main_E410950A2": null,
+    "T4_Main_E6F4B67E0": null,
+    "T4_Main_EE2BC2321": null,
+    "T4_Main_EECD0C941": null,
+    "T4_Main_F0F851670": null,
+    "T4_Main_F8A251AE2": null,
+    "T4_Main_FB88FBD52": null,
+    "T4_Main_FCA70A2B1": null,
+    "T4_Main_FE1404BF2": null,
+    "T4_Main_FFA3B8D60": null,
+    "T4_Research_0002FFCE0": null,
+    "T4_Research_040079B07": null,
+    "T4_Research_05F0E3251": null,
+    "T4_Research_08E6699F8": null,
+    "T4_Research_0AF63DBB1": null,
+    "T4_Research_0B4E2EB53": null,
+    "T4_Research_0BEE01B35": null,
+    "T4_Research_0DA1313B4": null,
+    "T4_Research_0E591BA215": null,
+    "T4_Research_108DCEC92": null,
+    "T4_Research_143A1B010": null,
+    "T4_Research_143D055A13": null,
+    "T4_Research_1782F61F2": null,
+    "T4_Research_1A3360F815": null,
+    "T4_Research_1ACFC7918": null,
+    "T4_Research_1F3130D74": null,
+    "T4_Research_24ECB6ED0": null,
+    "T4_Research_297CF12B1": null,
+    "T4_Research_29AB3FAD9": null,
+    "T4_Research_2AC5DFFE2": null,
+    "T4_Research_2C5E6CA32": null,
+    "T4_Research_2D3408466": null,
+    "T4_Research_303E53CC10": null,
+    "T4_Research_30C626C17": null,
+    "T4_Research_3465FE4C4": null,
+    "T4_Research_34B078C57": null,
+    "T4_Research_36CF54759": null,
+    "T4_Research_37206D211": null,
+    "T4_Research_41ED22CE10": null,
+    "T4_Research_424AF64A3": null,
+    "T4_Research_42B6496F1": null,
+    "T4_Research_468E857A6": null,
+    "T4_Research_478935174": null,
+    "T4_Research_4857FFC06": null,
+    "T4_Research_4B2B314212": null,
+    "T4_Research_4C1080774": null,
+    "T4_Research_4CB258320": null,
+    "T4_Research_4D72E54C1": null,
+    "T4_Research_4E145E6814": null,
+    "T4_Research_4ED905580": null,
+    "T4_Research_4F0BF50F17": null,
+    "T4_Research_50AD3C3A18": null,
+    "T4_Research_51BA89697": null,
+    "T4_Research_57F9B1498": null,
+    "T4_Research_5B05F0CD14": null,
+    "T4_Research_5B2432E08": null,
+    "T4_Research_5D2134621": null,
+    "T4_Research_5D5DA3875": null,
+    "T4_Research_6085AB582": null,
+    "T4_Research_60BECF5C11": null,
+    "T4_Research_62F4D4C75": null,
+    "T4_Research_6421FCAF8": null,
+    "T4_Research_66A77BD23": null,
+    "T4_Research_67582B143": null,
+    "T4_Research_6950520A0": null,
+    "T4_Research_6970CA911": null,
+    "T4_Research_6C012B1E3": null,
+    "T4_Research_6D8F7DAB2": null,
+    "T4_Research_6DE82BE116": null,
+    "T4_Research_6E74626D6": null,
+    "T4_Research_77B7B7E021": null,
+    "T4_Research_7A19BC553": null,
+    "T4_Research_7A4057E95": null,
+    "T4_Research_7ADDBB805": null,
+    "T4_Research_7BE60D1F6": null,
+    "T4_Research_7C66E51A3": null,
+    "T4_Research_7C9260F62": null,
+    "T4_Research_7DE649371": null,
+    "T4_Research_8006526C4": null,
+    "T4_Research_800C36E52": null,
+    "T4_Research_806A452A0": null,
+    "T4_Research_822B8CA716": null,
+    "T4_Research_85834F016": null,
+    "T4_Research_85880B7A9": null,
+    "T4_Research_866E34969": null,
+    "T4_Research_86EA19CB10": null,
+    "T4_Research_87BC668A3": null,
+    "T4_Research_8A5CB4BD4": null,
+    "T4_Research_8C0D8B320": null,
+    "T4_Research_8C4FF2FF9": null,
+    "T4_Research_8EBF80409": null,
+    "T4_Research_9041558119": null,
+    "T4_Research_92602BB17": null,
+    "T4_Research_93FB640920": null,
+    "T4_Research_949685757": null,
+    "T4_Research_9509CDBC7": null,
+    "T4_Research_96FCF31F4": null,
+    "T4_Research_990FA7030": null,
+    "T4_Research_9F67DB025": null,
+    "T4_Research_A10A422F12": null,
+    "T4_Research_A22C720C9": null,
+    "T4_Research_A442E02E5": null,
+    "T4_Research_A901DFFE2": null,
+    "T4_Research_ADE43EB42": null,
+    "T4_Research_B01AE71C0": null,
+    "T4_Research_B0CBC67F2": null,
+    "T4_Research_B406B19221": null,
+    "T4_Research_B794A99C7": null,
+    "T4_Research_BD62253618": null,
+    "T4_Research_BD65896217": null,
+    "T4_Research_BDE783F111": null,
+    "T4_Research_BEDE637C1": null,
+    "T4_Research_C03156729": null,
+    "T4_Research_C2263DD311": null,
+    "T4_Research_C498D7916": null,
+    "T4_Research_C510196D5": null,
+    "T4_Research_C6AC6DCD19": null,
+    "T4_Research_C858E35A5": null,
+    "T4_Research_CB52ED2E6": null,
+    "T4_Research_CED5C91E8": null,
+    "T4_Research_CF5201C53": null,
+    "T4_Research_D178232F0": null,
+    "T4_Research_D39889354": null,
+    "T4_Research_D469F49D4": null,
+    "T4_Research_D59F481A7": null,
+    "T4_Research_D8DF26F42": null,
+    "T4_Research_D9B9ACC97": null,
+    "T4_Research_DCF7D2104": null,
+    "T4_Research_DF4C1EB61": null,
+    "T4_Research_E05201F55": null,
+    "T4_Research_E122D94B8": null,
+    "T4_Research_E4CA598F8": null,
+    "T4_Research_E4F5B7D33": null,
+    "T4_Research_E5101A759": null,
+    "T4_Research_E5B708AC9": null,
+    "T4_Research_E5F6B93D8": null,
+    "T4_Research_E68B273F8": null,
+    "T4_Research_EA348B7E6": null,
+    "T4_Research_EC61C87B11": null,
+    "T4_Research_EE28E1455": null,
+    "T4_Research_F1D475263": null,
+    "T4_Research_F31044D14": null,
+    "T4_Research_F6FA2A943": null,
+    "T4_Research_F956124D13": null,
+    "T4_Research_FBBD71C96": null,
+    "T4_Research_FBC54B5110": null,
+    "T4_Research_FBD13E0B20": null,
+    "T4_Research_FD6399601": null,
+    "T4_Research_FD9A30F10": null,
+    "T4_Research_FFBEB25A5": null,
+    "TRTrunk_1_0": null,
+    "TRTrunk_1_1": null,
+    "TRTrunk_2_0": null,
+    "TRTrunk_2_1": null,
+    "TRTrunk_3_0": null,
+    "TRTrunk_3_1": null,
+    "TRTrunk_4_0": null,
+    "CommanderLevel_RPCollection": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta1"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta1"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta1"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta1"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta2"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta2",
+            "GE_ResearchPoint_MaxCap_Delta2",
+            "GE_ResearchPoint_WalletMaxCap_Delta3"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta2",
+            "GE_ResearchPoint_MaxCap_Delta2",
+            "GE_ResearchPoint_WalletMaxCap_Delta4"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta2",
+            "GE_ResearchPoint_MaxCap_Delta2",
+            "GE_ResearchPoint_WalletMaxCap_Delta5"
+          ],
+          "minCommanderLevel": 1
+        },
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta2",
+            "GE_ResearchPoint_MaxCap_Delta2",
+            "GE_ResearchPoint_WalletMaxCap_Delta6"
+          ],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_BuildingResourceCap": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_ResourceCap_T2"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Gameplay.Generic.ResourceUpgrade.T02"
+          ]
+        }
+      ],
+      "tags": [
+        "Gameplay.Generic.ResourceUpgrade.T02"
+      ]
+    },
+    "QuestReward_BuildingResourceCap2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_ResourceCap_T3"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Gameplay.Generic.ResourceUpgrade.T03"
+          ]
+        }
+      ],
+      "tags": [
+        "Gameplay.Generic.ResourceUpgrade.T03"
+      ]
+    },
+    "QuestReward_BuildingResourceCap3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_ResourceCap_T4"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Gameplay.Generic.ResourceUpgrade.T04"
+          ]
+        }
+      ],
+      "tags": [
+        "Gameplay.Generic.ResourceUpgrade.T04"
+      ]
+    },
+    "QuestReward_BuildingUpgradeLevel": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_MaxBuildingUpgradeLevel_T1"
+          ],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_BuildingUpgradeLevel2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_MaxBuildingUpgradeLevel_T1"
+          ],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD1": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            },
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        },
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        }
+      ]
+    },
+    "QuestReward_CannyValley_Squad_SSD6": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        }
+      ]
+    },
+    "QuestReward_Evolution": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Evolution_T2_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Evolution.Defenders.Tier2a",
+            "Evolution.Hero.Constructor.Tier2a",
+            "Evolution.Hero.Ninja.Tier2a",
+            "Evolution.Hero.Outlander.Tier2a",
+            "Evolution.Hero.Soldier.Tier2a",
+            "Evolution.Managers.Tier2a",
+            "Evolution.Schematic.Traps.Damage.Tier2a",
+            "Evolution.Schematic.Traps.Healing.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Axes.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Spears.Tier2a",
+            "Evolution.Schematic.Weapons.Melee.Swords.Tier2a",
+            "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a",
+            "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a",
+            "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a",
+            "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a",
+            "Evolution.Schematic.Weapons.Special.Tier2a",
+            "Evolution.Workers.Tier2a",
+            "Tooltip.SkillTree.Unlock.RarityEvolution.Melee",
+            "Tooltip.SkillTree.Unlock.RarityEvolution.Ranged",
+            "Tooltip.SkillTree.Unlock.RarityEvolution.Trap",
+            "Unlocks.RarityUpgrade.Hero.Constructor",
+            "Unlocks.RarityUpgrade.Hero.Ninja",
+            "Unlocks.RarityUpgrade.Hero.Outlander",
+            "Unlocks.RarityUpgrade.Hero.Soldier",
+            "Unlocks.RarityUpgrade.Trap.Offense",
+            "Unlocks.RarityUpgrade.Trap.Support",
+            "Unlocks.RarityUpgrade.Weapon.Assault",
+            "Unlocks.RarityUpgrade.Weapon.Axe",
+            "Unlocks.RarityUpgrade.Weapon.Club",
+            "Unlocks.RarityUpgrade.Weapon.Explosive",
+            "Unlocks.RarityUpgrade.Weapon.Hardware",
+            "Unlocks.RarityUpgrade.Weapon.Pistol",
+            "Unlocks.RarityUpgrade.Weapon.Scythe",
+            "Unlocks.RarityUpgrade.Weapon.Shotgun",
+            "Unlocks.RarityUpgrade.Weapon.Sniper",
+            "Unlocks.RarityUpgrade.Weapon.Spear",
+            "Unlocks.RarityUpgrade.Weapon.Sword"
+          ]
+        }
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a",
+        "Evolution.Hero.Constructor.Tier2a",
+        "Evolution.Hero.Ninja.Tier2a",
+        "Evolution.Hero.Outlander.Tier2a",
+        "Evolution.Hero.Soldier.Tier2a",
+        "Evolution.Managers.Tier2a",
+        "Evolution.Schematic.Traps.Damage.Tier2a",
+        "Evolution.Schematic.Traps.Healing.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a",
+        "Evolution.Schematic.Weapons.Special.Tier2a",
+        "Evolution.Workers.Tier2a",
+        "Tooltip.SkillTree.Unlock.RarityEvolution.Melee",
+        "Tooltip.SkillTree.Unlock.RarityEvolution.Ranged",
+        "Tooltip.SkillTree.Unlock.RarityEvolution.Trap",
+        "Unlocks.RarityUpgrade.Hero.Constructor",
+        "Unlocks.RarityUpgrade.Hero.Ninja",
+        "Unlocks.RarityUpgrade.Hero.Outlander",
+        "Unlocks.RarityUpgrade.Hero.Soldier",
+        "Unlocks.RarityUpgrade.Trap.Offense",
+        "Unlocks.RarityUpgrade.Trap.Support",
+        "Unlocks.RarityUpgrade.Weapon.Assault",
+        "Unlocks.RarityUpgrade.Weapon.Axe",
+        "Unlocks.RarityUpgrade.Weapon.Club",
+        "Unlocks.RarityUpgrade.Weapon.Explosive",
+        "Unlocks.RarityUpgrade.Weapon.Hardware",
+        "Unlocks.RarityUpgrade.Weapon.Pistol",
+        "Unlocks.RarityUpgrade.Weapon.Scythe",
+        "Unlocks.RarityUpgrade.Weapon.Shotgun",
+        "Unlocks.RarityUpgrade.Weapon.Sniper",
+        "Unlocks.RarityUpgrade.Weapon.Spear",
+        "Unlocks.RarityUpgrade.Weapon.Sword"
+      ]
+    },
+    "QuestReward_Evolution2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Evolution_T3_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Evolution.Defenders.Tier2a.3a",
+            "Evolution.Hero.Constructor.Tier2a.3a",
+            "Evolution.Hero.Ninja.Tier2a.3a",
+            "Evolution.Hero.Outlander.Tier2a.3a",
+            "Evolution.Hero.Soldier.Tier2a.3a",
+            "Evolution.Managers.Tier2a.3a",
+            "Evolution.Schematic.Traps.Damage.Tier2a.3a",
+            "Evolution.Schematic.Traps.Healing.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a",
+            "Evolution.Schematic.Weapons.Special.Tier2a.3a",
+            "Evolution.Workers.Tier2a.3a"
+          ]
+        }
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a",
+        "Evolution.Hero.Constructor.Tier2a.3a",
+        "Evolution.Hero.Ninja.Tier2a.3a",
+        "Evolution.Hero.Outlander.Tier2a.3a",
+        "Evolution.Hero.Soldier.Tier2a.3a",
+        "Evolution.Managers.Tier2a.3a",
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a",
+        "Evolution.Workers.Tier2a.3a"
+      ]
+    },
+    "QuestReward_Evolution3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Evolution_T4_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Evolution.Defenders.Tier2a.3a.4a",
+            "Evolution.Hero.Constructor.Tier2a.3a.4a",
+            "Evolution.Hero.Ninja.Tier2a.3a.4a",
+            "Evolution.Hero.Outlander.Tier2a.3a.4a",
+            "Evolution.Hero.Soldier.Tier2a.3a.4a",
+            "Evolution.Managers.Tier2a.3a.4a",
+            "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a",
+            "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a",
+            "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a",
+            "Evolution.Workers.Tier2a.3a.4a"
+          ]
+        }
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a.4a",
+        "Evolution.Hero.Constructor.Tier2a.3a.4a",
+        "Evolution.Hero.Ninja.Tier2a.3a.4a",
+        "Evolution.Hero.Outlander.Tier2a.3a.4a",
+        "Evolution.Hero.Soldier.Tier2a.3a.4a",
+        "Evolution.Managers.Tier2a.3a.4a",
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a",
+        "Evolution.Workers.Tier2a.3a.4a"
+      ]
+    },
+    "QuestReward_Evolution4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Evolution_T5_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Evolution.Defenders.Tier2a.3a.4a.5a",
+            "Evolution.Hero.Constructor.Tier2a.3a.4a.5a",
+            "Evolution.Hero.Ninja.Tier2a.3a.4a.5a",
+            "Evolution.Hero.Outlander.Tier2a.3a.4a.5a",
+            "Evolution.Hero.Soldier.Tier2a.3a.4a.5a",
+            "Evolution.Managers.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a.5a",
+            "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a.5a",
+            "Evolution.Workers.Tier2a.3a.4a.5a"
+          ]
+        }
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a.4a.5a",
+        "Evolution.Hero.Constructor.Tier2a.3a.4a.5a",
+        "Evolution.Hero.Ninja.Tier2a.3a.4a.5a",
+        "Evolution.Hero.Outlander.Tier2a.3a.4a.5a",
+        "Evolution.Hero.Soldier.Tier2a.3a.4a.5a",
+        "Evolution.Managers.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a.5a",
+        "Evolution.Workers.Tier2a.3a.4a.5a"
+      ]
+    },
+    "QuestReward_Expedition_DirtBike": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandOne_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadOne"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.ChoppingWood",
+            "Expedition.Generation.Land.T01_0",
+            "Expedition.Generation.Land.T01_1",
+            "Expedition.Generation.MiningOre",
+            "Expedition.Generation.PeopleRun",
+            "Expedition.UI.Unlocked",
+            "ExpeditionSquadOne.Expedition.Land"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadOne"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.ChoppingWood",
+        "Expedition.Generation.Land.T01_0",
+        "Expedition.Generation.Land.T01_1",
+        "Expedition.Generation.MiningOre",
+        "Expedition.Generation.PeopleRun",
+        "Expedition.UI.Unlocked",
+        "ExpeditionSquadOne.Expedition.Land"
+      ]
+    },
+    "QuestReward_Expedition_DirtBike2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandOne_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Expedition_DirtBike3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandOne_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Expedition_Helicopter": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirTwo_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadSix"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Air.T03_0",
+            "Expedition.Generation.Air.T03_1",
+            "ExpeditionSquadSix.Expedition.Air"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadSix"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T03_0",
+        "Expedition.Generation.Air.T03_1",
+        "ExpeditionSquadSix.Expedition.Air"
+      ]
+    },
+    "QuestReward_Expedition_Helicopter2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirTwo_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadSix"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadSix"
+        }
+      ]
+    },
+    "QuestReward_Expedition_Helicopter3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirTwo_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadSix"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Air.T04_0",
+            "Expedition.Generation.Air.T04_1"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadSix"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T04_0",
+        "Expedition.Generation.Air.T04_1"
+      ]
+    },
+    "QuestReward_Expedition_Helicopter4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirTwo_3"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Expedition_ExpeditionSquadSix"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Expedition_ExpeditionSquadSix"
+        }
+      ]
+    },
+    "QuestReward_Expedition_PropPlane": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirOne_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadFive"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Air.T02_0",
+            "Expedition.Generation.Air.T02_1",
+            "ExpeditionSquadFive.Expedition.Air"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadFive"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T02_0",
+        "Expedition.Generation.Air.T02_1",
+        "ExpeditionSquadFive.Expedition.Air"
+      ]
+    },
+    "QuestReward_Expedition_PropPlane2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirOne_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadFive"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadFive"
+        }
+      ]
+    },
+    "QuestReward_Expedition_PropPlane3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_AirOne_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadFive"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadFive"
+        }
+      ]
+    },
+    "QuestReward_Expedition_RowBoat": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaOne_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadThree"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Sea.T01_0",
+            "Expedition.Generation.Sea.T01_1",
+            "ExpeditionSquadThree.Expedition.Sea"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadThree"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T01_0",
+        "Expedition.Generation.Sea.T01_1",
+        "ExpeditionSquadThree.Expedition.Sea"
+      ]
+    },
+    "QuestReward_Expedition_RowBoat2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaOne_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadThree"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadThree"
+        }
+      ]
+    },
+    "QuestReward_Expedition_RowBoat3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaOne_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadThree"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Sea.T02_0",
+            "Expedition.Generation.Sea.T02_1"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadThree"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T02_0",
+        "Expedition.Generation.Sea.T02_1"
+      ]
+    },
+    "QuestReward_Expedition_RowBoat4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaOne_3"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Expedition_ExpeditionSquadThree"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Expedition_ExpeditionSquadThree"
+        }
+      ]
+    },
+    "QuestReward_Expedition_SpeedBoat": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaTwo_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadFour"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Sea.T03_0",
+            "Expedition.Generation.Sea.T03_1",
+            "ExpeditionSquadFour.Expedition.Sea"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadFour"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T03_0",
+        "Expedition.Generation.Sea.T03_1",
+        "ExpeditionSquadFour.Expedition.Sea"
+      ]
+    },
+    "QuestReward_Expedition_SpeedBoat2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaTwo_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadFour"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadFour"
+        }
+      ]
+    },
+    "QuestReward_Expedition_SpeedBoat3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaTwo_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadFour"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadFour"
+        }
+      ]
+    },
+    "QuestReward_Expedition_SpeedBoat4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaTwo_3"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Expedition_ExpeditionSquadFour"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Sea.T04_0",
+            "Expedition.Generation.Sea.T04_1"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Expedition_ExpeditionSquadFour"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T04_0",
+        "Expedition.Generation.Sea.T04_1"
+      ]
+    },
+    "QuestReward_Expedition_SpeedBoat5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_SeaTwo_4"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Expedition_ExpeditionSquadFour"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Expedition_ExpeditionSquadFour"
+        }
+      ]
+    },
+    "QuestReward_Expedition_Truck": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandTwo_0"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Land.T02_0",
+            "Expedition.Generation.Land.T02_1",
+            "ExpeditionSquadTwo.Expedition.Land"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T02_0",
+        "Expedition.Generation.Land.T02_1",
+        "ExpeditionSquadTwo.Expedition.Land"
+      ]
+    },
+    "QuestReward_Expedition_Truck2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandTwo_1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+        }
+      ]
+    },
+    "QuestReward_Expedition_Truck3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandTwo_2"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Land.T03_0",
+            "Expedition.Generation.Land.T03_1"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T03_0",
+        "Expedition.Generation.Land.T03_1"
+      ]
+    },
+    "QuestReward_Expedition_Truck4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandTwo_3"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+            }
+          ],
+          "tags": [
+            "Expedition.Generation.Land.T04_0",
+            "Expedition.Generation.Land.T04_1"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+        }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T04_0",
+        "Expedition.Generation.Land.T04_1"
+      ]
+    },
+    "QuestReward_Expedition_Truck5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Squad_Expedition_LandTwo_4"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Expedition_ExpeditionSquadTwo"
+        }
+      ]
+    },
+    "QuestReward_Feature_DefenderLevelUp": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_HeroLevelUp": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_RePerk": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_ResearchSystem": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_ResearchPoint_ProductionRate_Delta1",
+            "GE_ResearchPoint_MaxCap_Delta1",
+            "GE_ResearchPoint_WalletMaxCap_Delta1"
+          ],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_SkillSystem": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_SurvivorLevelUp": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_SurvivorSlotting": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_TrapLevelUp": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Feature_WeaponLevelUp": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_HeroSupport_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Combat_AdventureSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Combat_AdventureSquadOne"
+        }
+      ]
+    },
+    "QuestReward_HeroTactical_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Combat_AdventureSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Combat_AdventureSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Homebase_Defender": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Defender_DefenderSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Defender_DefenderSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Homebase_Defender2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Defender_DefenderSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Defender_DefenderSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Homebase_Defender3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Defender_DefenderSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Defender_DefenderSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Homebase_Defender4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Defender_DefenderSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Defender_DefenderSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Homebase_Defender5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Defender_DefenderSquadOne"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Defender_DefenderSquadOne"
+        }
+      ]
+    },
+    "QuestReward_Mission_Defender": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Defender_MissionDefender"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Defender_MissionDefender"
+        }
+      ]
+    },
+    "QuestReward_Mission_Defender2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Defender_MissionDefender"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Defender_MissionDefender"
+        }
+      ]
+    },
+    "QuestReward_Mission_Defender3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Defender_MissionDefender"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Defender_MissionDefender"
+        }
+      ]
+    },
+    "QuestReward_NewFollower1_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 2,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 2,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ]
+    },
+    "QuestReward_NewFollower2_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ]
+    },
+    "QuestReward_NewFollower3_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ]
+    },
+    "QuestReward_NewFollower4_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 5,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 5,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ]
+    },
+    "QuestReward_NewLeader_Slot": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ]
+    },
+    "QuestReward_Pickaxe": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1"
+          ],
+          "minCommanderLevel": 1
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD1": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        }
+      ]
+    },
+    "QuestReward_Plankerton_Squad_SSD6": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        }
+      ]
+    },
+    "QuestReward_RecycleCollection": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_RecycleCollection_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Unlocks.CollectionBook.BaseGrant",
+            "Unlocks.CollectionBook.Upgrade2",
+            "Unlocks.CollectionBook.Upgrade3",
+            "Unlocks.Recycler.Upgrade1",
+            "Unlocks.Recycler.Upgrade2",
+            "Unlocks.Recycler.Upgrade3",
+            "Unlocks.Recycler.Upgrade4"
+          ]
+        }
+      ],
+      "tags": [
+        "Unlocks.CollectionBook.BaseGrant",
+        "Unlocks.CollectionBook.Upgrade2",
+        "Unlocks.CollectionBook.Upgrade3",
+        "Unlocks.Recycler.Upgrade1",
+        "Unlocks.Recycler.Upgrade2",
+        "Unlocks.Recycler.Upgrade3",
+        "Unlocks.Recycler.Upgrade4"
+      ]
+    },
+    "QuestReward_SecondaryAttack": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_MaxMeleeComboLevel_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Gameplay.Melee.EnableHeavyAttack.Axe",
+            "Gameplay.Melee.EnableHeavyAttack.Club",
+            "Gameplay.Melee.EnableHeavyAttack.Harvest",
+            "Gameplay.Melee.EnableHeavyAttack.Scythe",
+            "Gameplay.Melee.EnableHeavyAttack.Spear",
+            "Gameplay.Melee.EnableHeavyAttack.Sword",
+            "Gameplay.Melee.EnableHeavyAttack.Tool"
+          ]
+        }
+      ],
+      "tags": [
+        "Gameplay.Melee.EnableHeavyAttack.Axe",
+        "Gameplay.Melee.EnableHeavyAttack.Club",
+        "Gameplay.Melee.EnableHeavyAttack.Harvest",
+        "Gameplay.Melee.EnableHeavyAttack.Scythe",
+        "Gameplay.Melee.EnableHeavyAttack.Spear",
+        "Gameplay.Melee.EnableHeavyAttack.Sword",
+        "Gameplay.Melee.EnableHeavyAttack.Tool"
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD1": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        }
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        }
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Scavenging_ScoutingParty"
+        }
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            },
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        }
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            },
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Medicine_EMTSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        }
+      ]
+    },
+    "QuestReward_Stonewood_Squad_SSD6": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            },
+            {
+              "slot": 1,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            },
+            {
+              "slot": 2,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            },
+            {
+              "slot": 3,
+              "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        },
+        {
+          "slot": 3,
+          "squadId": "Squad_Attribute_Synthesis_CorpsofEngineering"
+        }
+      ]
+    },
+    "QuestReward_Transformation": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_Transformation_All"
+          ],
+          "minCommanderLevel": 1,
+          "tags": [
+            "Unlocks.DirectedAcquisition",
+            "Unlocks.DirectedAcquisition.People.Defender",
+            "Unlocks.DirectedAcquisition.People.Hero.Base",
+            "Unlocks.DirectedAcquisition.People.Manager.Base",
+            "Unlocks.DirectedAcquisition.People.Worker",
+            "Unlocks.DirectedAcquisition.Trap.Base",
+            "Unlocks.DirectedAcquisition.Weapon.Base",
+            "Unlocks.DirectedAcquisition.Weapon.Melee.Base",
+            "Unlocks.DirectedAcquisition.Weapon.Melee.Blunt",
+            "Unlocks.DirectedAcquisition.Weapon.Melee.Edged",
+            "Unlocks.DirectedAcquisition.Weapon.Melee.Piercing",
+            "Unlocks.DirectedAcquisition.Weapon.Ranged.Assault",
+            "Unlocks.DirectedAcquisition.Weapon.Ranged.Base",
+            "Unlocks.DirectedAcquisition.Weapon.Ranged.Pistol",
+            "Unlocks.DirectedAcquisition.Weapon.Ranged.Shotgun",
+            "Unlocks.DirectedAcquisition.Weapon.Ranged.Sniper"
+          ]
+        }
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition",
+        "Unlocks.DirectedAcquisition.People.Defender",
+        "Unlocks.DirectedAcquisition.People.Hero.Base",
+        "Unlocks.DirectedAcquisition.People.Manager.Base",
+        "Unlocks.DirectedAcquisition.People.Worker",
+        "Unlocks.DirectedAcquisition.Trap.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Blunt",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Edged",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Piercing",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Assault",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Pistol",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Shotgun",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Sniper"
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD1": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        }
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD2": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        }
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD3": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        }
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD4": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 4,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            },
+            {
+              "slot": 5,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            },
+            {
+              "slot": 6,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 4,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        },
+        {
+          "slot": 5,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        },
+        {
+          "slot": 6,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        }
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD5": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+            },
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Scavenging_Gadgeteers"
+        },
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Arms_CloseAssaultSquad"
+        }
+      ]
+    },
+    "QuestReward_TwinePeaks_Squad_SSD6": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+            },
+            {
+              "slot": 7,
+              "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+            }
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Medicine_TrainingTeam"
+        },
+        {
+          "slot": 7,
+          "squadId": "Squad_Attribute_Synthesis_TheThinkTank"
+        }
+      ]
+    },
+    "SkillTree_AdrenalineRush": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_generic_adrenalinerush",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 1
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AdrenalineRush_T1"
+          ],
+          "minCommanderLevel": 40,
+          "tags": [
+            "Abilities.Generic.AdrenalineRush.UpgradeAOE"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AdrenalineRush_T2"
+          ],
+          "minCommanderLevel": 90,
+          "tags": [
+            "Abilities.Generic.AdrenalineRush.HealBoost"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AdrenalineRush_T3"
+          ],
+          "minCommanderLevel": 130,
+          "tags": [
+            "Abilities.Generic.AdrenalineRush.HOT"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AdrenalineRush_T4"
+          ],
+          "minCommanderLevel": 185,
+          "tags": [
+            "Abilities.Generic.AdrenalineRush.CooldownUpgrade"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AdrenalineRush_T5"
+          ],
+          "minCommanderLevel": 220,
+          "tags": [
+            "Abilities.Generic.AdrenalineRush.Resurrect"
+          ]
+        }
+      ]
+    },
+    "SkillTree_Airstrike": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_airstrike",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 1
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AirStrike_T1"
+          ],
+          "minCommanderLevel": 45,
+          "tags": [
+            "Abilities.Generic.Airstrike.BombUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AirStrike_T3"
+          ],
+          "minCommanderLevel": 90,
+          "tags": [
+            "Abilities.Generic.Airstrike.BombUpgrade3"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AirStrike_T2"
+          ],
+          "minCommanderLevel": 135,
+          "tags": [
+            "Abilities.Generic.Airstrike.BombUpgrade2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AirStrike_T4"
+          ],
+          "minCommanderLevel": 185,
+          "tags": [
+            "Abilities.Generic.Airstrike.BombUpgrade4"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_AirStrike_T5"
+          ],
+          "minCommanderLevel": 220,
+          "tags": [
+            "Abilities.Generic.Airstrike.BombUpgrade5"
+          ]
+        }
+      ]
+    },
+    "SkillTree_BackpackSize": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Utility",
+      "levels": [
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 10
+        },
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 30
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 65
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 100
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 140
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 180
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 230
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_BackpackSize_Delta1"
+          ],
+          "minCommanderLevel": 265
+        }
+      ]
+    },
+    "SkillTree_Banner": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_generic_banner",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 40
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Banner_T1"
+          ],
+          "minCommanderLevel": 85,
+          "tags": [
+            "Abilities.Generic.Banner.Shockwave1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Banner_T2"
+          ],
+          "minCommanderLevel": 135,
+          "tags": [
+            "Abilities.Generic.Banner.WallBuffDuration"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Banner_T3"
+          ],
+          "minCommanderLevel": 175,
+          "tags": [
+            "Abilities.Generic.Banner.RespawnPoint"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Banner_T4"
+          ],
+          "minCommanderLevel": 210,
+          "tags": [
+            "Abilities.Generic.Banner.WallBuff2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Banner_T5"
+          ],
+          "minCommanderLevel": 255,
+          "tags": [
+            "Abilities.Generic.Banner.Shockwave2"
+          ]
+        }
+      ]
+    },
+    "SkillTree_BuildAndRepairSpeed": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Utility",
+      "levels": [
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T1",
+            "GE_BuildSpeed_T1"
+          ],
+          "minCommanderLevel": 20
+        },
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T1",
+            "GE_BuildSpeed_T1"
+          ],
+          "minCommanderLevel": 55
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T2",
+            "GE_BuildSpeed_T2"
+          ],
+          "minCommanderLevel": 85
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T2",
+            "GE_BuildSpeed_T2"
+          ],
+          "minCommanderLevel": 120
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T3",
+            "GE_BuildSpeed_T3"
+          ],
+          "minCommanderLevel": 160
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T3",
+            "GE_BuildSpeed_T3"
+          ],
+          "minCommanderLevel": 200
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T4",
+            "GE_BuildSpeed_T4"
+          ],
+          "minCommanderLevel": 250
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_RepairSpeed_T4",
+            "GE_BuildSpeed_T4"
+          ],
+          "minCommanderLevel": 280
+        }
+      ]
+    },
+    "SkillTree_BuildingHealth": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Utility",
+      "levels": [
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T1"
+          ],
+          "minCommanderLevel": 15
+        },
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T1"
+          ],
+          "minCommanderLevel": 45
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T2"
+          ],
+          "minCommanderLevel": 75
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T2"
+          ],
+          "minCommanderLevel": 110
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T3"
+          ],
+          "minCommanderLevel": 150
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T3"
+          ],
+          "minCommanderLevel": 190
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T4"
+          ],
+          "minCommanderLevel": 240
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_BuildingSkill_T4"
+          ],
+          "minCommanderLevel": 275
+        }
+      ]
+    },
+    "SkillTree_HoverTurret": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_generic_botturret",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 35
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_HoverTurret_T1"
+          ],
+          "minCommanderLevel": 75,
+          "tags": [
+            "Abilities.Generic.BotTurret.RangeUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_HoverTurret_T2"
+          ],
+          "minCommanderLevel": 130,
+          "tags": [
+            "Abilities.Generic.BotTurret.DurationUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_HoverTurret_T3"
+          ],
+          "minCommanderLevel": 170
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_HoverTurret_T4"
+          ],
+          "minCommanderLevel": 215,
+          "tags": [
+            "Abilities.Generic.BotTurret.UpgradeExploding"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_HoverTurret_T5"
+          ],
+          "minCommanderLevel": 255,
+          "tags": [
+            "Abilities.Generic.BotTurret.FireRateUpgrade1"
+          ]
+        }
+      ]
+    },
+    "SkillTree_Pickaxe": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Utility",
+      "levels": [
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T1"
+          ],
+          "minCommanderLevel": 25
+        },
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T1"
+          ],
+          "minCommanderLevel": 50
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T2"
+          ],
+          "minCommanderLevel": 80
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T2"
+          ],
+          "minCommanderLevel": 115
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T3"
+          ],
+          "minCommanderLevel": 155
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T3"
+          ],
+          "minCommanderLevel": 195
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T4"
+          ],
+          "minCommanderLevel": 245
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_HarvestTool_Upgrade_T1",
+            "GE_HarvestDamage_Abilities_T4"
+          ],
+          "minCommanderLevel": 275
+        }
+      ]
+    },
+    "SkillTree_ProximityMine": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_generic_proximitymines",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 70
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_ProximityMine_T1"
+          ],
+          "minCommanderLevel": 125,
+          "tags": [
+            "Abilities.Generic.ProximityMine.ExplosionRadiusUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_ProximityMine_T2"
+          ],
+          "minCommanderLevel": 165
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_ProximityMine_T3"
+          ],
+          "minCommanderLevel": 205,
+          "tags": [
+            "Abilities.Generic.ProximityMine.DamageUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_ProximityMine_T4"
+          ],
+          "minCommanderLevel": 235,
+          "tags": [
+            "Abilities.Generic.ProximityMine.ExplosionRadiusUpgrade2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_ProximityMine_T5"
+          ],
+          "minCommanderLevel": 270
+        }
+      ]
+    },
+    "SkillTree_SlowField": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_generic_slowfield",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 70
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SlowField_T1"
+          ],
+          "minCommanderLevel": 125,
+          "tags": [
+            "Abilities.Generic.SlowField.DurationUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SlowField_T2"
+          ],
+          "minCommanderLevel": 165,
+          "tags": [
+            "Abilities.Generic.SlowField.RadiusUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SlowField_T3"
+          ],
+          "minCommanderLevel": 205,
+          "tags": [
+            "Abilities.Generic.SlowField.SlowAmountUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SlowField_T4"
+          ],
+          "minCommanderLevel": 235,
+          "tags": [
+            "Abilities.Generic.SlowField.DurationUpgrade2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SlowField_T5"
+          ],
+          "minCommanderLevel": 270,
+          "tags": [
+            "Abilities.Generic.SlowField.RadiusUpgrade2"
+          ]
+        }
+      ]
+    },
+    "SkillTree_StormShieldStorage": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Utility",
+      "levels": [
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 10
+        },
+        {
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 35
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 65
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 100
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 140
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 180
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 230
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_NewSkill_SSStorage_Delta1"
+          ],
+          "minCommanderLevel": 265
+        }
+      ]
+    },
+    "SkillTree_SupplyDrop": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_supplydrop",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 20
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SupplyDrop_T1"
+          ],
+          "minCommanderLevel": 55,
+          "tags": [
+            "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SupplyDrop_T2"
+          ],
+          "minCommanderLevel": 105,
+          "tags": [
+            "Abilities.Generic.SupplyDrop.CoreResourceUpgrade1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SupplyDrop_T3"
+          ],
+          "minCommanderLevel": 150,
+          "tags": [
+            "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SupplyDrop_T4"
+          ],
+          "minCommanderLevel": 200,
+          "tags": [
+            "Abilities.Generic.SupplyDrop.CoreResourceUpgrade2"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_SupplyDrop_T5"
+          ],
+          "minCommanderLevel": 250,
+          "tags": [
+            "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade3"
+          ]
+        }
+      ]
+    },
+    "SkillTree_Teleporter": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:homebasepoints"
+        }
+      ],
+      "displayType": "Gadget",
+      "levels": [
+        {
+          "abilityKit": "FortAbilityKit:kit_teleporter",
+          "cost": [
+            {
+              "quantity": 1,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [],
+          "minCommanderLevel": 60
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Teleporter_T1"
+          ],
+          "minCommanderLevel": 95,
+          "tags": [
+            "Granted.Abilities.Generic.Teleporter.FriendlyProjectile"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 2,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Teleporter_T2"
+          ],
+          "minCommanderLevel": 145,
+          "tags": [
+            "Granted.Abilities.Generic.Teleporter.InteractionUpgrade"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Teleporter_T3"
+          ],
+          "minCommanderLevel": 190,
+          "tags": [
+            "Granted.Abilities.Generic.Teleporter.ArmTimeUpgrade"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 3,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Teleporter_T4"
+          ],
+          "minCommanderLevel": 225,
+          "tags": [
+            "Abilities.Generic.Teleporter.Range1"
+          ]
+        },
+        {
+          "cost": [
+            {
+              "quantity": 4,
+              "templateId": "Token:homebasepoints"
+            }
+          ],
+          "effects": [
+            "GE_GadgetUpgrade_Teleporter_T5"
+          ],
+          "minCommanderLevel": 260,
+          "tags": [
+            "Granted.Abilities.Generic.Teleporter.EnemyProjectile"
+          ]
+        }
+      ]
+    },
+    "StartNode_CommandCenter": {
+      "displayType": "Hidden",
+      "levels": [
+        {
+          "effects": [
+            "GE_GrantHeroSlotting_All",
+            "GE_AccountInventorySize_Start",
+            "GE_WorldInventorySize_Start",
+            "GE_ResourceCap_T1"
+          ],
+          "minCommanderLevel": 1,
+          "squadSlots": [
+            {
+              "slot": 0,
+              "squadId": "Squad_Combat_AdventureSquadOne"
+            },
+            {
+              "slot": 0,
+              "squadId": "Squad_Combat_NewHeroSquad"
+            }
+          ],
+          "tags": [
+            "Gameplay.Generic.ResourceUpgrade.T01",
+            "Unlocks.Class.Commando",
+            "Unlocks.Class.Constructor",
+            "Unlocks.Class.Ninja",
+            "Unlocks.Class.Outlander"
+          ]
+        }
+      ],
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Combat_AdventureSquadOne"
+        },
+        {
+          "slot": 0,
+          "squadId": "Squad_Combat_NewHeroSquad"
+        }
+      ],
+      "tags": [
+        "Gameplay.Generic.ResourceUpgrade.T01",
+        "Unlocks.Class.Commando",
+        "Unlocks.Class.Constructor",
+        "Unlocks.Class.Ninja",
+        "Unlocks.Class.Outlander"
+      ]
+    }
+  },
+  "pages": {
+    "T1_Main_Nodepage_Layer1": null,
+    "T1_Research_Nodepage_Layer1": null,
+    "T2_Main_Nodepage_Layer1": null,
+    "T2_Research_Nodepage_Layer1": null,
+    "T3_Main_Nodepage_Layer1": null,
+    "T3_Research_Nodepage_Layer1": null,
+    "T4_Main_Nodepage_Layer1": null,
+    "T4_Research_Nodepage_Layer1": null
+  }
+}

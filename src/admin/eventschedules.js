@@ -62,9 +62,9 @@ export const eventCards = [
   { id: "island", kind: "dated", dated: "island", seasons: [6], name: "Floating island", builds: "6.00 – 6.10", ranges: [[4395664, 4480234]],
     key: "lake", endStep: "home", startLabel: "Rises over Loot Lake", endLabel: "Back over Loot Lake",
     about: "The island over Loot Lake floats to the seven runes the Cube lifted and back. Needs the build's server-assets pak." },
-  { id: "fortnitemares2018", kind: "build", seasons: [6], name: "Fortnitemares 2018", builds: "6.20 – 6.30", ranges: [[4497486, 4573096]],
-    about: "The Cube Monsters' modes, the Fortnitemares Challenges, the Halloween lobby and Battle Bus; Save the World's Fortnitemares Part 1 (Hexsylvania, Candy), and on 6.22 and 6.30 Part 2 (Battle Royale's Fortnitemares is over there: its challenges stay).",
-    flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2 (6.22, 6.30)", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween (6.20, 6.21)", "EventFlag.HalloweenBattleBus (6.20, 6.21)", "POI0 (6.20, 6.21)", "POI1 (6.22)", "EventFlag.LTM_LilKevin (6.21 – 6.30)", "EventFlag.Fortnitemares_Part4 (6.21)"] },
+  { id: "fortnitemares2018", kind: "build", seasons: [6], name: "Fortnitemares 2018", builds: "6.20 – 6.31", ranges: [[4497486, 4573279]],
+    about: "The Cube Monsters' modes, the Fortnitemares Challenges, the Halloween lobby and Battle Bus; Save the World's Fortnitemares Part 1 (Hexsylvania, Candy), and on 6.22 to 6.31 Part 2 (Battle Royale's Fortnitemares is over there: its challenges stay).",
+    flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2 (6.22 – 6.31)", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween (6.20, 6.21)", "EventFlag.HalloweenBattleBus (6.20, 6.21)", "POI0 (6.20, 6.21)", "POI1 (6.22)", "EventFlag.LTM_LilKevin (6.21 – 6.31)", "EventFlag.Fortnitemares_Part4 (6.21)"] },
   { id: "butterfly", kind: "dated", dated: "butterfly", seasons: [6], name: "The Butterfly (the Cube's end)", builds: "6.21", ranges: [[4526925, 4526925]],
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." }

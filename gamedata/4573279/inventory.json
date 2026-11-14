@@ -1,0 +1,48 @@
+{
+  "nodes": {
+    "T1_Main_1B6486FC0": null,
+    "T1_Main_849930D55": null,
+    "T1_Main_B1A3A3771": null,
+    "T1_Main_FF2595300": null,
+    "T1_Research_5201143F2": null,
+    "T1_Research_C3D05C4B2": null,
+    "T2_Main_079EDD2C0": null,
+    "T2_Main_21CE15E51": null,
+    "T2_Main_26F4FB891": null,
+    "T2_Main_93D6486A6": null,
+    "T2_Main_A454A2615": null,
+    "T2_Main_A50295643": null,
+    "T2_Main_D26651800": null,
+    "T2_Research_371F90623": null,
+    "T2_Research_45306C490": null,
+    "T2_Research_5D47FE190": null,
+    "T2_Research_C4DCB3993": null,
+    "T3_Main_38ADE9320": null,
+    "T3_Main_41C374291": null,
+    "T3_Main_68DB04EE0": null,
+    "T3_Main_7AAE50F90": null,
+    "T3_Main_BB09D9260": null,
+    "T3_Main_D259FE9E0": null,
+    "T3_Research_60B83C472": null,
+    "T3_Research_9CDE36052": null,
+    "T3_Research_A39241861": null,
+    "T3_Research_DDCAA1041": null,
+    "T4_Main_44036CC70": null,
+    "T4_Main_49DF3CFD1": null,
+    "T4_Main_4EED13AE1": null,
+    "T4_Main_6572170A0": null,
+    "T4_Main_6C92B3622": null,
+    "T4_Main_7CD9FDA30": null,
+    "T4_Main_E6F4B67E0": null,
+    "T4_Research_7A19BC553": null,
+    "T4_Research_7BE60D1F6": null,
+    "T4_Research_CB52ED2E6": null,
+    "T4_Research_F1D475263": null,
+    "SkillTree_BackpackSize": {
+      "WorldInventorySizeBonus": 20
+    },
+    "SkillTree_StormShieldStorage": {
+      "StorageInventorySizeBonus": 20
+    }
+  }
+}

@@ -187,7 +187,8 @@ const eventBuilds = [
   { version: "6.20", cl: 4497486, event: "Fortnitemares" },
   { version: "6.21", cl: 4526925, event: "Fortnitemares" },
   { version: "6.22", cl: 4543176, event: "Fortnitemares" },
-  { version: "6.30", cl: 4573096, event: "Fortnitemares" }
+  { version: "6.30", cl: 4573096, event: "Fortnitemares" },
+  { version: "6.31", cl: 4573279, event: "Fortnitemares" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin
@@ -1364,8 +1365,9 @@ export function adminRoutes(context) {
     // (CL-4497486), with its own (store/itemshop.js: Deadfire, Sanctum, Dante, Rosa, Brainiac, Bunnymoon, Patch Patroller...),
     // now as 6.21's (CL-4526925), with its own (Shogun, Spooky Team Leader, Ruckus, Mayhem, Growler, Flapjackie, Yee-Haw!...),
     // now as 6.22's (CL-4543176), with its own (the NFL outfits, their referees, tools and glider, Spike It, Denied, A.X.E.),
-    // now as 6.30's (CL-4573096), with its own (Castor, Elmira, Maki Master, Tender Defender, Taro, Nara, Riot, Night Slicer...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573096" }[s];
+    // now as 6.30's (CL-4573096), with its own (Castor, Elmira, Maki Master, Tender Defender, Taro, Nara, Riot, Night Slicer...),
+    // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1522,11 +1524,11 @@ export function adminRoutes(context) {
           id: "fortnitemares",
           name: "Fortnitemares",
           subtitle: "Halloween 2017 Event",
-          buildRange: "1.8 – 1.9 (CL 3724489 – 3757339), and 6.20 – 6.30 (CL 4497486 – 4573096, Fortnitemares 2018)",
+          buildRange: "1.8 – 1.9 (CL 3724489 – 3757339), and 6.20 – 6.31 (CL 4497486 – 4573279, Fortnitemares 2018)",
           flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1 (6.20)", "EventFlag.ActiveMiniBosses (6.20, Candy)",
             "EventFlag.LTM_Fortnitemares (6.20, the Battle Royale challenges)", "EventFlag.LobbySeason6Halloween (6.20)", "EventFlag.HalloweenBattleBus (6.20)",
-            "POI0 (6.20, 6.21: the Cube Monsters' days; 6.21's spawners need it)", "EventFlag.LTM_LilKevin (6.21 – 6.30, the Lil' Kev challenges)",
-            "EventFlag.FortnitemaresPhase2 (6.22, 6.30, Save the World's Part 2)", "POI1 (6.22, after the Butterfly)"],
+            "POI0 (6.20, 6.21: the Cube Monsters' days; 6.21's spawners need it)", "EventFlag.LTM_LilKevin (6.21 – 6.31, the Lil' Kev challenges)",
+            "EventFlag.FortnitemaresPhase2 (6.22 – 6.31, Save the World's Part 2)", "POI1 (6.22, after the Butterfly)"],
           theater: "Hexsylvania",
           theaterZones: [
             { name: "Hexsylvania Start", power: "5+", gate: "None" },

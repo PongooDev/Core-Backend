@@ -134,7 +134,11 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // on 9 days, the same way: Night Slicer (15 November), Castor and Elmira with Spellslinger and Magic Wings (16 and 17
 // November), Llamacadabra (17 November), Maki Master (21 November), Tender Defender with Scrambler and Flappy Flyer (23 and
 // 24 November), Taro and Nara with Gatekeeper and Flying Carp (25 and 26 November), Bombastic (26 November) and Riot (28
-// November). Only 6.30's data has them, so 6.00's to 6.22's days are as they were. A build's season is its athena data's
+// November). Only 6.30's data has them, so 6.00's to 6.22's days are as they were. 6.31 (CL-4573279) adds its five the
+// shop sold, on 3 days, the same way: Mothmando with Lamp and Flutterbug (30 November and 1 December), Scorecard (1
+// December) and Phone It In (3 December). Its other cosmetics, Longshot and Insight with their back blings, Mime Time,
+// Showstopper and the Llamalaxy spray, weren't sold in Season 6. Only 6.31's data has them, so 6.00's to 6.30's days are
+// as they were. A build's season is its athena data's
 // seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;

@@ -207,6 +207,10 @@ const playlistTeamsFrom630 = {
   58076: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams630Build = 4573096;
+// 6.31's (CL-4573279) Team Rumble (280, Playlist_Respawn_24: 2 × 20 in squads of 4, a large team game). Its other playlists
+// have the teams above (events/ltms.js).
+const playlistTeamsFrom631 = { 280: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 } };
+const playlistTeams631Build = 4573279;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -382,6 +386,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams631Build && playlistTeamsFrom631[playlistId]) return playlistTeamsFrom631[playlistId];
   if (Number(build) >= playlistTeams630Build && playlistTeamsFrom630[playlistId]) return playlistTeamsFrom630[playlistId];
   if (Number(build) >= playlistTeams622Build && playlistTeamsFrom622[playlistId]) return playlistTeamsFrom622[playlistId];
   if (Number(build) >= playlistTeams620Build && playlistTeamsFrom620[playlistId]) return playlistTeamsFrom620[playlistId];

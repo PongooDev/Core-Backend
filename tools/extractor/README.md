@@ -384,6 +384,22 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (Plank Harbor, Build Off! and Refuel the Homebase), `squads.json` (Squad_Combat_NewHeroSquad and
   Squad_Defender_MissionDefender; three defender squads gone), `upgrades.json`, `expeditions.json`, `alterations.json`,
   `banners.json`, `cardpacks.json` and `fabricator.json`; the rest are 6.22's.
+  6.31's (CL-4573279, UE 4.21) is `4.21.0-4573279+++Fortnite+Release-6.31` (no `Build.version`; the build folder is
+  `6.31-CL-4573279\6.31-CL-4573279\Fortnite`) with 6.30's full data (Cert's files with `gamedata/4573096` applied) as the
+  fifth argument, and the main key FModel's settings hold for its build folder; no extractor change. A full install again:
+  15 paks (391,675 files), pakchunk0 and its s1 to s6, pakchunk1 and pakchunk1_s1, the language paks 2, 5, 7, 8 and 9, and
+  the keyed pakchunk1000 (the backend's keychain has its key); no pakchunk1001. Its DefaultGameData still names no
+  MissionAlerts (24 alerts and 4 storm spreads from the fifth argument). Against 6.30 eight files change: `athena.json`
+  (13 cosmetics: Longshot and Insight with Scope Satchel and Sight Sling, Mothmando with Wingback, Lamp and Flutterbug,
+  Mime Time, Phone It In, Scorecard, Showstopper and the Llamalaxy spray; none gone; 5 display assets; week 10's bundle
+  and its 15 quests, 13 objective stats; the loot packages with the Epic and Legendary Pump Shotgun,
+  WID_Shotgun_Standard_Athena_VR/SR_Ore_T03, in floor loot, vending machines and supply drops, the Double Barrel out of
+  floor loot and Stink Bombs in supply drops), `items.json`, `characters.json` and `fabricator.json` (the new outfits'
+  heroes and harvesting tool, the Pump Shotguns, Shock Trooper Carlos HID_Commando_019, the Six Feet Under shovel
+  WID/SID_Blunt_Shovel_Halloween, Stabilize the Rift's items), `upgrades.json` (the shovel's crafting recipes),
+  `quests.json` and `objectivestats.json` (Canny Valley Act 2: 21 quests, the medbot objectives), and `world.json` (the
+  Ghost Town zones BP_ZT_GhostTown_A and _B, the Stabilize the Rift landmark and its generator, and four primary missions'
+  tags 6.30's paks lacked); the other thirteen are 6.30's, byte for byte.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

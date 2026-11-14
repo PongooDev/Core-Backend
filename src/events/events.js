@@ -449,6 +449,12 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // quest map watches Fortnitemares, FortnitemaresPhase1 and FortnitemaresPhase2) and Update v6.30 still fixes "Hexylvania
 // Takers", so 6.30 serves 6.22's Fortnitemares flags, the Mini-Bosses with Candy and Battle Royale's two challenge
 // schedules (🟡 the notes end none of them), LobbySeason6 and PassiveStorms.
+//
+// 6.31 (CL-4573279, Update v6.31, 27 November 2018). Every EventFlag.* in its paks (the same byte scan, all 372,486
+// uasset, umap, uexp, ini and json files of its 15 paks, the keyed pakchunk1000 with them) is 6.30's, the same 36 names,
+// none new and none gone. Its Save the World data keeps Fortnitemares (Hexsylvania's zone themes and quests, Part 2's
+// rewards) and Update v6.31 ends none of it, so 6.31 serves 6.30's flags (🟡 Epic's end of Save the World's Fortnitemares
+// isn't in the notes).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -519,6 +525,7 @@ const build620 = 4497486;
 const build621 = 4526925;
 const build622 = 4543176;
 const build630 = 4573096;
+const build631 = 4573279;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -526,18 +533,18 @@ const events = [
   // events/fortnitemares.js), its Mini-Bosses with Candy, Battle Royale's challenges, lobby and bus, and the Leaky Lake's
   // POI0 (which 6.21's Cube Monsters' spawners need); 6.21's Part 4 flag and the Lil' Kev challenges. 6.22's: Save the
   // World's Part 2 (FortnitemaresPhase2) with Part 1's, the challenges, and the Leaky Lake after the Butterfly (POI1).
-  // 6.30's: 6.22's but POI1 (its paks have no island scripting).
-  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build630 },
-  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build630 },
-  { name: fortnitemares, flag: fortnitemaresPhase2, firstBuild: build622, lastBuild: build630 },
-  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build630 },
-  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build630 },
+  // 6.30's: 6.22's but POI1 (its paks have no island scripting). 6.31's: 6.30's.
+  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build631 },
+  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build631 },
+  { name: fortnitemares, flag: fortnitemaresPhase2, firstBuild: build622, lastBuild: build631 },
+  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build631 },
+  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build631 },
   { name: fortnitemares2018, flag: lobbySeason6Halloween, firstBuild: build620, lastBuild: build621 },
   { name: fortnitemares2018, flag: halloweenBattleBus, firstBuild: build620, lastBuild: build621 },
   { name: fortnitemares2018, flag: islandPoi(0), firstBuild: build620, lastBuild: build621 },
   { name: fortnitemares2018, flag: islandPoi(1), firstBuild: build622, lastBuild: build622 },
   { name: fortnitemares2018, flag: fortnitemaresPart4, firstBuild: build621, lastBuild: build621 },
-  { name: fortnitemares2018, flag: ltmLilKevin, firstBuild: build621, lastBuild: build630 },
+  { name: fortnitemares2018, flag: ltmLilKevin, firstBuild: build621, lastBuild: build631 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
   { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3870737 },
@@ -565,10 +572,10 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build630 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build631 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
-  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build630 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

@@ -76,8 +76,8 @@ test("6.20 is known, on its own data, in Season 6", () => {
   assert.equal(dataBuild(v620), v620);
   assert.equal(dataBuild("4490000"), v610, "a build between 6.10 and 6.20 plays on 6.10's");
   assert.equal(dataBuild(v610), v610, "6.10 keeps its own data");
-  assert.equal(buildOfSeason(6), "4573096", "Season 6's newest data is 6.30's now (tests/build630.test.js)");
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.30)");
+  assert.equal(buildOfSeason(6), "4573279", "Season 6's newest data is 6.31's now (tests/build631.test.js)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.31)");
   assert.equal(inBuild(v620, athenaSeason).seasonNumber, 6);
 });
 
@@ -278,9 +278,9 @@ test("6.20's event flags:Fortnitemares (its quest map's Part 1, the Mini-Bosses,
   assert.equal(inBuild(v620, () => hasEventEnded(fortnitemares)), false);
   assert.equal(inBuild(v18, () => isEventActive(fortnitemares)), true, "1.8's own run");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4573096], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4573279], flag);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4573096], "and on to 6.30 (tests/build630.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4573279], "and on to 6.31 (tests/build631.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610), "BR_Winter_CandyCaneGuns is gone from 6.20's paks");
   // The admin's switches: Part 2's quest map on, the lobby off.
   withConfig({ mode: "auto", season4Flags: { overrides: { "EventFlag.FortnitemaresPhase2": "on", "EventFlag.LobbySeason6Halloween": "off" } } }, () => {
@@ -388,8 +388,8 @@ test("6.20's shop: Season 6's history with its sixteen cosmetics on their days a
   assert.equal(history.length, 70);
   const [c620, c610] = [inBuild(v620, athenaCosmetics), inBuild(v610, athenaCosmetics)];
   // The history holds 6.21's fourteen too (tests/build621.test.js); 6.20 is shown its own.
-  const c621 = inBuild("4573096", athenaCosmetics);
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c621[id])), "only 6.30's cosmetics (6.22's seventeen and 6.30's sixteen too, tests/build622.test.js, tests/build630.test.js)");
+  const c621 = inBuild("4573279", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c621[id])), "only 6.31's cosmetics (6.22's seventeen and 6.30's sixteen too, tests/build622.test.js, tests/build630.test.js)");
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaCharacter:cid_250_athena_commando_m_evilcowboy"), ["10-25", "10-28", "10-29"]);
   assert.deepEqual(days("AthenaCharacter:cid_228_athena_commando_m_vampire"), ["10-19", "10-20", "11-28"]);

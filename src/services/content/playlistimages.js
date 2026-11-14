@@ -68,7 +68,10 @@ export const playlistImagesBuild = 4039451;
 // _Squads) the Season 6 tile that page names for Playlist_WW_Duos, BR06_ModeTile_LTM_WildWest (its Solo and Squads have a
 // later rerun's BR_LTM_WildWest there); both on Epic's CDN, checked 2026-11-14: 200, image/png and image/jpeg, 489,196 and
 // 330,155 bytes, the hash in each name the file's SHA-1; no border. Its Disco Domination (32 v 32, Alt) takes the mode's
-// tile, as 6.20's did (the page's BR_LTM_HolidayDisco is a later season's).
+// tile, as 6.20's did (the page's BR_LTM_HolidayDisco is a later season's). 6.31's exe (CL-4573279) keeps the same names
+// (its strings against 6.30's). Its Team Rumble (Playlist_Respawn_24) has the Season 6 tile Epic's later page names for it,
+// BR06_ModeTile_TDM (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 477,366 bytes, the hash in its name the file's
+// SHA-1), with no border.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -98,6 +101,7 @@ const teamTerrorTile = `${cdn}/playlistinformation/BR06_In-GamePlaylist_TeamTerr
 const discoDominationTile = `${cdn}/playlistinformation/BR06_LobbyTile_LTM_DiscoDomination-1024x512-c79f07de78d8283656fcf4d1ee757f880911d775.jpg`;
 const foodFightTile = `${cdn}/playlistinformation/BR06_LobbyTile_FoodFight-1024x512-5e1540a0a2ba0a1f663d32c60cfec3a360278672.png`;
 const wildWestTile = `${cdn}/playlistinformation/BR06_ModeTile_LTM_WildWest-1024x512-f67d9d1dd2ca0b290c92b1380240429f0f257a10.jpg`;
+const teamRumbleTile = `${cdn}/playlistinformation/BR06_ModeTile_TDM-1024x512-878ba9f92deb153ec85f2bcbce925e185344290e.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -156,7 +160,8 @@ export const epicPlaylistImages = {
   Playlist_Barrier_12: foodFightTile,
   Playlist_WW_Solo: wildWestTile,
   Playlist_WW_Duos: wildWestTile,
-  Playlist_WW_Squads: wildWestTile
+  Playlist_WW_Squads: wildWestTile,
+  Playlist_Respawn_24: teamRumbleTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

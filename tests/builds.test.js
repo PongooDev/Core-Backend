@@ -28,7 +28,7 @@ test("the build is the changelist a request's User-Agent names; builds without t
   assert.equal(getBuild(agent("Fortnite/4.20.0-3942182+++Fortnite+Release-3.3 Windows/10.0.17134.1.256.64bit")), "3942182");
   assert.equal(getBuild(agent("Fortnite/4.20.0-4000805+++Fortnite+Release-3.5 Windows/10.0.17134.1.256.64bit")), "4000805");
   assert.equal(getBuild(agent("Fortnite/Windows")), "unknown");
-  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073", "3942182", "4000805", "4019403", "4039451", "4053532", "4072250", "4132537", "4166199", "4214610", "4240749", "4288479", "4305896", "4352937", "4363240", "4402180", "4424678", "4461277", "4480234", "4497486", "4526925", "4543176", "4573096"]);
+  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073", "3942182", "4000805", "4019403", "4039451", "4053532", "4072250", "4132537", "4166199", "4214610", "4240749", "4288479", "4305896", "4352937", "4363240", "4402180", "4424678", "4461277", "4480234", "4497486", "4526925", "4543176", "4573096", "4573279"]);
   assert.equal(dataBuild(build12), build12);
   for (const other of [certBuild, "unknown", "3500000", undefined]) assert.equal(dataBuild(other), certBuild);
   // A build without its own data takes the closest earlier one's: a 3.4 (between 3.3 and 3.5.1) would play on 3.3's, 1.7.3 on

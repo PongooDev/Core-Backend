@@ -266,7 +266,26 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // Halloween hand cannon): from 15 and 22 November 00:00 UTC on Season 6's replay, 6.10's weeks before them, the schematics
 // at a legendary schematic's 1,680 Gold and the hero at a legendary hero's 2,800, one each (🟡 Epic's prices and limits
 // aren't recorded).
+// 6.31's (CL-4573279; Update v6.31): "Six Feet Under shovel added to the Weekly Store ... Available Wednesday, November 28
+// at 7 PM EST until Wednesday, December 5 at 7 PM EST" (SID_Blunt_Shovel_Halloween_SR_Ore_T01, its weapon "Six Feet Under", new in
+// 6.31's data): from 29 November 00:00 UTC on Season 6's replay, 6.30's weeks before it, at a legendary schematic's 1,680
+// Gold, one (🟡 Epic's price and limit aren't recorded). Its Airheart ("Available in the Event Store on November 28") isn't
+// in 6.31's data (no Constructor hero or R.O.S.I.E. ability), so it isn't offered.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4573279, season: 6, weeks: [
+    { from: "2018-11-29T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_shovel_halloween_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-11-22T00:00:00.000Z", items: [{ templateId: "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01", price: 2800, limit: 1 },
+      { templateId: "Schematic:sid_pistol_halloween_handcannon_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-11-15T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_revolver_singleaction_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-18T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_ratrod_slug_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_assault_auto_halloween_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-11T00:00:00.000Z", items: [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_shotgun_standard_vt_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-04T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_hammer_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_sniper_military_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_pistol_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01", price: 600, limit: 1 }] }
+  ] },
   { firstBuild: 4573096, season: 6, weeks: [
     { from: "2018-11-22T00:00:00.000Z", items: [{ templateId: "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01", price: 2800, limit: 1 },
       { templateId: "Schematic:sid_pistol_halloween_handcannon_sr_ore_t01", price: 1680, limit: 1 }] },
