@@ -197,6 +197,22 @@ export const viaHttpProxy = (req) => req?.viaHttpProxy === true || Boolean(req?.
 // (viaHttpProxy), whose Host is the name the game asked for.
 export function requestHost(req) {
   if (viaHttpProxy(req)) return null;
+  return plainHost(req);
+}
+
+// The host a plain-HTTP request was sent to, the -httpproxy's absolute-form requests too (Core-Backend #349): with the
+// launcher's default options a client has both the -httpproxy and CoreRedirect, which rewrites every Epic URL to the
+// launcher's backend address before the proxy carries it, so the absolute form's host is the address the player's PC
+// reaches this backend at (a public address, a host name, a tunnel's port), where the connection's own socket gives
+// 127.0.0.1 behind a local tunnel agent and the local port behind a forwarded one. For what opens in the player's own
+// browser, which must reach this backend from their PC. Null for a CONNECT tunnel's request (an https:// host), an Epic
+// host (no CoreRedirect), or one that isn't a plain host and port.
+export function sentToHost(req) {
+  if (req?.socket?.httpProxyTunnel) return null;
+  return plainHost(req);
+}
+
+function plainHost(req) {
   const host = String(req?.headers?.host ?? "").trim();
   if (!host || !/^(\[[0-9a-fA-F:.]+\]|[A-Za-z0-9.-]+)(:\d{1,5})?$/.test(host)) return null;
   let hostname;

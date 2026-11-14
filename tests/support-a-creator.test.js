@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
+import { sentToHost } from "../src/network.js";
 import { grant } from "../src/profiles/progress.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -360,6 +361,41 @@ test("an enabled creator gets Twitch Prime Packs #1 and #2 as far as the build h
     assert.deepEqual(has(await athena(creator, v620, "6.20"), [...pack1, ...pack2]).sort(), [...pack1, ...pack2].sort());
     // The Season 3 option stays its own (Core-Backend #229), off by default.
     assert.equal((await get(backend.port, "/admin/api/settings")).body.twitchPrimePack, false);
+  } finally {
+    backend.close();
+  }
+});
+
+// Reporter of #349: "View Approved Creators" only opened the browser. With the launcher's defaults a client has the
+// -httpproxy and CoreRedirect, so its cloudstorage request reaches the backend in the proxy's absolute form, to the
+// launcher's backend address: that address is the one the player's browser can open, not the connection's own
+// (127.0.0.1 behind a local tunnel agent, the local port behind a forwarded one).
+test("the approved creators URL is the address the game sent its request to, through the -httpproxy too", async () => {
+  assert.equal(sentToHost({ viaHttpProxy: true, headers: { host: "play.example.org:40123" }, socket: {} }), "play.example.org:40123");
+  assert.equal(sentToHost({ headers: { host: "203.0.113.7:5600" }, socket: {} }), "203.0.113.7:5600");
+  assert.equal(sentToHost({ viaHttpProxy: true, headers: { host: "fortnite-public-service-prod11.ol.epicgames.com" }, socket: {} }), null,
+    "an Epic host: no CoreRedirect, so not this backend's address");
+  assert.equal(sentToHost({ headers: { host: "play.example.org:443" }, socket: { httpProxyTunnel: "play.example.org:443" } }), null);
+  assert.equal(sentToHost({ headers: { host: "bad host/x" }, socket: {} }), null);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "ProxyViewer");
+    await post(backend.port, "/admin/api/creators", undefined, { account: player.accountId, code: "ViewMe" });
+    const optionsVia = async (path, host) => String((await send({ host: "127.0.0.1", port: backend.port, method: "GET", path,
+      headers: { Host: host, "User-Agent": agentOf(v621, "6.21"), Authorization: `bearer ${player.token}` } })).body);
+    // The launcher's address for a friend's backend through a tunnel, which the connection (from 127.0.0.1) doesn't show.
+    const tunnelled = await optionsVia("http://play.example.org:40123/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", "play.example.org:40123");
+    assert.match(tunnelled, /\r\nListOfCreatorsURL=http:\/\/play\.example\.org:40123\/affiliate\/creators\r\n/);
+    // Without CoreRedirect the host is Epic's: the connection's own address stands in.
+    const epic = await optionsVia("http://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini",
+      "fortnite-public-service-prod11.ol.epicgames.com");
+    assert.match(epic, new RegExp(`\r\nListOfCreatorsURL=http://127\.0\.0\.1:${backend.port}/affiliate/creators\r\n`));
+    // The page itself, as a browser asks for it.
+    const page = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/affiliate/creators", headers: { Accept: "text/html" } });
+    assert.equal(page.status, 200);
+    assert.match(page.headers["content-type"], /text\/html/);
+    assert.match(String(page.body), /<li>ViewMe<\/li>/);
   } finally {
     backend.close();
   }
