@@ -5,7 +5,7 @@ import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
+import { assignmentBucket, bucketKey, bucketMatches, canStartMatch, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
 import { regionGroup, regionList, regionMembers, regionOf, regionsOverlap, servedRegions } from "../src/matchmaking/regions.js";
 import { certUserAgent, dedicatedServerToken, del, get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -1312,6 +1312,105 @@ test("players with the same custom key share a match of their own; a key no allo
     assert.equal(after.connection.closeReason(), "match.custom_key_not_supported");
   } finally {
     for (const connection of connections) connection?.close();
+    backend.close();
+  }
+});
+
+// A player on a build (its User-Agent's changelist) queued for Duos in NA with a custom key, past Connecting and Waiting.
+async function queueWithKeyOn(backend, player, customKey, changelist) {
+  const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+    path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+      `&bucketId=858118782:0:NA:10&player.platform=Windows&player.option.customKey=${customKey}`,
+    headers: { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-CL-${changelist}`, Authorization: `bearer ${player.token}` } });
+  assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  for (let index = 0; index < 2; index++) await connection.next();
+  return connection;
+}
+const nextQueued = async (connection) => {
+  let message;
+  do message = JSON.parse(await connection.next()); while (message.payload?.state !== "Queued");
+  return message;
+};
+const startMatchPress = JSON.stringify({ name: "Exec", payload: { command: "p.StartMatch" } });
+
+test("from 3.2 a custom match's host sees Start Match, and the match waits for the press (#186)", async () => {
+  assert.ok(!canStartMatch({ customKey: "CoreKey1", customKeyHost: true, build: 3915963 }));
+  assert.ok(canStartMatch({ customKey: "CoreKey1", customKeyHost: true, build: 3935073 }));
+  assert.ok(!canStartMatch({ customKey: "CoreKey1", customKeyHost: false, build: 4573279 }));
+  assert.ok(!canStartMatch({ customKey: null, customKeyHost: true, build: 4573279 }));
+
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    const na = await regionServer(backend, "StartServer1", "NA");
+    connections.push(na.connection);
+    const host = await userLogin(backend.port, "StartHost");
+    const guest = await userLogin(backend.port, "StartGuest");
+    await allowCustomKeys(backend, host);
+
+    // The host's Queued carries canStartMatch, the guest's doesn't; the ETA is N/A (0) while the match waits.
+    const hostConnection = await queueWithKeyOn(backend, host, "CoreKey1", 4573279);
+    connections.push(hostConnection);
+    const hostQueued = await nextQueued(hostConnection);
+    assert.equal(hostQueued.payload.status["ticket.status.canStartMatch"], "true");
+    assert.equal(hostQueued.payload.estimatedWaitSec, 0);
+    const guestConnection = await queueWithKeyOn(backend, guest, "CoreKey1", 4573279);
+    connections.push(guestConnection);
+    assert.equal((await nextQueued(guestConnection)).payload.status["ticket.status.canStartMatch"], undefined);
+
+    // Well past the gather time nothing is assigned: the server hears nothing.
+    const assigned = nextOf(na.connection, "AssignMatch");
+    const early = await Promise.race([assigned, new Promise((done) => setTimeout(() => done("none"), 1500))]);
+    assert.equal(early, "none");
+
+    // A guest's press does nothing; the host's assigns the match with both players.
+    guestConnection.send(startMatchPress);
+    await new Promise((done) => setTimeout(done, 500));
+    assert.equal(await Promise.race([assigned, new Promise((done) => setTimeout(() => done("none"), 10))]), "none");
+    hostConnection.send(startMatchPress);
+    const assign = await assigned;
+    assert.equal(assign.payload.matchOptions["match.option.customKey"], "CoreKey1");
+    assert.deepEqual(assign.payload.teams.flat(2).sort(), [host.accountId, guest.accountId].sort());
+    na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(hostConnection, "Play")).payload.sessionId, na.session.id);
+    assert.equal((await nextOf(guestConnection, "Play")).payload.sessionId, na.session.id);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a custom match whose host leaves before Start Match goes on after the gather time; before 3.2 the gather time decides (#186)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    const first = await regionServer(backend, "LeaveServer1", "NA");
+    connections.push(first.connection);
+    const host = await userLogin(backend.port, "LeaveHost");
+    const guest = await userLogin(backend.port, "LeaveGuest");
+    await allowCustomKeys(backend, host);
+    const hostConnection = await queueWithKeyOn(backend, host, "CoreKey1", 4573279);
+    connections.push(hostConnection);
+    await nextQueued(hostConnection);
+    const guestConnection = await queueWithKeyOn(backend, guest, "CoreKey1", 4573279);
+    connections.push(guestConnection);
+    await nextQueued(guestConnection);
+    hostConnection.close();
+    const assign = await nextOf(first.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams.flat(2), [guest.accountId]);
+
+    // 3.1 (CL-3915963) has no Start Match button: no canStartMatch, and the gather time assigns the match.
+    const second = await regionServer(backend, "LeaveServer2", "NA");
+    connections.push(second.connection);
+    const oldHost = await userLogin(backend.port, "OldHost");
+    await allowCustomKeys(backend, oldHost);
+    const oldConnection = await queueWithKeyOn(backend, oldHost, "CoreKey2", 3915963);
+    connections.push(oldConnection);
+    assert.deepEqual((await nextQueued(oldConnection)).payload.status, {});
+    assert.deepEqual((await nextOf(second.connection, "AssignMatch")).payload.teams.flat(2), [oldHost.accountId]);
+  } finally {
+    for (const connection of connections) connection.close();
     backend.close();
   }
 });

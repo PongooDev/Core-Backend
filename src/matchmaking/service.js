@@ -258,6 +258,18 @@ export const showsMatchStart = (build) => Number(build) >= firstMatchStartBuild 
 // Play's as an error with that text), which the lobby shows as "Custom matchmaking key is not supported" (0x20D93C0).
 export const customKeyNotSupported = "match.custom_key_not_supported";
 const customKeyRefusedCode = 4000;
+
+// A custom match's Start Match button (#186). From 3.2 (CL-3935073, the first build whose FortAthenaMatchmakingWidget has
+// its StartMatchButton) the matchmaking panel's queue handler (6.31 0x2FB0570) reads Queued's ticket.status.canStartMatch:
+// "true" shows the button (SetVisibility SelfHitTestInvisible), any other value leaves it as it is, and a Queued without
+// the key collapses it. Pressing it (6.31 0x2FA4280) has UFortMatchmakingV2's matchmaking service client send the command
+// "p.StartMatch" over its WebSocket (0x73FBA0): {"name": "Exec", "payload": {"command": "p.StartMatch"}}. So a party
+// allowed to open custom keys (ticket.customKeyHost) hears canStartMatch while its custom match forms, and its match
+// waits for that press instead of the gather time: the host decides when the match starts, as on Epic's. Should every
+// such party leave, the match goes back to the gather time. Earlier builds have no button: their custom matches keep it.
+export const firstCanStartMatchBuild = 3935073;
+export const startMatchCommand = "p.StartMatch";
+export const canStartMatch = (ticket) => Boolean(ticket?.customKey && ticket.customKeyHost) && Number(ticket.build) >= firstCanStartMatchBuild;
 // Which queue a bucket and key are: the bucket's (bucketKey), apart for each key.
 export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (customKey ? `|key:${customKey}` : "");
 // Playground (Core-Backend #299): Update v4.50's Playground (Playlist_Playground, 35, one team of 4) put a party on an
@@ -802,6 +814,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         forming.players += party.size;
         if (anyRegion) say(`${party.ticket.accountId} joins match ${forming.matchId} in ${regionName(server.region)} (bucket ${forming.bucketId})`);
         if (forming.players >= server.maxPlayers) assign(server);
+        else if (!forming.held && canStartMatch(party.ticket)) holdForHost(forming);
         return true;
       }
     }
@@ -825,11 +838,45 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         assign(server);
         return true;
       }
-      server.forming.timer = setTimeout(() => assign(server), server.forming.gatherMs);
-      server.forming.timer.unref?.();
+      server.forming.server = server;
+      if (canStartMatch(party.ticket)) holdForHost(server.forming);
+      else gather(server.forming);
       return true;
     }
     return false;
+  }
+
+  // A forming match is assigned once its gather time is up.
+  function gather(forming) {
+    clearTimeout(forming.timer);
+    forming.timer = setTimeout(() => assign(forming.server), forming.gatherMs);
+    forming.timer.unref?.();
+  }
+  // A custom match whose host can press Start Match waits for it (#186, canStartMatch).
+  function holdForHost(forming) {
+    clearTimeout(forming.timer);
+    forming.held = true;
+    say(`Match ${forming.matchId} (custom key ${forming.customKey}) waits for its host to press Start Match`);
+  }
+  // The parties in a forming match whose players can start it, their members' tickets among them.
+  const startersOf = (forming) => forming.parties.flatMap((party) => [party, ...party.members]).filter((entry) => !entry.ws.closed && canStartMatch(entry.ticket));
+  // A held match whose hosts all left goes back to the gather time, counted from then.
+  function releaseIfHostless(forming) {
+    if (!forming.held || forming.sent || startersOf(forming).length) return;
+    forming.held = false;
+    forming.started = Date.now();
+    say(`Match ${forming.matchId}'s host left before pressing Start Match: it is assigned after the gather time`);
+    gather(forming);
+  }
+  // A player's "p.StartMatch" (Exec): the custom match it hosts is assigned now.
+  function startMatch(entry) {
+    const server = [...servers].find((candidate) => candidate.forming && !candidate.forming.sent && startersOf(candidate.forming).includes(entry));
+    if (!server) {
+      say(`${entry.ticket.accountId} pressed Start Match outside a custom match it hosts: ignored`);
+      return;
+    }
+    say(`${entry.ticket.accountId} started custom match ${server.forming.matchId} (custom key ${server.forming.customKey}, ${server.forming.players} players)`);
+    assign(server);
   }
 
   // Which queue a party is in: the match it is in until that match is assigned, else its own bucket's, with the
@@ -854,7 +901,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // free server.
   function remainingMs(party) {
     const forming = formingOf(party);
-    return forming ? forming.started + forming.gatherMs + playDelayMs - Date.now() : 0;
+    // A match waiting for its host's Start Match has no ETA ("N/A").
+    return forming && !forming.held ? forming.started + forming.gatherMs + playDelayMs - Date.now() : 0;
   }
 
   // Queued {queuedPlayers, estimatedWaitSec}: everyone in the queue (queueKey), sent again to each of them whenever it
@@ -874,6 +922,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         if (member.done || member.ws.closed) continue;
         member.queued = true;
         const shown = start ? matchStartStatus(member, start.players, start.delaySec) : {};
+        // The host's Start Match button while its custom match forms (#186); without the key the client collapses it.
+        if (forming && canStartMatch(member.ticket)) shown["ticket.status.canStartMatch"] = "true";
         member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: wait, status: shown }));
       }
     }
@@ -1071,6 +1121,16 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const party = { ticket, ws, size: sizeOf(ticket), members: [],
       key: `${bucketKey(ticket.bucketId, { anyRegion: true })}|${[...ticket.partyPlayerIds].sort().join(",")}|${ticket.customKey ?? ""}`,
       customKey: ticket.customKey || null };
+    // The client's commands (#186): Start Match's {"name": "Exec", "payload": {"command": "p.StartMatch"}}.
+    ws.on("message", (data) => {
+      let parsed;
+      try {
+        parsed = JSON.parse(data.toString("utf8"));
+      } catch {
+        return;
+      }
+      if (parsed?.name === "Exec" && parsed.payload?.command === startMatchCommand && !party.done) startMatch(party);
+    });
     ws.on("close", () => {
       const queue = queueKey(party);
       ws.closed = true;
@@ -1085,6 +1145,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
           clearTimeout(forming.timer);
           server.forming = null;
         }
+      }
+      // A held custom match whose host (this player, or its party's) left (#186).
+      for (const server of servers) {
+        if (server.forming) releaseIfHostless(server.forming);
       }
       if (!party.done) {
         say(`${ticket.accountId} left the queue for bucket ${ticket.bucketId}`);
