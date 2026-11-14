@@ -10,6 +10,7 @@ import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flag
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
 import { defaultStormDestruction, sanitizeStormDestruction } from "../events/stormdestruction.js";
 import { defaultPayoutPercent, payoutPercentValue, sanitizeCreatorNames, sanitizeCreators, withLegacyNames } from "../store/creators.js";
+import { defaultGiftingFriendDays, giftingFriendDaysValue } from "../store/gifting.js";
 import { regionPingServers } from "../matchmaking/qos.js";
 import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
@@ -104,6 +105,10 @@ const defaults = {
   // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js): a simulated real-money purchase that gives the
   // pack's V-Bucks for free. On by default: the issue asked for them, and the admin panel can already give any amount.
   vbuckPacks: true,
+  // Item shop gifting (store/gifting.js): on for the builds that shipped it (6.31 and later), and the days a receiver must
+  // have been the sender's friend, Epic's 2 by default.
+  gifting: true,
+  giftingFriendDays: defaultGiftingFriendDays,
   // How those offers are paid (Core-Backend #248, services/fortnite/purchase.js): "free", the purchase page's Complete purchase
   // button, or "code", a purchase code (store/purchasecodes.js) the page asks for and the admin panel hands out.
   purchaseMode: "free",
@@ -714,6 +719,8 @@ export function createSettingsStore(dataDir) {
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
       settings.vbuckPacks = loaded.vbuckPacks !== false;
+      settings.gifting = loaded.gifting !== false;
+      settings.giftingFriendDays = giftingFriendDaysValue(loaded.giftingFriendDays) ?? defaultGiftingFriendDays;
       settings.purchaseMode = loaded.purchaseMode === "code" ? "code" : "free";
       settings.twitchPrimePack = loaded.twitchPrimePack === true;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
@@ -894,6 +901,8 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.completeBrokenChallenges === "boolean") settings.completeBrokenChallenges = partial.completeBrokenChallenges;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
+      if (typeof partial.gifting === "boolean") settings.gifting = partial.gifting;
+      if (giftingFriendDaysValue(partial.giftingFriendDays) !== undefined) settings.giftingFriendDays = giftingFriendDaysValue(partial.giftingFriendDays);
       if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;
       if (typeof partial.twitchPrimePack === "boolean") settings.twitchPrimePack = partial.twitchPrimePack;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;

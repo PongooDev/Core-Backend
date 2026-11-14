@@ -15,6 +15,7 @@ import { stormDestructionEngineSection } from "../../events/stormdestruction.js"
 import { qosEngineLines } from "../../matchmaking/qos.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
+import { giftingRuntimeOptions } from "../../store/gifting.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
 import { createNetwork, httpsProxied, sentToHost } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
@@ -201,6 +202,8 @@ const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGloba
 // or the local port behind a tunnel or forwarded port, which a remote player's browser can't open).
 // 6.10's (CL-4464155) Events tab reads the same object (bEnableShowdown, ShowdownTournamentCacheExpirationHours): the file
 // keeps the tab's list from being cached, or hides the empty tab when the admin asks (tournaments/showdown.js, #336).
+// 6.31's (CL-4573279) gifting is off in it as shipped (bDisableGifting): the file turns it on with Epic's limits while the
+// admin panel has gifting on, and off again otherwise (store/gifting.js).
 const replaysBuild = 4000805;
 const creatorsUrl = (req, network) => {
   const proxied = httpsProxied(req);
@@ -210,7 +213,7 @@ const creatorsUrl = (req, network) => {
 const runtimeOptionsFiles = (changelist, settingsValue, url = null) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
     "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue, { creatorsUrl: url }),
-    ...showdownRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
+    ...showdownRuntimeOptions(changelist, settingsValue), ...giftingRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
 } : {});
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {

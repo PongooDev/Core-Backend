@@ -78,6 +78,7 @@ import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
+import { giftingFriendDays } from "../store/gifting.js";
 import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
@@ -1268,6 +1269,8 @@ export function adminRoutes(context) {
       bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
       vbuckPacks: req.body?.vbuckPacks,
+      gifting: req.body?.gifting,
+      giftingFriendDays: req.body?.giftingFriendDays,
       purchaseMode: req.body?.purchaseMode,
       twitchPrimePack: req.body?.twitchPrimePack,
       matchStartCountdown: req.body?.matchStartCountdown,
@@ -1409,6 +1412,9 @@ export function adminRoutes(context) {
       weeklyDurationDays: config.weeklyDurationDays ?? 7,
       // The Store tab's V-Bucks packs (store/currency.js), switched with /admin/api/settings.
       vbuckPacks: settings?.get?.()?.vbuckPacks !== false,
+      // 6.31's item shop gifting (store/gifting.js), switched with /admin/api/settings.
+      gifting: settings?.get?.()?.gifting !== false,
+      giftingFriendDays: giftingFriendDays(settings?.get?.() ?? {}),
       purchaseMode: settings?.get?.()?.purchaseMode === "code" ? "code" : "free",
       // Support-A-Creator's enabled codes (store/creators.js), set with /admin/api/creators.
       creatorNames: creatorNames(settings?.get?.() ?? {}),

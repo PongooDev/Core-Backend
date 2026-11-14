@@ -6831,6 +6831,26 @@
           })),
         el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. It also sells each season's Starter Pack, once per account, on that season's builds that have its cosmetics: Season 3's Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks), Season 4's Wingman Starter Pack (Wingman outfit, Bogey Bag back bling and 600 V-Bucks, from 4.4) and Season 5's Ace Pack (The Ace outfit, Swag Bag back bling and 600 V-Bucks, from 5.30). Turn this off to hide the packs." }));
 
+      // Item shop gifting (6.31, store/gifting.js): on by default for the builds that shipped it, and the days of friendship
+      // a receiver needs (Epic's 2).
+      const giftingDaysInput = el("input", { class: "field num", type: "number", min: 0, max: 30, value: shop.giftingFriendDays ?? 2, "aria-label": "Days of friendship before gifting" });
+      const saveGiftingDaysBtn = btn("Save", async () => {
+        const days = Number(giftingDaysInput.value);
+        if (!Number.isInteger(days) || days < 0 || days > 30) return toast("Days of friendship is a whole number from 0 to 30", true);
+        const res = await act(api("/admin/api/settings", { giftingFriendDays: days }), `Gifts need ${days} day${days === 1 ? "" : "s"} of friendship`);
+        if (res) showShop();
+      }, "ghost");
+      const giftingSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+          el("h2", { text: "Gifting" }),
+          toggleSwitch(shop.gifting !== false, async (checked) => {
+            const res = await act(api("/admin/api/settings", { gifting: checked }), checked ? "Gifting is on" : "Gifting is off");
+            if (res) showShop();
+          })),
+        el("p", { class: "note", style: "margin:0 0 10px;", text: "From 6.31, as Epic opened it then, an item shop cosmetic can be bought for friends: the Gift button sends it in a gift wrap with a message, the giver pays its V-Bucks, and the friend finds it in their locker after a gift screen. A player can send 3 gifts in 24 hours, only to friends of the days below, not to someone who turned gifts off or already owns the item. A change shows once the game restarts." }),
+        el("label", { style: "display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--muted);" },
+          el("span", { text: "Days of friendship before gifting" }), giftingDaysInput, saveGiftingDaysBtn));
+
       // Support-A-Creator (6.02, store/creators.js, Core-Backend #349): the accounts that are creators, each with its own
       // code, the payout's share of what a supporter spends, and the creators' Twitch Prime packs.
       const creatorsSection = el("section", { class: "panel" });
@@ -7359,6 +7379,7 @@
             btn("Refresh", showShop, "ghost"))),
         timingSettingsSection,
         vbuckPacksSection,
+        giftingSection,
         purchaseCodesSection,
         creatorsSection,
         modePicker,

@@ -19,6 +19,7 @@ import { clientQuestLoginFromClient } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, researchItemFromCollectionBook, slotItemInCollectionBook, unslotItemFromCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
+import { giftCatalogEntry } from "./GiftCatalogEntry.js";
 import { incrementNamedCounterStat } from "./IncrementNamedCounterStat.js";
 import { issueFriendCode } from "./IssueFriendCode.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
@@ -105,6 +106,7 @@ export const clientCommands = {
   EquipBattleRoyaleCustomization: equipBattleRoyaleCustomization,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
+  GiftCatalogEntry: giftCatalogEntry,
   IncrementNamedCounterStat: incrementNamedCounterStat,
   IssueFriendCode: issueFriendCode,
   MarkItemSeen: markItemSeen,

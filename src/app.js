@@ -11,6 +11,7 @@ import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
 import { affiliateRoutes, configureCreators, isEnabledCreator } from "./store/creators.js";
+import { configureGifting } from "./store/gifting.js";
 import { createCreatorPayoutStore } from "./store/creatorpayouts.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
@@ -83,6 +84,7 @@ export function createContext(config) {
   configureLtms(() => settings.get());
   configureChallenges(() => settings.get());
   configureCreators(() => settings.get());
+  configureGifting(() => settings.get());
   configureSeasonStarts((season, date) => settings.recordSeasonStart(season, date));
   configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
@@ -90,7 +92,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "creators", "creatorPayoutPercent", "creatorTwitchPrimePacks", "hideEmptyEventsTab",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards", "gifting", "giftingFriendDays"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);

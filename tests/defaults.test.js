@@ -16,8 +16,10 @@ test("a new profile0 has every stat the Cert and 1.7.2 clients read, in its stru
     const response = await post(backend.port, command(accountId, "QueryProfile"), token, {});
     const stats = response.body.profileChanges[0].profile.stats.attributes;
 
+    // allowed_to_receive_gifts and allowed_to_send_gifts: 6.31's gifting (store/gifting.js); an older client reads them
+    // by name or not at all.
     assert.deepEqual(Object.keys(stats).sort(), [
-      "client_settings", "collection_book", "current_mtx_platform", "daily_purchases", "daily_rewards",
+      "allowed_to_receive_gifts", "allowed_to_send_gifts", "client_settings", "collection_book", "current_mtx_platform", "daily_purchases", "daily_rewards",
       "default_hero_squad_id", "gameplay_stats", "homebase", "in_app_purchases", "level", "mfa_enabled", "mission_alert_redemption_record",
       "mode_loadouts", "named_counters", "player_loadout", "quest_manager", "weekly_purchases", "xp"
     ]);

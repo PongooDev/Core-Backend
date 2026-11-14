@@ -154,7 +154,7 @@ function runCommand(commands, context, {
     try {
       command({ req, profile: tracker.profile, tracker, session, notifications, profileId: commandProfileId, sessionFor, context });
     } catch (error) {
-      if (error instanceof McpError) return sendError(res, 400, error.errorCode, error.message);
+      if (error instanceof McpError) return sendError(res, 400, error.errorCode, error.message, error.messageVars);
       throw error;
     }
     session.commit();

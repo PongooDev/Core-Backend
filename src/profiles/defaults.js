@@ -42,7 +42,12 @@ const templates = {
     named_counters: {},
     // Two-factor authentication always counts as enabled (#310): 5.30's lobby asks for it ("enable two-factor
     // authentication") unless common_core's mfa_enabled is true. Core has no 2FA, so every account has it.
-    mfa_enabled: true
+    mfa_enabled: true,
+    // 6.31's gifting (store/gifting.js): UFortMcpContext::CanGiftOffer turns a sender down without common_core's
+    // allowed_to_send_gifts, and a receiver who turned allowed_to_receive_gifts off (SetReceiveGiftsEnabled) gets none.
+    // Both on, as Epic's accounts started.
+    allowed_to_send_gifts: true,
+    allowed_to_receive_gifts: true
   }),
   // Battle Royale's profile from 1.8. Its loadout (FFortAthenaLoadout, built by 1.8's sub_41B610) reads the banner and
   // a favorite_* item id per cosmetic slot from these; an empty id is the slot's default, so a player without

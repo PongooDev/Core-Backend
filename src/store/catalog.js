@@ -14,6 +14,7 @@ import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { currencyOffers, currencyStorefront, foundersOffers, foundersStorefront } from "./currency.js";
 import { eventStoreOffers } from "./eventstore.js";
+import { giftInfoOf } from "./gifting.js";
 import { itemShopOffers } from "./itemshop.js";
 import { hasRefunds } from "./refunds.js";
 import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
@@ -225,7 +226,10 @@ function offerJson(offer, sortPriority) {
     // item shop's cosmetics are the offers a purchase records for return (PurchaseCatalogEntry: athena offers, the
     // Season Shop's aside; store/refunds.js), so only those say true; the Battle Pass and its tiers, llamas and the
     // Event Store say false. Earlier builds' offers have no such field.
-    ...(hasRefunds() ? { refundable: Boolean(offer.athena) && !offer.seasonLevel } : {})
+    ...(hasRefunds() ? { refundable: Boolean(offer.athena) && !offer.seasonLevel } : {}),
+    // FCatalogOffer's GiftInfo (3.0 on): 6.31's gifting (store/gifting.js) offers the Gift button only for an offer whose
+    // giftInfo is enabled, the item shop's cosmetics while the admin panel has gifting on. Builds before 6.31 get none.
+    ...(giftInfoOf(offer) ? { giftInfo: giftInfoOf(offer) } : {})
   };
 }
 
