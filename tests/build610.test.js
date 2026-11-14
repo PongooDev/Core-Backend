@@ -945,3 +945,41 @@ test("the content page on 6.10 carries tournamentinformation beside the rest; 6.
   assert.ok(page610.playlistinformation && page610.subgameselectdata && page610.battleRoyaleNews);
   assert.equal(Object.hasOwn(contentPage(undefined, undefined, v602), "tournamentinformation"), false);
 });
+
+// Core-Backend #357: 6.30's Events tab read "We're having trouble retrieving data from the Events Neural Network", which is
+// ShowdownScreen's NoTournamentsContent text, shown whenever the tab has no tournament tile (6.22's and 6.30's ShowdownScreen
+// alike). 6.30's client asks the same three URLs (its DefaultGame.ini's FortMcpUtils lines are 6.22's), reads the same
+// FShowdownEventDownload (the 6.30 SDK's structs are 6.22's), and builds a tile for each tournament whose announcementTime
+// has passed (6.30 0x312AD40), so it is served exactly what 6.22 is: no tournament until the admin panel makes one.
+test("#357: a 6.30 client's Events tab is served what 6.22's is: the empty list, then the admin's event with its content entry", async () => {
+  const backend = await startBackend();
+  try {
+    const ann = await userLogin(backend.port, "Ann357");
+    const on = (cl, version) => async (urlPath) => (await send({ host: "127.0.0.1", port: backend.port, path: urlPath,
+      headers: { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-${version}-CL-${cl}`, Authorization: `bearer ${ann.token}` } }));
+    const builds = [on("4543176", "6.22"), on("4573096", "6.30")];
+    const served = async (as) => ({
+      list: (await as(`/fortnite/api/game/v2/events/tournamentandhistory/${ann.accountId}/NAE/WindowsClient`)).body,
+      page: (await as("/content/api/pages/fortnite-game")).body.tournamentinformation?.tournament_info.tournaments,
+      ini: String((await as("/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini")).body)
+    });
+    for (const as of builds) {
+      const { list, page, ini } = await served(as);
+      assert.deepEqual(list, { eventTournaments: [], eventWindowHistories: [] });
+      assert.deepEqual(page, []);
+      assert.match(ini, /\r\nShowdownTournamentCacheExpirationHours=0\r\n/);
+    }
+    for (const playlist of ["showdownSolo", "scavengerSolo"]) {
+      assert.equal((await post(backend.port, "/admin/api/tournaments", null, { name: `Cup ${playlist}`, playlist, ruleset: "inGameOctober2018" })).status, 201);
+    }
+    const [on622, on630] = [await served(builds[0]), await served(builds[1])];
+    // 6.30 lists the Showdown event as 6.22 does, and its own Scavenger Pop-Up Cup playlist's too.
+    assert.deepEqual(on622.list.eventTournaments.map((tournament) => tournament.eventWindows[0].eventData.playlistId), ["Playlist_Showdown_Solo"]);
+    assert.deepEqual(on630.list.eventTournaments.map((tournament) => tournament.eventWindows[0].eventData.playlistId), ["Playlist_Showdown_Solo", "Playlist_ShowdownAlt_Solo"]);
+    assert.deepEqual(on630.list.eventTournaments[0], on622.list.eventTournaments[0]);
+    assert.deepEqual(on630.page.map((entry) => entry.tournament_display_id), on630.list.eventTournaments.map((tournament) => tournament.displayDataId));
+    for (const tournament of on630.list.eventTournaments) assert.ok(Date.parse(tournament.announcementTime) <= Date.now());
+  } finally {
+    backend.close();
+  }
+});
