@@ -305,11 +305,24 @@ const weeklyFeatured = (now = new Date()) => {
   const moment = seasonMoment(now, null, entry.season ?? 5).getTime();
   return entry.weeks.find(({ from }) => from === null || moment >= Date.parse(from))?.items ?? [];
 };
-const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
+// The event whose store is open: the first of these the requesting build runs, or none. Each event is checked once,
+// as each check reads the events settings (the admin panel's): the stores' checks once called one another, so an item
+// shop purchase or catalog on 6.22 made about 59,000 of them and took seconds (Core-Backend #353).
+function storeEventNow() {
+  if (isEventActive(winter2017)) return winter2017;
+  if (isEventActive(mutantStorms2018)) return mutantStorms2018;
+  if (isEventActive(spring2018) || isEventActive(storm2018)) return spring2018;
+  if (isEventActive(blockbuster2018)) return blockbuster2018;
+  if (isEventActive(roadTrip2018)) return roadTrip2018;
+  if (isEventActive(cramSession2018)) return cramSession2018;
+  if (isEventActive(fortnitemares2018)) return fortnitemares2018;
+  return null;
+}
+const storms2018 = () => storeEventNow() === mutantStorms2018;
 // 3.5.1's (CL-4000805) Into the Storm (events/storm2018.js) keeps Spring It On!'s store: its gold is still Spring It On! Gold
 // ("Added Spring It On! Gold" to Survive the Storm's rewards, a repeatable quest's "100 Spring It On! Gold"), and its notes
 // name no new Event Store item, so the store, its trackers (Spring2018.*) and its countdown run on as 3.3's.
-const springNow = () => !isEventActive(winter2017) && !storms2018() && (isEventActive(spring2018) || isEventActive(storm2018));
+const springNow = () => storeEventNow() === spring2018;
 // 3.2's (CL-3935073) notes: "Wukong is available in the Event Store. This is the Mythic version of the Lunar New Year
 // 'Berserker' soldier." (HID_Commando_014_Wukong_SR_T01, in 3.1's data already): a hero at a legendary hero's 2,800, one
 // (🟡: Epic's price and limit aren't recorded), on 3.2 and later.
@@ -369,7 +382,7 @@ const blockbusterEventItems = [
 ];
 const blockbusterItems = (now) => blockbusterEventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 export const blockbuster2018End = "2018-07-12T00:00:00.000Z";
-const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && isEventActive(blockbuster2018);
+const blockbusterNow = () => storeEventNow() === blockbuster2018;
 // 5.0's (CL-4204761, CL-4214610) Road Trip (events/roadtrip2018.js) opens a store of its own, sold for Gold as Blockbuster's
 // (its trackers RoadTrip2018.*). The Fortnite Wiki's Road Trip lists the Event Store's weapons, the Bowler, Bundlebuss,
 // Spyglass, Typewriter, Walloper and Wraith, and its heroes (Bladestorm Enforcer, Quickdraw Calamity...). 5.0's data has
@@ -407,12 +420,11 @@ const roadTripEventItemList = [
 ];
 const roadTripEventItems = (now) => roadTripEventItemList.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
-const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
+const roadTripNow = () => storeEventNow() === roadTrip2018;
 // 6.00's Cram Session (events/cramsession2018.js) sells MEGA B.A.S.E. Kyle, counted by trackers of its own
 // (CramSession2018.*), its items counting down to Season 6's end on the replay (cramSession2018End).
 const cramSessionItems = (now) => cramSessionEventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
-const cramSessionNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow()
-  && isEventActive(cramSession2018);
+const cramSessionNow = () => storeEventNow() === cramSession2018;
 // 6.20's Fortnitemares (events/events.js fortnitemares2018), Update v6.20: "Added Mythic Soldier - Quickdraw Calamity to the
 // Event Store ... Available on October 24 at 8 PM Eastern Time" (Hero:HID_Commando_018_SR_T01, "Quickdraw Calamity", new in
 // 6.20's data) and "Bloodfinder A.C. Outlander has returned and is available on the Event Store" (Hero:HID_Outlander_
@@ -433,11 +445,9 @@ export const fortnitemares2018EventItems = [{ templateId: "Hero:hid_commando_018
 export const fortnitemares2018StoreEnd = "2018-12-06T00:00:00.000Z";
 const fortnitemaresItems = (now) => fortnitemares2018EventItems.filter(({ templateId, fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))
   && !weeklyFeatured(now).some((item) => item.templateId === templateId)).map(({ fromBuild, ...item }) => item);
-const fortnitemaresNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow() && !cramSessionNow()
-  && isEventActive(fortnitemares2018);
+const fortnitemaresNow = () => storeEventNow() === fortnitemares2018;
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
-const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow() && !cramSessionNow()
-  && !fortnitemaresNow();
+const noEventNow = () => storeEventNow() === null;
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = (now = new Date()) => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems(now)
   : roadTripNow() ? roadTripEventItems(now) : cramSessionNow() ? cramSessionItems(now) : fortnitemaresNow() ? fortnitemaresItems(now)
@@ -484,9 +494,11 @@ function weekRandom(week, index) {
 }
 
 // The week's picks, from the items the requesting build has: one from each pick's pool, and two resources.
+// The event's own items aren't picked; they are worked out once (each event check reads the events settings).
 function weeklyItems(week, now = new Date()) {
+  const eventItems = new Set(eventItemsNow(now).map(({ templateId }) => templateId));
   const picks = weeklyPicks.map(({ pool, price, limit }, index) => {
-    const offered = pool.filter((templateId) => getItem(templateId) && !eventItemsNow(now).some((item) => item.templateId === templateId));
+    const offered = pool.filter((templateId) => getItem(templateId) && !eventItems.has(templateId));
     return offered.length ? { templateId: offered[Math.floor(weekRandom(week, index) * offered.length)], price, limit } : undefined;
   }).filter(Boolean);
   const resources = weeklyResources.filter(has);
@@ -521,9 +533,11 @@ export function eventStoreOffers(now = new Date()) {
   if (!hasEventStore()) return { [eventStorefront]: [], [weeklyStorefront]: [] };
   const week = storeWeek(now);
   const offerName = (item) => `${nameOf(item.templateId)}${item.quantity > 1 ? `_x${item.quantity}` : ""}${item.currency === dailyCoins ? "_dailycoins" : ""}`;
+  const eventInstance = eventStoreInstanceNow();
+  const weeklyInstance = weeklyStoreInstanceNow();
   return {
-    [eventStorefront]: eventItemsNow(now).filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstanceNow())(item)),
-    [weeklyStorefront]: weeklyItems(week, now).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstanceNow())(item))
+    [eventStorefront]: eventItemsNow(now).filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventInstance)(item)),
+    [weeklyStorefront]: weeklyItems(week, now).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyInstance)(item))
   };
 }
 

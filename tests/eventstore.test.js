@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
+import { configureEvents } from "../src/events/events.js";
 import { trackChanges } from "../src/profiles/changes.js";
-import { storefronts } from "../src/store/catalog.js";
+import { findOffer, storefronts } from "../src/store/catalog.js";
 import { dailyCoins, ensureEventPurchaseTrackers, eventPurchaseTracker, eventStorefront, eventStoreInstance, seasonalGold, storeWeek,
   weeklyStoreInstance, weeklyStorefront, winter2017End } from "../src/store/eventstore.js";
 import { nextReplayOf } from "../src/store/itemshop.js";
@@ -260,5 +261,29 @@ test("the weekly Daily Coin offers sell for Daily Coins, once each (Core-Backend
     assert.equal((await buy(dailyCoins)).body.errorCode, "errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed");
   } finally {
     backend.close();
+  }
+});
+
+// Core-Backend #353: every item shop purchase looks its offer up among the Event Store's (findOffer), and the catalog lists
+// them, so the store's event checks run on each. Each reads the events settings; they once called one another, about
+// 59,000 reads on 6.22, which held a purchase up for seconds. Each event is now checked once per question.
+test("the Event Store's offers read the events settings a few hundred times, not tens of thousands (#353)", () => {
+  let reads = 0;
+  configureEvents(() => {
+    reads++;
+    return { mode: "auto" };
+  });
+  try {
+    for (const build of ["4543176", "4497486", "4214610", "3807424"]) {
+      inBuild(build, () => findOffer("warm up"));
+      reads = 0;
+      inBuild(build, () => findOffer("core_br_not_an_offer"));
+      assert.ok(reads < 1000, `${build}: ${reads} reads for one offer lookup`);
+      reads = 0;
+      inBuild(build, () => storefronts(null));
+      assert.ok(reads < 1000, `${build}: ${reads} reads for the catalog`);
+    }
+  } finally {
+    configureEvents(null);
   }
 });
