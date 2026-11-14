@@ -329,6 +329,23 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   packs; the Balloons; the new outfits' heroes and harvesting tools; the Oil Slick Trap gone), `quests.json` (Kill Vlad and
   two Hexsylvania fetch quests lose their visible rewards), `world.json` (MissionGen_AthenaEvent47 to 49 gone: the Deimos
   playlists use MissionGen_Athena); `banners.json`, `collectionbook.json` and the rest are 6.20's.
+  6.22's (CL-4543176, UE 4.21, Update v6.22's build, its one changelist) is `4.21.0-4543176+++Fortnite+Release-6.22` (no
+  `Build.version`; the build folder is `6.22-CL-4543176\Fortnite`) with 6.21's full data (Cert's files with
+  `gamedata/4526925` applied) as the fifth argument, and the main key FModel's settings hold for its build folder; no
+  extractor change. A full install again: 13 paks (356,175 files), pakchunk0 and its s1 to s5, pakchunk1 and pakchunk1_s1
+  (Save the World's mission maps and tiles) and the language paks 2, 5, 7, 8 and 9; no keyed pak and no Core server-assets
+  pak in its folder. Its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth
+  argument). Against 6.21 eight files change: `athena.json` (19 cosmetics: the NFL outfits End Zone, Gridiron, Spike, Strong
+  Guard, Blitz, Rush, Interceptor and Juke, the referees Whistle Warrior and Striped Soldier, Upright Axe, Golden Pigskin,
+  First Downer, Touchdown, Spike It and Denied, A.I.M. with E.L.I.M. and A.X.E.; 14 display assets; Season 6's cumulative
+  challenges give A.I.M. and E.L.I.M. at seven; week 7's elimination quest swapped for the single-match damage chain;
+  the Korean PC bang quests, quest_br_pcb_bundle1_*, which no schedule grants; nine objective stats; the loot tables with
+  the Heavy Assault Rifle, WID_Assault_Heavy_Athena_R/VR/SR_Ore_T03, in floor loot, vending machines and supply drops and
+  other rows' weights changed), `items.json`, `characters.json` and `fabricator.json` (the new outfits' heroes and
+  harvesting tools, the Heavy Assault Rifle, two PC bang tokens; Deco_Butterfly gone), `alterations.json` (the Candy Corn
+  LMG's slot loadout), `quests.json` (Fortnitemares Part 2's rewards: HalloweenQuest_KillVlad's Sanguine Dusk,
+  HID_Outlander_018, and the fetch quests' Candy, Candy Corn LMG schematic and choice of heroes), `objectivestats.json` and
+  `world.json` (MissionGen_AthenaEvent8, 36 and 37 gone); the rest are 6.21's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

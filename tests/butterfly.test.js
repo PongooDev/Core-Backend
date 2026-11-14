@@ -38,7 +38,7 @@ test("the Butterfly's steps are 6.21's island scripting's four calendar names, b
   assert.equal(step("drain").end - step("drain").start, 24 * 3600000, "a drip each hour, the 24th the Butterfly's");
   assert.equal(step("crack").end, step("drain").start, "the drain follows the crack's last crack");
   assert.equal(butterflyEvent.defaultMode, "off");
-  assert.deepEqual(season4Flag(islandDrain).builds, [Number(v621), Number(v621)], "the drain's switch is 6.21's alone");
+  assert.deepEqual(season4Flag(islandDrain).builds, [Number(v621), 4543176], "the drain's switch is 6.21's and 6.22's (its BP_IslandScripting is 6.21's byte for byte)");
 });
 
 test("off by default: 6.21 serves POI0 by itself, nothing is scheduled; 6.20 never schedules it", () => {

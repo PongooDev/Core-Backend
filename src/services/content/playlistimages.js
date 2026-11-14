@@ -57,7 +57,11 @@ export const playlistImagesBuild = 4039451;
 // section, koreancafe (FCmsJsonMessages.KoreanCafe: {_title, __locale, cafe_info: {cafes: [{korean_cafe, korean_cafe_header,
 // korean_cafe_description}]}}), is read only by UCMSContext::GetLatestPCBInfo (0x2EAFDE0: the whole page converted into
 // FCmsJsonMessages, the result not checked) for the Korean PC bang panel (UFortPCBInfoPannel); without it the panel's data
-// is empty, so Core serves none. The news, the playlists and the tournaments are read as on 6.20.
+// is empty, so Core serves none. The news, the playlists and the tournaments are read as on 6.20. 6.22's exe (CL-4543176)
+// keeps the same names (its strings against 6.21's). Its Team Terror (Playlist_Deimos_50) has the tile Epic's later page
+// names for it, playlist_name "playlist_deimos_50" (the tile's FName compare ignores case),
+// BR06_In-GamePlaylist_TeamTerror_1024x512 (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 481,922 bytes, the hash
+// in its name the file's SHA-1), with no border.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -83,6 +87,7 @@ const highStakesTile = `${cdn}/playlistinformation/08BR_HighStakes_ModeTile-1024
 const fortnitemaresSoloTile = `${cdn}/playlistinformation/BR06_Fortnitemares_In-GamePlaylist_1024x512_-Solo-1024x512-7e7fe76e48beb3a06da0592cb26e412265986e4d.jpg`;
 const fortnitemaresDuosTile = `${cdn}/playlistinformation/BR06_Fortnitemares_In-GamePlaylist_1024x512_Duos-1024x512-1eadb7cfab62c9eb5c90c65577c676d5d0bb15c2.jpg`;
 const fortnitemaresSquadsTile = `${cdn}/playlistinformation/BR06_Fortnitemares_In-GamePlaylist_1024x512_Squads-1024x512-783a0812f6acf1f5931c8015e6ad13c0b76c5a9c.jpg`;
+const teamTerrorTile = `${cdn}/playlistinformation/BR06_In-GamePlaylist_TeamTerror-1024x512-310430bdaf1b1dd0ecb4d3b180bb6409b7ff6e27.jpg`;
 const discoDominationTile = `${cdn}/playlistinformation/BR06_LobbyTile_LTM_DiscoDomination-1024x512-c79f07de78d8283656fcf4d1ee757f880911d775.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
@@ -136,7 +141,8 @@ export const epicPlaylistImages = {
   Playlist_Disco_32_Alt: discoDominationTile,
   Playlist_Deimos_Solo: fortnitemaresSoloTile,
   Playlist_Deimos_Duo: fortnitemaresDuosTile,
-  Playlist_Deimos_Squad: fortnitemaresSquadsTile
+  Playlist_Deimos_Squad: fortnitemaresSquadsTile,
+  Playlist_Deimos_50: teamTerrorTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

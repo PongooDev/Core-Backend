@@ -62,9 +62,9 @@ export const eventCards = [
   { id: "island", kind: "dated", dated: "island", seasons: [6], name: "Floating island", builds: "6.00 – 6.10", ranges: [[4395664, 4480234]],
     key: "lake", endStep: "home", startLabel: "Rises over Loot Lake", endLabel: "Back over Loot Lake",
     about: "The island over Loot Lake floats to the seven runes the Cube lifted and back. Needs the build's server-assets pak." },
-  { id: "fortnitemares2018", kind: "build", seasons: [6], name: "Fortnitemares 2018", builds: "6.20 – 6.21", ranges: [[4497486, 4526925]],
-    about: "The Cube Monsters' modes, the Fortnitemares Challenges, the Halloween lobby and Battle Bus; Save the World's Fortnitemares Part 1 (Hexsylvania, Candy).",
-    flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween", "EventFlag.HalloweenBattleBus", "POI0", "EventFlag.LTM_LilKevin (6.21)", "EventFlag.Fortnitemares_Part4 (6.21)"] },
+  { id: "fortnitemares2018", kind: "build", seasons: [6], name: "Fortnitemares 2018", builds: "6.20 – 6.22", ranges: [[4497486, 4543176]],
+    about: "The Cube Monsters' modes, the Fortnitemares Challenges, the Halloween lobby and Battle Bus; Save the World's Fortnitemares Part 1 (Hexsylvania, Candy), and on 6.22 Part 2 (Battle Royale's Fortnitemares is over there: its challenges stay).",
+    flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2 (6.22)", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween (6.20, 6.21)", "EventFlag.HalloweenBattleBus (6.20, 6.21)", "POI0 (6.20, 6.21)", "POI1 (6.22)", "EventFlag.LTM_LilKevin (6.21, 6.22)", "EventFlag.Fortnitemares_Part4 (6.21)"] },
   { id: "butterfly", kind: "dated", dated: "butterfly", seasons: [6], name: "The Butterfly (the Cube's end)", builds: "6.21", ranges: [[4526925, 4526925]],
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it." }

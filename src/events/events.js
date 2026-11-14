@@ -424,6 +424,21 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // for as long as 6.21 runs, as its Fortnitemares modes are on by default, and the admin's switches play the Butterfly (POI0
 // off and POI1 on, in a running match); the admin panel's Butterfly schedule (events/butterfly.js, off by default) plays it
 // on Epic's dates or the admin's time instead, with the Cube's crack and drain before it.
+//
+// 6.22 (CL-4543176, Update v6.22, 6 November 2018: "Fortnitemares has come to an end in Battle Royale but the storyline
+// continues in Save the World. Jump in and explore Fortnitemares Part 2"). Every EventFlag.* in its paks (the same byte
+// scan, all 337,490 uasset, umap, uexp, ini and json files of its 13 paks, pakchunk1 and the language paks with them) is
+// 6.21's 38 less Fortnitemares_Part4 (BP_HauntedObject_Rework is gone), 37 names, none new. Its BP_IslandScripting is
+// 6.21's byte for byte (POI0 and POI1, the crack and the drain); its Cube Monsters' missions (Deimos_Mission_RiftSpawners_
+// Static and _Dynamic) set no RequiredEventFlag, so Team Terror's spawners (events/ltms.js teamTerror) run without POI0.
+// Its data gives Part 2 its rewards (HalloweenQuest_KillVlad: Sanguine Dusk, Hero:HID_Outlander_018; the fetch quests'
+// Candy, the Candy Corn LMG's schematic and a choice of four Fortnitemares heroes), so 6.22 serves FortnitemaresPhase2 (the
+// quest map's Part 2 page) by itself, with Part 1's Fortnitemares, FortnitemaresPhase1 and the Mini-Bosses with Candy; and,
+// after the Butterfly, the Leaky Lake's POI1 (Epic's state from 4 November 18:00 UTC: a match begins after the Cube, and
+// plays no Butterfly). Battle Royale's Fortnitemares is over: its lobby (LobbySeason6Halloween) and bus
+// (HalloweenBattleBus) stop at 6.21 and are switches on 6.22, as POI0 is. 🟡 Its challenges (LTM_Fortnitemares, and 6.21's
+// LTM_LilKevin) are served on: Update v6.22 doesn't end them, and Team Terror's tag (Athena.Playlist.Deimos.50) is under
+// the Athena.Playlist.Deimos their stats count in. LobbySeason6 and PassiveStorms run on.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -492,21 +507,25 @@ const build6000 = 4395664;
 const build610 = 4480234;
 const build620 = 4497486;
 const build621 = 4526925;
+const build622 = 4543176;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   // 6.20's and 6.21's Fortnitemares (above): Save the World's Part 1 (Hexsylvania, its quests and Candy,
   // events/fortnitemares.js), its Mini-Bosses with Candy, Battle Royale's challenges, lobby and bus, and the Leaky Lake's
-  // POI0 (which 6.21's Cube Monsters' spawners need); 6.21's Part 4 flag and the Lil' Kev challenges.
-  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build621 },
-  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build621 },
-  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build621 },
-  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build621 },
+  // POI0 (which 6.21's Cube Monsters' spawners need); 6.21's Part 4 flag and the Lil' Kev challenges. 6.22's: Save the
+  // World's Part 2 (FortnitemaresPhase2) with Part 1's, the challenges, and the Leaky Lake after the Butterfly (POI1).
+  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build622 },
+  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build622 },
+  { name: fortnitemares, flag: fortnitemaresPhase2, firstBuild: build622, lastBuild: build622 },
+  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build622 },
+  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build622 },
   { name: fortnitemares2018, flag: lobbySeason6Halloween, firstBuild: build620, lastBuild: build621 },
   { name: fortnitemares2018, flag: halloweenBattleBus, firstBuild: build620, lastBuild: build621 },
   { name: fortnitemares2018, flag: islandPoi(0), firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: islandPoi(1), firstBuild: build622, lastBuild: build622 },
   { name: fortnitemares2018, flag: fortnitemaresPart4, firstBuild: build621, lastBuild: build621 },
-  { name: fortnitemares2018, flag: ltmLilKevin, firstBuild: build621, lastBuild: build621 },
+  { name: fortnitemares2018, flag: ltmLilKevin, firstBuild: build621, lastBuild: build622 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
   { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3870737 },
@@ -534,10 +553,10 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build621 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build622 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
-  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build621 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build622 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

@@ -423,10 +423,16 @@ const cramSessionNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // with Shadow Stance") adds Dim Mak Igor (Hero:HID_Ninja_018_SR_T01, new in 6.21's data): the Fortnite Wiki's Plague
 // Doctor Igor (his later name) "can be purchased from the Event Store for 2,800 Gold", from 1 November 2018. A build sells
 // the ones its data has (eventStoreOffers), so 6.20's store is as it was.
+// 6.22 (CL-4543176; Update v6.22's "New Mythic Ninja - Werewolf Dire ... Available in the Event Store November 7th at 7 PM
+// EST") adds Dire (Hero:HID_Ninja_019_SR_T01, "Dire" in the data, in 6.21's already), from 6.22 only (fromBuild: 6.21's
+// data has him, but its store didn't sell him); 🟡 the notes give no price: a Mythic hero's 3,200 Gold, as Quickdraw
+// Calamity's. Part 2's Sanguine Dusk (HID_Outlander_018) is HalloweenQuest_KillVlad's reward in 6.22's data, no offer.
 export const fortnitemares2018EventItems = [{ templateId: "Hero:hid_commando_018_sr_t01", price: 3200, limit: 1 },
-  { templateId: "Hero:hid_outlander_zoneharvesthw_sr_t01", price: 2800, limit: 1 }, { templateId: "Hero:hid_ninja_018_sr_t01", price: 2800, limit: 1 }];
+  { templateId: "Hero:hid_outlander_zoneharvesthw_sr_t01", price: 2800, limit: 1 }, { templateId: "Hero:hid_ninja_018_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_ninja_019_sr_t01", price: 3200, limit: 1, fromBuild: 4543176 }];
 export const fortnitemares2018StoreEnd = "2018-12-06T00:00:00.000Z";
-const fortnitemaresItems = (now) => fortnitemares2018EventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
+const fortnitemaresItems = (now) => fortnitemares2018EventItems.filter(({ templateId, fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))
+  && !weeklyFeatured(now).some((item) => item.templateId === templateId)).map(({ fromBuild, ...item }) => item);
 const fortnitemaresNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow() && !cramSessionNow()
   && isEventActive(fortnitemares2018);
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.

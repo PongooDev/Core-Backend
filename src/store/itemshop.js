@@ -124,8 +124,14 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Splinterstrike (4 and 5 November), Growler and Flapjackie with Jackspammer and Poofy Parasail (9 November), Yee-Haw! (13
 // November), Shogun with Jawblade and Kabuto (18 and 19 November) and Crazy Feet (22 November). Its other outfits, Reflex
 // and Instinct with Pivot and Angular Axe, weren't sold in Season 6, and Lil' Kev is a challenge reward. Only 6.21's data
-// has them, so 6.00's to 6.20's days are as they were. A build's season is its athena data's seasonNumber, Season 1
-// without one.
+// has them, so 6.00's to 6.20's days are as they were. 6.22 (CL-4543176) adds its seventeen the shop sold, on 5 days, the
+// same way: the NFL outfits (End Zone, Gridiron, Spike and Strong Guard in one cycling tile, Blitz, Rush, Interceptor and
+// Juke in another) and their referees, Whistle Warrior and Striped Soldier, with Upright Axe, Golden Pigskin, First Downer
+// and Touchdown in a third, the whole featured section from 10 to 13 November ("NFL themed Outfits debut in the Store
+// starting November 9 at 7 PM ET", Update v6.22: the shop of 10 November, UTC); Spike It (11 November), Denied (12
+// November) and A.X.E. (20 November). A.I.M. and E.L.I.M. are Season 6's cumulative challenges' reward (7 of them done).
+// Only 6.22's data has them, so 6.00's to 6.21's days are as they were. A build's season is its athena data's
+// seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };

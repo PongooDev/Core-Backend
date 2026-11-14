@@ -188,6 +188,10 @@ const playlistTeamsFrom620 = {
   232: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 }
 };
 const playlistTeams620Build = 4497486;
+// 6.22's (CL-4543176) Team Terror (450, Playlist_Deimos_50: 2 × 32 in squads of 4, a large team game as 50v50 and the 32 a
+// side Disco Domination). Its other playlists have the teams above (events/ltms.js).
+const playlistTeamsFrom622 = { 450: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 } };
+const playlistTeams622Build = 4543176;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -363,6 +367,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams622Build && playlistTeamsFrom622[playlistId]) return playlistTeamsFrom622[playlistId];
   if (Number(build) >= playlistTeams620Build && playlistTeamsFrom620[playlistId]) return playlistTeamsFrom620[playlistId];
   if (Number(build) >= playlistTeams610Build && playlistTeamsFrom610[playlistId]) return playlistTeamsFrom610[playlistId];
   if (Number(build) >= playlistTeams602Build && playlistTeamsFrom602[playlistId]) return playlistTeamsFrom602[playlistId];

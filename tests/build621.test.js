@@ -77,14 +77,14 @@ const asBuild = (build, version = "6.21") => (port, urlPath, token, method = "GE
   return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
 };
 
-test("6.21 is known, on its own data, Season 6's newest", () => {
+test("6.21 is known, on its own data, in Season 6", () => {
   assert.equal(versionOf(v621), "6.21");
   assert.equal(allowedBuildList(["6.21"]).join(), v621);
   assert.equal(dataBuild(v621), v621);
   assert.equal(dataBuild("4510000"), v620, "a build between 6.20 and 6.21 plays on 6.20's");
   assert.equal(dataBuild(v620), v620, "6.20 keeps its own data");
-  assert.equal(buildOfSeason(6), v621);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.21)");
+  assert.equal(buildOfSeason(6), "4543176", "Season 6's newest data is 6.22's now (tests/build622.test.js)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.22)");
   assert.equal(inBuild(v621, athenaSeason).seasonNumber, 6);
   assert.deepEqual({ ...inBuild(v621, athenaSeason), seasonRewards: null }, { ...inBuild(v620, athenaSeason), seasonRewards: null }, "AthenaSeason6's tiers are 6.20's");
 });
@@ -180,13 +180,14 @@ test("6.21's event flags: 6.20's, POI0 (its Cube Monsters' spawners need it), Fo
   assert.deepEqual(activeEventFlags(v620).filter((flag) => !activeEventFlags(v621).includes(flag)), []);
   assert.equal(activeEventFlags(v610).includes(islandPoi(0)), false, "6.10 is as it was");
   assert.equal(islandPoi(0), "POI0");
-  for (const flag of ["POI0", "POI1", islandCrack]) assert.deepEqual(season4Flag(flag).builds, [Number(v620), Number(v621)], flag);
-  for (const flag of [ltmLilKevin, fortnitemaresPart4]) assert.deepEqual(season4Flag(flag).builds, [Number(v621), Number(v621)], flag);
+  for (const flag of ["POI0", "POI1", islandCrack]) assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4543176], flag);
+  assert.deepEqual(season4Flag(fortnitemaresPart4).builds, [Number(v621), Number(v621)], "gone from 6.22's paks");
+  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4543176], "and on to 6.22 (tests/build622.test.js)");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), Number(v621)], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4543176], flag);
   }
   for (const flag of [lobbySeason6, "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event", "EventFlag.Blockbuster2018Phase4", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], Number(v621), flag);
+    assert.equal(season4Flag(flag).builds[1], 4543176, flag);
   }
   // The floating island's flags stop at 6.20: 6.21's BP_IslandScripting watches none of them.
   assert.equal(season4Flag(islandRune(8)).builds[1], Number(v620));
@@ -282,8 +283,10 @@ test("6.21's shop: its fourteen cosmetics on their days with their back blings; 
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c621, c620] = [inBuild(v621, athenaCosmetics), inBuild(v620, athenaCosmetics)];
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c621[id])), "only 6.21's cosmetics");
-  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c620[id]))];
+  // The history holds 6.22's seventeen too (tests/build622.test.js); 6.21 is shown its own.
+  const c622 = inBuild("4543176", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c622[id])), "only 6.22's cosmetics");
+  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c620[id] && c621[id]))];
   assert.equal(own.length, 14);
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaCharacter:cid_258_athena_commando_f_fuzzybearhalloween"), ["11-02"]);
@@ -317,7 +320,9 @@ test("6.21's Save the World: Fortnitemares Part 1 still, Dim Mak Igor in the Eve
   assert.equal(inBuild(v621, () => findOffer("core_event_fortnitemares2018_llama"))?.price, 500);
   assert.equal(inBuild(v621, eventStoreInstanceNow), "Fortnitemares2018.STWSpecialEventStoreFront");
   const store = JSON.stringify(inBuild(v621, () => eventStoreOffers(at("2018-11-02T12:00:00Z"))));
-  for (const { templateId } of fortnitemares2018EventItems) assert.ok(store.includes(templateId), templateId);
+  // 6.22's Dire (fromBuild) isn't 6.21's, though its data has him (tests/build622.test.js).
+  for (const { templateId } of fortnitemares2018EventItems.filter(({ fromBuild }) => !fromBuild)) assert.ok(store.includes(templateId), templateId);
+  assert.equal(store.includes("hid_ninja_019"), false);
   assert.ok(fortnitemares2018EventItems.some(({ templateId, price }) => templateId === "Hero:hid_ninja_018_sr_t01" && price === 2800));
   assert.equal(JSON.stringify(inBuild(v620, () => eventStoreOffers(at("2018-11-02T12:00:00Z")))).includes("hid_ninja_018"), false, "6.20's store as it was");
   // The Perk Caches (Core's contents: the cache's rarity of RE-PERK! and one PERK-UP! pack).

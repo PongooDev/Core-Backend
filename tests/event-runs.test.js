@@ -71,7 +71,7 @@ async function played2017(backend, name) {
 }
 
 test("Fortnitemares has two runs, 2017's and 2018's; an event's phases and following builds are one run", () => {
-  assert.deepEqual(eventRuns(fortnitemares), [{ firstBuild: 3724489, lastBuild: 3757339 }, { firstBuild: 4497486, lastBuild: 4526925 }]);
+  assert.deepEqual(eventRuns(fortnitemares), [{ firstBuild: 3724489, lastBuild: 3757339 }, { firstBuild: 4497486, lastBuild: 4543176 }]);
   // 1.9.1 and 1.10 follow each other: the Mutant Storms ran on.
   assert.deepEqual(eventRuns(mutantStorms), [{ firstBuild: 3775276, lastBuild: 3790078 }]);
   assert.deepEqual(eventRuns(spring2018), [{ firstBuild: 3889387, lastBuild: 3942182 }]);
