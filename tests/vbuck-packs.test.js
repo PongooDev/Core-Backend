@@ -149,6 +149,14 @@ test("the purchase flow's page is at the backend address the game used, on 1.8 t
       assert.equal(await prod(userAgent, "a b;c=d"), `http:///127.0.0.1:${backend.port}/purchase`, build);
     }
 
+    // With the launcher's defaults the game sends this through its -httpproxy, in absolute form to the backend address
+    // CoreRedirect wrote in (#349): the page is there too, not at this PC's own 127.0.0.1 and local port.
+    const viaProxy = async (host) => /\[EpicPurchaseFlow\]\r\nProd=(.*)\r\n/.exec(String((await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+      path: `http://${host}/fortnite/api/cloudstorage/system/DefaultGame.ini`, headers: { Host: host, "User-Agent": agent31, Authorization: `bearer ${token}` } })).body))?.[1];
+    assert.equal(await viaProxy("play.example.com:40123"), "http:///play.example.com:40123/purchase");
+    assert.equal(await viaProxy("fortnite-public-service-prod11.ol.epicgames.com"), `http:///127.0.0.1:${backend.port}/purchase`, "no CoreRedirect");
+    assert.equal(await viaProxy("api.echofn.org"), `http:///127.0.0.1:${backend.port}/purchase`, "a build's own backend (#261)");
+
     // The page, and its Complete purchase, answer for that address.
     const player = await userLogin(backend.port, "RemotePageBuyer");
     const appStoreId = currencyOf(await catalog(backend.port, player.token)).catalogEntries[0].appStoreId[1];

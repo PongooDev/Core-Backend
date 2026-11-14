@@ -205,11 +205,16 @@ export function requestHost(req) {
 // launcher's backend address before the proxy carries it, so the absolute form's host is the address the player's PC
 // reaches this backend at (a public address, a host name, a tunnel's port), where the connection's own socket gives
 // 127.0.0.1 behind a local tunnel agent and the local port behind a forwarded one. For what opens in the player's own
-// browser, which must reach this backend from their PC. Null for a CONNECT tunnel's request (an https:// host), an Epic
-// host (no CoreRedirect), or one that isn't a plain host and port.
+// browser, which must reach this backend from their PC: "View Approved Creators" (cloudstorage.js) and the purchase
+// flow's page (services/fortnite/purchase.js). Null for a CONNECT tunnel's request (an https:// host), an Epic host (no
+// CoreRedirect), or one that isn't a plain host and port. Through the proxy the host must also name its port: the
+// launcher's backend address always does ("http://<host>:<port>", Core-Launcher BackendEndpoint.Url), where a build's
+// own other backend (#261's api.echofn.org) doesn't, and is no address of this backend.
 export function sentToHost(req) {
   if (req?.socket?.httpProxyTunnel) return null;
-  return plainHost(req);
+  const host = plainHost(req);
+  if (host && req?.viaHttpProxy === true && !/:\d{1,5}$/.test(host)) return null;
+  return host;
 }
 
 function plainHost(req) {

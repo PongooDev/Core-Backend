@@ -3,7 +3,7 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
-import { httpsProxied, requestHost } from "../../network.js";
+import { httpsProxied, sentToHost } from "../../network.js";
 import { openSession } from "../../profiles/session.js";
 import { catalogServiceOffer, grantRealMoneyOffer, hasCurrencyStore, offerBlocked, parseAppStoreId } from "../../store/currency.js";
 import { codeProblems } from "../../store/purchasecodes.js";
@@ -35,12 +35,15 @@ import { notifyProfiles } from "../mcp/profile.js";
 // and the socket's local port) gave a remote player this PC's network address when no public address was set and the
 // backend was entered by name, 127.0.0.1 behind a tunnel on this PC, and 5595 behind a forwarded or tunnelled port of
 // another number: the browser never reached the page, and the Store sat on a black screen with a spinner
-// (Core-Backend #244). Those stay for a request without a usable Host: one the -httpproxy carried, whose Host is the
-// host the game asked for, an Epic one or another backend's (network.js viaHttpProxy, Core-Backend #261).
+// (Core-Backend #244). With the launcher's default options the game has the -httpproxy and CoreRedirect both, so this
+// request arrives in the proxy's absolute form to the launcher's backend address, which CoreRedirect wrote in: that
+// host is taken too (network.js sentToHost, as #349's "View Approved Creators"). The backend's own view stays for a
+// request without a usable host: an Epic one or a build's other backend, which the -httpproxy carried as the game asked
+// (network.js viaHttpProxy, Core-Backend #261).
 export function purchaseFlowUrl(req, network) {
   const proxied = httpsProxied(req);
   if (proxied) return `https:///${proxied.host}/purchase`;
-  return `http:///${requestHost(req) ?? network.directHost(req)}/purchase`;
+  return `http:///${sentToHost(req) ?? network.directHost(req)}/purchase`;
 }
 
 // The page's other domains, [EpicPurchaseFlow] <environment>AltDomains, cleared (Core-Backend #346). The flow reads them

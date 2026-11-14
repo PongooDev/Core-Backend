@@ -7,7 +7,7 @@ import path from "node:path";
 import { loadConfig } from "../src/config.js";
 import { listen } from "../src/listen.js";
 import { createSessionStore, sessionJson } from "../src/matchmaking/sessions.js";
-import { createNetwork, httpsProxied, isPrivate, lanAddresses, requestHost, validPublicAddress, viaHttpProxy } from "../src/network.js";
+import { createNetwork, httpsProxied, isPrivate, lanAddresses, requestHost, sentToHost, validPublicAddress, viaHttpProxy } from "../src/network.js";
 import { createServer } from "../src/server.js";
 import { get, post, startBackend } from "./helpers.js";
 
@@ -102,6 +102,11 @@ test("a request the -httpproxy carried is answered with the address its connecti
   assert.equal(requestHost(tunnelled), null);
   assert.equal(requestHost(absolute), null);
   assert.equal(requestHost(direct), "play.example.com:40123");
+  // What opens in the player's browser (#349) takes the absolute form's host when it names its port, as the launcher's
+  // backend address (CoreRedirect's) does; a build's own backend without a port, or a CONNECT tunnel's, still doesn't.
+  assert.deepEqual([sentToHost(tunnelled), sentToHost(absolute), sentToHost(direct)], [null, null, "play.example.com:40123"]);
+  assert.equal(sentToHost(request(local, { host: "play.example.com:40123" }, { viaHttpProxy: true })), "play.example.com:40123");
+  assert.equal(sentToHost(request(local, { host: "fortnite-public-service-prod11.ol.epicgames.com:80" }, { viaHttpProxy: true })), null);
   assert.equal(createNetwork().directHost(tunnelled), "127.0.0.1:5595");
   // A friend on the internet whose -httpproxy names this PC: the public address; on its network, the address it used.
   const friend = request({ remoteAddress: "198.51.100.20", localAddress: "192.168.1.10", httpProxyTunnel: "api.echofn.org:443" }, { host: "api.echofn.org" });
