@@ -559,3 +559,70 @@ for (const [build, userAgent] of [["5.30", agent530], ["5.40", agent540]]) {
     }
   });
 }
+
+// Core-Backend #356: the Summit Striker Pack, Season 6's, from 6 November 2018 on the season's replay, on a Season 6 build
+// whose paks have Summit Striker and Top Notch (6.20 on); The Ace Pack before that day, on every Season 6 build.
+const agent602 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.02-CL-4461277";
+const agent621 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.21-CL-4526925";
+const agent630 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.30-CL-4573096";
+const summitCosmetics = ["AthenaCharacter:CID_253_Athena_Commando_M_MilitaryFashion2", "AthenaBackpack:BID_134_MilitaryFashion"];
+const summitOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_starter_br_s6");
+// The events config's Season 6 start that puts today on the replay's day of Epic's season (Season 6's first is 27 September 2018).
+const season6StartFor = (epicDay) => {
+  const dayMs = 86400000;
+  const today = Math.floor(Date.now() / dayMs) * dayMs;
+  return new Date(today - (Date.parse(`${epicDay}T00:00:00Z`) - Date.UTC(2018, 8, 27))).toISOString().slice(0, 10);
+};
+test("#356: the Summit Striker Pack is Season 6's from 6 November 2018, The Ace Pack's place, on 6.20 and later", async () => {
+  const summit = findRealMoneyOffer("core_starter_br_s6");
+  assert.deepEqual([summit.title, summit.season, summit.price, summit.currencyCode, summit.oncePerAccount], ["The Summit Striker Pack", 6, 499, "USD", true]);
+  assert.deepEqual(summit.cosmetics, summitCosmetics);
+  assert.deepEqual(summit.grants, [{ templateId: "Currency:MtxPurchased", quantity: 500 }, { templateId: "Currency:MtxPurchaseBonus", quantity: 100 }]);
+  for (const build of ["4402180", "4480234"]) assert.equal(inBuild(build, () => lockerCosmeticId(summitCosmetics[0])), undefined, build);
+  for (const build of ["4497486", "4526925", "4543176", "4573096"]) {
+    for (const templateId of summitCosmetics) assert.ok(inBuild(build, () => lockerCosmeticId(templateId)), `${build} ${templateId}`);
+  }
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "SummitShopper");
+    const offered = async (userAgent) => currencyOf(await catalog(backend.port, player.token, userAgent)).catalogEntries
+      .map((entry) => entry.offerId).filter((id) => id.startsWith("core_starter_"));
+
+    // 10 November 2018 on the replay: the Summit Striker Pack on 6.21 and 6.30; nothing on 6.02, whose paks lack it.
+    assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: season6StartFor("2018-11-10") } })).status, 200);
+    for (const userAgent of [agent621, agent630]) {
+      assert.deepEqual(await offered(userAgent), ["core_starter_br_s6"], userAgent);
+      const offer = summitOf(await catalog(backend.port, player.token, userAgent));
+      assert.equal(offer.title, "The Summit Striker Pack");
+      assert.equal(offer.prices[0].currencyType, "RealMoney");
+      assert.deepEqual(offer.metaInfo.map(({ key, value }) => `${key}=${value}`), ["MtxQuantity=600", "MtxBonus=100"]);
+      assert.equal(offer.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_Featured_CID_253_Athena_Commando_M_MilitaryFashion2.DA_Featured_CID_253_Athena_Commando_M_MilitaryFashion2");
+      assert.deepEqual(offer.requirements, [{ requirementType: "DenyOnFulfillment", requiredId: "core_starter_br_s6", minQuantity: 1 }]);
+    }
+    assert.deepEqual(await offered(agent602), []);
+
+    // 20 October 2018: The Ace Pack, on every Season 6 build, as Epic sold it to 5 November.
+    await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: season6StartFor("2018-10-20") } });
+    for (const userAgent of [agent602, agent621, agent630]) assert.deepEqual(await offered(userAgent), ["core_starter_br_s5"], userAgent);
+    // Season 5 still has its Ace Pack whatever Season 6's replay says.
+    assert.deepEqual(await offered(agent540), ["core_starter_br_s5"]);
+
+    // Bought on 6.21: Summit Striker, Top Notch and 600 V-Bucks, once.
+    await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: season6StartFor("2018-11-06") } });
+    const id = summitOf(await catalog(backend.port, player.token, agent621)).appStoreId[1];
+    const priced = (await as(backend.port, `/catalog/api/shared/bulk/offers?id=${id}&returnItemDetails=false`, await clientToken(backend.port), agent621)).body;
+    assert.deepEqual([priced[id].price, priced[id].currencyCode, priced[id].title], [499, "USD", "The Summit Striker Pack"]);
+    const page = await open(backend.port, id, agent621);
+    assert.equal(page.status, 200);
+    assert.equal((await complete(backend.port, purchaseIdOf(page.body))).status, 200);
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent621);
+    for (const templateId of summitCosmetics) assert.equal(owned(athena, templateId).length, 1, templateId);
+    const core = await query(backend.port, player.accountId, player.token, "common_core", agent621);
+    assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
+    assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
+    assert.equal(summitOf(await catalog(backend.port, player.token, agent621)), undefined);
+  } finally {
+    backend.close();
+  }
+});
