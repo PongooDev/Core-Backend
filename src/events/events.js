@@ -508,6 +508,10 @@ export const islandMoveTo = (stop) => `EventFlag.BR_S6_Island_MoveTo${stop}`;
 // the only build whose Athena_Background carries SM_Iceberg (6.30's has the floes and the fog, and no iceberg).
 export const distantFogApproach = "BR_S6_Approach_03";
 export const distantFogOverlap = "BR_S6_Approach_Overlap";
+// 6.30's snowstorm: the same blueprint's two names in 6.30's paks (CL-4573096), its own and not 6.31's, so each build
+// watches only its pair.
+export const distantFogApproach630 = "BR_S6_Approach_01";
+export const distantFogOverlap630 = "BR_S6_Approach_02";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;

@@ -62,6 +62,10 @@ export const eventCards = [
   { id: "island", kind: "dated", dated: "island", seasons: [6], name: "Floating island", builds: "6.00 – 6.10", ranges: [[4395664, 4480234]],
     key: "lake", endStep: "home", startLabel: "Rises over Loot Lake", endLabel: "Back over Loot Lake",
     about: "The island over Loot Lake floats to the seven runes the Cube lifted and back. Needs the build's server-assets pak." },
+  // 6.30's: the same BP_Distant_Fog with its own two events and the snowstorm without the iceberg (events/distantfog.js).
+  { id: "distantFog630", kind: "dated", dated: "distantFog630", seasons: [6], name: "The Ice King's snowstorm", builds: "6.30", ranges: [[4573096, 4573096]],
+    key: "approach", endStep: "overlap", startLabel: "The snowstorm drifts in", endLabel: "It reaches 6.30's end point",
+    about: "The snowstorm the iceberg comes in, in the distance off the island's south-west: 6.30's BP_Distant_Fog slides its fog bank along a spline while BR_S6_Approach_01 is active (its progress is the event's own) and BR_S6_Approach_02 holds it at 6.30's end point; with neither on it is hidden. 6.30's backdrop has the fog but no iceberg (that is 6.31's). 🟡 Epic's hours aren't recorded: the approach runs from Update v6.30's day (14 November 2018) to Update v6.31's (27 November), then it holds at the end point to Season 6's end." },
   // 6.31's alone: its Athena_Background has BP_Distant_Fog's SM_Iceberg, which the two events slide in (events/distantfog.js).
   { id: "distantFog", kind: "dated", dated: "distantFog", seasons: [6], name: "The Ice King's iceberg", builds: "6.31", ranges: [[4573279, 4573279]],
     key: "approach", endStep: "overlap", startLabel: "The iceberg drifts in", endLabel: "It reaches the island",

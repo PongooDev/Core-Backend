@@ -1,11 +1,12 @@
 import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
-  distantFogApproach, distantFogOverlap, eventsActiveUntil, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt,
-  tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, islandCrack, islandDrain, islandMoveTo,
+  islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
-// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js) and 6.21's
-// Butterfly (events/butterfly.js), on Season 6's replay (an event's `season`, 5 without one). Each step is one or more calendar events served
+// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js), 6.21's
+// Butterfly (events/butterfly.js) and 6.30's snowstorm and 6.31's iceberg (events/distantfog.js), on Season 6's replay
+// (an event's `season`, 5 without one). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
 // - "dates": Epic's dates on its season's replay (store/itemshop.js seasonMoment), lap by lap (the default);
@@ -118,6 +119,19 @@ export const datedEvents = [
     step("approach", "The iceberg drifts in toward the island", [distantFogApproach], at6("11-27"), at6("12-05")),
     step("overlap", "The iceberg at the island (6.31's end point)", [distantFogOverlap], at6("12-05"), season6EndDay)
   ] },
+  // 6.30's snowstorm (events/distantfog.js): the same BP_Distant_Fog with 6.30's own two events and no iceberg. While
+  // BR_S6_Approach_01 is active it slides its SM_Ice_Fog along the spline from the preview point (1) to 6.30's end point
+  // (its 6-3EndPoint, 0.4), and BR_S6_Approach_02 puts it there at once; with neither on the actor is hidden. 🟡 The
+  // Fortnite Wiki's days, no hours (00:00 UTC, as 6.31's): the approach from Update v6.30's day (14 November 2018) to
+  // Update v6.31's (27 November), where 6.30's blueprint ends it and 6.31's iceberg carries on from, and the end point
+  // from then to Season 6's end, for the 6.30 players who stay on it. 🟡 CL-4573096's files are the Content Update's (19
+  // November, builds/detect.js); no source says whether 14 November's 6.30 already had the snowstorm (the wiki has it
+  // "sometime after the Butterfly Event"), so it runs from Update v6.30's day, the day the backend serves 6.30 from.
+  { id: "distantFog630", name: "the Ice King's snowstorm (6.30)", season: 6, flag: distantFogApproach630, anchor: "overlap", parts: 4,
+    steps: [
+      step("approach", "The snowstorm drifts in toward the island", [distantFogApproach630], at6("11-14"), at6("11-27")),
+      step("overlap", "The snowstorm at 6.30's end point", [distantFogOverlap630], at6("11-27"), season6EndDay)
+    ] },
   // 6.21's Butterfly (events/butterfly.js): opt-in, as the rocket's launch is. Its steps run to the Butterfly, after which
   // the Leaky Lake is POI1's; "Start now" (or any time on the Butterfly's step) plays it then, the crack and drain before it at
   // Epic's spacing.

@@ -64,8 +64,8 @@ import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fort
 // 5.30's Cube (its crack, lightning, rolls, runes and the lake: events/cube.js; 5.40's and 5.41's too), and 5.40's High
 // Stakes (EventFlag.LTM_Heist, events/highstakes.js; 5.41's too), and 6.00's floating island (EventFlag.BR_S6_Island_*,
 // events/island.js) on Season 6's replay, and 6.21's Butterfly (POI0, the Cube's crack and drain, POI1: events/butterfly.js)
-// when the admin panel schedules it, and 6.31's iceberg (BR_S6_Approach_03 and _Overlap, events/distantfog.js) on its own
-// build.
+// when the admin panel schedules it, and 6.30's snowstorm (BR_S6_Approach_01 and _02) and 6.31's iceberg (BR_S6_Approach_03
+// and _Overlap, events/distantfog.js), each on its own build.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
