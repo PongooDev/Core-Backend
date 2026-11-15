@@ -263,10 +263,11 @@ const customKeyRefusedCode = 4000;
 // its StartMatchButton) the matchmaking panel's queue handler (6.31 0x2FB0570) reads Queued's ticket.status.canStartMatch:
 // "true" shows the button (SetVisibility SelfHitTestInvisible), any other value leaves it as it is, and a Queued without
 // the key collapses it. Pressing it (6.31 0x2FA4280) has UFortMatchmakingV2's matchmaking service client send the command
-// "p.StartMatch" over its WebSocket (0x73FBA0): {"name": "Exec", "payload": {"command": "p.StartMatch"}}. So a party
-// allowed to open custom keys (ticket.customKeyHost) hears canStartMatch while its custom match forms, and its match
-// waits for that press instead of the gather time: the host decides when the match starts, as on Epic's. Should every
-// such party leave, the match goes back to the gather time. Earlier builds have no button: their custom matches keep it.
+// "p.StartMatch" over its WebSocket (0x73FBA0): {"name": "Exec", "payload": {"command": "p.StartMatch"}}. A custom match
+// has one host: the first party allowed to open custom keys (ticket.customKeyHost) that queued with its key and mode. It
+// alone hears canStartMatch while the match forms, and the match waits for its press instead of the gather time; other
+// allowed parties with the key join as players. Should the host leave, the next allowed party still in the match hosts it,
+// and with none the match goes back to the gather time. Earlier builds have no button: their custom matches keep it.
 export const firstCanStartMatchBuild = 3935073;
 export const startMatchCommand = "p.StartMatch";
 export const canStartMatch = (ticket) => Boolean(ticket?.customKey && ticket.customKeyHost) && Number(ticket.build) >= firstCanStartMatchBuild;
@@ -814,7 +815,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         forming.players += party.size;
         if (anyRegion) say(`${party.ticket.accountId} joins match ${forming.matchId} in ${regionName(server.region)} (bucket ${forming.bucketId})`);
         if (forming.players >= server.maxPlayers) assign(server);
-        else if (!forming.held && canStartMatch(party.ticket)) holdForHost(forming);
+        else if (!forming.held && canStartMatch(party.ticket)) holdForHost(forming, party);
         return true;
       }
     }
@@ -839,7 +840,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         return true;
       }
       server.forming.server = server;
-      if (canStartMatch(party.ticket)) holdForHost(server.forming);
+      if (canStartMatch(party.ticket)) holdForHost(server.forming, party);
       else gather(server.forming);
       return true;
     }
@@ -852,27 +853,47 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     forming.timer = setTimeout(() => assign(forming.server), forming.gatherMs);
     forming.timer.unref?.();
   }
-  // A custom match whose host can press Start Match waits for it (#186, canStartMatch).
-  function holdForHost(forming) {
+  // A custom match whose host (party) can press Start Match waits for it (#186, canStartMatch).
+  function holdForHost(forming, party) {
     clearTimeout(forming.timer);
     forming.held = true;
+    forming.host = party;
     say(`Match ${forming.matchId} (custom key ${forming.customKey}) waits for its host to press Start Match`);
   }
-  // The parties in a forming match whose players can start it, their members' tickets among them.
-  const startersOf = (forming) => forming.parties.flatMap((party) => [party, ...party.members]).filter((entry) => !entry.ws.closed && canStartMatch(entry.ticket));
-  // A held match whose hosts all left goes back to the gather time, counted from then.
-  function releaseIfHostless(forming) {
-    if (!forming.held || forming.sent || startersOf(forming).length) return;
+  // A forming match's single host (#186): the first party allowed to open its key that queued with it, while one of its
+  // players is still connected. Other allowed parties with the same key join it as players, without the button. When the
+  // host leaves, the next allowed party still in the match takes over; with none, null.
+  const startersOf = (party) => [party, ...party.members].filter((entry) => !entry.ws.closed && canStartMatch(entry.ticket));
+  function hostOf(forming) {
+    if (!forming.held) return null;
+    if (!forming.host || !forming.parties.includes(forming.host) || !startersOf(forming.host).length) {
+      forming.host = forming.parties.find((party) => startersOf(party).length) ?? null;
+    }
+    return forming.host;
+  }
+  // When a held match's host leaves: the next allowed party hosts it and hears its button at once; with none left the
+  // match goes back to the gather time, counted from then.
+  function rehost(forming) {
+    if (!forming.held || forming.sent) return;
+    const before = forming.host;
+    const host = hostOf(forming);
+    if (host && host !== before) {
+      say(`Match ${forming.matchId}'s host left before pressing Start Match: ${host.ticket.accountId}'s party hosts it now`);
+      announceQueue(queueOf(forming.bucketId, forming.customKey));
+      return;
+    }
+    if (host) return;
     forming.held = false;
     forming.started = Date.now();
     say(`Match ${forming.matchId}'s host left before pressing Start Match: it is assigned after the gather time`);
     gather(forming);
   }
-  // A player's "p.StartMatch" (Exec): the custom match it hosts is assigned now.
+  // A player's "p.StartMatch" (Exec): the custom match its party hosts is assigned now.
   function startMatch(entry) {
-    const server = [...servers].find((candidate) => candidate.forming && !candidate.forming.sent && startersOf(candidate.forming).includes(entry));
+    const server = [...servers].find((candidate) => candidate.forming && !candidate.forming.sent && hostOf(candidate.forming)
+      && startersOf(hostOf(candidate.forming)).includes(entry));
     if (!server) {
-      say(`${entry.ticket.accountId} pressed Start Match outside a custom match it hosts: ignored`);
+      say(`${entry.ticket.accountId} pressed Start Match but doesn't host a forming custom match: ignored`);
       return;
     }
     say(`${entry.ticket.accountId} started custom match ${server.forming.matchId} (custom key ${server.forming.customKey}, ${server.forming.players} players)`);
@@ -922,8 +943,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         if (member.done || member.ws.closed) continue;
         member.queued = true;
         const shown = start ? matchStartStatus(member, start.players, start.delaySec) : {};
-        // The host's Start Match button while its custom match forms (#186); without the key the client collapses it.
-        if (forming && canStartMatch(member.ticket)) shown["ticket.status.canStartMatch"] = "true";
+        // The host's Start Match button while its custom match forms (#186), the match's one host party only; without the
+        // key the client collapses it.
+        if (forming && canStartMatch(member.ticket) && hostOf(forming) === party) shown["ticket.status.canStartMatch"] = "true";
         member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: wait, status: shown }));
       }
     }
@@ -1148,7 +1170,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       }
       // A held custom match whose host (this player, or its party's) left (#186).
       for (const server of servers) {
-        if (server.forming) releaseIfHostless(server.forming);
+        if (server.forming) rehost(server.forming);
       }
       if (!party.done) {
         say(`${ticket.accountId} left the queue for bucket ${ticket.bucketId}`);

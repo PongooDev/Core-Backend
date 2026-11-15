@@ -1381,6 +1381,44 @@ test("from 3.2 a custom match's host sees Start Match, and the match waits for t
   }
 });
 
+test("a custom match has one host: the first allowed party to queue with its key; when it leaves the next allowed party hosts (#186)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    const na = await regionServer(backend, "HostServer1", "NA");
+    connections.push(na.connection);
+    const first = await userLogin(backend.port, "FirstHost");
+    const second = await userLogin(backend.port, "SecondHost");
+    await allowCustomKeys(backend, first);
+    await allowCustomKeys(backend, second);
+
+    // The first allowed party hosts; the second, allowed too, joins as a player without the button.
+    const firstConnection = await queueWithKeyOn(backend, first, "CoreKey1", 4573279);
+    connections.push(firstConnection);
+    assert.equal((await nextQueued(firstConnection)).payload.status["ticket.status.canStartMatch"], "true");
+    const secondConnection = await queueWithKeyOn(backend, second, "CoreKey1", 4573279);
+    connections.push(secondConnection);
+    assert.equal((await nextQueued(secondConnection)).payload.status["ticket.status.canStartMatch"], undefined);
+    assert.equal((await nextQueued(firstConnection)).payload.status["ticket.status.canStartMatch"], "true");
+
+    // The player's press does nothing.
+    const assigned = nextOf(na.connection, "AssignMatch");
+    secondConnection.send(startMatchPress);
+    assert.equal(await Promise.race([assigned, new Promise((done) => setTimeout(() => done("none"), 1000))]), "none");
+
+    // The host leaves: the second party hosts now and hears its button; the gather time doesn't start the match.
+    firstConnection.close();
+    let queued;
+    do queued = await nextQueued(secondConnection); while (queued.payload.status["ticket.status.canStartMatch"] !== "true");
+    assert.equal(await Promise.race([assigned, new Promise((done) => setTimeout(() => done("none"), 1000))]), "none");
+    secondConnection.send(startMatchPress);
+    assert.deepEqual((await assigned).payload.teams.flat(2), [second.accountId]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
 test("a custom match whose host leaves before Start Match goes on after the gather time; before 3.2 the gather time decides (#186)", async () => {
   const backend = await startBackend({ matchmakingGatherMs: 300 });
   const connections = [];
