@@ -20,6 +20,7 @@ import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
+import { distantFogStates } from "../../events/distantfog.js";
 import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fortnitemares2018.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
@@ -63,7 +64,8 @@ import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fort
 // 5.30's Cube (its crack, lightning, rolls, runes and the lake: events/cube.js; 5.40's and 5.41's too), and 5.40's High
 // Stakes (EventFlag.LTM_Heist, events/highstakes.js; 5.41's too), and 6.00's floating island (EventFlag.BR_S6_Island_*,
 // events/island.js) on Season 6's replay, and 6.21's Butterfly (POI0, the Cube's crack and drain, POI1: events/butterfly.js)
-// when the admin panel schedules it.
+// when the admin panel schedules it, and 6.31's iceberg (BR_S6_Approach_03 and _Overlap, events/distantfog.js) on its own
+// build.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -102,7 +104,7 @@ export function calendarRoutes({ tokens, settings }) {
     // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
     // Butterfly (events/butterfly.js) and the Birthday Challenges on the admin's times (events/birthday2018.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
-      islandStates(now), butterflyStates(now), birthdayChallengeStates(now));
+      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

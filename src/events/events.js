@@ -503,6 +503,11 @@ export const cubeDestination = "EventFlag.BR_S5_Cube_Destination";
 // 6.00's floating island (BP_IslandServerOnly's EventBindings, events/island.js): rune 0 is Loot Lake.
 export const islandRune = (stop) => `EventFlag.BR_S6_Island_Rune${stop}`;
 export const islandMoveTo = (stop) => `EventFlag.BR_S6_Island_MoveTo${stop}`;
+// 6.31's iceberg (BP_Distant_Fog's FogApproachEvent and FogApproachOverlapEvent, events/distantfog.js): the two names its
+// defaults hold, plainly, with no "EventFlag." prefix, because it hands them to a CalendarEventWatcher as strings. 6.31 is
+// the only build whose Athena_Background carries SM_Iceberg (6.30's has the floes and the fog, and no iceberg).
+export const distantFogApproach = "BR_S6_Approach_03";
+export const distantFogOverlap = "BR_S6_Approach_Overlap";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;

@@ -62,6 +62,10 @@ export const eventCards = [
   { id: "island", kind: "dated", dated: "island", seasons: [6], name: "Floating island", builds: "6.00 – 6.10", ranges: [[4395664, 4480234]],
     key: "lake", endStep: "home", startLabel: "Rises over Loot Lake", endLabel: "Back over Loot Lake",
     about: "The island over Loot Lake floats to the seven runes the Cube lifted and back. Needs the build's server-assets pak." },
+  // 6.31's alone: its Athena_Background has BP_Distant_Fog's SM_Iceberg, which the two events slide in (events/distantfog.js).
+  { id: "distantFog", kind: "dated", dated: "distantFog", seasons: [6], name: "The Ice King's iceberg", builds: "6.31", ranges: [[4573279, 4573279]],
+    key: "approach", endStep: "overlap", startLabel: "The iceberg drifts in", endLabel: "It reaches the island",
+    about: "The iceberg in the distance off the island's south-west, at the end of Season 6: BP_Distant_Fog slides its SM_Iceberg along a spline while BR_S6_Approach_03 is active (its progress is the event's own), and BR_S6_Approach_Overlap puts it at 6.31's end point at once. 6.31 is the only build whose backdrop has the iceberg. 🟡 Epic's hours aren't recorded: the approach runs from Update v6.31's day (27 November 2018) to 5 December, the overlap the last day before Season 7." },
   { id: "fortnitemares2018", kind: "build", seasons: [6], name: "Fortnitemares 2018", builds: "6.20 – 6.31", ranges: [[4497486, 4573279]],
     about: "The Cube Monsters' modes, the Fortnitemares Challenges, the Halloween lobby and Battle Bus; Save the World's Fortnitemares Part 1 (Hexsylvania, Candy), and on 6.22 to 6.31 Part 2 (Battle Royale's Fortnitemares is over there: its challenges stay).",
     flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2 (6.22 – 6.31)", "EventFlag.ActiveMiniBosses", "EventFlag.LTM_Fortnitemares", "EventFlag.LobbySeason6Halloween (6.20, 6.21)", "EventFlag.HalloweenBattleBus (6.20, 6.21)", "POI0 (6.20, 6.21)", "POI1 (6.22)", "EventFlag.LTM_LilKevin (6.21 – 6.31)", "EventFlag.Fortnitemares_Part4 (6.21)"] },

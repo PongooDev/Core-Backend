@@ -1,5 +1,6 @@
 import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
-  eventsActiveUntil, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  distantFogApproach, distantFogOverlap, eventsActiveUntil, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt,
+  tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -108,6 +109,15 @@ export const datedEvents = [
   // stops (datedMoveSchedule).
   { id: "island", name: "the floating island (6.00 – 6.20)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
     legs: islandLegs, stops: islandStops, steps: islandSteps, laterFlags: [{ step: "home", firstBuild: islandRune8Build, flags: [islandRune(8)] }] },
+  // 6.31's iceberg (events/distantfog.js has how its blueprint plays it): Athena_Background's BP_Distant_Fog slides its
+  // SM_Iceberg along the spline while BR_S6_Approach_03 is active, from the preview point (1) toward 6.31's end point, and
+  // puts it there at once when BR_S6_Approach_Overlap turns on. 🟡 No source gives Epic's hours: the approach runs from
+  // Update v6.31's day (27 November 2018) to the day before Season 6's end, and the overlap the last day, when the iceberg
+  // is at the island as Season 7 begins.
+  { id: "distantFog", name: "the Ice King's iceberg (6.31)", season: 6, flag: distantFogApproach, anchor: "overlap", parts: 4, steps: [
+    step("approach", "The iceberg drifts in toward the island", [distantFogApproach], at6("11-27"), at6("12-05")),
+    step("overlap", "The iceberg at the island (6.31's end point)", [distantFogOverlap], at6("12-05"), season6EndDay)
+  ] },
   // 6.21's Butterfly (events/butterfly.js): opt-in, as the rocket's launch is. Its steps run to the Butterfly, after which
   // the Leaky Lake is POI1's; "Start now" (or any time on the Butterfly's step) plays it then, the crack and drain before it at
   // Epic's spacing.
