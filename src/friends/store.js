@@ -2,8 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 
-// Friends and block lists, one file per account (accounts/<id>/friends.json):
-//   {friends: {<accountId>: {status: "ACCEPTED" | "PENDING", direction: "INBOUND" | "OUTBOUND", created}}, blocked: [ids]}
+// Friends, block lists and the account's friend settings, one file per account (accounts/<id>/friends.json):
+//   {friends: {<accountId>: {status: "ACCEPTED" | "PENDING", direction: "INBOUND" | "OUTBOUND", created}}, blocked: [ids],
+//    settings: {acceptInvites}}
+// A file written before the settings existed reads as Epic's default, acceptInvites "public".
 // A friendship is always written to both accounts, each from its own side.
 export function createFriendStore(dataDir) {
   const cache = new Map();
@@ -12,7 +14,7 @@ export function createFriendStore(dataDir) {
   function load(id) {
     if (!cache.has(id)) {
       const saved = fs.existsSync(file(id)) ? readJson(file(id)) : {};
-      cache.set(id, { friends: saved.friends ?? {}, blocked: saved.blocked ?? [] });
+      cache.set(id, { friends: saved.friends ?? {}, blocked: saved.blocked ?? [], settings: { acceptInvites: saved.settings?.acceptInvites ?? "public" } });
     }
     return cache.get(id);
   }
@@ -78,6 +80,18 @@ export function createFriendStore(dataDir) {
       if (!load(owner).blocked.includes(other)) load(owner).blocked.push(other);
       save(owner, other);
       return entry;
+    },
+
+    // The account's friend settings (Epic's FriendsSettings): the one field the client deserializes is acceptInvites
+    // (FriendSettingsMcp, 6.22 0x4F82B0). An account that never set it accepts invites from anyone, Epic's default.
+    settings(owner) {
+      return { acceptInvites: load(owner).settings.acceptInvites };
+    },
+
+    setSettings(owner, acceptInvites) {
+      load(owner).settings.acceptInvites = acceptInvites;
+      save(owner);
+      return { acceptInvites };
     },
 
     unblock(owner, other) {

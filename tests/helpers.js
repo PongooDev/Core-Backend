@@ -108,6 +108,13 @@ export function post(port, path, token, body) {
   return send({ host: "127.0.0.1", port, method: "POST", path, headers }, body === undefined ? undefined : JSON.stringify(body));
 }
 
+export function put(port, path, token, body) {
+  const headers = { "User-Agent": certUserAgent };
+  if (token) headers.Authorization = `bearer ${token}`;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  return send({ host: "127.0.0.1", port, method: "PUT", path, headers }, body === undefined ? undefined : JSON.stringify(body));
+}
+
 // Any verb, JSON body optional (PUT updates, DELETE with a body). Node only sizes bodies itself for some verbs, so
 // the length is always sent, as the game's HTTP client does.
 export function request(port, method, path, token, body) {

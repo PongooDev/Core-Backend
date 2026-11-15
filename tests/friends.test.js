@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { del, get, post, startBackend, userLogin } from "./helpers.js";
+import { del, get, post, put, startBackend, userLogin } from "./helpers.js";
 import { login } from "./xmpp-client.js";
 
 const friendsUrl = (id, other = "") => `/friends/api/public/friends/${id}${other ? `/${other}` : ""}`;
@@ -121,6 +121,45 @@ test("players are found by display name, and several at once by id", async () =>
     const many = await get(backend.port, `/account/api/public/account?accountId=${one.accountId}&accountId=${two.accountId}&accountId=${"0".repeat(32)}`, one.token);
     assert.deepEqual(many.body.map((account) => account.displayName), ["LookupOne", "LookupTwo"]);
   } finally {
+    backend.close();
+  }
+});
+
+test("the friends settings Epic's client reads and writes are served and kept", async () => {
+  const backend = await startBackend();
+  let reloaded;
+  try {
+    const one = await userLogin(backend.port, "SettingsOne");
+    const two = await userLogin(backend.port, "SettingsTwo");
+    const url = (id) => `/friends/api/v1/${id}/settings`;
+
+    // An account that never changed them accepts invites from anyone, as Epic's service answered.
+    assert.deepEqual((await get(backend.port, url(one.accountId), one.token)).body, { acceptInvites: "public" });
+
+    // The client's Social Privacy value comes back as sent, from the PUT and from the next GET.
+    const saved = await put(backend.port, url(one.accountId), one.token, { acceptInvites: "friends" });
+    assert.equal(saved.status, 200);
+    assert.deepEqual(saved.body, { acceptInvites: "friends" });
+    assert.deepEqual((await get(backend.port, url(one.accountId), one.token)).body, { acceptInvites: "friends" });
+
+    // Only the account itself may read or change them.
+    assert.equal((await get(backend.port, url(one.accountId), two.token)).status, 403);
+    const refused = await put(backend.port, url(one.accountId), two.token, { acceptInvites: "public" });
+    assert.equal(refused.status, 403);
+    assert.equal(refused.body.errorCode, "errors.com.epicgames.common.missing_permission");
+
+    // The field is required and has to be a string: a validation failure, as Epic's service answered.
+    assert.equal((await put(backend.port, url(one.accountId), one.token, {})).status, 400);
+    const wrong = await put(backend.port, url(one.accountId), one.token, { acceptInvites: 42 });
+    assert.equal(wrong.status, 400);
+    assert.equal(wrong.body.errorCode, "errors.com.epicgames.validation.validation_failed");
+
+    // A backend started on the same data reads what was saved.
+    reloaded = await startBackend({ dataDir: backend.dataDir });
+    const again = await userLogin(reloaded.port, "SettingsOne");
+    assert.deepEqual((await get(reloaded.port, url(again.accountId), again.token)).body, { acceptInvites: "friends" });
+  } finally {
+    reloaded?.close();
     backend.close();
   }
 });

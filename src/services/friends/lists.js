@@ -13,6 +13,7 @@ const apiObjects = "com.epicgames.friends.core.apiobjects";
 export function friendsRoutes({ accounts, tokens, friends, xmpp }) {
   const router = express.Router();
   const base = "/friends/api/public";
+  const v1 = "/friends/api/v1";
 
   function findOther(param) {
     return (req, res, next) => {
@@ -97,6 +98,25 @@ export function friendsRoutes({ accounts, tokens, friends, xmpp }) {
 
   router.get(`${base}/list/:namespace/:accountId/recentPlayers`, requireAuth(tokens), requireOwnAccount, (req, res) => {
     res.json([]);
+  });
+
+  // The friends settings the client's Social Privacy screen reads and writes (OnlineSubsystemMcp's FOnlineFriendsMcp
+  // QueryFriendSettings / UpdateFriendSettings): Epic's friends service answers GET and PUT /friends/api/v1/<accountId>/
+  // settings with a FriendsSettings object, and the one field its reply deserializes is acceptInvites (6.22's
+  // FriendSettingsMcp reads it, 0x4F82B0; the requests are built from /api/v1/`id/settings, 0x3836270). Its value is kept
+  // as the client sends it: the options are the client's Social Privacy screen's, and a build must not be refused a value
+  // Epic's own service accepted. This doesn't gate friend requests yet; the endpoint is what the client was missing.
+  router.get(`${v1}/:accountId/settings`, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    res.json(friends.settings(req.params.accountId));
+  });
+
+  router.put(`${v1}/:accountId/settings`, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    const acceptInvites = req.body?.acceptInvites;
+    if (typeof acceptInvites !== "string" || acceptInvites.length === 0 || acceptInvites.length > 64) {
+      return sendError(res, 400, "errors.com.epicgames.validation.validation_failed",
+        "acceptInvites must be a string of 1 to 64 characters");
+    }
+    res.json(friends.setSettings(req.params.accountId, acceptInvites));
   });
 
   return router;
