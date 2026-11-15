@@ -979,6 +979,12 @@ test("#357: a 6.30 client's Events tab is served what 6.22's is: the empty list,
     assert.deepEqual(on630.list.eventTournaments[0], on622.list.eventTournaments[0]);
     assert.deepEqual(on630.page.map((entry) => entry.tournament_display_id), on630.list.eventTournaments.map((tournament) => tournament.displayDataId));
     for (const tournament of on630.list.eventTournaments) assert.ok(Date.parse(tournament.announcementTime) <= Date.now());
+    // The tile names the ShowdownAlt playlist's mode, Solo, as it does the Showdown one's (Core-Backend #357), not the
+    // playlist itself.
+    const scavenger = on630.page.find((entry) => entry.tournament_display_id === on630.list.eventTournaments[1].displayDataId);
+    assert.deepEqual([scavenger.title_line_2, scavenger.flavor_description, scavenger.long_format_title],
+      ["Solo", "Solo tournament", `Cup scavengerSolo (Solo)`]);
+    assert.doesNotMatch(JSON.stringify(scavenger), /Playlist_/);
   } finally {
     backend.close();
   }

@@ -358,7 +358,9 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     const { beginTime, endTime } = windowOf(event);
     const until = endTime === noEnd ? "until it is ended" : `to ${day(endTime)} UTC`;
     // 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow, _SquadShow) are named the Showdown ones' way.
-    const mode = ltm.playlistName.replace("Playlist_Showdown_", "")
+    // 6.30 and 6.31's Pop-Up Cup playlists are Playlist_ShowdownAlt_Solo, _Duos and _Squads (events/ltms.js): their
+    // mode is the suffix too, not the whole playlist name (Core-Backend #357).
+    const mode = ltm.playlistName.replace(/^Playlist_Showdown(?:Alt)?_/, "")
       .replace(/^Playlist_Deimos_(Solo|Duo|Squad)Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
     return {
       tournament_display_id: tournamentIdOf(event),
