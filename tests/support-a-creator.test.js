@@ -47,9 +47,11 @@ test("creator codes: kept once in any case, one per account; the hotfix per buil
   const settings = creatorsOf(["a1", "Ninja"], ["a2", "Sleepy", false]);
   // 6.02 and 6.10 read the hotfixed array; 6.20 and 6.21 ask the affiliate service, the array off. Only enabled codes.
   for (const build of [v602, v610]) {
+    // Quoted: the hotfix merge (FParse::LineExtended) starts a comment at an unquoted "//", which reached 6.30 as
+    // "http:" (#349); FConfigFile::CombineFromBuffer reads the quoted value back without the quotes.
     assert.deepEqual(affiliateRuntimeOptions(build, settings, { creatorsUrl: "http://play.example:5595/affiliate/creators" }),
       ["bDisableAffiliateFeature=false", "bUseHotfixedAffiliateNamesArray=true", "!AffiliateNames=ClearArray", "+AffiliateNames=Ninja",
-        "ListOfCreatorsURL=http://play.example:5595/affiliate/creators"], build);
+        "ListOfCreatorsURL=\"http://play.example:5595/affiliate/creators\""], build);
   }
   for (const build of [v620, v621]) {
     assert.deepEqual(affiliateRuntimeOptions(build, settings), ["bDisableAffiliateFeature=false", "bUseHotfixedAffiliateNamesArray=false",
@@ -288,7 +290,7 @@ test("6.20 end to end: the hotfix, the code check, SetAffiliateName and a shop p
     assert.equal(added.status, 200);
     const file = await runtimeOptions();
     assert.match(file, /bDisableAffiliateFeature=false\r\nbUseHotfixedAffiliateNamesArray=false\r\n!AffiliateNames=ClearArray\r\n\+AffiliateNames=PayMe\r\n/);
-    assert.match(file, new RegExp(`ListOfCreatorsURL=http://127\\.0\\.0\\.1:${backend.port}/affiliate/creators\\r\\n`));
+    assert.match(file, new RegExp(`ListOfCreatorsURL="http://127\\.0\\.0\\.1:${backend.port}/affiliate/creators"\\r\\n`));
     const page = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/affiliate/creators" });
     assert.equal(page.status, 200);
     assert.match(String(page.body), /<li>PayMe<\/li>/);
@@ -386,11 +388,11 @@ test("the approved creators URL is the address the game sent its request to, thr
       headers: { Host: host, "User-Agent": agentOf(v621, "6.21"), Authorization: `bearer ${player.token}` } })).body);
     // The launcher's address for a friend's backend through a tunnel, which the connection (from 127.0.0.1) doesn't show.
     const tunnelled = await optionsVia("http://play.example.org:40123/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", "play.example.org:40123");
-    assert.match(tunnelled, /\r\nListOfCreatorsURL=http:\/\/play\.example\.org:40123\/affiliate\/creators\r\n/);
+    assert.match(tunnelled, /\r\nListOfCreatorsURL="http:\/\/play\.example\.org:40123\/affiliate\/creators"\r\n/);
     // Without CoreRedirect the host is Epic's: the connection's own address stands in.
     const epic = await optionsVia("http://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini",
       "fortnite-public-service-prod11.ol.epicgames.com");
-    assert.match(epic, new RegExp(`\r\nListOfCreatorsURL=http://127\.0\.0\.1:${backend.port}/affiliate/creators\r\n`));
+    assert.match(epic, new RegExp(`\r\nListOfCreatorsURL="http://127\.0\.0\.1:${backend.port}/affiliate/creators"\r\n`));
     // The page itself, as a browser asks for it.
     const page = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/affiliate/creators", headers: { Accept: "text/html" } });
     assert.equal(page.status, 200);

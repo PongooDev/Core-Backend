@@ -156,9 +156,12 @@ export const affiliateOffered = (build, settingsValue = settingsProvider()) => N
 // this backend's list (creatorsUrl, the address the game reached it at) when there is one.
 export function affiliateRuntimeOptions(build, settingsValue = settingsProvider(), { creatorsUrl = null } = {}) {
   if (!affiliateOffered(build, settingsValue)) return [];
+  // The hotfix is merged with FConfigFile::CombineFromBuffer, which reads each line with FParse::LineExtended:
+  // an unquoted "//" starts a comment there, so a bare URL reaches the client as "http:" (#349). Quoting it makes
+  // the merge read the value with FParse::QuotedString, which returns the whole address without the quotes.
   return ["bDisableAffiliateFeature=false", `bUseHotfixedAffiliateNamesArray=${Number(build) >= affiliateCheckBuild ? "false" : "true"}`,
     "!AffiliateNames=ClearArray", ...creatorNames(settingsValue).map((name) => `+AffiliateNames=${name}`),
-    ...(creatorsUrl ? [`ListOfCreatorsURL=${creatorsUrl}`] : [])];
+    ...(creatorsUrl ? [`ListOfCreatorsURL="${creatorsUrl}"`] : [])];
 }
 
 // 6.20's (CL-4497486) check of a typed creator code, UFortMcpContext::CheckAffiliateName (FOnlineAccessMcp.CheckAffiliateName):
