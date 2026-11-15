@@ -427,28 +427,38 @@ test("a win in Season 2 gives The Umbrella and its Snowflake once, and a founder
       results: [{ accountId, place, kills: 2, secondsAlive: 900 }] });
   assert.ok(!holds(await profileOf(backend.port, player, "athena"), snowflake));
 
-  // Not a win, then a limited-time playlist's win (the 50v50): no umbrella.
-  await report(v111, player.accountId, 2);
-  await report(v111, player.accountId, 1, 35);
+  // Not a win, then a limited-time playlist's win (the 50v50): no umbrella, and no item for the end-of-match screen to show.
+  const second = await report(v111, player.accountId, 2);
+  const ltm = await report(v111, player.accountId, 1, 35);
+  assert.deepEqual(second.body.results[0].rewards.filter(({ items }) => items), []);
+  assert.deepEqual(ltm.body.results[0].rewards.filter(({ items }) => items), []);
   let athena = await profileOf(backend.port, player, "athena");
   assert.ok(!holds(athena, snowflake) && !holds(athena, founderUmbrella) && !holds(athena, theUmbrella));
 
   // A duos win: The Umbrella, Snowflake and, as test accounts own Save the World, the Founder's Umbrella.
-  await report(v111, player.accountId, 1, 10);
+  const firstWin = (await report(v111, player.accountId, 1, 10)).body.results[0];
   athena = await profileOf(backend.port, player, "athena");
   assert.ok(holds(athena, snowflake) && holds(athena, founderUmbrella) && holds(athena, theUmbrella));
+  // Core-Backend #373: the end-of-match screen gets them as a FirstWin group's items, to show the unlock.
+  const [firstWinGroup, ...otherGroups] = firstWin.rewards;
+  assert.equal(firstWinGroup.rewardSource, 8);
+  assert.deepEqual(firstWinGroup.items.map(({ itemType }) => itemType).sort(), [founderUmbrella, snowflake, theUmbrella].sort());
+  assert.ok(firstWinGroup.items.every(({ itemProfile, quantity }) => itemProfile === "athena" && quantity === 1));
+  assert.deepEqual(otherGroups.map(({ rewardSource }) => rewardSource), [1, 3, 4]);
   assert.equal((await command(backend.port, player, "EquipBattleRoyaleCustomization", "athena", { slotName: "Glider", itemToSlot: snowflake })).status, 200);
-  // Once: another win adds nothing.
+  // Once: another win adds nothing, and the screen has no item group.
   const count = Object.keys(athena.items).length;
-  await report(v111, player.accountId, 1);
+  const repeatWin = (await report(v111, player.accountId, 1)).body.results[0];
+  assert.deepEqual(repeatWin.rewards.filter(({ items }) => items), []);
   assert.equal(Object.keys((await profileOf(backend.port, player, "athena")).items).length, count);
 
   // A 1.10 (Season 1) win gives The Umbrella and no Snowflake, and its 1.11 lobby doesn't either: the win was Season 1's.
   const veteran = await userLogin(backend.port, "season1winner");
   await profileOf(backend.port, veteran, "athena", v110);
-  await report(v110, veteran.accountId, 1);
+  const season1Win = (await report(v110, veteran.accountId, 1)).body.results[0];
   const season1 = await profileOf(backend.port, veteran, "athena", v110);
   assert.ok(holds(season1, founderUmbrella) && holds(season1, theUmbrella) && !holds(season1, snowflake));
+  assert.deepEqual(season1Win.rewards[0].items.map(({ itemType }) => itemType).sort(), [founderUmbrella, theUmbrella].sort());
   assert.ok(!holds(await profileOf(backend.port, veteran, "athena", v111), snowflake));
 }));
 

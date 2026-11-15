@@ -9,7 +9,8 @@ import { log } from "../../log.js";
 import { teamsOfPlaylist } from "../../matchmaking/service.js";
 import { customKeyOf, rewardlessMatch, sessionMembers } from "../../matchmaking/sessions.js";
 import { athenaSeason, seasonLevels } from "../../gamedata/athena.js";
-import { addSeasonXp, awardVictory, matchXp, matchXpAwards, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
+import { addSeasonXp, awardVictory, matchXp, matchXpAwards, recordMatchProgress, rewardSources, umbrellaTypeOf } from "../../profiles/athena.js";
+import { lootEntry } from "../../profiles/items.js";
 import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber, takeUpSeason } from "../../profiles/seasons.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
@@ -131,18 +132,23 @@ function progressOf(session) {
 // What the match gave the player, in the form of the rewards Epic's MCP answered EndBattleRoyaleGame with
 // (FAthenaRewardResult, 1.11 on): the levels and tiers gained, the season XP and Battle Stars, the Battle Pass's match XP
 // boost (an FAthenaMatchXpMultiplierGroup of EAthenaMatchXpMultiplierSource 1, "Battle Pass Bonus", its percent) and the
-// XP by what earned it (FAthenaAwardGroup: rewardSource, score and seasonXp). CoreV2's server sends it to the player's
-// end-of-match screen (ClientSendEndBattleRoyaleMatchForPlayer), whose XP bar plays the groups, then the boost, from the
-// level the client's athena profile had (UAthenaPlayerMatchReport::InitialLevelInfo), and writes the totals.
+// XP by what earned it (FAthenaAwardGroup: rewardSource, score and seasonXp). A victory's newly granted umbrella (Core-Backend
+// #373) is a FirstWin group whose FMcpLootEntry items give the end-of-match screen the item to show, as Epic's answer did:
+// the client's own first-win screen has no profile change to read in Battle Royale (it isn't subscribed to its profile's
+// STOMP topic). CoreV2's server sends it to the player's end-of-match screen (ClientSendEndBattleRoyaleMatchForPlayer), whose
+// XP bar plays the groups, then the boost, from the level the client's athena profile had
+// (UAthenaPlayerMatchReport::InitialLevelInfo), and writes the totals.
 // From 3.2 the result also holds PrePenaltySeasonXpGained, the season XP before the anti-addiction penalty, and the
 // screen's boosts share it, not TotalSeasonXpGained: GetXpRewards (4.1 0xA95DB0) writes a positive boost's line as
 // its percent's part of PrePenaltySeasonXpGained less the groups' Scores, the penalty's as its part of
 // PrePenaltySeasonXpGained less TotalSeasonXpGained. Without it the Battle Pass Bonus read "+-1,190", minus the Total
 // Score (CoreV2 #286). No penalty is taken here, so it is the season XP gained.
 const selfMultiplierSource = 1;
-function rewardResult(session, accountId, before, awards, seasonXp) {
+function rewardResult(session, accountId, before, awards, seasonXp, items = []) {
   const after = progressOf(session);
   const boost = athenaSeason() ? session.profile("athena").profile.stats.attributes.season_match_boost ?? 0 : 0;
+  const rewards = awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 }));
+  if (items.length) rewards.unshift({ rewardSource: rewardSources.FirstWin, score: 0, seasonXp: 0, bookXp: 0, items: items.map(lootEntry) });
   return {
     accountId,
     levelsGained: Math.max(0, after.level - before.level),
@@ -151,7 +157,7 @@ function rewardResult(session, accountId, before, awards, seasonXp) {
     totalBookXpGained: Math.max(0, after.stars - before.stars),
     prePenaltySeasonXpGained: seasonXp,
     xpMultipliers: boost > 0 ? [{ source: selfMultiplierSource, amount: boost }] : [],
-    rewards: awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 }))
+    rewards
   };
 }
 
@@ -240,7 +246,6 @@ export function battleRoyaleRoutes(context) {
       const session = openSession(profiles, result.accountId);
       const build = matchBuild(result.accountId);
       const season = matchSeason(session, build);
-      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
         + ` score ${score}` + (win ? " (a win)" : "") + ` in Season ${season}`);
       // A tournament event's points (Core-Backend #263, tournaments/store.js): Solo Showdown's placement (and, by the
@@ -268,6 +273,8 @@ export function battleRoyaleRoutes(context) {
       if (rewardlessMatch(sessions, rewards, result.accountId)) {
         log("Battle Royale", `${result.accountId}'s match was a custom match (key ${customKeyOf(sessions, result.accountId)}): no V-Bucks, XP or challenge progress`);
         if (session.hasProfile("athena")) answered.push(nothingGained(result.accountId));
+        // Its stats still count, as they did before the rewards.
+        stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
         session.commit();
         continue;
       }
@@ -281,14 +288,19 @@ export function battleRoyaleRoutes(context) {
         // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
         const seasonXp = boostedMatchXp(session, earnedXp);
         addSeasonXp(session, seasonXp);
-        if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
-        answered.push(rewardResult(session, result.accountId, before, matchXpAwards(playlistId, { place, kills, secondsAlive }), seasonXp));
+        // The umbrellas a first win in the season gives, for the end-of-match screen to show as unlocked (#373).
+        const victory = place === 1 && isMainPlaylist(playlistId) ? awardVictory(session) : [];
+        answered.push(rewardResult(session, result.accountId, before, matchXpAwards(playlistId, { place, kills, secondsAlive }), seasonXp, victory));
       };
       if (session.hasProfile("athena")) {
         if (build) inBuild(build, progress);
         // A report naming no build is read in the season the player's profile is in (profiles/seasons.js).
         else inProfileSeason(session.profile("athena").profile, progress);
       }
+      // Saved after the profile's progress, so a win the profile is set up for the first time by this report doesn't
+      // reach it as an earlier won season: that would grant its umbrellas while the profile loads, before awardVictory
+      // can answer them as the end-of-match screen's FirstWin items (#373).
+      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
       session.commit();
       notifyProfiles(context, session);
     }

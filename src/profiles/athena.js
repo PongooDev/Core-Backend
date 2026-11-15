@@ -831,7 +831,8 @@ export function matchXp(playlistId, result) {
 
 // The same XP by what earned it, as the end-of-match screen lists it (1.11's FAthenaAwardGroup, ERewardSource):
 // MinutesPlayed "Survival Time", TeamKills "Kills" and Placement, each with its XP; the ones that earned none are left out.
-export const rewardSources = { MinutesPlayed: 1, TeamKills: 3, Placement: 4 };
+// FirstWin carries a victory's newly granted umbrellas as items instead of XP (Core-Backend #373).
+export const rewardSources = { MinutesPlayed: 1, TeamKills: 3, Placement: 4, FirstWin: 8 };
 export function matchXpAwards(playlistId, { place, kills, secondsAlive }) {
   const [first, second] = placements[playlistId] ?? [];
   const placement = place === 1 ? 300 : place <= first ? 100 : place <= second ? 50 : 0;
