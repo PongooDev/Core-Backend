@@ -4,6 +4,7 @@ import { certUserAgent, clientToken, post, send, startBackend, userLogin } from 
 import { inBuild } from "../src/builds/context.js";
 import { lockerCosmeticId } from "../src/profiles/athena.js";
 import { findRealMoneyOffer, isOffered } from "../src/store/currency.js";
+import { iniQuoted } from "../src/services/fortnite/purchase.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js, services/fortnite/purchase.js).
 const agent31 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.1-CL-3915963";
@@ -92,7 +93,7 @@ test("the game config points the purchase flow at this backend, from 1.8, while 
   try {
     const { token } = await userLogin(backend.port, "ConfigReader");
     const game = async (userAgent) => (await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, userAgent)).body;
-    assert.match(await game(agent31), new RegExp(`\\[EpicPurchaseFlow\\]\\r\\nProd=http:///127\\.0\\.0\\.1:${backend.port}/purchase\\r\\n`));
+    assert.match(await game(agent31), new RegExp(`\\[EpicPurchaseFlow\\]\\r\\nProd="http:///127\\.0\\.0\\.1:${backend.port}/purchase"\\r\\n`));
     assert.doesNotMatch(await game(certUserAgent), /EpicPurchaseFlow/);
     await post(backend.port, "/admin/api/settings", undefined, { vbuckPacks: false });
     assert.doesNotMatch(await game(agent31), /EpicPurchaseFlow/);
@@ -119,14 +120,21 @@ test("the game config clears the purchase flow's other domains, so 6.20's flow g
       const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
       const body = (await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, userAgent)).body;
       const section = /\[EpicPurchaseFlow\]\r\n((?:[^[\r\n][^\r\n]*\r\n)*)/.exec(body)?.[1].split("\r\n").filter(Boolean);
-      assert.deepEqual(section, [`Prod=http:///127.0.0.1:${backend.port}/purchase`, "!ProdAltDomains=ClearArray"], build);
+      assert.deepEqual(section, [`Prod="http:///127.0.0.1:${backend.port}/purchase"`, "!ProdAltDomains=ClearArray"], build);
       // The page's domain as the flow takes it is empty, which is why no other domain may follow.
-      assert.equal(urlDomain(section[0].slice("Prod=".length)), "", build);
+      assert.equal(urlDomain(section[0].slice("Prod=\"".length, -1)), "", build);
     }
     assert.equal(urlDomain("https://launcher-website-prod07.ol.epicgames.com/purchase"), "launcher-website-prod07.ol.epicgames.com");
   } finally {
     backend.close();
   }
+});
+
+// Core-Backend #355: the hotfix merge (FConfigFile::CombineFromBuffer -> FParse::LineExtended) ends an unquoted value at
+// its first "//", so Prod is quoted, as the pak's own is; FParse::QuotedString reads \\ and \" inside.
+test("the purchase page goes in the game config quoted, so the hotfix merge keeps the whole address (#355)", () => {
+  assert.equal(iniQuoted("http:///127.0.0.1:5595/purchase"), "\"http:///127.0.0.1:5595/purchase\"");
+  assert.equal(iniQuoted("a\"b\\c"), "\"a\\\"b\\\\c\"");
 });
 
 // Core-Backend #244: the purchase flow's browser (CEF) goes straight to the page's address, so the page is at the address
@@ -136,7 +144,7 @@ test("the purchase flow's page is at the backend address the game used, on 1.8 t
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "RemoteBuyer");
-    const prod = async (userAgent, host) => /\[EpicPurchaseFlow\]\r\nProd=(.*)\r\n/
+    const prod = async (userAgent, host) => /\[EpicPurchaseFlow\]\r\nProd="(.*)"\r\n/
       .exec((await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, userAgent, host ? { Host: host } : {})).body)?.[1];
     for (const build of ["Release-1.8-CL-3724489", "Release-2.5-CL-3889387", "Release-3.2-CL-3935073", "Release-3.3-CL-3942182"]) {
       const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
@@ -151,7 +159,7 @@ test("the purchase flow's page is at the backend address the game used, on 1.8 t
 
     // With the launcher's defaults the game sends this through its -httpproxy, in absolute form to the backend address
     // CoreRedirect wrote in (#349): the page is there too, not at this PC's own 127.0.0.1 and local port.
-    const viaProxy = async (host) => /\[EpicPurchaseFlow\]\r\nProd=(.*)\r\n/.exec(String((await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+    const viaProxy = async (host) => /\[EpicPurchaseFlow\]\r\nProd="(.*)"\r\n/.exec(String((await send({ host: "127.0.0.1", port: backend.port, method: "GET",
       path: `http://${host}/fortnite/api/cloudstorage/system/DefaultGame.ini`, headers: { Host: host, "User-Agent": agent31, Authorization: `bearer ${token}` } })).body))?.[1];
     assert.equal(await viaProxy("play.example.com:40123"), "http:///play.example.com:40123/purchase");
     assert.equal(await viaProxy("fortnite-public-service-prod11.ol.epicgames.com"), `http:///127.0.0.1:${backend.port}/purchase`, "no CoreRedirect");

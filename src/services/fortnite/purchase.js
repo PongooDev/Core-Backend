@@ -58,10 +58,19 @@ export function purchaseFlowUrl(req, network) {
 // file arrives; here it keeps the hotfix the same as what the launcher writes.
 const altDomainsKey = "!ProdAltDomains=ClearArray";
 
-// The game config's [EpicPurchaseFlow] section, for builds with the Store tab while the packs are on.
+// An ini value in quotes, as the pak's own Prod is ("https://launcher-website-prod07.ol.epicgames.com/purchase"). The
+// hotfix is merged with FConfigFile::CombineFromBuffer, which reads each line with FParse::LineExtended: an unquoted "//"
+// starts a comment there, so a bare "http:///..." arrived as "http:" (Core-Backend #349, #355). Quoted, the merge reads it
+// with FParse::QuotedString, which takes \\ and \" for a backslash and a quote.
+export const iniQuoted = (value) => `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}"`;
+
+// The game config's [EpicPurchaseFlow] section, for builds with the Store tab while the packs are on. The flow reads Prod
+// once, when the UIManager widget is built on the login screen (6.30 UIManager_C::BindDelegates ->
+// RegisterForEpicPurchasingDisplay, 0x118E1E0), before this file arrives, so this only matches what the launcher writes
+// (its NoRedist\DefaultGame.ini, and from 6.01 a pak with it, as 6.20 and later read no loose .ini: Core-Backend #355).
 export function purchaseFlowSection(req, network, { build, enabled }) {
   if (!enabled || !hasCurrencyStore(build)) return "";
-  return ["[EpicPurchaseFlow]", `Prod=${purchaseFlowUrl(req, network)}`, altDomainsKey, ""].join("\r\n");
+  return ["[EpicPurchaseFlow]", `Prod=${iniQuoted(purchaseFlowUrl(req, network))}`, altDomainsKey, ""].join("\r\n");
 }
 
 const pageMinutes = 15;
