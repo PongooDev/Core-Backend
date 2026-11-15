@@ -486,3 +486,102 @@ test("stats saved before scores were recorded get one estimated from their count
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
+
+// Core-Backend #363: 6.30 asks for the leaderboards and the stats screen as 6.00/6.02 do (the same Season 6). The
+// report's screenshots: the Solo Score board's list row reads 0 at rank 1 while the player's own row says 1,080, and
+// the Duo stats screen says 15 wins, 22 matches, 18 top 5, 18 top 12, 3 eliminations, 1 h 18 m, last recorded 9 days
+// ago. The numbers are from different records: the boards rank this week's Season 6 matches (a 9-day-old match is
+// last week's, so that week's board is 0 and its Season 6 all-time record is 1,080), the stats screen is the career's,
+// and 6.30's list rows keep the value of the first tab they showed while the own row is redrawn (#337) — so a list row
+// can read 0 while the own row reads the Score tab's 1,080. The backend answers one entries array per board.
+test("6.30's Score board has the player's 1,080 while a 9-day-old record is off this week's board (#363)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-630-"));
+  let backend;
+  try {
+    const first = await startBackend({ dataDir });
+    let elias;
+    try {
+      elias = await userLogin(first.port, "Elias363");
+      await userLogin(first.port, "Winner363");
+    } finally {
+      first.close();
+    }
+
+    // Elias's Duo record, 9 days ago (6.22, Season 6): 22 matches, 15 wins, 18 top 5 and top 12, 3 kills, 4,680 s and
+    // 1,080 score — the stats screen's numbers. His Solo match this week is 30th with 1,080 score: on the Score board,
+    // not in the top 25 (the tab whose 0 the list row kept in the screenshot).
+    const stats = createStatsStore(dataDir);
+    const nineDaysAgo = new Date(Date.now() - 9 * 86400000);
+    for (let match = 0; match < 22; match++) {
+      const win = match < 15;
+      stats.recordResult(elias.accountId, 10, {
+        place: win ? 1 : match < 18 ? 3 : 15,
+        kills: match >= 15 && match < 18 ? 1 : 0,
+        secondsAlive: win ? 300 : match < 18 ? 40 : 15,
+        score: match === 0 ? 1080 : 0,
+        win, season: 6
+      }, nineDaysAgo);
+    }
+    stats.recordResult(elias.accountId, 2, { place: 30, kills: 0, secondsAlive: 600, score: 1080, season: 6 });
+
+    backend = await startBackend({ dataDir });
+    const v630 = "4573096";
+    const on630 = await userLogin(backend.port, "Elias363");
+    const winner = await userLogin(backend.port, "Winner363");
+    const dedicated = await dedicatedServerToken(backend.port);
+    // Winner's 6.30 Solo win, this week: a Season 6 win of 600 score.
+    assert.equal((await as(v630, backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId: 2, countWins: true, results: [{ accountId: winner.accountId, place: 1, kills: 4, secondsAlive: 1200, score: 600 }] })).status, 200);
+
+    const cohort = (await as(v630, backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${on630.accountId}?playlist=pc_m0_p2`, on630.token)).body;
+    assert.deepEqual(cohort.cohortAccounts, [on630.accountId, winner.accountId]);
+    const board = async (type, statName, window, body, query = "") => {
+      const response = await as(v630, backend.port, `/fortnite/api/leaderboards/type/${type}/stat/${statName}/window/${window}?ownertype=1${query}`,
+        on630.token, body);
+      assert.equal(response.status, 200);
+      assert.deepEqual([response.body.statName, response.body.statWindow], [statName, window]);
+      return response.body;
+    };
+    const scores = await board("group", "br_score_pc_m0_p2", "weekly", cohort.cohortAccounts);
+    // One entries array, Elias's one entry in it: the list row and the own row read the same 1,080 from the answer, not
+    // a 0 the backend sent.
+    assert.ok(Array.isArray(scores.entries));
+    assert.deepEqual(scores.entries.map(({ accountId, value, rank }) => [accountId, value, rank]),
+      [[on630.accountId, 1080, 1], [winner.accountId, 600, 2]]);
+    assert.equal(scores.entries.filter(({ accountId }) => accountId === on630.accountId).length, 1);
+    assert.deepEqual((await board("group", "br_placetop25_pc_m0_p2", "weekly", cohort.cohortAccounts)).entries
+      .map(({ accountId, value }) => [accountId, value]), [[winner.accountId, 1], [on630.accountId, 0]]);
+    assert.deepEqual((await board("group", "br_placetop10_pc_m0_p2", "weekly", cohort.cohortAccounts)).entries
+      .map(({ accountId, value }) => [accountId, value]), [[winner.accountId, 1], [on630.accountId, 0]]);
+    assert.deepEqual((await board("global", "br_placetop1_pc_m0_p2", "weekly", [],
+      "&pageNumber=0&itemsPerPage=50")).entries.map(({ accountId, value }) => [accountId, value]),
+      [[winner.accountId, 1]]);
+
+    // The Duo record is last week's: 0 this week, 1,080 in Season 6's all-time; the stats screen is the career's.
+    assert.deepEqual((await board("group", "br_score_pc_m0_p10", "weekly", [on630.accountId])).entries,
+      [{ accountId: on630.accountId, value: 0, rank: 1 }]);
+    assert.deepEqual((await board("group", "br_score_pc_m0_p10", "alltime", [on630.accountId])).entries,
+      [{ accountId: on630.accountId, value: 1080, rank: 1 }]);
+    const career = Object.fromEntries((await get(backend.port,
+      `/fortnite/api/stats/accountId/${on630.accountId}/bulk/window/alltime`, on630.token)).body
+      .map(({ name, value }) => [name, value]));
+    assert.deepEqual({
+      matches: career.br_matchesplayed_pc_m0_p10, wins: career.br_placetop1_pc_m0_p10,
+      top5: career.br_placetop5_pc_m0_p10, top12: career.br_placetop12_pc_m0_p10,
+      kills: career.br_kills_pc_m0_p10, minutes: career.br_minutesplayed_pc_m0_p10,
+      score: career.br_score_pc_m0_p10
+    }, { matches: 22, wins: 15, top5: 18, top12: 18, kills: 3, minutes: 78, score: 1080 });
+    assert.ok(Math.abs(career.br_lastmodified_pc_m0_p10 - nineDaysAgo.getTime() / 1000) < 60);
+    assert.equal(career.br_score_pc_m0_p2, 1080);
+    // The 6.30 win is on the Season 6 boards and the career screen too: 20 minutes alive, 4 kills, 600 score.
+    const winnerStats = Object.fromEntries((await get(backend.port,
+      `/fortnite/api/stats/accountId/${winner.accountId}/bulk/window/alltime`, winner.token)).body
+      .map(({ name, value }) => [name, value]));
+    assert.deepEqual([winnerStats.br_matchesplayed_pc_m0_p2, winnerStats.br_placetop1_pc_m0_p2,
+      winnerStats.br_kills_pc_m0_p2, winnerStats.br_minutesplayed_pc_m0_p2, winnerStats.br_score_pc_m0_p2],
+      [1, 1, 4, 20, 600]);
+  } finally {
+    backend?.close();
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+});
