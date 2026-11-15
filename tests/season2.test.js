@@ -8,7 +8,7 @@ import { battlePassOfferId, tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
 import { itemShopOffers, seasonEnd, seasonStart, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
-import { isNonShopCosmetic } from "../src/profiles/athena.js";
+import { isNonShopCosmetic, rewardSources } from "../src/profiles/athena.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { createStatsStore } from "../src/stats/store.js";
@@ -18,9 +18,14 @@ import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "
 // emote slots and the item shop's display assets.
 const v111 = "3807424";
 const v110 = "3790078";
+// 4.5 and 6.31, for their own ERewardSource numbers (Core-Backend #373).
+const v45 = "4166199";
+const v631 = "4573279";
 const agents = {
   [v111]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3807424",
-  [v110]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3790078"
+  [v110]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3790078",
+  [v45]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.5-CL-4166199",
+  [v631]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.31-CL-4573279"
 };
 
 function as(build, port, method, urlPath, token, body) {
@@ -439,9 +444,10 @@ test("a win in Season 2 gives The Umbrella and its Snowflake once, and a founder
   const firstWin = (await report(v111, player.accountId, 1, 10)).body.results[0];
   athena = await profileOf(backend.port, player, "athena");
   assert.ok(holds(athena, snowflake) && holds(athena, founderUmbrella) && holds(athena, theUmbrella));
-  // Core-Backend #373: the end-of-match screen gets them as a FirstWin group's items, to show the unlock.
+  // Core-Backend #373: the end-of-match screen gets them as a FirstWin group's items, to show the unlock. 1.11's
+  // ERewardSource numbers FirstWin 6 (8 is its BookLevelUp) and Placement 4.
   const [firstWinGroup, ...otherGroups] = firstWin.rewards;
-  assert.equal(firstWinGroup.rewardSource, 8);
+  assert.equal(firstWinGroup.rewardSource, 6);
   assert.deepEqual(firstWinGroup.items.map(({ itemType }) => itemType).sort(), [founderUmbrella, snowflake, theUmbrella].sort());
   assert.ok(firstWinGroup.items.every(({ itemProfile, quantity }) => itemProfile === "athena" && quantity === 1));
   assert.deepEqual(otherGroups.map(({ rewardSource }) => rewardSource), [1, 3, 4]);
@@ -458,8 +464,39 @@ test("a win in Season 2 gives The Umbrella and its Snowflake once, and a founder
   const season1Win = (await report(v110, veteran.accountId, 1)).body.results[0];
   const season1 = await profileOf(backend.port, veteran, "athena", v110);
   assert.ok(holds(season1, founderUmbrella) && holds(season1, theUmbrella) && !holds(season1, snowflake));
-  assert.deepEqual(season1Win.rewards[0].items.map(({ itemType }) => itemType).sort(), [founderUmbrella, theUmbrella].sort());
+  // 1.10 is answered no award groups: its GetXpRewards shows only a group's athenaseasonalxp loot, and it has no
+  // GetLootRewards to show the umbrellas with.
+  assert.deepEqual(season1Win.rewards, []);
+  assert.ok(season1Win.totalSeasonXpGained > 0);
   assert.ok(!holds(await profileOf(backend.port, veteran, "athena", v111), snowflake));
+}));
+
+// Core-Backend #373: ERewardSource is each build's own. 5.0 put FirstRevive (4) and AdditionalRevives (5) before
+// Placement, so from 5.0 Placement is 6 and FirstWin 8; before it Placement is 4 and FirstWin 6 (8 was BookLevelUp from
+// 1.11 to 4.5). The 3.0 to 6.31 SDKs, and the UEnum tables of 1.10 to 2.5, number them so.
+test("each build's end-of-match screen gets its own ERewardSource numbers", () => withPlayer(async (backend) => {
+  const sourcesIn = (build) => inBuild(build, rewardSources);
+  assert.deepEqual(sourcesIn(v110), { Invalid: 0, MinutesPlayed: 1, FirstKill: 2, TeamKills: 3, Placement: 4, Medals: 5, FirstWin: 6 });
+  assert.deepEqual(sourcesIn(v111), { Invalid: 0, MinutesPlayed: 1, FirstKill: 2, TeamKills: 3, Placement: 4, Medals: 5, FirstWin: 6,
+    SeasonLevelUp: 7, BookLevelUp: 8 });
+  const from50 = { Invalid: 0, MinutesPlayed: 1, FirstKill: 2, TeamKills: 3, FirstRevive: 4, AdditionalRevives: 5, Placement: 6, Medals: 7,
+    FirstWin: 8, SeasonLevelUp: 9, BookLevelUp: 10 };
+  for (const build of ["4204761", "4214610", "4402180", v631]) assert.deepEqual(sourcesIn(build), from50, build);
+  for (const build of ["3724489", "3775276"]) assert.deepEqual(sourcesIn(build), sourcesIn(v110), build);
+  for (const build of ["3825894", "3889387", "3901517", "4019403", "4039451", v45]) assert.deepEqual(sourcesIn(build), sourcesIn(v111), build);
+
+  // A first solo win reported by 4.5's and 6.31's servers: the umbrella group, then Survival Time, Kills and Placement.
+  const dedicated = await dedicatedServerToken(backend.port);
+  for (const [build, numbers] of [[v45, [6, 1, 3, 4]], [v631, [8, 1, 3, 6]]]) {
+    const winner = await userLogin(backend.port, `winner${build}`);
+    await profileOf(backend.port, winner, "athena", build);
+    const answer = await as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId: 2, matchId: `sources-${build}`, countWins: true, results: [{ accountId: winner.accountId, place: 1, kills: 2, secondsAlive: 900 }] });
+    assert.equal(answer.status, 200, build);
+    const [result] = answer.body.results;
+    assert.deepEqual(result.rewards.map(({ rewardSource }) => rewardSource), numbers, build);
+    assert.ok(result.rewards[0].items.length > 0, build);
+  }
 }));
 
 // CoreV2 #192: the end-of-match screen showed no XP (Total XP 0), as the server sent it no rewards. recordresults answers

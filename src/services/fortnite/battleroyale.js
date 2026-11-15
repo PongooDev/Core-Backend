@@ -143,12 +143,20 @@ function progressOf(session) {
 // its percent's part of PrePenaltySeasonXpGained less the groups' Scores, the penalty's as its part of
 // PrePenaltySeasonXpGained less TotalSeasonXpGained. Without it the Battle Pass Bonus read "+-1,190", minus the Total
 // Score (CoreV2 #286). No penalty is taken here, so it is the season XP gained.
+// The award groups are 1.11's on: its FAthenaAwardGroup is the first with a Score, and the first build with
+// GetLootRewards to show a group's items. 1.10's group is RewardSource and Items only, which its
+// UAthenaPlayerMatchReport::GetXpRewards (1.10 0x480CA0) reads for an "AccountResource:athenaseasonalxp" loot entry alone,
+// whose Quantity is that source's XP line; a group without one is passed over. So a build before 1.11 is answered no
+// groups, as before Core-Backend #373: neither the XP groups nor the umbrellas' FirstWin group are anything it shows.
+const firstAwardGroupsBuild = 3807424;
 const selfMultiplierSource = 1;
 function rewardResult(session, accountId, before, awards, seasonXp, items = []) {
   const after = progressOf(session);
   const boost = athenaSeason() ? session.profile("athena").profile.stats.attributes.season_match_boost ?? 0 : 0;
-  const rewards = awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 }));
-  if (items.length) rewards.unshift({ rewardSource: rewardSources.FirstWin, score: 0, seasonXp: 0, bookXp: 0, items: items.map(lootEntry) });
+  const groups = Number(currentBuild()) >= firstAwardGroupsBuild;
+  const rewards = groups ? awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 })) : [];
+  // FirstWin is the build's own number for it: 6 before 5.0, 8 from 5.0 (profiles/athena.js rewardSources).
+  if (groups && items.length) rewards.unshift({ rewardSource: rewardSources().FirstWin, score: 0, seasonXp: 0, bookXp: 0, items: items.map(lootEntry) });
   return {
     accountId,
     levelsGained: Math.max(0, after.level - before.level),

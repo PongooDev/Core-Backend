@@ -829,17 +829,32 @@ export function matchXp(playlistId, result) {
   return matchXpAwards(playlistId, result).reduce((sum, { xp }) => sum + xp, 0);
 }
 
-// The same XP by what earned it, as the end-of-match screen lists it (1.11's FAthenaAwardGroup, ERewardSource):
-// MinutesPlayed "Survival Time", TeamKills "Kills" and Placement, each with its XP; the ones that earned none are left out.
+// The ERewardSource an FAthenaAwardGroup names (its RewardSource), numbered as the match's build numbers it: the enum
+// gives no values, so each is its place in the build's own list. 1.8 to 1.10 end at FirstWin (6); 1.11 adds SeasonLevelUp
+// and BookLevelUp after it; 5.0 puts FirstRevive and AdditionalRevives before Placement, which moves Placement from 4 to 6
+// and FirstWin from 6 to 8 (BookLevelUp's number before 5.0). Read from the 3.0 to 6.31 SDKs, the UEnums' FEnumeratorParam
+// tables in 1.10, 1.11, 2.1, 2.2, 2.3, 2.4, 2.4.2 and 2.5, the name and value pairs 1.8.2's UEnum is built with
+// (TEXT("ERewardSource::FirstWin") with 6), and 1.8's and 1.9.1's names, 1.8.2's in the same order (Core-Backend #373).
+// 5.0's launch build CL-4204761, of which Core has no copy, is taken to be 5.0's (CL-4214610's) as the same release.
+const rewardSourceLists = [
+  { firstBuild: 4204761, names: ["Invalid", "MinutesPlayed", "FirstKill", "TeamKills", "FirstRevive", "AdditionalRevives", "Placement", "Medals", "FirstWin", "SeasonLevelUp", "BookLevelUp"] },
+  { firstBuild: 3807424, names: ["Invalid", "MinutesPlayed", "FirstKill", "TeamKills", "Placement", "Medals", "FirstWin", "SeasonLevelUp", "BookLevelUp"] },
+  { firstBuild: 0, names: ["Invalid", "MinutesPlayed", "FirstKill", "TeamKills", "Placement", "Medals", "FirstWin"] }
+].map(({ firstBuild, names }) => ({ firstBuild, sources: Object.fromEntries(names.map((name, value) => [name, value])) }));
+export const rewardSources = () => (rewardSourceLists.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild) ?? rewardSourceLists.at(-1)).sources;
+
+// The same XP by what earned it, as the end-of-match screen lists it (1.11's FAthenaAwardGroup, ERewardSource in the
+// build's numbers): MinutesPlayed "Survival Time", TeamKills "Kills" and Placement, each with its XP; the ones that
+// earned none are left out.
 // FirstWin carries a victory's newly granted umbrellas as items instead of XP (Core-Backend #373).
-export const rewardSources = { MinutesPlayed: 1, TeamKills: 3, Placement: 4, FirstWin: 8 };
 export function matchXpAwards(playlistId, { place, kills, secondsAlive }) {
   const [first, second] = placements[playlistId] ?? [];
   const placement = place === 1 ? 300 : place <= first ? 100 : place <= second ? 50 : 0;
+  const sources = rewardSources();
   return [
-    { rewardSource: rewardSources.MinutesPlayed, xp: Math.floor(secondsAlive / 60) * 5 },
-    { rewardSource: rewardSources.TeamKills, xp: kills * 50 },
-    { rewardSource: rewardSources.Placement, xp: placement }
+    { rewardSource: sources.MinutesPlayed, xp: Math.floor(secondsAlive / 60) * 5 },
+    { rewardSource: sources.TeamKills, xp: kills * 50 },
+    { rewardSource: sources.Placement, xp: placement }
   ].filter(({ xp }) => xp > 0);
 }
 
