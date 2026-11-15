@@ -354,8 +354,9 @@ const update541Window = [{ builds: [build541, build541], start: "2018-09-18", en
 // enabled. Update v6.00 names no limited time mode, so 6.00's lobby opens on Solo: its 50v50 (fiftyFiftySeason6, the new
 // revision) and Season 5's Playground are on by default, as the shipped lobby has them (Update v6.01's "Playground Custom
 // Options" and v6.20's spawnables have Playground running through Season 6, so with Original dates it runs from 27
-// September to the season's end, 6 December), and Soaring 50's is there by its switch (🟡 nothing found dates it in
-// Season 6).
+// September to the season's end, 6 December), and Soaring 50's is there by its switch, with Original dates from the
+// season's first day to Update v6.02's, 27 September to 10 October, on 6.00 and 6.01 (Core-Backend #367's list: Disco
+// Domination took its place).
 const build6000 = 4395664;
 const build600 = 4402180;
 // 6.01 (CL-4417689, "6.01.0", and CL-4424678, "6.01", Update v6.01, 3 October 2018: Core has CL-4424678's paks, whose data
@@ -370,7 +371,7 @@ const build600 = 4402180;
 // DiscoGameModifier), Update v6.02's limited time mode (10 October 2018), cooked a week ahead of it. Its shipped
 // DefaultGame.ini lists 6.00's lobby unchanged (the default Solo, Duo and Squad, Playlist_50v50 and Playlist_Playground,
 // AdvertiseType Updated). So 6.01's lobby is 6.00's: its 50v50 and Playground on by default (Playground through Season 6
-// with Original dates), Soaring 50's by its switch, and Disco Domination by its switch too (🟡 6.01 was never played with
+// with Original dates), Soaring 50's by its switch (6.00's dates), and Disco Domination by its switch too (🟡 6.01 was never played with
 // it: Update v6.02 brought it, so it has no Original dates here).
 const build6010 = 4417689;
 const build601 = 4424678;
@@ -455,6 +456,16 @@ const build610 = 4480234;
 //   whatever Original dates says, and after it (POI1) off, so Solo, Duos and Squads are back; the Butterfly card's "Before
 //   the event" brings them back with the pre-event map. Without POI0 6.21's Cube Monster spawners don't run anyway
 //   (events/events.js). 6.20 (no Butterfly) keeps its dates.
+//   Core-Backend #367: on its first day Epic took Fortnitemares Duos and Squads down for about four hours, the normal Duos
+//   and Squads in their place (the list; Dexerto, 24 October 2018, quotes Epic's "We have disabled Fortnitemares in Battle
+//   Royale while we investigate issues with matchmaking", without naming the modes, and dates its return 11:15 AM
+//   Eastern, 15:15 UTC).
+//   With Original dates on, the admin panel's outage option (settings fortnitemaresOutage, off by default) replays it:
+//   Duos' and Squads' window stops from 11:15 to 15:15 UTC on 24 October (🟡 the start is four hours before, the list's
+//   "about 4 hours"; Kotaku has Epic's long-queue notice at about 7 AM Eastern), so their defaults are back in the lobby
+//   meanwhile (#348's replacement follows each mode). The list names the stand-ins "Soaring 50s Duos and Squads": 6.20's
+//   paks have no such playlist (5.41's Soaring Duos and Squads are gone since 6.00), and its default Duos and Squads have
+//   glider redeploy (above), so those are what come back. Solo keeps its whole window.
 // - Playlist_Deimos_SoloCN, _DuoCN and _SquadCN (147 to 149): the same for China's region, no mode here.
 // - Playlist_Deimos_SoloShow, _DuoShow and _SquadShow (59071 to 59073, "Tournament"): Fortnitemares' tournament playlists,
 //   which the shipped DefaultGame.ini lists disabled at 53 to 55 beside the Showdown ones' 50 to 52, so in-game
@@ -468,7 +479,9 @@ const build610 = 4480234;
 // MissionGen_AthenaEvent47 to 49 are gone), and Playlist_Playground gains PlaygroundModifiers (CreativeMutator_POIOverride),
 // beside a new GameplayModifier, ButterflyEventModifier, which Athena_GameMode registers in every match. Its DefaultGame.ini's
 // lobby list is 6.20's line for line. So every 6.20 mode runs to 6.21, as it was, Fortnitemares' Original dates with them
-// (they end on 4 November, 6.21's fourth day: events/events.js has the POI0 its spawners now need).
+// (they end on 4 November, 6.21's fourth day: events/events.js has the POI0 its spawners now need). Core-Backend #367's
+// list has Disco Domination back from 4 November to Update v6.22's day, the 6th: Playlist_Disco's Original dates from
+// Fortnitemares' end, 18:00 UTC (🟡 the hour: the list gives the day, and Fortnitemares ran to 1 PM Eastern).
 // 6.22 (CL-4543176, Update v6.22, 6 November 2018: "Fortnitemares has come to an end in Battle Royale"): Athena/Playlists
 // (every playlist asset of its 13 paks, against 6.21's) drops Fortnitemares' Playlist_Deimos_Solo, _Duo and _Squad, their
 // CN and tournament (Show) playlists, and five of the six Disco Dominations (Playlist_Disco, _Disco_40, _Disco_Alt,
@@ -490,7 +503,10 @@ const build610 = 4480234;
 //   RequiredEventFlag (6.21's named POI0).
 // Core-Backend #367: Update v6.22's Blitz! is 6.10's Blitz playlists (36, 37, 19). It returned with the update on 6 November
 // and was removed on the 9th, when Disco Domination returned (Dexerto, 9 November: three days after it came back), so its
-// Original dates are 6 November to the 9th, there by its switches otherwise.
+// Original dates are 6 November to the 9th, there by its switches otherwise. The Disco Domination that replaced it is
+// Playlist_Disco_32, the only one 6.22's paks keep (Dexerto France, 9 November 2018: "Disco vient de remplacer le mode
+// Blitz"), so its Original dates are the 9th to Update v6.30's day, the 14th (the issue's list has no window there: the
+// sources do).
 // 6.30 (CL-4573096, Update v6.30, 14 November 2018, and Content Update v6.30, 20 November; its files are dated 19 November):
 // Athena/Playlists (every playlist asset of its 9 paks, against 6.22's) drops Blitz! (36, 37, 19), keeps the rest (Team
 // Terror's Playlist_Deimos_50v50 among them, its teams, modifiers and tables 6.22's, and Playlist_Disco_32), brings back 6.20's Playlist_Disco_32_Alt
@@ -501,14 +517,18 @@ const build610 = 4480234;
 //   loot, game data and resource rates; and Playlist_Barrier_12 (206), the same with 2 teams of 12 (18 to 24 players).
 //   Update v6.30: "Two teams on either side of the map. A huge barrier runs down the middle ... destroy the enemy's mascot
 //   to win the match!" (the notes give no team size: the data's is 24). Food Fight (Playlist_Barrier) is on by default
-//   and listed as New, its Original dates Update v6.30's day, 14 November, to the Content Update's, 20 November, when Wild
-//   West took its place (🟡 Epic's end isn't in the notes); the 12 a side one is by its switch.
+//   and listed as New, its Original dates Update v6.30's day, 14 November, to Update v6.31's, 27 November, whose paks drop
+//   it (Core-Backend #367's list: it ran beside Wild West from the 20th); the 12 a side one is by its switch.
 // - Wild West, WW/Playlist_WW_Solo (900), Playlist_WW_Duo (901, PlaylistName Playlist_WW_Duos) and Playlist_WW_Squad (902,
 //   Playlist_WW_Squads): Battle Royale with its own loot (Content Update v6.30: "Hunting Rifles, Shotguns and Dynamite"),
 //   game data and resource rates. On by default and listed as New, their Original dates the Content Update's day, 20
 //   November, to Update v6.31's, 27 November (🟡 Epic's end isn't in the notes).
 // - The Scavenger Pop-Up Cup's tournament playlists, Showdown/Playlist_ShowdownAlt_Solo, _Duos and _Squads (58074 to 58076,
 //   bIsTournament, the Showdown modifiers): in-game tournaments' as the Showdown ones, no lobby mode.
+// Core-Backend #367's list has Disco Domination on 6.30 too, 14 to 27 November (Update v6.30 keeps glider redeploy "in the
+// larger team modes (e.g. Soaring 50s, Disco Domination etc.)"): Playlist_Disco_32's Original dates go on from 6.22's to
+// Update v6.31's day. 6.30's paks have two Disco Dominations, Playlist_Disco_32 and _32_Alt, the same but for the modifier
+// (DiscoGameModifier, DiscoGameModifierNoA); 🟡 which one Epic's lobby offered isn't known, so the Alt stays by its switch.
 // 6.31 (CL-4573279, Update v6.31, 27 November 2018): Athena/Playlists (every playlist asset of its 15 paks, against 6.30's)
 // drops Food Fight (Barrier), Wild West (WW) and Team Terror (Playlist_Deimos_50v50; only Deimos' game data stays), keeps
 // the rest (50v50, Soaring 50's, Disco Domination 32 v 32 and its Alt, High Explosives, Playground, the Showdown and
@@ -530,18 +550,45 @@ const build621 = 4526925;
 const build622 = 4543176;
 const build630 = 4573096;
 const build631 = 4573279;
+// Season 6's Original dates (Core-Backend #367, 90sNath's list, each window to the day the next mode took its place; the
+// season's last day is 5 December, Update v7.00 came on the 6th), each on the builds whose paks have its playlist:
+// - Soaring 50's 27 September to 10 October (6.00, 6.01);
+// - Disco Domination 10 to 24 October (6.02, 6.10), 4 to 6 November (6.21) and 14 to 27 November (6.30), and, from the
+//   sources rather than the list, 9 to 14 November (6.22), when it replaced Blitz!;
+// - Fortnitemares 24 October to 4 November (6.20, 6.21), in Solo's, Duos' and Squads' place (#348), with its launch-day
+//   outage as an option;
+// - Blitz! 6 to 9 November and Team Terror 6 to 14 November (6.22), Food Fight 14 to 27 November and Wild West 20 to 27
+//   November (6.30), Team Rumble and High Explosives 27 November to the season's end (6.31).
+// The list's Close Encounters, Sniper Shootout and Solid Gold have no Season 6 dates: no Season 6 build's paks have their
+// playlists (no Playlist_Close_*, _Snipers* or _SolidGold_* in 6.00's to 6.31's Athena/Playlists, which each build's
+// bring-up read whole, and 6.20's and 6.30's again for #367), so no build here could offer them.
 const season6Window = [{ builds: [build6000, build631], start: "2018-09-27", end: "2018-12-06" }];
+const soaringSeason6Window = [{ builds: [build6000, build601], start: "2018-09-27", end: "2018-10-10" }];
 const teamTerrorWindow = [{ builds: [build622, build622], start: "2018-11-06", end: "2018-11-14" }];
 // Blitz! v2 returned in Update v6.22 on 6 November 2018 and was removed on the 9th, when Disco Domination returned.
 const blitzSeason6Window = [{ builds: [build622, build622], start: "2018-11-06", end: "2018-11-09" }];
 // High Explosives returned with Update v6.31 on 27 November 2018 and ran to the season's end.
 const highExplosivesSeason6Window = [{ builds: [build631, build631], start: "2018-11-27", end: "2018-12-06" }];
-const foodFightWindow = [{ builds: [build630, build630], start: "2018-11-14", end: "2018-11-20" }];
+const foodFightWindow = [{ builds: [build630, build630], start: "2018-11-14", end: "2018-11-27" }];
 const wildWestWindow = [{ builds: [build630, build630], start: "2018-11-20", end: "2018-11-27" }];
 const teamRumbleWindow = [{ builds: [build631, build631], start: "2018-11-27", end: "2018-12-06" }];
-const fortnitemaresWindow = [{ builds: [build620, build621], start: "2018-10-24", end: Date.parse("2018-11-04T18:00:00.000Z") }];
+// Fortnitemares ends on 4 November at 1 PM Eastern (Update v6.20's notes).
+const fortnitemaresEnd = Date.parse("2018-11-04T18:00:00.000Z");
+const fortnitemaresWindow = [{ builds: [build620, build621], start: "2018-10-24", end: fortnitemaresEnd }];
+// Its launch-day outage (Core-Backend #367, 6.20's note above): Duos and Squads off from 11:15 to 15:15 UTC on 24 October
+// while the admin panel's option is on (settings fortnitemaresOutage, off by default), Original dates only.
+export const fortnitemaresOutage = { start: Date.parse("2018-10-24T11:15:00.000Z"), end: Date.parse("2018-10-24T15:15:00.000Z") };
+export const fortnitemaresOutageOn = (settingsValue) => settingsValue?.fortnitemaresOutage === true;
+const fortnitemaresTeamsWindow = [
+  { builds: [build620, build621], start: "2018-10-24", end: (settings) => (fortnitemaresOutageOn(settings) ? fortnitemaresOutage.start : fortnitemaresEnd) },
+  { builds: [build620, build621], start: (settings) => (fortnitemaresOutageOn(settings) ? fortnitemaresOutage.end : fortnitemaresEnd), end: fortnitemaresEnd }
+];
 const discoDominationWindow = [{ builds: [build6020, build602], start: "2018-10-10", end: "2018-10-16" },
-  { builds: [build6100, build610], start: "2018-10-16", end: "2018-10-24" }];
+  { builds: [build6100, build610], start: "2018-10-16", end: "2018-10-24" },
+  { builds: [build621, build621], start: fortnitemaresEnd, end: "2018-11-06" }];
+// 6.22's and 6.30's Disco Domination, the 32 a side one (the only one 6.22's paks keep).
+const discoDomination32Window = [{ builds: [build622, build622], start: "2018-11-09", end: "2018-11-14" },
+  { builds: [build630, build630], start: "2018-11-14", end: "2018-11-27" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -822,7 +869,7 @@ export const ltms = [
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
   { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build631], seasons: [5, 6], newIn: build521,
-    original: update521Window,
+    original: [...update521Window, ...soaringSeason6Window],
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: update521Window,
@@ -894,14 +941,15 @@ export const ltms = [
     teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, in 6.01's paks; Update v6.02's mode)." },
   // 6.02's Disco Domination (above), Update v6.02's new mode: the same playlist, on by default there and listed as New,
   // so an LTM of its own beside 6.01's, which stays by its switch. Its 32 a side playlist, High Explosives and Steady
-  // Storm by their switches. 6.10 keeps the mode (Update v6.10's "What's New?"), the 32 a side one and High Explosives;
+  // Storm by their switches (with Original dates, the 32 a side one by 6.22's and 6.30's, High Explosives by 6.31's:
+  // #367). 6.10 keeps the mode (Update v6.10's "What's New?"), the 32 a side one and High Explosives;
   // Steady Storm's playlists are gone from its paks.
   { id: "discoDomination602", name: "Disco Domination (6.02 – 6.21)", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6020, build621], seasons: [6],
     advertise: "New", defaultOn: true,
     original: discoDominationWindow,
     teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, Update v6.02's mode; 6.10: fewer bandages, no Common weapons)." },
   { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build631], seasons: [6],
-    advertise: "New",
+    advertise: "New", original: discoDomination32Window,
     teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two, for 24 to 64 players (Playlist_Disco_32, 6.02's)." },
   { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build631], seasons: [6],
     teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Playlist_HighExplosives_Solo on the Fly Explosives tables, 6.02's).",
@@ -950,10 +998,10 @@ export const ltms = [
     advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultSolo",
     teams: "100 Teams × 1", description: "Battle Royale with the Cube Monsters: Cube Fragments spawn Fiends and Brutes that drop loot and give shield (Playlist_Deimos_Solo, 6.20's)." },
   { id: "fortnitemares2018Duos", name: "Fortnitemares (Duos)", playlistId: 48, playlistName: "Playlist_Deimos_Duo", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultDuo",
+    advertise: "New", defaultOn: true, original: fortnitemaresTeamsWindow, untilButterfly: true, replaces: "Playlist_DefaultDuo",
     teams: "100 Teams × 2", description: "Battle Royale with the Cube Monsters, in duos (Playlist_Deimos_Duo, 6.20's)." },
   { id: "fortnitemares2018Squads", name: "Fortnitemares (Squads)", playlistId: 49, playlistName: "Playlist_Deimos_Squad", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow, untilButterfly: true, replaces: "Playlist_DefaultSquad",
+    advertise: "New", defaultOn: true, original: fortnitemaresTeamsWindow, untilButterfly: true, replaces: "Playlist_DefaultSquad",
     teams: "100 Teams × 4", description: "Battle Royale with the Cube Monsters, in squads (Playlist_Deimos_Squad, 6.20's)." },
   { id: "discoDomination40Alt", name: "Disco Domination (40 v 40, Alt)", playlistId: 231, playlistName: "Playlist_Disco_40_Alt", eventFlag: null, builds: [build620, build621], seasons: [6],
     teams: "2 Teams × 40", description: "Disco Domination with two teams of forty on DiscoGameModifierNoA (Playlist_Disco_40_Alt, 6.20's)." },
@@ -1064,8 +1112,10 @@ const momentOf = (value, settingsValue) => {
   return typeof resolved === "number" ? resolved : day(resolved);
 };
 const seasonOfBound = (bound) => (typeof bound === "number" ? seasonOf(bound) : versionParts(bound)[0]);
+// A window the settings leave empty (Fortnitemares Duos' and Squads' second, without the outage) is none.
 const windowsOf = (ltm, settingsValue) => [].concat(ltm.original ?? []).map(({ builds, start, end }) =>
-  ({ builds, start: momentOf(start, settingsValue), end: momentOf(end, settingsValue), season: seasonOfBound(builds[0]) }));
+  ({ builds, start: momentOf(start, settingsValue), end: momentOf(end, settingsValue), season: seasonOfBound(builds[0]) }))
+  .filter(({ start, end }) => start < end);
 
 // Whether a build's data has the LTM.
 export const hasLtm = (id, build) => Boolean(byId.get(id)) && inRange(byId.get(id).builds, build);
@@ -1216,6 +1266,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     closeEncounters: closeEncountersSetting(settingsValue),
     // Whether 6.20's and 6.21's Fortnitemares modes take Solo's, Duos' and Squads' place while on (#348).
     fortnitemaresReplacesDefaults: replacesDefaultsOn(settingsValue),
+    // Whether Original dates replays Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367).
+    fortnitemaresOutage: fortnitemaresOutageOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     list: ltms.filter((ltm) => !ltm.tournament).map((ltm) => ({
       id: ltm.id,

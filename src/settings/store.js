@@ -273,6 +273,9 @@ const defaults = {
   // 6.20's and 6.21's Fortnitemares Solo, Duos and Squads in the default modes' place while they're on (Core-Backend #348,
   // events/ltms.js defaultReplacements), as Epic's lobby had them; off, the defaults stay beside them.
   fortnitemaresReplacesDefaults: true,
+  // With Original dates on, Fortnitemares Duos' and Squads' launch-day outage on 6.20, 11:15 to 15:15 UTC on 24 October
+  // 2018 (Core-Backend #367, events/ltms.js fortnitemaresOutage): off, they run their whole window.
+  fortnitemaresOutage: false,
   // Season 3's weekly challenges all at once (Core-Backend #207, profiles/challenges.js), not a week at a time on the
   // season's replay.
   challengesAllUnlocked: false,
@@ -687,6 +690,7 @@ export function createSettingsStore(dataDir) {
       settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
       settings.eventChallengeUnlock = eventChallengeUnlockValue(loaded.eventChallengeUnlock, {});
       settings.fortnitemaresReplacesDefaults = loaded.fortnitemaresReplacesDefaults !== false;
+      settings.fortnitemaresOutage = loaded.fortnitemaresOutage === true;
       settings.completeBrokenChallenges = loaded.completeBrokenChallenges === true;
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
@@ -898,6 +902,7 @@ export function createSettingsStore(dataDir) {
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       settings.eventChallengeUnlock = eventChallengeUnlockValue(partial.eventChallengeUnlock, settings.eventChallengeUnlock ?? {});
       if (typeof partial.fortnitemaresReplacesDefaults === "boolean") settings.fortnitemaresReplacesDefaults = partial.fortnitemaresReplacesDefaults;
+      if (typeof partial.fortnitemaresOutage === "boolean") settings.fortnitemaresOutage = partial.fortnitemaresOutage;
       if (typeof partial.completeBrokenChallenges === "boolean") settings.completeBrokenChallenges = partial.completeBrokenChallenges;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;

@@ -4607,7 +4607,9 @@
         // Close Encounters' original date (#258): its whole day or one hour of it.
         ltmCloseEncounters: { ...(data.ltms?.closeEncounters || { wholeDay: true, hour: 0 }) },
         // 6.20's and 6.21's Fortnitemares modes in Solo's, Duos' and Squads' place while on (#348).
-        fortnitemaresReplacesDefaults: data.ltms?.fortnitemaresReplacesDefaults !== false
+        fortnitemaresReplacesDefaults: data.ltms?.fortnitemaresReplacesDefaults !== false,
+        // With Original dates, Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367), off by default.
+        fortnitemaresOutage: data.ltms?.fortnitemaresOutage === true
       };
 
       const saveConfig = async () => {
@@ -5145,6 +5147,10 @@
         form.fortnitemaresReplacesDefaults = checked;
       });
 
+      const fortnitemaresOutageToggle = toggleSwitch(form.fortnitemaresOutage, (checked) => {
+        form.fortnitemaresOutage = checked;
+      });
+
       const showReplayDay = () => {
         const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
         replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : `Season ${ltmSeason}: no LTM dates`;
@@ -5428,6 +5434,11 @@
             el("div", { class: "font-semibold", text: "Fortnitemares replaces Solo, Duos and Squads (6.20 – 6.21)" }),
             el("div", { class: "muted", text: "As in Epic's lobby: while a Fortnitemares mode is on, it takes its normal mode's place in the mode select. Off, the normal modes stay beside them. Save, then restart the game: the lobby's list comes at start-up." })),
           fortnitemaresReplacesToggle),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Fortnitemares launch-day outage (6.20)" }),
+            el("div", { class: "muted", text: "With Original dates on: Fortnitemares Duos and Squads go off from 11:15 to 15:15 UTC on 24 October (the replay's clock), as Epic took them down for about four hours on launch day, and the normal Duos and Squads take their place again. Fortnitemares Solo stays. Off by default. Save, then restart the game: the lobby's list comes at start-up." })),
+          fortnitemaresOutageToggle),
         queueHeaderEl,
         activeModesTableBox);
 

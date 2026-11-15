@@ -2311,6 +2311,8 @@ export function adminRoutes(context) {
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
     // 6.20's and 6.21's Fortnitemares modes in the default modes' place while on (#348, events/ltms.js defaultReplacements).
     if (typeof req.body.fortnitemaresReplacesDefaults === "boolean") update.fortnitemaresReplacesDefaults = req.body.fortnitemaresReplacesDefaults;
+    // With Original dates, Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367, events/ltms.js fortnitemaresOutage).
+    if (typeof req.body.fortnitemaresOutage === "boolean") update.fortnitemaresOutage = req.body.fortnitemaresOutage;
     // Close Encounters' whole day or hour (Core-Backend #258): {wholeDay, hour 0 to 23}.
     if (req.body.ltmCloseEncounters && typeof req.body.ltmCloseEncounters === "object") update.ltmCloseEncounters = req.body.ltmCloseEncounters;
     if (req.body.timing && typeof req.body.timing === "object") {
@@ -2348,6 +2350,7 @@ export function adminRoutes(context) {
       ltmOriginalDates: false,
       ltmCloseEncounters: { wholeDay: true, hour: 0 },
       fortnitemaresReplacesDefaults: true,
+      fortnitemaresOutage: false,
       serverLimits: defaultServerLimits,
       matchmakingGatherSeconds: 10,
       warmupSeconds: defaultWarmupSeconds,

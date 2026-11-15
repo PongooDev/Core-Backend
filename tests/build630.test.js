@@ -150,7 +150,7 @@ test("6.30's event flags: 6.22's but POI1; Save the World's Fortnitemares with P
   assert.equal(inBuild(v630, () => isEventActive(fortnitemares2018)), true);
 });
 
-test("Food Fight: 6.30's Playlist_Barrier (204), two teams of 24 in squads, on by default and listed as New, its Original dates 14 to 20 November", () => {
+test("Food Fight: 6.30's Playlist_Barrier (204), two teams of 24 in squads, on by default and listed as New, its Original dates 14 to 27 November", () => {
   const defaults = createSettingsStore(null).get();
   assert.equal(defaults.matchmakingModes.foodFight, true, "on by default in the admin panel");
   assert.equal(defaults.matchmakingModes.foodFight12, false, "the 12 a side one by its switch");
@@ -169,7 +169,10 @@ test("Food Fight: 6.30's Playlist_Barrier (204), two teams of 24 in squads, on b
     const dated = { ltmOriginalDates: true, matchmakingModes: defaults.matchmakingModes };
     assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-13T23:59:00Z"), dated), false);
     assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-14T00:00:00Z"), dated), true);
-    assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-20T00:00:00Z"), dated), false, "the Content Update's day");
+    // Core-Backend #367: it ran beside Wild West from the Content Update's day to Update v6.31's, whose paks drop it.
+    assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-20T00:00:00Z"), dated), true, "beside Wild West");
+    assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-26T23:59:00Z"), dated), true);
+    assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-27T00:00:00Z"), dated), false, "Update v6.31's day");
   });
   assert.ok(botModeIds.includes("foodFight"));
   assert.equal(botModeOf("playlist_barrier", v630), "foodFight");
