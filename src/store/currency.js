@@ -4,6 +4,7 @@ import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { grantItem } from "../profiles/items.js";
 import { buildOfSeason, namesAthenaBuild, seasonNumber } from "../profiles/seasons.js";
+import { seasonMoment } from "./itemshop.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223): Epic's four real-money packs, which a player "buys" in a simulated
 // purchase that gives the pack's V-Bucks for nothing. From 1.8 the lobby's Store tab is StoreMain_Root
@@ -126,6 +127,27 @@ const summitStrikerPack = {
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_253_Athena_Commando_M_MilitaryFashion2", "AthenaBackpack:BID_134_MilitaryFashion"]
 };
+// The Deep Freeze Bundle (Core-Backend #356) is a Season 6 real-money pack: the Frostbite outfit
+// (CID_261_Athena_Commando_M_RaptorArcticCamo), the Freezing Point back bling (BID_142_RaptorArcticCamo), the Chill-Axe
+// pickaxe (Pickaxe_ID_097_RaptorArcticCamo) and the Cold Front glider (Glider_ID_074_RaptorArcticCamo) with 1,000 V-Bucks
+// for $14.99 (the wiki's Deep Freeze Bundle page, ID Pack_DeepFreeze). Epic put it in the store on 14 November 2018 (Update
+// v6.30) and took it out after 21 January 2019, past Season 6's end ("leaves the store after January 21", Epic's tweet of
+// 18 January), so on a Season 6 build it is on sale from 14 November on the season's replay (store/itemshop.js seasonMoment).
+// 6.20's to 6.31's paks (CL-4497486 to CL-4573279) all hold the four cosmetics and the bundle's featured display asset
+// (DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle, a FortMtxOfferData); 6.00's and 6.10's don't have the
+// cosmetics. It is bought once per account, as the starter packs.
+const deepFreezeBundle = {
+  ...pack(1000, 0, 1499),
+  offerId: "core_bundle_br_deepfreeze",
+  title: "Deep Freeze Bundle",
+  description: "Frostbite outfit, Freezing Point back bling, Chill-Axe pickaxe, Cold Front glider and 1,000 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle"),
+  season: 6,
+  sold: [{ season: 6, from: Date.UTC(2018, 10, 14), until: Date.UTC(2019, 0, 22) }],
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_261_Athena_Commando_M_RaptorArcticCamo", "AthenaBackpack:BID_142_RaptorArcticCamo",
+    "AthenaPickaxe:Pickaxe_ID_097_RaptorArcticCamo", "AthenaGlider:Glider_ID_074_RaptorArcticCamo"]
+};
 // The Founder's Packs' sale (Core-Backend #300). Update v5.00's notes: from 17 July the Super Deluxe and Limited Founders
 // packs go on sale again. They are the Store tab's other storefront, FoundersPack (StoreMain_Root's StorefrontNames, 5.0's
 // still ["FoundersPack", "CurrencyStorefront"]), real-money offers bought through the same purchase flow as the V-Bucks
@@ -159,7 +181,7 @@ const foundersPackOffer = (from, to) => {
 const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
 
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack, acePack, summitStrikerPack, ...foundersPackOffers];
+  wingmanPack, acePack, summitStrikerPack, deepFreezeBundle, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);
@@ -189,16 +211,21 @@ export const purchaseCount = (profile0, offerId) => profile0?.stats?.attributes?
 // Whether the offer is on sale to the account on the requesting build: a season's offer only on that season's builds that
 // have its cosmetics, a one-per-account offer until it is bought. An offer sold in more than one season lists them
 // ({season, unlessOffered}): a season whose builds sell another starter pack in its place, where they have that pack's
-// cosmetics, offers it only on the builds without them.
+// cosmetics, offers it only on the builds without them. A window may also carry Epic's moments ({from, until}, UTC ms): it
+// then holds while the season's replay stands inside them (store/itemshop.js seasonMoment).
 const hasCosmetics = (offer) => (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId));
-const onSale = (offer) => {
+const onSale = (offer, now) => {
   if (!offer.season) return true;
   if (!namesAthenaBuild()) return false;
   const season = seasonNumber();
-  return (offer.sold ?? [{ season: offer.season }]).some((window) => window.season === season
-    && !(window.unlessOffered && hasCosmetics(findRealMoneyOffer(window.unlessOffered))));
+  return (offer.sold ?? [{ season: offer.season }]).some((window) => {
+    if (window.season !== season || (window.unlessOffered && hasCosmetics(findRealMoneyOffer(window.unlessOffered)))) return false;
+    if (window.from === undefined && window.until === undefined) return true;
+    const moment = seasonMoment(now, null, season).getTime();
+    return (window.from === undefined || moment >= window.from) && (window.until === undefined || moment < window.until);
+  });
 };
-export const isOffered = (offer, profile0) => onSale(offer)
+export const isOffered = (offer, profile0, now = new Date()) => onSale(offer, now)
   && hasCosmetics(offer)
   && (!offer.foundersEdition || Number(currentBuild()) >= foundersSaleBuild)
   && !offerBlocked(offer, profile0);

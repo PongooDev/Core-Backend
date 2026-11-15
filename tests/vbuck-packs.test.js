@@ -5,6 +5,7 @@ import { inBuild } from "../src/builds/context.js";
 import { lockerCosmeticId } from "../src/profiles/athena.js";
 import { findRealMoneyOffer, isOffered } from "../src/store/currency.js";
 import { iniQuoted } from "../src/services/fortnite/purchase.js";
+import { seasonMoment } from "../src/store/itemshop.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js, services/fortnite/purchase.js).
 const agent31 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.1-CL-3915963";
@@ -634,6 +635,67 @@ test("#356: the Summit Striker Pack is Season 6's on 6.20 and later, all season;
     assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
     assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
     assert.equal(summitOf(await catalog(backend.port, player.token, agent621)), undefined);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #356: the Deep Freeze Bundle, a Season 6 real-money pack (Frostbite, Freezing Point, Chill-Axe, Cold Front and
+// 1,000 V-Bucks, $14.99), on sale from 14 November 2018 on Season 6's replay, on the builds whose paks have its items.
+const freezeCosmetics = ["AthenaCharacter:CID_261_Athena_Commando_M_RaptorArcticCamo", "AthenaBackpack:BID_142_RaptorArcticCamo",
+  "AthenaPickaxe:Pickaxe_ID_097_RaptorArcticCamo", "AthenaGlider:Glider_ID_074_RaptorArcticCamo"];
+const freezeOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_bundle_br_deepfreeze");
+test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November, on 6.20 and later", async () => {
+  const bundle = findRealMoneyOffer("core_bundle_br_deepfreeze");
+  assert.deepEqual([bundle.title, bundle.season, bundle.price, bundle.currencyCode, bundle.oncePerAccount], ["Deep Freeze Bundle", 6, 1499, "USD", true]);
+  assert.deepEqual(bundle.cosmetics, freezeCosmetics);
+  assert.deepEqual(bundle.grants, [{ templateId: "Currency:MtxPurchased", quantity: 1000 }]);
+  for (const build of ["4402180", "4480234"]) assert.equal(inBuild(build, () => lockerCosmeticId(freezeCosmetics[0])), undefined, build);
+
+  // Epic's moments: not on sale on the replay before 14 November, on sale from it.
+  const day = 24 * 60 * 60 * 1000;
+  const states = (build) => inBuild(build, () => {
+    const out = [];
+    for (let at = Date.parse("2026-01-01T12:00:00Z"); at < Date.parse("2026-01-01T12:00:00Z") + 120 * day; at += day) {
+      out.push([seasonMoment(new Date(at), null, 6).toISOString().slice(0, 10), isOffered(bundle, undefined, new Date(at))]);
+    }
+    return out;
+  });
+  for (const build of ["4497486", "4573096", "4573279"]) {
+    const seen = states(build);
+    assert.ok(seen.some(([moment, offered]) => moment < "2018-11-14" && !offered), build);
+    assert.ok(seen.some(([moment, offered]) => moment === "2018-11-14" && offered), build);
+    for (const [moment, offered] of seen) assert.equal(offered, moment >= "2018-11-14", `${build} ${moment}`);
+  }
+  for (const build of ["4402180", "4480234"]) assert.ok(states(build).every(([, offered]) => !offered), build);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "FreezeShopper");
+    // A start 50 days back puts today's replay at 16 November; 3 days back, at 30 September.
+    const startOf = (daysAgo) => new Date(Date.now() - daysAgo * day).toISOString().slice(0, 10);
+    assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: startOf(3) } })).status, 200);
+    assert.equal(freezeOf(await catalog(backend.port, player.token, agent630)), undefined);
+    assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: startOf(50) } })).status, 200);
+    for (const userAgent of [agent620, agent621, agent622, agent630, agent631]) {
+      const offer = freezeOf(await catalog(backend.port, player.token, userAgent));
+      assert.equal(offer.title, "Deep Freeze Bundle", userAgent);
+      assert.deepEqual(offer.metaInfo.map(({ key, value }) => `${key}=${value}`), ["MtxQuantity=1000", "MtxBonus=0"]);
+      assert.equal(offer.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle.DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle");
+    }
+    for (const userAgent of [agent602, agent610]) assert.equal(freezeOf(await catalog(backend.port, player.token, userAgent)), undefined);
+
+    const id = freezeOf(await catalog(backend.port, player.token, agent630)).appStoreId[1];
+    const priced = (await as(backend.port, `/catalog/api/shared/bulk/offers?id=${id}&returnItemDetails=false`, await clientToken(backend.port), agent630)).body;
+    assert.deepEqual([priced[id].price, priced[id].currencyCode, priced[id].title], [1499, "USD", "Deep Freeze Bundle"]);
+    const page = await open(backend.port, id, agent630);
+    assert.equal(page.status, 200);
+    assert.equal((await complete(backend.port, purchaseIdOf(page.body))).status, 200);
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent630);
+    for (const templateId of freezeCosmetics) assert.equal(owned(athena, templateId).length, 1, templateId);
+    const core = await query(backend.port, player.accountId, player.token, "common_core", agent630);
+    assert.equal(vbucks(core, "Currency:MtxPurchased"), 1000);
+    assert.equal(freezeOf(await catalog(backend.port, player.token, agent630)), undefined);
   } finally {
     backend.close();
   }
