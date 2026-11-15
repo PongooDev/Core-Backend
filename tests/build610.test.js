@@ -311,7 +311,7 @@ test("6.10's modes: 6.02's lobby with 50v50 a default playlist, two more Disco D
     assert.equal(inOriginalWindow("discoDomination602", v602, at("2018-10-12T12:00:00Z"), dated), true);
     assert.equal(inOriginalWindow("discoDomination602", v602, at("2018-10-16T00:00:00Z"), dated), false);
     assert.equal(inOriginalWindow("playgroundV2", v610, at("2018-10-20T12:00:00Z"), dated), true, "Playground through Season 6");
-    assert.equal(inOriginalWindow("blitzSeason6Solo", v610, at("2018-10-20T12:00:00Z"), dated), false, "nothing dates it");
+    assert.equal(inOriginalWindow("blitzSeason6Solo", v610, at("2018-10-20T12:00:00Z"), dated), false, "Blitz!'s Original dates are 6.22's");
   });
 });
 

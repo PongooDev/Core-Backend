@@ -426,9 +426,9 @@ const build602 = 4461277;
 // weapons ... Brought in the side dance floors closer to the Storm edge. Reduced max respawn distance by 20%": the mode
 // runs on, so 6.02's Disco Domination entry covers 6.10, on by default; with Original dates from Update v6.10's day, 16
 // October, to Update v6.20's, 24 October (🟡 the end: the day Epic took the mode down isn't in the notes). The 40 a side and
-// Alt Disco Dominations, Blitz! v2 and the glider redeploy defaults are there by their switches (🟡 nothing found names or
-// dates them in 6.10's days). 50v50, Playground, Soaring 50's, the 32 a side Disco Domination and High Explosives are as on
-// 6.02.
+// Alt Disco Dominations, Blitz! v2 and the glider redeploy defaults are there by their switches (🟡 nothing found names them
+// in 6.10's days; Blitz!'s Original dates are 6.22's, below). 50v50, Playground, Soaring 50's, the 32 a side Disco
+// Domination and High Explosives are as on 6.02.
 const build6100 = 4464155;
 const build6101 = 4476098;
 const build610 = 4480234;
@@ -488,7 +488,9 @@ const build610 = 4480234;
 //   mode's place: Fortnitemares' replacement (#348) is 6.20's and 6.21's Deimos playlists' alone. 6.22's Cube Monster
 //   spawners no longer wait for a calendar flag: its Deimos_Mission_RiftSpawners_Static and _Dynamic set no
 //   RequiredEventFlag (6.21's named POI0).
-// Update v6.22's Blitz! is 6.10's Blitz playlists (36, 37, 19), there by their switches (🟡 its days aren't in the notes).
+// Core-Backend #367: Update v6.22's Blitz! is 6.10's Blitz playlists (36, 37, 19). It returned with the update on 6 November
+// and was removed on the 9th, when Disco Domination returned (Dexerto, 9 November: three days after it came back), so its
+// Original dates are 6 November to the 9th, there by its switches otherwise.
 // 6.30 (CL-4573096, Update v6.30, 14 November 2018, and Content Update v6.30, 20 November; its files are dated 19 November):
 // Athena/Playlists (every playlist asset of its 9 paks, against 6.22's) drops Blitz! (36, 37, 19), keeps the rest (Team
 // Terror's Playlist_Deimos_50v50 among them, its teams, modifiers and tables 6.22's, and Playlist_Disco_32), brings back 6.20's Playlist_Disco_32_Alt
@@ -511,7 +513,9 @@ const build610 = 4480234;
 // drops Food Fight (Barrier), Wild West (WW) and Team Terror (Playlist_Deimos_50v50; only Deimos' game data stays), keeps
 // the rest (50v50, Soaring 50's, Disco Domination 32 v 32 and its Alt, High Explosives, Playground, the Showdown and
 // ShowdownAlt tournaments) and adds one mode, which its shipped DefaultGame.ini doesn't list (its lobby list is 6.30's;
-// Epic's hotfix turned it on):
+// Epic's hotfix turned it on). Core-Backend #367: High Explosives returned with this update too (Dexerto's 29 November
+// guide has it in 6.31; 🟡 the notes don't date its return), so its Original dates are the update's day, 27 November, to the
+// season's end:
 // - Team Rumble, Respawn/Playlist_Respawn_24 (280, "Two large teams fight for the Victory Royale in an action-packed mode
 //   where the first team to get 100 eliminations wins!"): 2 teams of 20 (MinPlayers 24, MaxPlayers 40, squads of 4,
 //   bIsLargeTeamGame, a Battle Bus for each team, WinConditionType MutatorControlledGoalScore, DBNO NotWhenRespawning),
@@ -528,6 +532,10 @@ const build630 = 4573096;
 const build631 = 4573279;
 const season6Window = [{ builds: [build6000, build631], start: "2018-09-27", end: "2018-12-06" }];
 const teamTerrorWindow = [{ builds: [build622, build622], start: "2018-11-06", end: "2018-11-14" }];
+// Blitz! v2 returned in Update v6.22 on 6 November 2018 and was removed on the 9th, when Disco Domination returned.
+const blitzSeason6Window = [{ builds: [build622, build622], start: "2018-11-06", end: "2018-11-09" }];
+// High Explosives returned with Update v6.31 on 27 November 2018 and ran to the season's end.
+const highExplosivesSeason6Window = [{ builds: [build631, build631], start: "2018-11-27", end: "2018-12-06" }];
 const foodFightWindow = [{ builds: [build630, build630], start: "2018-11-14", end: "2018-11-20" }];
 const wildWestWindow = [{ builds: [build630, build630], start: "2018-11-20", end: "2018-11-27" }];
 const teamRumbleWindow = [{ builds: [build631, build631], start: "2018-11-27", end: "2018-12-06" }];
@@ -896,9 +904,11 @@ export const ltms = [
     advertise: "New",
     teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two, for 24 to 64 players (Playlist_Disco_32, 6.02's)." },
   { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build631], seasons: [6],
-    teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Playlist_HighExplosives_Solo on the Fly Explosives tables, 6.02's)." },
+    teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Playlist_HighExplosives_Solo on the Fly Explosives tables, 6.02's).",
+    original: highExplosivesSeason6Window },
   { id: "highExplosivesSeason6Squads", name: "High Explosives (Season 6, Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build6020, build631], seasons: [6],
-    teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables, 6.02's)." },
+    teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables, 6.02's).",
+    original: highExplosivesSeason6Window },
   { id: "steadyStormSeason6Solo", name: "Steady Storm (Season 6, Solo)", playlistId: 160, playlistName: "Playlist_Steady_Solo", eventFlag: null, builds: [build6020, build602], seasons: [6],
     teams: "100 Teams × 1", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." },
   { id: "steadyStormSeason6Duos", name: "Steady Storm (Season 6, Duos)", playlistId: 161, playlistName: "Playlist_Steady_Duos", eventFlag: null, builds: [build6020, build602], seasons: [6],
@@ -913,11 +923,14 @@ export const ltms = [
     advertise: "New",
     teams: "2 Teams × 50", description: "Disco Domination on its other modifier, DiscoGameModifierNoA (Playlist_Disco_Alt, 6.10's)." },
   { id: "blitzSeason6Solo", name: "Blitz! v2 (Season 6, Solo)", playlistId: 36, playlistName: "Playlist_Blitz_Solo", eventFlag: null, builds: [build6100, build622], seasons: [6],
-    teams: "100 Teams × 1", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
+    teams: "100 Teams × 1", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's).",
+    original: blitzSeason6Window },
   { id: "blitzSeason6Duos", name: "Blitz! v2 (Season 6, Duos)", playlistId: 37, playlistName: "Playlist_Blitz_Duos", eventFlag: null, builds: [build6100, build622], seasons: [6],
-    teams: "100 Teams × 2", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
+    teams: "100 Teams × 2", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's).",
+    original: blitzSeason6Window },
   { id: "blitzSeason6Squads", name: "Blitz! v2 (Season 6, Squads)", playlistId: 19, playlistName: "Playlist_Blitz_Squad", eventFlag: null, builds: [build6100, build622], seasons: [6],
-    teams: "100 Teams × 4", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
+    teams: "100 Teams × 4", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's).",
+    original: blitzSeason6Window },
   { id: "gliderRedeploySolo", name: "Solo with glider redeploy", playlistId: 223, playlistName: "Playlist_GRD_Solo", eventFlag: null, builds: [build6100, build610], seasons: [6],
     teams: "100 Teams × 1", description: "Solo with glider redeploy: press Jump when falling from a height (Playlist_GRD_Solo, 6.10's)." },
   { id: "gliderRedeployDuos", name: "Duos with glider redeploy", playlistId: 224, playlistName: "Playlist_GRD_Duos", eventFlag: null, builds: [build6100, build610], seasons: [6],

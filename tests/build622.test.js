@@ -187,6 +187,11 @@ test("Team Terror: 6.22's Playlist_Deimos_50 (450), two teams of 32 in squads, o
     assert.equal(inOriginalWindow("teamTerror", v622, at("2018-11-06T00:00:00Z"), dated), true);
     assert.equal(inOriginalWindow("teamTerror", v622, at("2018-11-13T23:59:00Z"), dated), true);
     assert.equal(inOriginalWindow("teamTerror", v622, at("2018-11-14T00:00:00Z"), dated), false, "Update v6.30's day");
+    // Blitz! returned with 6.22 on 6 November and was removed on the 9th, when Disco Domination returned.
+    assert.equal(inOriginalWindow("blitzSeason6Solo", v622, at("2018-11-05T23:59:00Z"), dated), false);
+    assert.equal(inOriginalWindow("blitzSeason6Solo", v622, at("2018-11-06T00:00:00Z"), dated), true);
+    assert.equal(inOriginalWindow("blitzSeason6Solo", v622, at("2018-11-08T23:59:00Z"), dated), true);
+    assert.equal(inOriginalWindow("blitzSeason6Solo", v622, at("2018-11-09T00:00:00Z"), dated), false, "Disco Domination's return");
   });
   // The player bots: a mode of its own in the Player bots card, on by default; off, a Team Terror match has no panel bots.
   assert.ok(botModeIds.includes("teamTerror"));

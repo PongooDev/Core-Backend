@@ -163,6 +163,11 @@ test("Team Rumble: 6.31's Playlist_Respawn_24 (280), two teams of 20 in squads, 
     assert.equal(inOriginalWindow("teamRumble", v631, at("2018-11-26T23:59:00Z"), dated), false);
     assert.equal(inOriginalWindow("teamRumble", v631, at("2018-11-27T00:00:00Z"), dated), true);
     assert.equal(inOriginalWindow("teamRumble", v631, at("2018-12-06T00:00:00Z"), dated), false, "the season's end");
+    // High Explosives returned with 6.31 on 27 November and ran to the season's end.
+    assert.equal(inOriginalWindow("highExplosivesSeason6Solo", v631, at("2018-11-26T23:59:00Z"), dated), false);
+    assert.equal(inOriginalWindow("highExplosivesSeason6Solo", v631, at("2018-11-27T00:00:00Z"), dated), true);
+    assert.equal(inOriginalWindow("highExplosivesSeason6Solo", v631, at("2018-12-05T23:59:00Z"), dated), true);
+    assert.equal(inOriginalWindow("highExplosivesSeason6Solo", v631, at("2018-12-06T00:00:00Z"), dated), false, "the season's end");
   });
   assert.ok(botModeIds.includes("teamRumble"));
   assert.equal(botModeOf("playlist_respawn_24", v631), "teamRumble");
