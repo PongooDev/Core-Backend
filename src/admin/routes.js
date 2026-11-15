@@ -80,7 +80,8 @@ import { rewardItem } from "../friendcodes/rewards.js";
 import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
 import { giftingFriendDays } from "../store/gifting.js";
 import { showItemImages } from "../services/portal/images.js";
-import { defaultInGameRuleset, defaultRuleset, leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
+import { defaultInGameRuleset, defaultRuleset, leaderboardOf, matchesInWindow, maxWindows, rulesets, scoringOf, statusOf, tournamentPlaylists,
+  windowsOf } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
 import { payEvent, payoutLines, settleEvent, unknownPayoutItems } from "../tournaments/payouts.js";
 
@@ -2571,6 +2572,14 @@ export function adminRoutes(context) {
   // placement table and points an elimination, or back to its preset's.
   const tournamentView = (event) => ({ ...event, players: undefined, paid: undefined, status: statusOf(event), scoring: event.scoring ?? null,
     servers: event.servers ?? [], bots: event.bots ?? null,
+    // Its times (#364, tournaments/store.js windowsOf): its own one, or the admin's, each with how it stands now and the
+    // matches played in it (a time with matches can't be removed).
+    windows: windowsOf(event).map((window) => {
+      const now = Date.now();
+      const status = event.endedAt || (window.endsAt && Date.parse(window.endsAt) <= now) ? "ended"
+        : window.startsAt && Date.parse(window.startsAt) > now ? "scheduled" : "running";
+      return { ...window, status, matches: matchesInWindow(event, window.id) };
+    }),
     // Its prizes (#361, tournaments/payouts.js), as they read, and who was given which (account: [payoutKey]).
     payoutTable: event.payoutTable ?? [], payoutLines: payoutLines(event),
     paidPlayers: Object.fromEntries(Object.entries(event.paid ?? {}).map(([accountId, keys]) => [accountId, Object.keys(keys)])),
@@ -2592,6 +2601,8 @@ export function adminRoutes(context) {
     // The preset a new event starts on (#427): Epic's in-game one on an in-game playlist, whose tiers are a point each as
     // the match HUD's running total counts them.
     defaultRulesets: { inGame: defaultInGameRuleset, other: defaultRuleset },
+    // The most times an event can have (#364): as many as the game's EVENT DETAILS lists.
+    maxWindows,
     events: context.tournaments.list().map(tournamentView)
   });
   // The game's lobbies ask again for their events (#336, tournaments/showdown.js createShowdownRefresh).
@@ -2694,6 +2705,21 @@ export function adminRoutes(context) {
     else if (!settleEvent(context, event.id)) payEvent(context, event);
     tournamentsChanged();
     res.json({ event: tournamentView(context.tournaments.get(event.id)), ...tournamentsPayload() });
+  });
+  // An event's times (#364, tournaments/store.js setWindows): body {windows: [{id (one it has; left out for a new one),
+  // startsAt, endsAt}]}, the whole list: a time left out is removed (refused while it has matches). The lobbies ask
+  // again, and the lobby refresh and the placement prizes' timer follow the new times.
+  router.post("/admin/api/tournaments/:id/windows", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.setWindows(req.params.id, req.body?.windows);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}) times: ${windowsOf(event).map(({ startsAt, endsAt }) => `${startsAt ?? "its creation"} to ${endsAt ?? "its end"}`).join("; ")}`);
+    tournamentsChanged();
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
   });
   router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));
   router.post("/admin/api/tournaments/:id/end", tournamentAction("end", "ended"));

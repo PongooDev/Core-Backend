@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
 import { newsImageUrl } from "../services/content/images.js";
 import { payoutLines, rewardTableOf } from "./payouts.js";
-import { matchPoints, scoringOf, statusOf } from "./store.js";
+import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windowsOf } from "./store.js";
 
 // 6.10's in-game tournaments (CL-4464155, CL-4476098 and CL-4480234; Update v6.10, 16 October 2018): "A new 'Events' tab
 // has been added along with several in-game tournaments ... Each tournament has a series of scheduled dates and times
@@ -129,13 +129,33 @@ import { matchPoints, scoringOf, statusOf } from "./store.js";
 // - The game server's own report, ReportTournamentStatsUrl (POST /api/game/v2/events/reporttournamentstats, an
 //   FMcpTournamentStats: tournamentId, eventWindowId, teamAccountIds, matchId, numTeamEliminations, finalTeamPlacement),
 //   has no caller left in the client's exe (the dedicated server's code is compiled out of it).
+// - A tournament of several windows (Core-Backend #364; "Each tournament has a series of scheduled dates and times"). The
+//   screens take a window each (UFortShowdownDetailView::SetTournament(TournamentId, EventId); read in 6.31's paks,
+//   UI/Frontend/Showdown, and the SDKs of 6.10 to 6.31, whose FShowdownTournament, FShowdownEventWindow and
+//   FPlayerEventHistory are the same; 6.31's FShowdownEventData adds MatchCap):
+//   - The EVENT DETAILS side (ShowdownTournamentPosterBack's EventPopulateEventWindowData) lists GetTournamentEvents, every
+//     window's id in the order served, a TournamentDateEntry each: the window's begin date and "{StartTime} - {EndTime}",
+//     struck through in shadow_color once its state (GetEventState) is CompletedParticipated or CompletedNotPartipated. One
+//     column up to 7 windows, two past that (DateRowMax 8). Its MetaDate line is schedule_info; GetTournamentDateText is
+//     the tournament's own beginTime to endTime, by month.
+//   - TournamentEventWindowDetails shows one window: its date and times, and GetEventResultsSummary (that window's
+//     history: TOTAL POINTS against the pin score, matches, Victory Royales, placement and elimination points). So the
+//     game keeps each window's score apart, as Epic's sessions were ("Score enough points during any scheduled event
+//     session and you'll earn a golden pin"): the tournament's pin is its best window's (GetTournamentBestPinState and
+//     GetTournamentBestScore, by their names; not read in the exe), and the match HUD's running total starts from the
+//     current window's score (GetCurrentEventScore).
+//   - The current event, the lobby's Showdown state, matchmaking and the two timers (above) already go by window: the
+//     next window's countdown, its playlist turned on, PLAY waiting for its beginTime. Between two windows a ticket names
+//     none live and is refused as not active.
 //
 // What Core serves. Epic's tournaments (their names, days, scoring and art) were its services' data, and none of it is in
 // the build's files, so there is no schedule to replay. The tournaments are the admin panel's own (tournaments/store.js,
 // its Tournaments tab): an event made on one of the three Showdown playlists is listed in the Events tab of the builds
-// that have the playlist, as a tournament of one event window (its start and end; from its creation until it is ended
-// when it has none), with the event's scoring as reward tiers, its name and rules as the tile's texts, and each player's
-// points from the matches the game server reports (services/fortnite/battleroyale.js recordresults, by the playlist). With
+// that have the playlist, as a tournament of its event windows (eventWindowsOf: by default one, its start and end, from
+// its creation until it is ended when it has none, served as it always was; or the admin's times, #364, each a window
+// with the same rules), with the event's scoring as reward tiers, its name and rules as the tile's texts, and each player's
+// points from the matches the game server reports (services/fortnite/battleroyale.js recordresults, by the playlist), a
+// history for each window they played in. The event's leaderboard and prizes count every window (tournaments/store.js). With
 // no such event the list is empty, which is what a 6.10 lobby gets by default: the tab is there, as shipped, with no
 // tournament on it. Epic's pictures were on its CDN, not in the build: an event shows the admin's pictures, or Core's
 // own, made from the build's own textures (showdownImageSlots). The event's prizes (Core-Backend #361,
@@ -237,11 +257,24 @@ export function showdownEvents(build, now = new Date(), store = storeProvider())
   }).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 }
 
-// An event's ids as the client is given them: the tournament's is the event's, and its one window's the same.
+// An event's ids as the client is given them: the tournament's is the event's, and so is its own window's (each window the
+// admin added has its own, tournaments/store.js).
 export const tournamentIdOf = (event) => event.id;
-export const windowIdOf = (event) => event.id;
-// An event's window: from its start (its creation without one) to its end (never without one).
-export const windowOf = (event) => ({ beginTime: event.startsAt ?? event.createdAt, endTime: endOf(event) ?? noEnd });
+// An event's windows as the client is given them, in order: [{id, beginTime, endTime}], each from its start (the event's
+// creation without one) to its end (never without one). An event the admin ended: its one window ends then, as it always
+// did; of several (#364), the one running then ends then (one already over keeps its end) and those not begun by then are
+// left out, never having run (the first is always kept).
+export function eventWindowsOf(event) {
+  const windows = windowsOf(event);
+  const ended = event.endedAt ? Date.parse(event.endedAt) : null;
+  const shown = ended === null ? windows : windows.filter((window, index) => !index || Date.parse(window.startsAt ?? event.createdAt) < ended);
+  return shown.map((window) => ({
+    id: window.id,
+    beginTime: window.startsAt ?? event.createdAt,
+    endTime: ended === null ? window.endsAt ?? noEnd
+      : windows.length > 1 && window.endsAt && Date.parse(window.endsAt) <= ended ? window.endsAt : event.endedAt
+  }));
+}
 
 // An event's scoring as the client's reward tiers. Placement: the event's table gives a place the points of the first
 // bracket it is within; a tier is earned the moment the team is that high, so each bracket's tier holds what it adds to
@@ -268,10 +301,13 @@ const scoringRulesOf = (event) => {
 // The tournament as FShowdownTournament. It begins when it is announced (the client's live list, above); its window has
 // the event's own start. The window's countdown begins with the announcement too (Core-Backend #336): the lobby is in its
 // Showdown state (the box above PLAY counting down to the start, then to the end) from countdownBeginTime, worked out only
-// when the lobby refreshes (above), so a countdown from the start itself would want a refresh at that moment.
+// when the lobby refreshes (above), so a countdown from the start itself would want a refresh at that moment. Each window
+// (#364) counts down from the announcement the same way: between two, the lobby counts down to the next. The tournament
+// ends with its last window; every window has the event's rules and prizes.
 export function tournamentOf(event) {
   const ltm = showdownPlaylistOf(event);
-  const window = windowOf(event);
+  const windows = eventWindowsOf(event);
+  const eventData = { playlistId: ltm.playlistName, scoringRules: scoringRulesOf(event), rewardTable: rewardTableOf(event) };
   return {
     tournamentId: tournamentIdOf(event),
     regions: [],
@@ -279,30 +315,34 @@ export function tournamentOf(event) {
     displayDataId: tournamentIdOf(event),
     announcementTime: event.createdAt,
     beginTime: event.createdAt,
-    endTime: window.endTime,
-    eventWindows: [{
-      eventWindowId: windowIdOf(event),
+    endTime: windows.at(-1).endTime,
+    eventWindows: windows.map((window) => ({
+      eventWindowId: window.id,
       countdownBeginTime: Date.parse(event.createdAt) < Date.parse(window.beginTime) ? event.createdAt : window.beginTime,
       beginTime: window.beginTime,
       endTime: window.endTime,
       bIsTBD: false,
-      eventData: { playlistId: ltm.playlistName, scoringRules: scoringRulesOf(event), rewardTable: rewardTableOf(event) }
-    }]
+      eventData
+    }))
   };
 }
 
-// A player's histories in an event (FPlayerEventHistory), one for each team they played it with (alone: themselves): the
-// matches' ids, the team, and the points with what they were for, "<stat>:<tier's key>" by how often the tier was earned.
+// A player's histories in an event (FPlayerEventHistory), one for each window and team they played it with (alone:
+// themselves): the matches' ids, the team, and the points with what they were for, "<stat>:<tier's key>" by how often the
+// tier was earned. A window's histories hold only its own matches (#364): the game shows each window's score.
 export function historiesOf(event, accountId) {
   const matches = event.players?.[accountId]?.matches ?? [];
   if (!matches.length) return [];
   const rules = scoringOf(event);
   const { placement, eliminations } = showdownTiers(event);
+  const windowIds = new Set(eventWindowsOf(event).map(({ id }) => id));
   const teams = new Map();
   for (const match of matches) {
+    const windowId = matchWindowOf(event, match);
+    if (!windowIds.has(windowId)) continue;
     const team = [...new Set([accountId, ...(Array.isArray(match.team) ? match.team : [])])].sort();
-    const key = team.join(",");
-    const history = teams.get(key) ?? { team, matchIds: [], points: 0, breakdown: {} };
+    const key = `${windowId}|${team.join(",")}`;
+    const history = teams.get(key) ?? { windowId, team, matchIds: [], points: 0, breakdown: {} };
     teams.set(key, history);
     history.matchIds.push(match.matchId ?? `${event.id}-${history.matchIds.length + 1}`);
     const add = (stat, tier, points) => {
@@ -316,9 +356,9 @@ export function historiesOf(event, accountId) {
       + (index === earned.length - 1 ? rules.pointsPerElimination * Math.max(0, match.kills - maxEliminationTiers) : 0)));
     history.points += matchPoints(rules, match);
   }
-  return [...teams.values()].map(({ team, matchIds, points, breakdown }) => ({
+  return [...teams.values()].map(({ windowId, team, matchIds, points, breakdown }) => ({
     tournamentId: tournamentIdOf(event),
-    eventWindowId: windowIdOf(event),
+    eventWindowId: windowId,
     matchIds,
     teammateIds: team,
     payload: { pointsEarned: points, pointBreakdown: breakdown }
@@ -333,8 +373,8 @@ export function tournamentAndHistory(accountId, build, now = new Date(), store =
 
 // GetEventWindowHistoryUrl's answer: the player's histories in one window, or null for a window the build isn't offered.
 export function eventWindowHistory(accountId, eventWindowId, build, now = new Date(), store = storeProvider()) {
-  const event = showdownEvents(build, now, store).find((own) => windowIdOf(own) === eventWindowId);
-  return event ? historiesOf(event, accountId) : null;
+  const event = showdownEvents(build, now, store).find((own) => eventWindowsOf(own).some(({ id }) => id === eventWindowId));
+  return event ? historiesOf(event, accountId).filter((history) => history.eventWindowId === eventWindowId) : null;
 }
 
 const day = (iso) => new Date(iso).toISOString().slice(0, 16).replace("T", " ");
@@ -346,7 +386,10 @@ function rulesText(event) {
   const steps = (rules.eliminationPoints ?? []).length
     ? `, ${rules.eliminationPoints.map(([count, points]) => `${points} at ${count} eliminations`).join(", ")}` : "";
   const prizes = payoutLines(event);
-  return `Points for placement${elims}${steps}. ${counted}${prizes.length ? ` Prizes: ${prizes.join("; ")}.` : ""}`.replace(/\s+/g, " ").trim();
+  // An event of several times (#364): the game scores each session on its own, the leaderboard and prizes all of them.
+  const sessions = eventWindowsOf(event).length;
+  const across = sessions > 1 ? ` ${sessions} sessions: each one's points show on their own, and the leaderboard and prizes add them all up.` : "";
+  return `Points for placement${elims}${steps}. ${counted}${across}${prizes.length ? ` Prizes: ${prizes.join("; ")}.` : ""}`.replace(/\s+/g, " ").trim();
 }
 // The content page's tournamentinformation for a build (services/content/pages.js): an entry for each listed event,
 // keyed by its displayDataId, with its texts, the colours (showdownColors) and its pictures (showdownImageUrl; origin is
@@ -355,8 +398,11 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
   if (!hasShowdown(build)) return undefined;
   const tournaments = showdownEvents(build, now, store).map((event) => {
     const ltm = showdownPlaylistOf(event);
-    const { beginTime, endTime } = windowOf(event);
-    const until = endTime === noEnd ? "until it is ended" : `to ${day(endTime)} UTC`;
+    // The whole span; an event of several times (#364) says how many (EVENT DETAILS lists each).
+    const windows = eventWindowsOf(event);
+    const { beginTime } = windows[0];
+    const { endTime } = windows.at(-1);
+    const until = `${endTime === noEnd ? "until it is ended" : `to ${day(endTime)} UTC`}${windows.length > 1 ? `, ${windows.length} sessions` : ""}`;
     // 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow, _SquadShow) are named the Showdown ones' way.
     // 6.30 and 6.31's Pop-Up Cup playlists are Playlist_ShowdownAlt_Solo, _Duos and _Squads (events/ltms.js): their
     // mode is the suffix too, not the whole playlist name (Core-Backend #357).
@@ -384,7 +430,7 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     _activeDate: "2018-10-16T08:00:00.000Z",
     lastModified: new Date(Math.max(Date.parse("2026-11-13T00:00:00.000Z"),
       ...showdownEvents(build, now, store).map((event) => Math.max(Date.parse(event.endedAt ?? event.createdAt), event.imagesSetAt ? Date.parse(event.imagesSetAt) : 0,
-      event.payoutsSetAt ? Date.parse(event.payoutsSetAt) : 0)))).toISOString(),
+      event.payoutsSetAt ? Date.parse(event.payoutsSetAt) : 0, event.windowsSetAt ? Date.parse(event.windowsSetAt) : 0)))).toISOString(),
     _locale: "en-US"
   };
 }
@@ -399,10 +445,15 @@ export const showdownImagesFor = (build, now = new Date(), store = storeProvider
 // lobby turns on. null when there is none.
 export function currentShowdownEvent(build, now = new Date(), store = storeProvider()) {
   let current = null;
+  let begins = Infinity;
   for (const event of showdownEvents(build, now, store)) {
-    const { beginTime, endTime } = windowOf(event);
-    if (now.getTime() > Date.parse(endTime)) continue;
-    if (!current || Date.parse(beginTime) < Date.parse(windowOf(current).beginTime)) current = event;
+    for (const { beginTime, endTime } of eventWindowsOf(event)) {
+      if (now.getTime() > Date.parse(endTime)) continue;
+      if (Date.parse(beginTime) < begins) {
+        current = event;
+        begins = Date.parse(beginTime);
+      }
+    }
   }
   return current;
 }
@@ -410,15 +461,17 @@ export function currentShowdownEvent(build, now = new Date(), store = storeProvi
 // A ticket for a Showdown playlist (services/matchmaking/ticket.js): the running event it queues for, or the refusal as
 // Epic's service named it (the client has a text for each: 0x2EB3550). tournamentId and windowId are the ticket's
 // player.option.tournamentId and player.option.windowId ("" when the client sent none: it found no live tournament, as
-// before the lobby has the list). partySize is the ticket's party.
+// before the lobby has the list). partySize is the ticket's party. Of an event of several times (#364), the window named
+// must be the one running.
 export function showdownTicket({ playlistId, tournamentId = "", windowId = "", partySize, build }, now = new Date(), store = storeProvider()) {
   const refuse = (code, message) => ({ error: { code: `errors.com.epicgames.fortnite.${code}`, message } });
   const events = showdownEvents(build, now, store).filter((event) => event.playlistId === Number(playlistId));
   const named = tournamentId ? events.find((event) => tournamentIdOf(event) === tournamentId) : null;
   if (tournamentId && !named) return refuse("invalid_tournament_id", "Tournament does not exist.");
-  if (named && windowId && windowIdOf(named) !== windowId) return refuse("invalid_event_window_id", `Tournament ${tournamentId} has no event window ${windowId}.`);
+  if (named && windowId && !eventWindowsOf(named).some(({ id }) => id === windowId)) return refuse("invalid_event_window_id", `Tournament ${tournamentId} has no event window ${windowId}.`);
   const event = named ?? events.find((own) => statusOf(own, now) === "running");
   if (!event || statusOf(event, now) !== "running") return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
+  if (named && windowId && runningWindowOf(event, now)?.id !== windowId) return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
   const ltm = showdownPlaylistOf(event);
   const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4,
     scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4 }[ltm.id];
@@ -446,9 +499,10 @@ export function showdownRuntimeOptions(build, settingsValue, now = new Date(), s
 // message com.epicgames.tournaments.complete (above), and every answer refreshes the lobby: the playlist turned on, its
 // Showdown state, the box above PLAY. Its own timers can't do it (they fire within a minute of each list). So the backend
 // sends that message to every online player whose last request came from such a build:
-// - changed(): when an event is made, ended, deleted or given pictures (admin/routes.js);
-// - at each listed event's start and end, with one engine timer (setTimeout) for the next of those moments, set again
-//   after it fires and after each change. A timer longer than setTimeout allows is cut short and only sets the next one.
+// - changed(): when an event is made, ended, deleted, given pictures or given new times (admin/routes.js);
+// - at each listed event's window's start and end (each of its times, #364), with one engine timer (setTimeout) for the
+//   next of those moments, set again after it fires and after each change. A timer longer than setTimeout allows is cut
+//   short and only sets the next one.
 // xmpp: the XMPP service (onlineAccounts, notify); accounts: the account store (lastBuild).
 const maxTimerMs = 2 ** 31 - 1;
 // The players' clocks are put right by the MCP's server time, but not to the millisecond: the message goes a second late.
@@ -465,10 +519,11 @@ export function createShowdownRefresh({ store, xmpp, accounts, now = () => new D
     }
     return sent;
   };
-  // The next start or end, after at, of an event any build lists (an in-game event not ended), as epoch ms, or null.
+  // The next start or end, after at, of a window of an event any build lists (an in-game event not ended), as epoch ms,
+  // or null.
   const nextEdge = (at) => {
     const edges = (store?.list?.() ?? []).filter((event) => showdownPlaylistOf(event) && !event.endedAt)
-      .flatMap((event) => [event.startsAt, event.endsAt]).filter(Boolean).map(Date.parse).filter((time) => time > at);
+      .flatMap((event) => windowsOf(event).flatMap((window) => [window.startsAt, window.endsAt])).filter(Boolean).map(Date.parse).filter((time) => time > at);
     return edges.length ? Math.min(...edges) : null;
   };
   const schedule = () => {

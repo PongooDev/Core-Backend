@@ -223,6 +223,86 @@ export function validatePayoutTable(table) {
 const maxEvents = 100;
 const maxName = 64;
 const isDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
+const newId = () => crypto.randomUUID().replaceAll("-", "");
+
+// An event's times (Core-Backend #364). Epic's in-game tournaments ran in sessions, each an event window of the
+// tournament with its own start and end (FShowdownTournament's EventWindows of FShowdownEventWindow, the same in the SDKs
+// of 6.10 to 6.31; tournaments/showdown.js has what the client does with them). An event has one window by default: its
+// startsAt and endsAt (both optional: from its creation, until it is ended), whose id is the event's. The admin can give it
+// more (setWindows): event.windows is then [{id, startsAt, endsAt}], in order, each with a start and an end, none
+// overlapping the next, at most maxWindows; the event's own window keeps the event's id, so the matches already played
+// stay in it (a window made with the event, or replacing one nothing was played in, takes it).
+// event.startsAt and event.endsAt are then the first window's start and the last one's end, the event's whole span. The
+// event takes matches only within a window (isRunning), and each match is noted with the window it was played in
+// (match.window; a match without one is in the window with the event's id). The points stay the event's: its
+// leaderboard, counted matches and prizes take every window's matches; the game shows each window's own (historiesOf).
+// - maxWindows: the EVENT DETAILS side lists a date for each window (ShowdownTournamentPosterBack's
+//   EventPopulateEventWindowData, a TournamentDateEntry for each of GetTournamentEvents), in one column up to 7 and two
+//   columns past that, with DateRowMax 8: 16 fill it.
+export const maxWindows = 16;
+// The event's windows as set, in order: its own one, or the admin's (event.windows). Copies.
+export const windowsOf = (event) => (event.windows?.length ? event.windows : [{ id: event.id, startsAt: event.startsAt ?? null, endsAt: event.endsAt ?? null }])
+  .map((window) => ({ ...window }));
+const within = (window, now) => (!window.startsAt || Date.parse(window.startsAt) <= now.getTime()) && (!window.endsAt || Date.parse(window.endsAt) > now.getTime());
+// The window a match played now is in, or null (before, between or after them, or the event ended).
+export function runningWindowOf(event, now = new Date()) {
+  if (event.endedAt) return null;
+  return windowsOf(event).find((window) => within(window, now)) ?? null;
+}
+// The window a match was played in.
+export const matchWindowOf = (event, match) => match?.window ?? event.id;
+// How many matches were played in a window, every player's.
+export const matchesInWindow = (event, windowId) => Object.values(event.players ?? {})
+  .reduce((total, player) => total + (player.matches ?? []).filter((match) => matchWindowOf(event, match) === windowId).length, 0);
+
+// Checks and normalises an event's times: [{id (a window it has, kept; left out for a new one), startsAt, endsAt}], 1 to
+// maxWindows, sorted by start. With one, both dates are optional, as an event's own; with more, each has both, and none
+// begins before the one before it ends. ids: the event's windows' ids (none for a new event). Throws an Error with the
+// reason.
+export function validateWindows(windows, ids = []) {
+  if (!Array.isArray(windows) || !windows.length) throw new Error("An event has at least one time.");
+  if (windows.length > maxWindows) throw new Error(`An event has at most ${maxWindows} times (the game's EVENT DETAILS lists that many).`);
+  const seen = new Set();
+  const list = windows.map((window, index) => {
+    const name = `Time ${index + 1}`;
+    if (!window || typeof window !== "object" || Array.isArray(window)) throw new Error(`${name} is {startsAt, endsAt}.`);
+    const id = window.id === undefined || window.id === null || window.id === "" ? null : String(window.id);
+    if (id !== null && !ids.includes(id)) throw new Error(`${name}: the event has no time ${id}.`);
+    if (id !== null && seen.has(id)) throw new Error(`${name} is listed twice.`);
+    if (id !== null) seen.add(id);
+    for (const key of ["startsAt", "endsAt"]) {
+      if (window[key] !== undefined && window[key] !== null && window[key] !== "" && !isDate(window[key])) throw new Error(`${name}'s ${key === "startsAt" ? "start" : "end"} isn't a date.`);
+    }
+    const startsAt = window.startsAt ? new Date(window.startsAt).toISOString() : null;
+    const endsAt = window.endsAt ? new Date(window.endsAt).toISOString() : null;
+    if (windows.length > 1 && (!startsAt || !endsAt)) throw new Error(`${name} needs a start and an end: an event of several times has both for each.`);
+    if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) throw new Error(`${name} ends after it starts.`);
+    return { id, startsAt, endsAt };
+  }).sort((a, b) => (a.startsAt && b.startsAt ? Date.parse(a.startsAt) - Date.parse(b.startsAt) : 0));
+  list.forEach((window, index) => {
+    if (index && Date.parse(window.startsAt) < Date.parse(list[index - 1].endsAt)) throw new Error(`Two times overlap: one starts at ${window.startsAt}, before the one before it ends (${list[index - 1].endsAt}).`);
+  });
+  return list;
+}
+// Puts a checked list of windows on an event: one with the event's id is stored as the event's own startsAt and endsAt,
+// as an event of one time always was; more as event.windows, with the span in startsAt and endsAt. A window without an id
+// gets one: the event's, when no window keeps it (nothing was played in it, setWindows), else a new one.
+function placeWindows(event, list) {
+  const windows = list.map((window) => ({ ...window }));
+  if (!windows.some((window) => window.id === event.id)) {
+    const first = windows.find((window) => window.id === null);
+    if (first) first.id = event.id;
+  }
+  for (const window of windows) window.id ??= newId();
+  if (windows.length === 1 && windows[0].id === event.id) {
+    delete event.windows;
+  } else {
+    event.windows = windows;
+  }
+  event.startsAt = windows[0].startsAt;
+  event.endsAt = windows.at(-1).endsAt;
+  return event;
+}
 
 // An event's leaderboard: its players by points, then wins, eliminations and average placement (lower is better), as the
 // contest rules break ties. Ranks are 1 up, a tie on all four sharing one.
@@ -254,15 +334,15 @@ export function leaderboardOf(event, nameOf = (accountId) => accountId) {
   });
 }
 
-// Whether an event takes a match now: not ended, and within its start and end when it has them.
-export function isRunning(event, now = new Date()) {
-  if (event.endedAt) return false;
-  if (event.startsAt && Date.parse(event.startsAt) > now.getTime()) return false;
-  if (event.endsAt && Date.parse(event.endsAt) <= now.getTime()) return false;
-  return true;
+// Whether an event takes a match now: not ended, and within one of its windows (its start and end when it has them).
+export const isRunning = (event, now = new Date()) => runningWindowOf(event, now) !== null;
+// ended: ended by the admin or past its last window's end; running: within a window; scheduled: before its first window
+// or between two (#364).
+export function statusOf(event, now = new Date()) {
+  const last = windowsOf(event).at(-1);
+  if (event.endedAt || (last.endsAt && Date.parse(last.endsAt) <= now.getTime())) return "ended";
+  return isRunning(event, now) ? "running" : "scheduled";
 }
-export const statusOf = (event, now = new Date()) => (event.endedAt || (event.endsAt && Date.parse(event.endsAt) <= now.getTime()) ? "ended"
-  : event.startsAt && Date.parse(event.startsAt) > now.getTime() ? "scheduled" : "running");
 
 export function createTournamentStore(dataDir) {
   const file = path.join(dataDir, "tournaments.json");
@@ -290,7 +370,8 @@ export function createTournamentStore(dataDir) {
     // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
     // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional), images (an in-game event's
     // pictures, validateImages; optional, Core's own where left out), payoutTable (its prizes, #361,
-    // tournaments/payouts.js validatePayoutTable; optional, none)}. Throws an Error with the reason.
+    // tournaments/payouts.js validatePayoutTable; optional, none), windows (its times, #364, validateWindows: in place of
+    // startsAt and endsAt; optional)}. Throws an Error with the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -298,11 +379,12 @@ export function createTournamentStore(dataDir) {
       if (!Object.hasOwn(rulesets, ruleset)) throw new Error(`Unknown scoring rules ${String(ruleset)}.`);
       const name = String(options.name ?? "").trim() || playlist.name;
       if (name.length > maxName) throw new Error(`A name is at most ${maxName} characters.`);
-      for (const key of ["startsAt", "endsAt"]) {
+      const windows = options.windows === undefined || options.windows === null ? null : validateWindows(options.windows);
+      for (const key of windows ? [] : ["startsAt", "endsAt"]) {
         if (options[key] !== undefined && options[key] !== null && options[key] !== "" && !isDate(options[key])) throw new Error(`${key} isn't a date.`);
       }
-      const startsAt = options.startsAt ? new Date(options.startsAt).toISOString() : null;
-      const endsAt = options.endsAt ? new Date(options.endsAt).toISOString() : null;
+      const startsAt = windows ? null : options.startsAt ? new Date(options.startsAt).toISOString() : null;
+      const endsAt = windows ? null : options.endsAt ? new Date(options.endsAt).toISOString() : null;
       if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) throw new Error("An event ends after it starts.");
       const scoring = options.scoring === undefined || options.scoring === null ? null : validateScoring(options.scoring);
       const servers = validateServers(options.servers);
@@ -311,8 +393,9 @@ export function createTournamentStore(dataDir) {
       const images = playlist.inGame && options.images ? validateImages(options.images, {}, dataDir) : {};
       const payoutTable = validatePayoutTable(options.payoutTable);
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
-      const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
+      const event = { id: newId(), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
         scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), payoutTable, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+      if (windows) placeWindows(event, windows.map((window) => ({ ...window, id: null })));
       load().events[event.id] = event;
       save();
       return event;
@@ -335,6 +418,28 @@ export function createTournamentStore(dataDir) {
       if (!event) return null;
       event.payoutTable = validatePayoutTable(table);
       event.payoutsSetAt = now.toISOString();
+      save();
+      return event;
+    },
+
+    // Sets an event's times (#364, validateWindows): [{id, startsAt, endsAt}], a window it has by its id (its times
+    // changed) or a new one without. A window left out is removed, unless matches were played in it (a reset of the points
+    // clears them). An event ended by the admin, or whose placement prizes were given at its end, keeps its times. Throws
+    // an Error with the reason; null when there's no such event.
+    setWindows(id, windows, now = new Date()) {
+      const event = get(id);
+      if (!event) return null;
+      if (event.endedAt) throw new Error("An ended event keeps its times.");
+      if (event.payoutsSettledAt) throw new Error("This event's placement prizes were given at its end: it keeps its times.");
+      const current = windowsOf(event);
+      const list = validateWindows(windows, current.map((window) => window.id));
+      const kept = new Set(list.map((window) => window.id).filter(Boolean));
+      for (const [index, window] of current.entries()) {
+        const played = kept.has(window.id) ? 0 : matchesInWindow(event, window.id);
+        if (played) throw new Error(`Time ${index + 1} had ${played} match${played === 1 ? "" : "es"} played in it: reset the event's points to remove it.`);
+      }
+      placeWindows(event, list);
+      event.windowsSetAt = now.toISOString();
       save();
       return event;
     },
@@ -429,18 +534,21 @@ export function createTournamentStore(dataDir) {
     // match's playlist (on a build that has it, when the match's build is known), up to the event's counted matches.
     // A report sent again for the same match (CoreV2's matchId) doesn't count twice. Returns the points it scored, by event.
     // team: the accounts the player played the match with, themselves among them (an in-game event's history names
-    // them; kills are then the team's). only: one event's id, for a report that names its event.
+    // them; kills are then the team's). only: one event's id, for a report that names its event. An event of several
+    // times (#364) takes it only within one of them, and notes which (window); the counted matches are the event's.
     recordResult(accountId, playlistId, { place, kills, matchId = null, build = null, team = null, only = null }, now = new Date()) {
       const scored = [];
       for (const event of Object.values(load().events)) {
-        if (event.playlistId !== Number(playlistId) || !isRunning(event, now) || (only !== null && event.id !== only)) continue;
+        const window = event.playlistId === Number(playlistId) ? runningWindowOf(event, now) : null;
+        if (!window || (only !== null && event.id !== only)) continue;
         if (build && !hasLtm(event.playlist, build)) continue;
         const ruleset = scoringOf(event);
         const player = (event.players[accountId] ??= { matches: [] });
         if (matchId && player.matches.some((match) => match.matchId === matchId)) continue;
         if (!countsAnotherMatch(ruleset, player.matches.length)) continue;
         const points = matchPoints(ruleset, { place, kills });
-        player.matches.push({ matchId, place, kills, points, ...(Array.isArray(team) && team.length > 1 ? { team: [...team] } : {}), at: now.toISOString() });
+        player.matches.push({ matchId, place, kills, points, ...(Array.isArray(team) && team.length > 1 ? { team: [...team] } : {}),
+          ...(event.windows?.length ? { window: window.id } : {}), at: now.toISOString() });
         scored.push({ eventId: event.id, points });
       }
       if (scored.length) save();

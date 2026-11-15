@@ -8994,6 +8994,65 @@
       syncRules();
       const statusKind = { running: "good", scheduled: "sky", ended: "warn" };
       const when = (value) => (value ? new Date(value).toLocaleString() : "-");
+      // A date as a datetime-local field's value, in the admin's own time zone (isoOf reads it back).
+      const localInput = (iso) => {
+        if (!iso) return "";
+        const date = new Date(iso);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      };
+
+      // An event's times (Core-Backend #364, tournaments/store.js): Epic's in-game tournaments ran in sessions, each a
+      // window of the tournament with its own start and end, which the game's EVENT DETAILS lists one by one. A match scores
+      // only within a time; the leaderboard and prizes add every time up, and the game shows each time's points on their
+      // own. Rows: {id (a time the event has), startsAt, endsAt, status, matches}; value() is what's typed, with each kept
+      // time's id. A time with matches played in it can't be removed (reset the points first).
+      const windowsEditor = (initial = [], { label = "Time", first = 1 } = {}) => {
+        const rowsBox = el("div", { style: "display:grid; gap:6px; margin-top:8px;" });
+        let rows = [];
+        const renumber = () => rows.forEach((row, i) => { row.label.textContent = `${label} ${i + first}`; });
+        const addRow = ({ id = null, startsAt = null, endsAt = null, status = null, matches = 0 } = {}) => {
+          const row = {
+            id,
+            // A field left as it was gives back the time as it was, seconds and all (the field shows minutes).
+            original: { start: [localInput(startsAt), startsAt], end: [localInput(endsAt), endsAt] },
+            label: el("span", { class: "muted", style: "min-width:56px; font-weight:600;" }),
+            start: el("input", { class: "field", type: "datetime-local", value: localInput(startsAt), "aria-label": "Starts" }),
+            end: el("input", { class: "field", type: "datetime-local", value: localInput(endsAt), "aria-label": "Ends" })
+          };
+          row.node = el("div", { class: "actions", style: "gap:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap;" },
+            row.label, el("label", { class: "muted", text: "Starts" }), row.start, el("label", { class: "muted", text: "Ends" }), row.end,
+            status ? chip(status, statusKind[status] ?? "") : null,
+            matches ? el("span", { class: "muted", style: "font-size:12px;", text: `${matches} match${matches === 1 ? "" : "es"}` }) : null,
+            btn("Remove", () => { rows = rows.filter((other) => other !== row); row.node.remove(); renumber(); }, "ghost",
+              matches ? { disabled: true, title: "Matches were played in this time: reset the event's points to remove it." } : {}));
+          rows.push(row);
+          rowsBox.append(row.node);
+          renumber();
+          return row;
+        };
+        // A new time starts a day after the last one (before: fallback's fields, the new-event form's), for as long.
+        const addAfter = (fallback = null) => {
+          const last = rows.at(-1) ?? fallback;
+          const timeOf = (input) => (input?.value ? new Date(input.value).getTime() : NaN);
+          const [lastStart, lastEnd] = [timeOf(last?.start), timeOf(last?.end)];
+          const length = Number.isFinite(lastStart) && Number.isFinite(lastEnd) && lastEnd > lastStart ? lastEnd - lastStart : 3 * 60 * 60 * 1000;
+          const startsAt = Number.isFinite(lastStart) ? lastStart + 24 * 60 * 60 * 1000 : NaN;
+          addRow(Number.isFinite(startsAt) ? { startsAt: new Date(startsAt).toISOString(), endsAt: new Date(startsAt + length).toISOString() } : {});
+        };
+        (initial || []).forEach(addRow);
+        return {
+          rows: () => rows.length,
+          value: () => rows.map((row) => {
+            const read = (key) => (row[key].value && row[key].value === row.original[key][0] ? row.original[key][1] : isoOf(row[key]));
+            return { ...(row.id ? { id: row.id } : {}), startsAt: read("start"), endsAt: read("end") };
+          }),
+          addAfter,
+          node: rowsBox
+        };
+      };
+      const windowsNote = "Each time is a session of the event, listed one by one on the game's EVENT DETAILS (6.10+): a match scores only within one, and the lobby counts down to the next. The leaderboard, counted matches and prizes add every time up, and placement prizes are given at the last one's end; the game shows each time's points on their own, against the pin score. Times can't overlap; with more than one, each needs a start and an end.";
+      const createWindows = windowsEditor([], { first: 2 });
 
       // An event's points (#280): its own placement table and points an elimination, saved over its preset's (its
       // leaderboard rescores the matches already played), or Reset to default for the preset's again.
@@ -9040,6 +9099,29 @@
           el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
             btn("Save prizes", async () => {
               if (await act(api(`/admin/api/tournaments/${event.id}/payouts`, { payoutTable: editor.value() }), "Event prizes saved")) rerender();
+            }, "primary")));
+      };
+
+      // An event's times (#364): add, change and remove them, then save the whole list. An ended event keeps its times.
+      const eventWindows = (event) => {
+        const editor = windowsEditor(event.windows);
+        const fixed = Boolean(event.endedAt || event.payoutsSettledAt);
+        const count = event.windows.length;
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Times" }),
+            chip(`${count} time${count === 1 ? "" : "s"}`, count > 1 ? "accent" : "")),
+          el("div", { class: "note", text: windowsNote }),
+          count === 1 && !event.windows[0].startsAt && !event.windows[0].endsAt
+            ? el("div", { class: "note", text: "Empty dates: from the event's creation until you end it." }) : null,
+          fixed ? el("div", { class: "note", text: "This event is over, so its times are final." }) : null,
+          editor.node,
+          fixed ? null : el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+            btn("Add time", () => {
+              if (editor.rows() >= (data.maxWindows ?? 16)) return toast(`An event has at most ${data.maxWindows ?? 16} times`, true);
+              editor.addAfter();
+            }, "ghost"),
+            btn("Save times", async () => {
+              if (await act(api(`/admin/api/tournaments/${event.id}/windows`, { windows: editor.value() }), "Event times saved")) rerender();
             }, "primary")));
       };
 
@@ -9144,7 +9226,8 @@
                   }
                 }
               }, "ghost"))),
-          el("div", { class: "note", style: "margin:8px 0 16px;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
+          el("div", { class: "note", style: "margin:8px 0 16px;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)}${event.windows.length > 1 ? ` · ${event.windows.length} times` : ""} · ${event.playerCount} players` }),
+          eventWindows(event),
           el("section", { class: "panel", style: "margin-top:16px;" },
             el("div", { class: "panel-head" }, el("h2", { text: "Points & Server Rules" })),
             eventScoring(event),
@@ -9188,7 +9271,9 @@
             chip(`${event.leaderboard?.length || 0} ranked`, ""))
         ),
         el("div", { style: "border-top:1px solid var(--line); padding-top:10px; display:flex; justify-content:space-between; align-items:center;" },
-          el("span", { class: "muted font-semibold", style: "font-size:11px;", text: event.status === "ended" ? `Ended ${when(event.endedAt ?? event.endsAt)}` : `Starts ${when(event.startsAt ?? event.createdAt)}` }),
+          el("span", { class: "muted font-semibold", style: "font-size:11px;", text: (event.status === "ended" ? `Ended ${when(event.endedAt ?? event.endsAt)}`
+              : `Starts ${when(event.windows.find((w) => w.status !== "ended")?.startsAt ?? event.startsAt ?? event.createdAt)}`)
+            + (event.windows.length > 1 ? ` · ${event.windows.length} times` : "") }),
           el("span", { style: "color:var(--blue); font-size:12px; font-weight:600;", text: "View Details →" })
         )
       );
@@ -9199,15 +9284,18 @@
           el("div", { class: "actions" }, btn("Refresh", rerender, "ghost"))),
         el("section", { class: "panel" },
           el("div", { class: "panel-head" }, el("h2", { text: "New event" })),
-          el("div", { class: "note", text: "A match in the event's playlist scores for its players while the event runs. Leave the dates empty to start now and run until you end it. From 6.10 the game has its own Events tab: an event on one of the Tournament playlists (Solo, Duos, Squads) is listed there with its name, times and points, players queue for it from the tab with a full party, and their points show in the match and on the tab (give it an end, which the tab counts down to). It appears at a player's next return to the lobby, and the backend tells the lobbies already open to ask again when an event is made, starts or ends. The game plays one event at a time: of the events not ended, the one that starts first. Set an event's pictures on its page (Core's own are used otherwise). Nothing is listed until you make one." }),
+          el("div", { class: "note", text: "A match in the event's playlist scores for its players while the event runs. Leave the dates empty to start now and run until you end it, or give it several times (sessions, as Epic's tournaments ran) under More times, or later on its page.From 6.10 the game has its own Events tab: an event on one of the Tournament playlists (Solo, Duos, Squads) is listed there with its name, times and points, players queue for it from the tab with a full party, and their points show in the match and on the tab (give it an end, which the tab counts down to). It appears at a player's next return to the lobby, and the backend tells the lobbies already open to ask again when an event is made, starts or ends. The game plays one event at a time: of the events not ended, the one that starts first. Set an event's pictures on its page (Core's own are used otherwise). Nothing is listed until you make one." }),
           el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center;" },
             nameInput, playlistSelect, rulesSelect,
             el("label", { class: "muted", text: "Starts" }), startInput,
             el("label", { class: "muted", text: "Ends" }), endInput, pinInput,
             btn("Create event", async () => {
               const scoring = createScoring.value();
+              // More times (#364): the Starts and Ends above are the first.
+              const times = createWindows.rows() ? { windows: [{ startsAt: isoOf(startInput), endsAt: isoOf(endInput) }, ...createWindows.value()] }
+                : { startsAt: isoOf(startInput), endsAt: isoOf(endInput) };
               const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value,
-                scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, startsAt: isoOf(startInput), endsAt: isoOf(endInput),
+                scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, ...times,
                 ...(inGameOf(playlistSelect.value) && pinInput.value ? { pinScore: Number(pinInput.value) } : {}),
                 payoutTable: createPayouts.value(),
                 ...createServersBots.value() };
@@ -9220,6 +9308,15 @@
             createScoring.node,
             el("div", { class: "actions", style: "margin-top:8px; justify-content:flex-start;" },
               btn("Reset to default", () => createScoring.load(presetScoring(rulesSelect.value)), "ghost"))),
+          el("details", { style: "margin-top:8px;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: "More times (optional)" }),
+            el("div", { class: "note", style: "margin-top:8px;", text: `${windowsNote} The Starts and Ends above are Time 1.` }),
+            createWindows.node,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+              btn("Add time", () => {
+                if (createWindows.rows() + 1 >= (data.maxWindows ?? 16)) return toast(`An event has at most ${data.maxWindows ?? 16} times`, true);
+                createWindows.addAfter({ start: startInput, end: endInput });
+              }, "ghost"))),
           el("details", { style: "margin-top:8px;" },
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Prizes (optional)" }),
             createPayouts.node),

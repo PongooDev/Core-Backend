@@ -2,7 +2,7 @@ import { grantCodeRewards, itemName, rewardItem } from "../friendcodes/rewards.j
 import { log } from "../log.js";
 import { openSession } from "../profiles/session.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
-import { leaderboardOf } from "./store.js";
+import { leaderboardOf, statusOf, windowsOf } from "./store.js";
 
 // An event's prizes (Core-Backend #361): its payoutTable (tournaments/store.js validatePayoutTable), given through the
 // profile code a redeem code's rewards use (friendcodes/rewards.js grantCodeRewards: V-Bucks as Currency:MtxGiveaway in
@@ -14,7 +14,8 @@ import { leaderboardOf } from "./store.js";
 // - A placement prize ("rank") is given when the event is over (settleEvent): to each player whose final rank is within
 //   it among those who qualified (the ruleset's minimumMatches; a tie shares the rank, so both are paid). Its triggers
 //   are the admin's End event and, for an event with an end, an engine timer at that moment (createPayoutSettler),
-//   plus the backend's start for an event that ended while it was down.
+//   plus the backend's start for an event that ended while it was down. An event of several times (#364) is over at its
+//   last one's end: the points of every time count, and a gap between two isn't its end.
 
 // A row's key in the event's paid: a kind's thresholds are its own, so the kind and threshold name the row.
 export const payoutKey = (row) => `${row.scoringType}:${row.threshold}`;
@@ -23,7 +24,9 @@ export const payoutKey = (row) => `${row.scoringType}:${row.threshold}`;
 export const unknownPayoutItems = (table) => (Array.isArray(table) ? table : [])
   .flatMap((row) => (Array.isArray(row?.items) ? row.items : [])).filter((templateId) => !rewardItem(templateId));
 
-const isOver = (event, now) => Boolean(event.endedAt) || (event.endsAt ? Date.parse(event.endsAt) <= now.getTime() : false);
+const isOver = (event, now) => statusOf(event, now) === "ended";
+// When an event ends by its times: its last window's end (null without one).
+const endOf = (event) => windowsOf(event).at(-1).endsAt;
 
 // The rows of an event a player is owed and hasn't been given: points prizes their points reach, and with final (the
 // event over) placement prizes their qualified rank is within. board: the event's leaderboard (leaderboardOf), when
@@ -107,7 +110,7 @@ export function createPayoutSettler(context, { now = () => new Date(), setTimer 
     timer = null;
     settleOver();
     const at = now().getTime();
-    const ends = unsettled().map((event) => Date.parse(event.endsAt ?? "")).filter((end) => end > at);
+    const ends = unsettled().map((event) => Date.parse(endOf(event) ?? "")).filter((end) => end > at);
     if (!ends.length) return null;
     const next = Math.min(...ends);
     timer = setTimer(() => {
