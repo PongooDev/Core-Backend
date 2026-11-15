@@ -131,8 +131,9 @@ const summitStrikerPack = {
 // (CID_261_Athena_Commando_M_RaptorArcticCamo), the Freezing Point back bling (BID_142_RaptorArcticCamo), the Chill-Axe
 // pickaxe (Pickaxe_ID_097_RaptorArcticCamo) and the Cold Front glider (Glider_ID_074_RaptorArcticCamo) with 1,000 V-Bucks
 // for $14.99 (the wiki's Deep Freeze Bundle page, ID Pack_DeepFreeze). Epic put it in the store on 14 November 2018 (Update
-// v6.30) and took it out after 21 January 2019, past Season 6's end ("leaves the store after January 21", Epic's tweet of
-// 18 January), so on a Season 6 build it is on sale from 14 November on the season's replay (store/itemshop.js seasonMoment).
+// v6.30) and took it out after 23 January 2019, past Season 6's end (Epic's tweet of 18 January said "leaves the store after
+// January 21", but the wiki's Item Shop History lists it on 21, 22 and 23 January and not on the 24th; EA36-OGFN's report
+// on #356 gives the 23rd), so on a Season 6 build it is on sale from 14 November on the season's replay (store/itemshop.js seasonMoment).
 // 6.20's to 6.31's paks (CL-4497486 to CL-4573279) all hold the four cosmetics and the bundle's featured display asset
 // (DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle, a FortMtxOfferData); 6.00's and 6.10's don't have the
 // cosmetics. It is bought once per account, as the starter packs.
@@ -143,7 +144,7 @@ const deepFreezeBundle = {
   description: "Frostbite outfit, Freezing Point back bling, Chill-Axe pickaxe, Cold Front glider and 1,000 V-Bucks",
   displayAssetPath: displayAsset("DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle"),
   season: 6,
-  sold: [{ season: 6, from: Date.UTC(2018, 10, 14), until: Date.UTC(2019, 0, 22) }],
+  sold: [{ season: 6, from: Date.UTC(2018, 10, 14), until: Date.UTC(2019, 0, 24) }],
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_261_Athena_Commando_M_RaptorArcticCamo", "AthenaBackpack:BID_142_RaptorArcticCamo",
     "AthenaPickaxe:Pickaxe_ID_097_RaptorArcticCamo", "AthenaGlider:Glider_ID_074_RaptorArcticCamo"]

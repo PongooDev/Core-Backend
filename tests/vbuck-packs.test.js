@@ -648,6 +648,8 @@ const freezeOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offe
 test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November, on 6.20 and later", async () => {
   const bundle = findRealMoneyOffer("core_bundle_br_deepfreeze");
   assert.deepEqual([bundle.title, bundle.season, bundle.price, bundle.currencyCode, bundle.oncePerAccount], ["Deep Freeze Bundle", 6, 1499, "USD", true]);
+  // Last sale day 23 January 2019 (the window ends at the start of the 24th).
+  assert.deepEqual(bundle.sold, [{ season: 6, from: Date.UTC(2018, 10, 14), until: Date.UTC(2019, 0, 24) }]);
   assert.deepEqual(bundle.cosmetics, freezeCosmetics);
   assert.deepEqual(bundle.grants, [{ templateId: "Currency:MtxPurchased", quantity: 1000 }]);
   for (const build of ["4402180", "4480234"]) assert.equal(inBuild(build, () => lockerCosmeticId(freezeCosmetics[0])), undefined, build);
