@@ -43,7 +43,7 @@ import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js"
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { maxNewsImageBytes, maxNewsImagePixels, newsImageSizes, newsImageValue, pruneNewsImages, saveNewsImage } from "../services/content/images.js";
 import { playlistImageModes } from "../services/content/playlistimages.js";
-import { inBuild } from "../builds/context.js";
+import { inBuild, onTheServer } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
 import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
@@ -201,6 +201,9 @@ export function adminRoutes(context) {
   const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
   const router = express.Router();
   router.use("/admin", createAdminGate({ adminAuth, settings }));
+  // The panel's gives, resets and conversions read the build whose data has what they touch; none is the player's own
+  // client, so the profiles they open keep their season (builds/context.js onTheServer).
+  router.use("/admin", (req, res, next) => onTheServer(next));
   // Sign-in attempts from another device, on top of auth.js's per-credential lockout (this PC is exempt).
   const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20, message: "Too many sign-in attempts. Please wait a few minutes." });
 

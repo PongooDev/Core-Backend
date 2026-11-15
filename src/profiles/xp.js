@@ -1,4 +1,4 @@
-import { currentBuild } from "../builds/context.js";
+import { currentBuild, isOnTheServer } from "../builds/context.js";
 import { itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { boostBalance, boostTemplate, levelRest, restBalance, restTemplate, spendBoost, spendRest, xpBonus } from "./boosts.js";
@@ -38,9 +38,9 @@ export const xpForLevel = (level) => (level < maxLevel()
 // never sent; 1 for a profile that has none, made before 2.2), and a build of the other scale converts it once, as
 // Epic's servers did when 2.2 came out: the XP into the level, the rest XP left (its cap and refill rate the level row's
 // on that build) and the boost XP, each times the ratio. Only a request naming its build switches it (the admin panel's
-// read the profile as it is).
+// read the profile as it is, as does the server's own work reading some build's data, builds/context.js onTheServer).
 export const profileXpScale = (profile) => profile.coreXpScale ?? 1;
-const namesBuild = () => Number.isInteger(Number(currentBuild()));
+const namesBuild = () => !isOnTheServer() && Number.isInteger(Number(currentBuild()));
 export const xpScaleNeedsSwitch = (profile) => namesBuild() && profileXpScale(profile) !== commanderXpScale();
 
 export function switchXpScale(session) {

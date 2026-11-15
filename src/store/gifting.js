@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { currentBuild } from "../builds/context.js";
+import { currentBuild, onTheServer } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { log } from "../log.js";
 import { grantCosmetic, ownsCosmetic } from "../profiles/athena.js";
@@ -162,10 +162,12 @@ export function giveCatalogGift({ req, session, sessionFor, context, offer, now 
 
   const friendDays = giftingFriendDays(settingsValue);
   const targets = receivers.map((receiverId) => ({ receiverId, receiver: sessionFor?.(receiverId) ?? null }));
-  const refused = targets.map(({ receiverId, receiver }) => ({
+  // The receivers' profiles are read and given to in the sender's build, which isn't theirs: they keep their season (and
+  // Commander XP scale) until their own client asks (builds/context.js onTheServer).
+  const refused = onTheServer(() => targets.map(({ receiverId, receiver }) => ({
     receiverId,
     code: receiverRefusal({ senderId: session.accountId, receiverId, receiver, friends: context?.friends, offer, now, friendDays })
-  })).filter(({ code }) => code);
+  }))).filter(({ code }) => code);
   if (refused.length) {
     log("Gifting", `${session.accountId}'s ${offerId} for ${refused.map(({ receiverId, code }) => `${receiverId} (${code.split(".").pop()})`).join(", ")} is turned down`);
     throw new McpError(notEligibleError, "One or more receivers can't be sent this gift",
@@ -176,7 +178,7 @@ export function giveCatalogGift({ req, session, sessionFor, context, offer, now 
   const wrap = giftWraps.find((id) => id.toLowerCase() === String(giftWrapTemplateId ?? "").toLowerCase()) ?? defaultGiftBox;
   const message = String(personalMessage ?? "").slice(0, maxMessageLength);
   const date = now.toISOString();
-  for (const { receiverId, receiver } of targets) {
+  for (const { receiverId, receiver } of targets) onTheServer(() => {
     const before = new Set(Object.keys(receiver.profile("athena").profile.items));
     for (const { templateId } of grantsOf(offer)) {
       if (!ownsCosmetic(receiver, templateId)) grantCosmetic(receiver, templateId);
@@ -193,7 +195,7 @@ export function giveCatalogGift({ req, session, sessionFor, context, offer, now 
     receiverTracker.setStat("gift_history", { ...theirs, num_received: (theirs.num_received ?? 0) + 1,
       receivedFrom: { ...(theirs.receivedFrom ?? {}), [session.accountId]: date } });
     log("Gifting", `${session.accountId} gave ${receiverId} ${offerId} (${offer.price} V-Bucks) in ${wrap}`);
-  }
+  });
   const mine = historyOf(tracker);
   const gifts = (Array.isArray(mine.gifts) ? mine.gifts : []).filter((gift) => Date.parse(gift?.date) >= now.getTime() - dayMs);
   tracker.setStat("gift_history", {

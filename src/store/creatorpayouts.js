@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { onTheServer } from "../builds/context.js";
 import { readJson, writeJson } from "../json-file.js";
 import { log } from "../log.js";
 import { grant } from "../profiles/progress.js";
@@ -82,7 +83,8 @@ export function payCreator({ session, sessionFor, payouts, offerId, spent, setti
   if (vbucks <= 0) return null;
   const target = sessionFor?.(creator.accountId);
   if (!target) return null;
-  grant(target, "Currency:mtxgiveaway", vbucks);
+  // The buyer's build isn't the creator's: their profiles stay as their own build left them (builds/context.js onTheServer).
+  onTheServer(() => grant(target, "Currency:mtxgiveaway", vbucks));
   const entry = payouts?.record({ creatorAccountId: creator.accountId, code: creator.code, buyerAccountId: session.accountId, offerId, spent, vbucks });
   log("Support-A-Creator", `${creator.code} (${creator.accountId}) got ${vbucks} V-Bucks (${payoutPercent(settingsValue)}% of ${spent}) for ${session.accountId}'s ${offerId}`);
   return { payoutId: entry?.id ?? null, creatorAccountId: creator.accountId, code: creator.code, vbucks, spent };
@@ -93,13 +95,13 @@ export function reverseCreatorPayout({ payout, sessionFor, payouts }) {
   if (!payout?.creatorAccountId || !(payout.vbucks > 0)) return 0;
   const target = sessionFor?.(payout.creatorAccountId);
   let taken = 0;
-  if (target) {
+  if (target) onTheServer(() => {
     const tracker = target.profile("profile0");
     const held = Object.values(tracker.profile.items).filter((item) => vbuckTemplates.includes(String(item.templateId).toLowerCase()))
       .reduce((sum, item) => sum + (item.quantity ?? 0), 0);
     taken = Math.min(held, payout.vbucks);
     if (taken > 0) spendMtx(tracker, taken);
-  }
+  });
   payouts?.reverse({ payoutId: payout.payoutId, creatorAccountId: payout.creatorAccountId, vbucks: payout.vbucks, spent: payout.spent ?? 0, taken });
   log("Support-A-Creator", `${payout.code} (${payout.creatorAccountId}) gave back ${taken} of ${payout.vbucks} V-Bucks for a returned purchase`);
   return taken;

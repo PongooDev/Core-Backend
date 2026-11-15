@@ -1,4 +1,4 @@
-import { currentBuild, inBuild } from "../builds/context.js";
+import { currentBuild, inBuild, isOnTheServer } from "../builds/context.js";
 import { certBuild } from "../builds/detect.js";
 import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
@@ -63,9 +63,11 @@ const strayStats = (profile) => (profileSeason(profile) === firstSeason
 export const profileSeason = (profile) => profile.stats.attributes.season_num ?? firstSeason;
 // Only a Battle Royale client or gameserver's request (one naming a build with an athena profile, 1.8 on) switches the
 // season: the admin panel's and CoreV2's match reports name none, and read the profile in its own season
-// (inProfileSeason).
+// (inProfileSeason). Nor does work on the server's side (builds/context.js onTheServer) that reads some build's data for
+// an account whose client isn't asking: a redeem code's or prize's cosmetic, read in the newest build that has it, moved
+// a Season 1 profile to Season 6 that way.
 const firstAthenaBuild = 3724489;
-export const namesAthenaBuild = () => Number(currentBuild()) >= firstAthenaBuild;
+export const namesAthenaBuild = () => !isOnTheServer() && Number(currentBuild()) >= firstAthenaBuild;
 export const seasonNeedsSwitch = (profile) => (namesAthenaBuild() && profileSeason(profile) !== seasonNumber())
   || strayStats(profile).length > 0 || seasonItemsOutOfPlace(profile);
 

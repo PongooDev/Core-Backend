@@ -1,5 +1,5 @@
 import { describeItem, knownTemplate } from "../admin/describe.js";
-import { inBuild } from "../builds/context.js";
+import { inBuild, onTheServer } from "../builds/context.js";
 import { battleRoyaleBuilds } from "../builds/detect.js";
 import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { campaignAccessToken, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
@@ -37,8 +37,13 @@ export const itemName = (item) => {
   }
 };
 
-// Gives a code's rewards to the open session; answers what was given, for the player to read.
-export function grantCodeRewards(session, rewards) {
+// Gives a code's rewards to the open session; answers what was given, for the player to read. Its redeem codes and
+// tournament prizes (tournaments/payouts.js) are the server's doing, not the player's client asking: each reward is read
+// in a build that has it, and a profile first opened there stays in its own season (and Commander XP scale) until the
+// player's next request from their own build (builds/context.js onTheServer).
+export const grantCodeRewards = (session, rewards) => onTheServer(() => giveCodeRewards(session, rewards));
+
+function giveCodeRewards(session, rewards) {
   const granted = [];
   if (rewards.vbucks > 0) {
     // As Battle Royale's match V-Bucks are given (services/fortnite/battleroyale.js).

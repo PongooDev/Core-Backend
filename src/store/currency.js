@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { currentBuild, inBuild } from "../builds/context.js";
+import { currentBuild, inBuild, onTheServer } from "../builds/context.js";
 import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { grantItem } from "../profiles/items.js";
@@ -282,8 +282,11 @@ export function catalogServiceOffer(appStoreId, { offer }) {
 }
 
 // Gives the account the offer's grants, recording the purchase in profile0's in_app_purchases (Epic's: receipts and
-// how many times each offer was fulfilled). Returns what was granted.
-export function grantRealMoneyOffer(session, offer, transactionId) {
+// how many times each offer was fulfilled). Returns what was granted. The purchase page names no build: the offer's data
+// builds leave the profiles' season as it is (builds/context.js onTheServer).
+export const grantRealMoneyOffer = (session, offer, transactionId) => onTheServer(() => giveRealMoneyOffer(session, offer, transactionId));
+
+function giveRealMoneyOffer(session, offer, transactionId) {
   const granted = offer.grants.flatMap(({ templateId, quantity }) => grantItem(session, templateId, quantity));
   // A founder's pack raises the account's edition, with 5.0's founders quests.
   if (offer.foundersEdition) {
