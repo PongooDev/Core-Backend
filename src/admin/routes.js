@@ -73,7 +73,7 @@ import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battle
 import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
 import { buildOfSeason, givenVariantTokens, inProfileSeason, profileSeason } from "../profiles/seasons.js";
 import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekCount, completeBrokenChallenges, eventChallengeModes, eventDaySchedules, eventPlan,
-  weekPlan } from "../profiles/challenges.js";
+  previewPlan, timeOnly, weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -2026,6 +2026,50 @@ export function adminRoutes(context) {
     });
   });
 
+  // A season's weekly challenge settings from a request ({mode, startDate, startTime, intervalDays, manualWeeks,
+  // weeksAvailable}; values may be strings, a query's), the saved entry or the reason it is refused (call inside inBuild).
+  const challengeEntryOf = (body, total) => {
+    if (!challengeModes.includes(body.mode)) return { error: `mode must be one of ${challengeModes.join(", ")}` };
+    const entry = { mode: body.mode };
+    if (body.mode === "interval") {
+      if (typeof body.startDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(body.startDate) || Number.isNaN(Date.parse(`${body.startDate}T00:00:00Z`))) {
+        return { error: "startDate must be a date, YYYY-MM-DD" };
+      }
+      entry.startDate = body.startDate;
+      if (body.startTime !== undefined) {
+        if (!timeOnly(body.startTime)) return { error: "startTime must be a time, HH:MM (UTC)" };
+        entry.startTime = body.startTime;
+      }
+    }
+    const whole = (name, low, high) => {
+      if (body[name] === undefined) return true;
+      const num = Number(body[name]);
+      if (body[name] === "" || !Number.isInteger(num) || num < low || num > high) return false;
+      entry[name] = num;
+      return true;
+    };
+    if (!whole("intervalDays", 1, 60)) return { error: "intervalDays must be 1 to 60" };
+    if (!whole("manualWeeks", 0, total)) return { error: `manualWeeks must be 0 to ${total}` };
+    if (!whole("weeksAvailable", 1, total)) return { error: `weeksAvailable must be 1 to ${total}` };
+    return { entry };
+  };
+
+  // The weeks a draft of a season's weekly challenge settings would have (Core-Backend #380), for the panel's table while
+  // the form is edited: the query is the settings route's body ({season, mode, startDate, startTime, ...}). It is weekPlan's
+  // own calculation, so the table and the backend agree. Nothing is saved.
+  router.get("/admin/api/battlepass/challenges/preview", (req, res) => {
+    const query = req.query ?? {};
+    const season = requestedSeasonOf(query.season ?? 3);
+    const invalid = (message) => sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", message);
+    return inBuild(buildOfSeason(season), () => {
+      const total = challengeWeekCount();
+      if (!total) return invalid(`${seasonName(season)} has no weekly challenges`);
+      const parsed = challengeEntryOf(query, total);
+      if (parsed.error) return invalid(parsed.error);
+      res.json({ now: new Date().toISOString(), challenges: withoutSeasonStartRecording(() => previewPlan(parsed.entry, new Date(), settings?.get?.())) });
+    });
+  });
+
   // How a season's weekly challenges unlock (Core-Backend #207, #219, profiles/challenges.js): {season (default 3), mode
   // "original" | "interval" | "manual", startDate "YYYY-MM-DD", intervalDays 1-60, manualWeeks, weeksAvailable}, or
   // {allUnlocked}: true is "Unlock all weeks now" (manual, every week), false the original dates. A player gets the weeks
@@ -2042,24 +2086,9 @@ export function adminRoutes(context) {
         if (typeof body.allUnlocked !== "boolean") return invalid("allUnlocked must be true or false");
         entry = body.allUnlocked ? { mode: "manual", manualWeeks: total, weeksAvailable: total } : { mode: "original" };
       } else {
-        if (!challengeModes.includes(body.mode)) return invalid(`mode must be one of ${challengeModes.join(", ")}`);
-        entry = { mode: body.mode };
-        if (body.mode === "interval") {
-          if (typeof body.startDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(body.startDate) || Number.isNaN(Date.parse(`${body.startDate}T00:00:00Z`))) {
-            return invalid("startDate must be a date, YYYY-MM-DD");
-          }
-          entry.startDate = body.startDate;
-        }
-        const whole = (name, low, high) => {
-          if (body[name] === undefined) return true;
-          const num = Number(body[name]);
-          if (!Number.isInteger(num) || num < low || num > high) return false;
-          entry[name] = num;
-          return true;
-        };
-        if (!whole("intervalDays", 1, 60)) return invalid("intervalDays must be 1 to 60");
-        if (!whole("manualWeeks", 0, total)) return invalid(`manualWeeks must be 0 to ${total}`);
-        if (!whole("weeksAvailable", 1, total)) return invalid(`weeksAvailable must be 1 to ${total}`);
+        const parsed = challengeEntryOf(body, total);
+        if (parsed.error) return invalid(parsed.error);
+        entry = parsed.entry;
       }
       const updated = settings.update({ challengesAllUnlocked: false, challengeUnlock: { [`season${season}`]: entry } });
       res.json({ success: true, challengesAllUnlocked: challengesAllUnlocked(updated), challenges: withoutSeasonStartRecording(() => weekPlan(new Date(), updated)) });

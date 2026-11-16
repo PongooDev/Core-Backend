@@ -7477,29 +7477,30 @@
     function weeklyChallengesPanel(season, data) {
       const plan = data.challenges;
       const total = plan.totalWeeks;
-      const form = { mode: plan.mode, startDate: plan.startDate, intervalDays: plan.intervalDays, manualWeeks: plan.manualWeeks, weeksAvailable: plan.weeksAvailable };
+      const form = { mode: plan.mode, startDate: plan.startDate, startTime: plan.startTime ?? "00:00", intervalDays: plan.intervalDays, manualWeeks: plan.manualWeeks, weeksAvailable: plan.weeksAvailable };
       const modeLabels = { original: "Original dates", interval: "Every N days from a start date", manual: "Manual" };
       const help = {
         original: `Each week unlocks on its day of Season ${season}, on the season's replay: Week 1 on the replay's first day, each next week 7 days later (22 February to 19 April 2018 for Season 3). The challenges tab's countdowns are exact.`,
-        interval: "Week 1 unlocks at 00:00 UTC on the start date, each next week the chosen number of days later. With 7 days every countdown in the challenges tab is exact. With another interval only the next locked week's countdown is exact: the game counts every week 7 days apart from the season's start, so the weeks after it show 7 days apart.",
+        interval: "Week 1 unlocks on the start date at the start time (UTC; the table shows your own time), each next week the chosen number of days later. With 7 days every countdown in the challenges tab is exact. With another interval only the next locked week's countdown is exact: the game counts every week 7 days apart from the season's start, so the weeks after it show 7 days apart.",
         manual: "The first weeks you set are unlocked now; the others stay locked until you raise the number. Manual has no unlock dates, so the challenges tab can't show a real countdown: it shows the next locked week a week from today."
       };
       const dateText = (iso) => new Date(iso).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
       const numberInput = (key, min, max) => el("input", {
         class: "field num", type: "number", min: String(min), max: String(max), value: String(form[key]), style: "width:90px;",
-        oninput: (e) => { form[key] = Math.max(min, Math.min(max, parseInt(e.target.value, 10) || min)); }
+        oninput: (e) => { form[key] = Math.max(min, Math.min(max, parseInt(e.target.value, 10) || min)); changed(); }
       });
       const helpNote = el("p", { class: "note", style: "margin-top:8px", text: help[form.mode] });
       const field = (label, input) => el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: label }), input);
-      const startField = field("Start date (UTC)", el("input", { class: "field", type: "date", value: form.startDate, oninput: (e) => { form.startDate = e.target.value; } }));
+      const startField = field("Start date (UTC)", el("input", { class: "field", type: "date", value: form.startDate, oninput: (e) => { form.startDate = e.target.value; changed(); } }));
+      const timeField = field("Start time (UTC)", el("input", { class: "field", type: "time", value: form.startTime, oninput: (e) => { if (/^\d{2}:\d{2}$/.test(e.target.value)) { form.startTime = e.target.value; changed(); } } }));
       const intervalField = field("Every (days)", numberInput("intervalDays", 1, 60));
       const manualField = field("Weeks unlocked now", numberInput("manualWeeks", 0, total));
       const showMode = () => {
-        startField.style.display = intervalField.style.display = form.mode === "interval" ? "flex" : "none";
+        startField.style.display = timeField.style.display = intervalField.style.display = form.mode === "interval" ? "flex" : "none";
         manualField.style.display = form.mode === "manual" ? "flex" : "none";
         helpNote.textContent = help[form.mode];
       };
-      const modeSelect = el("select", { class: "field", "aria-label": "Unlock mode", onchange: (e) => { form.mode = e.target.value; showMode(); } },
+      const modeSelect = el("select", { class: "field", "aria-label": "Unlock mode", onchange: (e) => { form.mode = e.target.value; showMode(); changed(); } },
         Object.entries(modeLabels).map(([value, label]) => el("option", { value, text: label, selected: value === form.mode })));
       showMode();
       const save = async (body, message) => {
@@ -7509,18 +7510,66 @@
           else showBattlePass();
         }
       };
+      // The table is the backend's own calculation (Core-Backend #380): /admin/api/battlepass/challenges/preview runs
+      // weekPlan with the form's values, so it follows the form live and always agrees with what players get.
+      let shown = plan;
+      let nextAt = null;
+      const localText = (iso) => new Date(iso).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
       const status = (week) => {
         if (week.unlocked) return chip("Unlocked", "accent");
-        if (week.week > plan.weeksAvailable) return chip("Not available");
+        if (week.week > shown.weeksAvailable) return chip("Not available");
         return chip("Locked");
       };
-      const unlocks = (week) => (week.unlocked ? "—" : week.unlocksAt ? dateText(week.unlocksAt) : week.week > plan.weeksAvailable ? "Never (past the weeks available)" : "When you raise the number");
+      const unlocks = (week) => (week.unlocked ? "—" : week.unlocksAt
+        ? el("span", { title: `${new Date(week.unlocksAt).toUTCString()}`, text: localText(week.unlocksAt) })
+        : week.week > shown.weeksAvailable ? "Never (past the weeks available)" : "When you raise the number");
+      const countdownText = () => {
+        if (nextAt === null) return "";
+        const left = Math.max(0, nextAt - Date.now());
+        const d = Math.floor(left / 86400000), h = Math.floor(left / 3600000) % 24, m = Math.floor(left / 60000) % 60, s = Math.floor(left / 1000) % 60;
+        return `Next week unlocks in ${d ? `${d}d ` : ""}${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+      };
+      const countdownEl = el("p", { class: "note", style: "margin:0 0 8px; font-family:var(--mono);" });
+      const previewBox = el("div");
+      const drawPreview = () => {
+        const next = shown.weeks.find((week) => !week.unlocked && week.unlocksAt && week.week <= shown.weeksAvailable);
+        nextAt = next ? Date.parse(next.unlocksAt) : null;
+        countdownEl.textContent = countdownText();
+        previewBox.replaceChildren(table([["Week", (w) => String(w.week), "mono"], ["Status", status], ["Unlocks (your time)", (w) => unlocks(w)]], shown.weeks));
+      };
+      const tick = setInterval(() => {
+        if (!countdownEl.isConnected) return clearInterval(tick);
+        if (nextAt !== null && Date.now() >= nextAt) return refreshPreview();
+        countdownEl.textContent = countdownText();
+      }, 1000);
+      state.timers.push(tick);
+      let previewSeq = 0;
+      async function refreshPreview() {
+        const seq = ++previewSeq;
+        const query = new URLSearchParams({ season: String(season), mode: form.mode, intervalDays: String(form.intervalDays), manualWeeks: String(form.manualWeeks), weeksAvailable: String(form.weeksAvailable) });
+        if (form.mode === "interval") {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(form.startDate || "")) return;
+          query.set("startDate", form.startDate);
+          query.set("startTime", form.startTime);
+        }
+        try {
+          const result = await api(`/admin/api/battlepass/challenges/preview?${query}`, undefined, "GET");
+          if (seq !== previewSeq) return;
+          shown = result.challenges;
+          drawPreview();
+        } catch (error) {
+          if (seq === previewSeq) countdownEl.textContent = `Preview unavailable: ${error.message}`;
+        }
+      }
+      let previewTimer;
+      const changed = () => { clearTimeout(previewTimer); previewTimer = setTimeout(refreshPreview, 150); };
+      drawPreview();
       return el("section", { class: "panel", style: "margin-top:16px" },
         el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Weekly Challenges" }),
           chip(data.challengesAllUnlocked ? "All unlocked" : `${modeLabels[plan.mode]} · ${plan.weeks.filter((w) => w.unlocked).length} of ${total} unlocked`, data.challengesAllUnlocked ? "accent" : "")),
         el("p", { class: "note", text: `Choose when Season ${season}'s ${total} weeks of challenges unlock and how many are available. Changes reach a player at their next login. "Unlock all weeks now" sets Manual with every week available and unlocked.` }),
         el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; align-items:center; margin-top:12px;" },
-          field("Unlock mode", modeSelect), startField, intervalField, manualField,
+          field("Unlock mode", modeSelect), startField, timeField, intervalField, manualField,
           field("Weeks available", numberInput("weeksAvailable", 1, total))),
         helpNote,
         el("p", { class: "note", style: "margin-top:4px", text: `Weeks past "Weeks available" stay locked in every mode. The challenges tab still lists them as locked (its list of weeks comes from the game files), and with dates it still counts down to them, but they don't unlock.` }),
@@ -7531,8 +7580,7 @@
           }, "primary"),
           btn("Unlock all weeks now", () => save({ allUnlocked: true }, "Every week of the weekly challenges is unlocked"), data.challengesAllUnlocked ? "ghost" : ""),
           btn("Back to original dates", () => save({ allUnlocked: false }, "Weekly challenges unlock by their original dates"), "ghost")),
-        el("div", { style: "margin-top:12px" },
-          table([["Week", (w) => String(w.week), "mono"], ["Status", status], ["Unlocks", (w) => unlocks(w)]], plan.weeks)));
+        el("div", { style: "margin-top:12px" }, countdownEl, previewBox));
     }
 
     // An event's challenges that unlock part by part (Core-Backend #345: Season 6's Fortnitemares Challenges): on their

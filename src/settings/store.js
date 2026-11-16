@@ -504,6 +504,7 @@ function challengeUnlockValue(input, current = {}) {
     const entry = { ...(current[key] ?? {}) };
     if (challengeModeNames.includes(value.mode)) entry.mode = value.mode;
     if (typeof value.startDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.startDate) && !Number.isNaN(Date.parse(`${value.startDate}T00:00:00Z`))) entry.startDate = value.startDate;
+    if (typeof value.startTime === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value.startTime)) entry.startTime = value.startTime;
     const whole = (name, low, high) => {
       const num = Number(value[name]);
       if (value[name] !== undefined && value[name] !== null && Number.isInteger(num) && num >= low && num <= high) entry[name] = num;

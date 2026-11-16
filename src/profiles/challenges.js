@@ -56,7 +56,7 @@ export const challengeSeasonBegin = (now = new Date()) => (Object.keys(athenaCha
 
 // The admin panel's weekly challenge settings (Core-Backend #207, #219), settings challengeUnlock.season<N>:
 // - mode "original": each week on its day of the season's replay (the schedule's DaysSinceEventStart);
-// - mode "interval": Week 1 on startDate ("YYYY-MM-DD", 00:00 UTC), each next week intervalDays later;
+// - mode "interval": Week 1 on startDate ("YYYY-MM-DD") at startTime ("HH:MM", UTC, 00:00 by default), each next week intervalDays later;
 // - mode "manual": the first manualWeeks weeks, now;
 // - weeksAvailable: the weeks past it stay locked whatever the mode.
 // "Unlock all weeks now" is manual with every week. Before #219 it was settings challengesAllUnlocked, still read for a
@@ -222,6 +222,8 @@ export const challengeWeekCount = () => weeklyEntries().length;
 
 const dateOnly = (value) => (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) ? value : null);
 const whole = (value, low, high, fallback) => (Number.isInteger(value) ? Math.min(high, Math.max(low, value)) : fallback);
+// The interval mode's start time of day, "HH:MM" (UTC), 00:00 when not set (Core-Backend #380).
+export const timeOnly = (value) => (typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : null);
 
 // The running season's settings, filled in and held to its weeks.
 export function challengeUnlock(settingsValue = settingsProvider(), now = new Date()) {
@@ -231,6 +233,7 @@ export function challengeUnlock(settingsValue = settingsProvider(), now = new Da
   return {
     mode: challengeModes.includes(base.mode) ? base.mode : "original",
     startDate: dateOnly(base.startDate) ?? replayDays(now).epoch.slice(0, 10),
+    startTime: timeOnly(base.startTime) ?? "00:00",
     intervalDays: whole(base.intervalDays, 1, 60, 7),
     manualWeeks: whole(base.manualWeeks, 0, total, total),
     weeksAvailable: whole(base.weeksAvailable, 1, Math.max(1, total), total),
@@ -252,7 +255,7 @@ export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
   const entries = weeklyEntries();
   const { days, epoch } = replayDays(now);
   const valueOf = (i) => (entries[i] && bySeasonDays(entries[i]) ? entries[i].unlockValue : 0);
-  const start = Date.parse(`${settings.startDate}T00:00:00Z`);
+  const start = Date.parse(`${settings.startDate}T${settings.startTime}:00Z`);
   const today = Math.floor(now.getTime() / dayMs) * dayMs;
   const weeks = entries.map((entry, i) => {
     const at = i >= settings.weeksAvailable ? null
@@ -273,6 +276,13 @@ export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
   const changes = next < 0 || settings.mode === "original" ? null
     : settings.mode === "interval" ? new Date(weeks[next].unlocksAt) : new Date(today + dayMs);
   return { ...settings, weeks, begin, changes };
+}
+
+// The weeks a draft of the season's settings (the admin panel's form, not saved yet) would have (Core-Backend #380): the
+// plan weekPlan makes with the draft over the saved settings, so the panel's table is the backend's own calculation.
+export function previewPlan(draft, now = new Date(), settingsValue = settingsProvider()) {
+  const key = `season${athenaSeason()?.seasonNumber ?? 1}`;
+  return weekPlan(now, { ...settingsValue, challengesAllUnlocked: false, challengeUnlock: { ...settingsValue?.challengeUnlock, [key]: draft } });
 }
 
 // 5.0's (CL-4214610, Season 5) weekly challenges are "split into two sections, free and Battle Pass. The first 3
