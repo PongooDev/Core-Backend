@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { log } from "../log.js";
-import { seasonMoment } from "../store/itemshop.js";
+import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 import { creativeProfileBuild } from "./ids.js";
 
 // 7.00's (CL-4629139) Creative islands (PongooDev/CoreV2#471), UFortMcpProfileCreative's profile, creative.
@@ -55,6 +55,29 @@ export const islandsForEveryone = (now = new Date()) => seasonMoment(now, null, 
 
 // Whether the account may have islands and play Creative now (Update v7.00's early access).
 export const creativeEntitled = (session, now = new Date()) => ownsCreativeBattlePass(session) || islandsForEveryone(now);
+
+// The lobby's own early access notice (Core-Backend #379). 7.00's Creative server list (UFortCreativeServersView) shows its
+// "Start a server" tile (CreativeServerOptionsTile, InitServerInfo) locked, its LimitedAccessServerContent ("Available on
+// {Date}." and "Upgrade your Battle Pass to get early access now!") in place of CreateServerContent, while
+// UFortGlobalUIContext::IsCreativeModeAccessLimited (exec 0x32784E0 -> 0x2F7BCE0) says so: UFortGlobals'
+// bEnableCreativeModeLimitedAccess (+0x6E) is set, and the player's athena profile doesn't have book_purchased (0xC57AD0,
+// the name from 0xD17B0) in the calendar's season (0xC59D60: its season_num against the calendar's SeasonNumber), nor, with
+// bEnableCreativeModeLimitedAccessForFounders (+0x6F), their common_core Token:founderspack_1. The date is
+// GetCreativeModeLimitedAccessEndTime (0x2F6BA10): UFortGlobals' CreativeModeLimitedAccessEndTime (+0x70), an FString read
+// by FDateTime::ParseIso8601 (0x17B0080). All three are Config and none is set by 7.00's shipped DefaultGame.ini: Epic's
+// hotfix turned them on. So the lobby hotfix (services/fortnite/cloudstorage.js) gives 7.00 on the three while Season 7's
+// replay is before 13 December: limited access on, founders not let in (Update v7.00 names Battle Pass owners only), and the
+// end time the moment the replay reaches 13 December on the host's clock (the replay's own date is 2018's; the tile shows
+// when it opens here). From 13 December it turns limited access off. The client asks for the hotfix at start-up and again on
+// coming back to the lobby and before matchmaking, so the tile opens on the next of those. The matchmaking refusal stays
+// behind it (services/matchmaking/ticket.js).
+export function creativeAccessGlobals(build, now = new Date()) {
+  if (!hasCreative(build)) return [];
+  if (islandsForEveryone(now)) return ["bEnableCreativeModeLimitedAccess=false"];
+  const opens = nextReplayOf(allIslandsDay, now, null, creativeSeason);
+  return ["bEnableCreativeModeLimitedAccess=true", "bEnableCreativeModeLimitedAccessForFounders=false",
+    `CreativeModeLimitedAccessEndTime=${opens.toISOString()}`];
+}
 
 // Season 7's replay date now ("YYYY-MM-DD"), and how many days are left until 13 December 2018 on it (0 once there).
 export const creativeReplayDay = (now = new Date()) => seasonMoment(now, null, creativeSeason).toISOString().slice(0, 10);

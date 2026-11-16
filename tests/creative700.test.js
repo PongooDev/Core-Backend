@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { ltmFrontEndPlaylists, ltmIds, ltmOfBucketPlaylist, ltmOn, ltmSchedule, playlistIdOfName } from "../src/events/ltms.js";
 import { botModeCandidates, botModeIds, botsForMode, defaultBotModes, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { isPartyOnlyBucket, parseBucket } from "../src/matchmaking/service.js";
-import { creativeEntitled, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
+import { creativeAccessGlobals, creativeEntitled, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { contentPage, creativeAdsFor } from "../src/services/content/pages.js";
@@ -100,9 +100,37 @@ test("the lobby hotfix: 7.00's Creative line and the sidecar service pointed at 
     assert.ok(engine700.includes(`[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=http\r\nDomain=127.0.0.1:${backend.port}\r\n`), engine700);
     assert.equal((await file(agent631, "DefaultGame.ini")).includes("Playlist_PlaygroundV2"), false);
     assert.equal((await file(agent631, "DefaultEngine.ini")).includes("OnlineSidecarServiceMcp"), false);
+    assert.equal((await file(agent631, "DefaultGame.ini")).includes("CreativeModeLimitedAccess"), false, "6.31 gets no early access globals");
   } finally {
     await backend.close();
   }
+});
+
+// Core-Backend #379: 7.00's own early access notice, the "Start a server" tile locked with "Available on {Date}." and
+// "Upgrade your Battle Pass to get early access now!", which UFortGlobals' three Config values turn on.
+test("the lobby hotfix turns on 7.00's Creative early access notice until 13 December on the replay, its date when it opens here", async () => {
+  const today = new Date();
+  const midnight = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const early = await startBackend({ events: { seasonStarts: { 7: startForDay(3) } } });
+  try {
+    const game = (await as(early.port, await clientToken(early.port), "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini")).body;
+    const globals = game.slice(game.indexOf("[/Script/FortniteGame.FortGlobals]"));
+    // Day 3 is 8 December: the 13th is day 8, five days from today's midnight.
+    assert.ok(globals.includes(`\r\nbEnableCreativeModeLimitedAccess=true\r\nbEnableCreativeModeLimitedAccessForFounders=false\r\n` +
+      `CreativeModeLimitedAccessEndTime=${new Date(midnight + 5 * dayMs).toISOString()}\r\n`), globals);
+    assert.ok(globals.indexOf("CreativeModeLimitedAccessEndTime") < globals.indexOf("\r\n[", 2), "in FortGlobals' own section");
+  } finally {
+    await early.close();
+  }
+  const open = await startBackend({ events: { seasonStarts: { 7: startForDay(9) } } });
+  try {
+    const game = (await as(open.port, await clientToken(open.port), "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini")).body;
+    assert.ok(game.includes("\r\nbEnableCreativeModeLimitedAccess=false\r\n"));
+    assert.equal(game.includes("CreativeModeLimitedAccessEndTime"), false);
+  } finally {
+    await open.close();
+  }
+  assert.deepEqual(creativeAccessGlobals(v631), []);
 });
 
 test("early access: four islands for a Season 7 Battle Pass owner, for everyone from 13 December 2018 on the replay, kept after", () => {

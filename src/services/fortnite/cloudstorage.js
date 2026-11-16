@@ -14,6 +14,7 @@ import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shoo
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
 import { qosEngineLines } from "../../matchmaking/qos.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
+import { creativeAccessGlobals } from "../../profiles/creative.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { giftingRuntimeOptions } from "../../store/gifting.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
@@ -245,7 +246,9 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
     "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, "",
     ...sidecarSection(build, address, port, proxied)
   ].join("\r\n");
-  const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
+  // 7.00's Creative early access notice on the lobby's "Start a server" tile (profiles/creative.js, Core-Backend #379).
+  const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build), ...creativeAccessGlobals(build)])
+    + customKeySection(build)
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + (vivox?.gameSection?.(req, build) ?? "")
