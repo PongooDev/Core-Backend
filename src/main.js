@@ -3,6 +3,7 @@ import { describeHost, listen } from "./listen.js";
 import { log } from "./log.js";
 import { startQosPingServer } from "./matchmaking/qos.js";
 import { createServer } from "./server.js";
+import { defaultSipPort } from "./vivox/service.js";
 
 let config;
 try {
@@ -28,6 +29,11 @@ log("Core", `Listening on port ${port}`);
 const qosPing = config.qosPingPort ? await startQosPingServer(network, config.qosPingPort) : null;
 network.qosPing = { port: qosPing?.port ?? null };
 if (qosPing?.port) log("Core", `Answering the game's region pings on UDP port ${qosPing.port} (admin panel: Matchmaking, Auto Region)`);
+// Fortnite's own Vivox voice chat (5.10 and later) against Core's emulator (vivox/service.js): its SIP server, UDP and
+// TCP config vivoxSipPort (5060; 0 for none), where the backend listens.
+const vivoxPort = config.vivoxSipPort ?? defaultSipPort;
+const vivoxSip = vivoxPort ? await server.vivox.start(vivoxPort) : null;
+if (vivoxSip?.port) log("Core", `Vivox voice chat for 5.10 and later: SIP on UDP and TCP port ${vivoxSip.port} (admin panel: Settings, Gameplay, Voice chat (Vivox))`);
 log("Core", `Admin panel: http://127.0.0.1:${port}/admin`);
 const { remoteAccess, publicAddress } = network.settings();
 log("Core", remoteAccess
@@ -38,6 +44,7 @@ log("Core", remoteAccess
 function shutdown(signal) {
   log("Core", `${signal} received, shutting down`);
   qosPing?.close();
+  server.vivox?.close();
   server.close(() => process.exit(0));
   server.closeAllConnections();
   setTimeout(() => process.exit(0), 2000).unref();

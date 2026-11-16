@@ -19,6 +19,7 @@ export async function createServer(config) {
   // After enableXmpp, which takes over "connection" to tell XMPP streams from HTTP: this one runs before both.
   guardConnections(server, context.network);
   server.network = context.network;
+  server.vivox = context.vivox;
   return server;
 }
 

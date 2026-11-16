@@ -1219,7 +1219,9 @@ export function adminRoutes(context) {
       ...current,
       knownBuilds: knownBuilds(),
       publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
-      portalUrl: portalUrl(req)
+      portalUrl: portalUrl(req),
+      // The Vivox emulator's SIP port (vivox/service.js), null while it isn't running.
+      vivoxSipPort: context.vivox?.sipPort?.() ?? null
     });
   });
 
@@ -1274,6 +1276,7 @@ export function adminRoutes(context) {
       bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
       vbuckPacks: req.body?.vbuckPacks,
+      vivoxVoice: req.body?.vivoxVoice,
       gifting: req.body?.gifting,
       giftingFriendDays: req.body?.giftingFriendDays,
       purchaseMode: req.body?.purchaseMode,

@@ -9826,6 +9826,14 @@
             toggleSwitch(settings.twitchPrimePack === true, (checked) =>
               save({ twitchPrimePack: checked }, checked ? "Season 3 players get the Twitch Prime pack" : "The Twitch Prime pack is off"))),
           el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given. Creators (Item Shop, Support-A-Creator) get both full Twitch Prime packs with a switch of their own there." }));
+      const panelVoice = el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Voice chat (Vivox)" }),
+              settings.vivoxVoice !== false ? chip("On", "good") : chip("Off")),
+            toggleSwitch(settings.vivoxVoice !== false, (checked) =>
+              save({ vivoxVoice: checked }, checked ? "Vivox voice chat is on" : "Vivox voice chat is off"))),
+          el("p", { class: "note", text: `Fortnite 5.10 and later have Vivox voice chat built in, for the party in the lobby and the team in a match. When on, those builds use it against this backend's own Vivox stand-in (${settings.vivoxSipPort ? `SIP on UDP and TCP port ${settings.vivoxSipPort}` : "its SIP server isn't running: see the log"}, voice on UDP ports 5062-5199 by default; forward them on your router for friends on the internet). Older builds keep the voice chat they had. Off, every build keeps what it had before. A change reaches a player when their game restarts. Each step a client takes is logged under [Vivox] and in the data folder's logs/vivox.log.` }));
       const panelTimeline = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Seasonal Events & Timelines" })),
@@ -9975,7 +9983,7 @@
         ? [panelAdmin, panelHosting, panelBuilds, panelCheats]
         : key === "auth"
           ? [panelPassword, panelPortalReg, panelPortal]
-          : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch], (key) => { state.settingsSub = key; });
+          : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch, panelVoice], (key) => { state.settingsSub = key; });
 
       $("view").replaceChildren(
         el("div", { class: "view-head" },

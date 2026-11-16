@@ -1,0 +1,39 @@
+import express from "express";
+import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
+import { getBuild } from "../../builds/detect.js";
+import { sendError } from "../../errors.js";
+import { describeToken, partyChannel } from "../../vivox/tokens.js";
+
+// The lobby's party voice tokens (UFortMcpUtils, /Script/FortniteGame.FortMcpUtils; 7.00 CL-4629139):
+// - AFortPlayerControllerFrontEnd::RequestVoiceChatLogin (0x13E4AF0) -> UFortMcpUtils::RequestVoiceLogin (0x11A94E0):
+//   GET {fortnite service}/fortnite/api/game/v2/voice/{accountId}/login (VoiceLoginUrl, +0xD0).
+// - RequestVoiceChatJoin (0x13E45C0) -> RequestVoiceJoin (0x11A9180): GET .../voice/{accountId}/join/{partyId}
+//   (VoiceJoinUrl, +0xE0).
+// The answer's parser (0x1175FB0) takes {"token": "<Vivox access token>"}; errors are errors.com.epicgames.fortmcputils.
+// VoiceChatLoginTokenReturned (0x13EE740) then connects FVivox if needed and logs in as ".<accountId>." with the token,
+// then asks for the join token; the party's channel is confctl-g-Party-<partyId> (vivox/tokens.js partyChannel).
+// Answered only for the builds the backend points at its Vivox emulator (5.10 and later, while the admin panel's Voice
+// chat (Vivox) switch is on: vivox/service.js servesBuild); any other build gets what it got before, the unknown route.
+const partyIdPattern = /^[A-Za-z0-9_-]{1,64}$/;
+
+export function voiceRoutes({ tokens, vivox }) {
+  const router = express.Router();
+  const served = (req, res, next) => (vivox?.servesBuild(getBuild(req)) ? next() : next("route"));
+
+  router.get("/fortnite/api/game/v2/voice/:accountId/login", served, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    const token = vivox.keys.mint({ action: "login", player: req.params.accountId });
+    vivox.say(`lobby login token for ${req.params.accountId} (build ${getBuild(req)}): ${describeToken(token)}`);
+    res.json({ token });
+  });
+
+  router.get("/fortnite/api/game/v2/voice/:accountId/join/:partyId", served, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    if (!partyIdPattern.test(req.params.partyId)) {
+      return sendError(res, 400, "errors.com.epicgames.fortmcputils.invalid_party", `Invalid party id ${req.params.partyId}`);
+    }
+    const token = vivox.keys.mint({ action: "join", player: req.params.accountId, channel: partyChannel(req.params.partyId) });
+    vivox.say(`lobby party join token for ${req.params.accountId}, party ${req.params.partyId} (build ${getBuild(req)}): ${describeToken(token)}`);
+    res.json({ token });
+  });
+
+  return router;
+}

@@ -76,6 +76,10 @@ import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
 import { createXmppService } from "./xmpp/service.js";
 import { createAdminAuthStore } from "./admin/auth.js";
+import { coreVivoxRoutes } from "./services/core/vivox.js";
+import { voiceRoutes } from "./services/fortnite/voice.js";
+import { createVivoxService } from "./vivox/service.js";
+import { vivoxWebRoutes } from "./vivox/web.js";
 
 // What the HTTP routes and the XMPP service share.
 export function createContext(config) {
@@ -96,10 +100,11 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "creators", "creatorPayoutPercent", "creatorTwitchPrimePacks", "hideEmptyEventsTab",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "fortnitemaresOutage", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards", "gifting", "giftingFriendDays"]) {
+    "vivoxVoice", "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "fortnitemaresOutage", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards", "gifting", "giftingFriendDays"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
+  const network = createNetwork(config);
   // The admin panel's region fallback (Core-Backend #123): off, a player only plays in the region they picked.
   const regionFallback = () => settings.get().regionFallback !== false;
   // Its server regions (#142): a server in one of them takes all of their players.
@@ -168,7 +173,9 @@ export function createContext(config) {
       serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
       regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true,
       tournamentServers: () => tournaments.runningServers(), quiet: config.requestLog === false }),
-    network: createNetwork(config),
+    network,
+    // Fortnite's own Vivox voice chat against Core (vivox/service.js): 5.10 and later, while the admin panel's switch is on.
+    vivox: createVivoxService({ dataDir: config.dataDir, network, settings, config, accounts, quiet: config.requestLog === false }),
     emptyServerWaitMs: config.emptyServerWaitMs,
     presenceWaitMs: config.presenceWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
@@ -225,6 +232,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(replayRoutes(context));
   // 7.00's Creative islands on the DSS, its servers' sidecar requests (services/dss/dss.js), read raw before any body parser.
   app.use(dssRoutes(context));
+  // The Vivox SDK's account web API (vivox/web.js), logged with its raw bodies, so also before the body parsers.
+  if (context.vivox) app.use(vivoxWebRoutes(context));
   // The admin panel's news image upload (#215) reads its larger body itself, after the admin gate (admin/routes.js).
   const json = express.json();
   app.use((req, res, next) => (req.path === "/admin/api/news/image" ? next() : json(req, res, next)));
@@ -252,6 +261,9 @@ export function createApp(config, context = createContext(config)) {
   app.use(storefrontRoutes(context));
   app.use(purchaseRoutes(context));
   app.use(chatRoutes(context));
+  // The lobby's party voice tokens (services/fortnite/voice.js) and the gameservers' Vivox signing (services/core/vivox.js).
+  app.use(voiceRoutes(context));
+  app.use(coreVivoxRoutes(context));
   // 7.00's Creative island codes (services/links/links.js).
   app.use(linksRoutes(context));
   app.use(statsRoutes(context));

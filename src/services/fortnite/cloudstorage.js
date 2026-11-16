@@ -231,7 +231,11 @@ const sidecarSection = (build, address, port, proxied) => (Number(build) >= side
   ? ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", `Protocol=${proxied ? "https" : "http"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]
   : []);
 const defaultNetwork = createNetwork();
-function systemFiles(req, network = defaultNetwork, settings = null) {
+// 5.10's (CL-4225813) and later builds' Vivox voice chat (vivox/service.js gameSection): FVivox::Connect (7.00 0x999130)
+// reads [Vivox] ServerUrl and Domain from the game ini each time it connects, so this file, merged at start-up, points
+// the game's own Vivox at Core's emulator. Nothing for older builds (their URL is in the exe) or while the admin panel's
+// Voice chat (Vivox) switch is off, which leaves the file as it was.
+function systemFiles(req, network = defaultNetwork, settings = null, vivox = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
@@ -244,6 +248,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
+    + (vivox?.gameSection?.(req, build) ?? "")
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
   // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
@@ -264,15 +269,15 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens, network, settings }) {
+export function cloudStorageRoutes({ tokens, network, settings, vivox }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req, network, settings)).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network, settings, vivox)).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req, network, settings)[req.params.filename];
+    const data = systemFiles(req, network, settings, vivox)[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });

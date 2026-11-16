@@ -23,7 +23,8 @@ export function loadConfig(argv = process.argv.slice(2)) {
       "local-only": { type: "boolean" },
       listen: { type: "string" },
       "public-address": { type: "string" },
-      "qos-ping-port": { type: "string" }
+      "qos-ping-port": { type: "string" },
+      "vivox-sip-port": { type: "string" }
     }
   });
 
@@ -37,6 +38,12 @@ export function loadConfig(argv = process.argv.slice(2)) {
   if (values["qos-ping-port"] !== undefined) config.qosPingPort = Number(values["qos-ping-port"]);
   if (!Number.isInteger(config.port) || config.port < 0 || config.port > 65535) throw new Error(`Invalid port ${config.port}`);
   if (!Number.isInteger(config.qosPingPort) || config.qosPingPort < 0 || config.qosPingPort > 65535) throw new Error(`Invalid qosPingPort ${config.qosPingPort}`);
+  // The Vivox emulator's SIP port (vivox/service.js; 5060 when not given, 0 for none). Its other keys, read there:
+  // vivoxRtpPorts ("5062-5199"), vivoxEcho (false), vivoxSipProxy ("{host}:{port}"), vivoxPermittedCodecs ("1").
+  if (values["vivox-sip-port"] !== undefined) config.vivoxSipPort = Number(values["vivox-sip-port"]);
+  if (config.vivoxSipPort !== undefined && (!Number.isInteger(config.vivoxSipPort) || config.vivoxSipPort < 0 || config.vivoxSipPort > 65535)) {
+    throw new Error(`Invalid vivoxSipPort ${config.vivoxSipPort}`);
+  }
 
   const fromCommandLine = [];
   if (values["remote-access"] && values["local-only"]) throw new Error("--remote-access and --local-only can't both be given");

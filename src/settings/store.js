@@ -114,6 +114,10 @@ const defaults = {
   // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js): a simulated real-money purchase that gives the
   // pack's V-Bucks for free. On by default: the issue asked for them, and the admin panel can already give any amount.
   vbuckPacks: true,
+  // Fortnite's own Vivox voice chat against Core's emulator (vivox/service.js): 5.10 and later are pointed at it by the
+  // DefaultGame.ini hotfix, and the lobby's voice token routes answer them. On by default; off, every build keeps what it
+  // had before (5.10 and later their shipped Vivox address, which doesn't answer).
+  vivoxVoice: true,
   // Item shop gifting (store/gifting.js): on for the builds that shipped it (6.31 and later), and the days a receiver must
   // have been the sender's friend, Epic's 2 by default.
   gifting: true,
@@ -732,6 +736,7 @@ export function createSettingsStore(dataDir) {
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
       settings.vbuckPacks = loaded.vbuckPacks !== false;
+      settings.vivoxVoice = loaded.vivoxVoice !== false;
       settings.gifting = loaded.gifting !== false;
       settings.giftingFriendDays = giftingFriendDaysValue(loaded.giftingFriendDays) ?? defaultGiftingFriendDays;
       settings.purchaseMode = loaded.purchaseMode === "code" ? "code" : "free";
@@ -915,6 +920,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.completeBrokenChallenges === "boolean") settings.completeBrokenChallenges = partial.completeBrokenChallenges;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
+      if (typeof partial.vivoxVoice === "boolean") settings.vivoxVoice = partial.vivoxVoice;
       if (typeof partial.gifting === "boolean") settings.gifting = partial.gifting;
       if (giftingFriendDaysValue(partial.giftingFriendDays) !== undefined) settings.giftingFriendDays = giftingFriendDaysValue(partial.giftingFriendDays);
       if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;
