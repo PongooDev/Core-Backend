@@ -16,6 +16,7 @@ import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
 import { sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
+import { maxServerModeRules, serverModeLabel, serverModeOptions, serverModeRuleProblem, serverModesOf } from "../matchmaking/server-modes.js";
 import { invalidPingServers, maxPingServers } from "../matchmaking/qos.js";
 import { regionLabels, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
@@ -2103,11 +2104,17 @@ export function adminRoutes(context) {
     });
   });
 
+  // The game modes a session's server hosts by the server game modes (#227, matchmaking/server-modes.js), by name, or null
+  // for any: its IP is the one it registered from, its port its game port.
+  function hostedModesOf(session) {
+    return serverModesOf(session.sourceAddress, session.serverPort, settings?.get?.().serverGameModes ?? [])?.map(serverModeLabel) ?? null;
+  }
+
   function getMatchmakingPayload() {
     const s = settings?.get?.() ?? {};
     const modes = s.matchmakingModes ?? defaultMatchmakingModes;
     const serverLimits = s.serverLimits ?? defaultServerLimits;
-    const sessionList = (sessions?.list?.() ?? []).map((session) => sessionSummary(session));
+    const sessionList = (sessions?.list?.() ?? []).map((session) => ({ ...sessionSummary(session), hostedModes: hostedModesOf(session) }));
     // The LTMs by season, their original dates and whether those hold now (Core-Backend #190, #191).
     const schedule = withoutSeasonStartRecording(() => ltmSchedule(s, new Date()));
 
@@ -2222,6 +2229,9 @@ export function adminRoutes(context) {
         accounts: entry.accounts.map((id) => ({ id, displayName: accounts.get(id)?.displayName ?? id })) })),
       customMatchFallback: s.customMatchFallback === true,
       customMatchNoRewards: s.customMatchNoRewards !== false,
+      // The server game modes (#227): the rules, and the modes the panel offers for them ([{value, label, detail, group}]).
+      serverGameModes: s.serverGameModes ?? [],
+      serverGameModeOptions: serverModeOptions(),
       timing: {
         gatherSeconds: s.matchmakingGatherSeconds ?? 10,
         warmupSeconds: s.warmupSeconds ?? null,
@@ -2311,6 +2321,17 @@ export function adminRoutes(context) {
       update.customMatchServers = entries;
     }
     if (typeof req.body.customMatchFallback === "boolean") update.customMatchFallback = req.body.customMatchFallback;
+    // The server game modes (#227): [{ address (an IP, IP:port or CIDR range), port (null for any), modes }].
+    if (req.body.serverGameModes !== undefined) {
+      const list = req.body.serverGameModes;
+      if (!Array.isArray(list)) return invalid(res, "serverGameModes must be a list");
+      if (list.length > maxServerModeRules) return invalid(res, `At most ${maxServerModeRules} server game mode rules can be listed`);
+      for (const entry of list) {
+        const problem = serverModeRuleProblem(entry);
+        if (problem) return invalid(res, problem);
+      }
+      update.serverGameModes = list;
+    }
     if (typeof req.body.customMatchNoRewards === "boolean") update.customMatchNoRewards = req.body.customMatchNoRewards;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
     // 6.20's and 6.21's Fortnitemares modes in the default modes' place while on (#348, events/ltms.js defaultReplacements).
@@ -2982,7 +3003,7 @@ export function adminRoutes(context) {
 
   router.get("/admin/api/sessions", (req, res) => {
     const name = (accountId) => accounts.get(accountId)?.displayName ?? accountId;
-    res.json(sessions.list().map(sessionSummary).map((session) => ({
+    res.json(sessions.list().map((session) => ({ ...sessionSummary(session), hostedModes: hostedModesOf(session) })).map((session) => ({
       ...session,
       players: [...session.publicPlayers, ...session.privatePlayers].map((accountId) => ({ accountId, displayName: name(accountId) }))
     })));

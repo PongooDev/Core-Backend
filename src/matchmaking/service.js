@@ -6,6 +6,7 @@ import { inIpRanges } from "../network.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
 import { hasCustomServers, reservationsOf, serverTakes } from "./custom-servers.js";
 import { regionAllowsAddress, regionGroup, regionMembers, regionName, regionOf, regionsOverlap, servedRegions } from "./regions.js";
+import { bucketPlaylist, serverHosts, serverModeLabel, serverModesOf } from "./server-modes.js";
 
 // Battle Royale's matchmaking service (MMS, from 1.7.2), both sides (Core-Docs Athena-Matchmaking-1.7.2.md and
 // Athena-Boot-1.7.2.md §1 C).
@@ -573,10 +574,11 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // tournamentServers (#282): the running tournament events' dedicated servers, [{playlistId, servers: [IP or CIDR range]}]
 // (tournaments/store.js runningServers), asked each time: a match of such a playlist plays only on one of them, and
 // they take no other playlist's matches. playerBots is asked with the match's bucket, as a tournament event's bots
-// (#282) can differ from the panel's.
+// (#282) can differ from the panel's. serverModes (#227): the admin panel's server game modes, [{address, port, modes}]
+// (server-modes.js), asked each time: a server one of them names hosts only their modes, by its session's IP and game port.
 export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}),
   matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec, playerBots = () => false,
-  regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, tournamentServers = () => [], quiet = false }) {
+  regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, tournamentServers = () => [], serverModes = () => [], quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -675,11 +677,13 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Custom matchmaking servers (#227): whether a server is one, and whether a party's custom match has servers of its own.
   const reserved = (server) => reservationsOf(server.address, customServers()).length > 0;
   const hasOwnServers = (party) => hasCustomServers(party.customKey, party.ticket.partyPlayerIds, customServers());
-  // Whether a server may host a party's match in the bucket: it takes the bucket, its IP is one of the match's region's
-  // hosting IPs, and it is a public server for a public match, or for a custom match one kept for it (a public one only
-  // when no custom server is kept for the match, or the fallback lets it).
-  function canHost(server, party, bucketId, options) {
+  // Whether a server may host a party's match in the bucket: it takes the bucket, hosts its playlist (the server game
+  // modes, unless ignoreModes), its IP is one of the match's region's hosting IPs, and it is a public server for a public
+  // match, or for a custom match one kept for it (a public one only when no custom server is kept for the match, or the
+  // fallback lets it).
+  function canHost(server, party, bucketId, options = {}) {
     if (!takesBucket(server, bucketId, options)) return false;
+    if (!options.ignoreModes && !hostsMode(server, bucketId, party.ticket.build)) return false;
     const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
     if (!regionAllowsAddress(parseBucket(matchBucket).region, server.address, regionHostingIps())) return false;
     if (!serverTakes(server.address, { customKey: party.customKey, players: party.ticket.partyPlayerIds }, customServers())) return false;
@@ -706,12 +710,27 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     return !own.length || inIpRanges(server.address, own);
   }
 
+  // The server game modes (#227, server-modes.js): the rules, and whether a server hosts a bucket's playlist, resolved on
+  // the party's build (up to 4.2 the bucket gives the playlist's id, from 4.4 its name). A server's IP is its session's
+  // (address), its port the game port its session names now. A server no rule names hosts any playlist.
+  const modeRules = () => {
+    const list = typeof serverModes === "function" ? serverModes() : serverModes;
+    return Array.isArray(list) ? list : [];
+  };
+  const portOf = (server) => sessions.get(server.sessionId)?.serverPort ?? null;
+  function hostsMode(server, bucketId, build) {
+    const rules = modeRules();
+    return !rules.length || serverHosts(server.address, portOf(server), bucketPlaylist(parseBucket(bucketId, build), build), rules);
+  }
+  const modesText = (server) => serverModesOf(server.address, portOf(server), modeRules())?.map(serverModeLabel).join(", ") ?? null;
+
   // Whether a server registered for the bucket's build and region, that may host the party's match, exists at all. When
-  // none does, nobody would ever take the bucket's players: they play in another region instead (Core-Backend #121).
-  function hasServerFor(bucketId, party) {
+  // none does, nobody would ever take the bucket's players: they play in another region instead (Core-Backend #121), or
+  // with the fallback off wait for one. A server whose game modes leave the bucket's playlist out (#227) counts as none.
+  function hasServerFor(bucketId, party, options = {}) {
     for (const [sessionId, host] of hosts) {
       if (!sessions.get(sessionId)) hosts.delete(sessionId);
-      else if (canHost(host, party, bucketId)) return true;
+      else if (canHost(host, party, bucketId, options)) return true;
     }
     return false;
   }
@@ -810,7 +829,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (noServer !== Boolean(party.noServer) || anyRegion !== Boolean(party.anyRegion)) {
       party.noServer = noServer;
       party.anyRegion = anyRegion;
-      if (noServer) say(`No server is registered for ${regionName(regionOf(parseBucket(bucketId).region))} (bucket ${bucketId}): ` +
+      // Servers of the region that the server game modes keep from the playlist (#227) say so.
+      const kept = noServer && hasServerFor(bucketId, party, { ignoreModes: true });
+      if (noServer) say(`No server ${kept ? "whose game modes take its playlist " : ""}is registered for ${regionName(regionOf(parseBucket(bucketId).region))} ` +
+        `(bucket ${bucketId}${kept ? "; admin panel, Matchmaking, Server Game Modes" : ""}): ` +
         `${party.ticket.accountId} ${anyRegion ? "queues for a server in any region" : "waits for one (the region fallback is off)"}`);
     }
     const key = bucketKey(bucketId, { anyRegion });
@@ -839,7 +861,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         return true;
       }
       if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && (forming.customScope ?? null) === customScopeOf(party.ticket)
-        && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
+        && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion }) && hostsMode(server, bucketId, party.ticket.build)
         && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
@@ -1069,9 +1091,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (!lateJoin()) return null;
     for (const [sessionId, open] of lateJoins) {
       const pending = pendingOf(open, now);
-      // The match's server (a host until its session goes) takes its server regions' parties (Core-Backend #142).
+      // The match's server (a host until its session goes) takes its server regions' parties (Core-Backend #142), and
+      // only while its game modes take the playlist (#227: the admin panel may have changed them since the match began).
       const host = hosts.get(sessionId);
       const wanted = host ? bucketKey(inServerRegion(host, party.ticket.bucketId), { anyRegion }) : key;
+      if (host && !hostsMode(host, party.ticket.bucketId, party.ticket.build)) continue;
       if (open.until - now >= lateJoinMarginMs && (open.customKey ?? null) === party.customKey && (open.customScope ?? null) === customScopeOf(party.ticket) && bucketKey(open.bucketId, { anyRegion }) === wanted
         && open.players.size + pending + party.size <= open.maxPlayers) {
         return [sessionId, open];
@@ -1263,6 +1287,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     ws.send(message("Registered", {}));
     say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)` +
       (reserved(server) ? `, a custom matchmaking server (${server.address})` : "") +
+      (modesText(server) ? `, hosting only ${modesText(server)} (${server.address}:${portOf(server) ?? "any port"}, Server Game Modes)` : "") +
       (tournamentPlaylistsOf(server).length ? `, a tournament server for playlist ${[...new Set(tournamentPlaylistsOf(server))].join(", ")} (${server.address})` : ""));
     placeWaiting();
   }

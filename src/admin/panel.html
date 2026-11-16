@@ -4557,6 +4557,8 @@
         ["Address", (s) => el("span", { class: "mono", text: `${s.serverAddress}:${s.serverPort}` })],
         ["Mode", (s) => chip(s.gameMode || "—", s.gameMode === "FORTEMPTY" ? "good" : "yellow")],
         ["Region", (s) => s.region || "—"],
+        // The game modes its server hosts by the Server Game Modes rules (Core-Backend #227), or any.
+        ["Hosts", (s) => (s.hostedModes ? s.hostedModes.join(", ") : el("span", { class: "muted", text: "Any mode" })), "wrap"],
         ["Players", (s) => (s.players ? s.players.map((p) => p.displayName).join(", ") : `${s.currentPlayers}`) || "—", "wrap"],
         ["Beacon", (s) => s.beaconPort || "—", "num"],
         ["State", (s) => chip(s.started ? "Started" : s.currentPlayers ? "Busy" : "Free", s.started ? "yellow" : s.currentPlayers ? "warn" : "good")],
@@ -4593,6 +4595,8 @@
           accounts: entry.accounts.map((account) => account.displayName) })),
         customMatchFallback: data.customMatchFallback === true,
         customMatchNoRewards: data.customMatchNoRewards !== false,
+        // The server game modes (Core-Backend #227): the game modes each gameserver hosts, by its IP or range and game port.
+        serverGameModes: (data.serverGameModes || []).map((rule) => ({ address: rule.address, port: rule.port ?? "", modes: [...rule.modes] })),
         timing: { ...data.timing },
         bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
@@ -5523,6 +5527,7 @@
       const sectionPingServers = regionPingServersSection(form, regions, regionLabels, data.qosPingPort ?? null);
       const sectionCustomKeys = customMatchmakingSection(data.customMatchmaking || [], form);
       const sectionCustomServers = customServersSection(form);
+      const sectionServerModes = serverGameModesSection(form, data.serverGameModeOptions || []);
 
       // Section 4: Battle Royale V-Bucks Rewards
       const sectionRewards = el("section", { class: "panel", style: "margin-top:16px" },
@@ -5554,7 +5559,7 @@
         ? [sectionModes]
         : key === "rules"
           ? [sectionLimits, sectionTiming, sectionRewards]
-          : [sectionSessions, sectionHostingIps, sectionPingServers, sectionCustomServers, sectionCustomKeys], (key) => { state.matchmakingSub = key; });
+          : [sectionSessions, sectionServerModes, sectionHostingIps, sectionPingServers, sectionCustomServers, sectionCustomKeys], (key) => { state.matchmakingSub = key; });
 
       $("view").replaceChildren(
         // View Head
@@ -5677,6 +5682,71 @@
         el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
           el("span", { class: "muted font-semibold", text: "Fall back to public servers when no custom server is free" }),
           fallback));
+    }
+
+    // The server game modes (Core-Backend #227): which game modes each gameserver hosts. A rule names a server by its IP
+    // or a range and, optionally, its game port, and lists the modes it hosts: the game modes, limited-time modes (each its
+    // playlist on every build) and any other playlist by its name or id. A server no rule names hosts any mode. Saved with
+    // the page's Save Matchmaking Config.
+    function serverGameModesSection(form, options) {
+      const list = el("div", {});
+      const count = chip("", "accent");
+      const groups = [...new Set(options.map((option) => option.group))];
+      const labelOf = (value) => options.find((option) => option.value === value)?.label ?? (/^\d+$/.test(value) ? `Playlist ${value}` : value);
+      const ruleRow = (rule, index) => {
+        const address = el("input", {
+          class: "field mono", placeholder: "Server IP or range (127.0.0.1, 203.0.113.0/24)", "aria-label": "Server IP or range", style: "flex:1 1 220px",
+          oninput: (e) => { rule.address = e.target.value.trim(); }
+        });
+        address.value = rule.address;
+        const port = el("input", {
+          class: "field mono", type: "number", min: "1", max: "65535", placeholder: "Any port", "aria-label": "Server game port", style: "flex:0 0 120px",
+          oninput: (e) => { rule.port = e.target.value.trim(); }
+        });
+        port.value = rule.port ?? "";
+        const add = (value) => {
+          if (value && !rule.modes.includes(value)) rule.modes.push(value);
+          render();
+        };
+        const picker = el("select", { class: "field", "aria-label": "Add a game mode", style: "flex:1 1 260px", onchange: (e) => add(e.target.value) },
+          el("option", { value: "", text: "Add a game mode…" }),
+          ...groups.map((group) => el("optgroup", { label: group },
+            ...options.filter((option) => option.group === group && !rule.modes.includes(option.value))
+              .map((option) => el("option", { value: option.value, text: option.detail ? `${option.label} — ${option.detail}` : option.label })))));
+        const other = el("input", {
+          class: "field mono", placeholder: "Other playlist: name or id", "aria-label": "Another playlist's name or id", style: "flex:1 1 200px",
+          onkeydown: (e) => { if (e.key === "Enter") add(e.target.value.trim()); }
+        });
+        const modes = rule.modes.length
+          ? rule.modes.map((mode) => el("span", { class: "actions", style: "gap:4px" },
+            chip(labelOf(mode), mode === "creative" ? "sky" : mode === "saveTheWorld" ? "good" : "accent"),
+            btn("×", () => { rule.modes = rule.modes.filter((entry) => entry !== mode); render(); }, "ghost small", { "aria-label": `Remove ${labelOf(mode)}` })))
+          : [el("span", { class: "muted", text: "Pick at least one game mode." })];
+        return el("div", { style: "margin-top:12px; padding:12px; border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" },
+            address, port,
+            btn("Remove rule", () => { form.serverGameModes.splice(index, 1); render(); }, "ghost small")),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-top:8px;" },
+            picker, other, btn("Add", () => add(other.value.trim()), "ghost small")),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:6px; margin-top:8px;" }, ...modes));
+      };
+      const render = () => {
+        count.firstChild.textContent = `${form.serverGameModes.length} ${form.serverGameModes.length === 1 ? "Rule" : "Rules"}`;
+        list.replaceChildren(...(form.serverGameModes.length
+          ? form.serverGameModes.map(ruleRow)
+          : [el("span", { class: "muted", text: "No rules: every server hosts every game mode." })]));
+      };
+      render();
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Server Game Modes" }),
+            count)),
+        el("p", { class: "note", text: "Which game modes each gameserver hosts. A rule names a server by its IP, or a range of IPs (203.0.113.0/24), and optionally its game port, and lists the modes it hosts. Core Launcher's servers on one PC share an IP and differ by port: see the Address column above (this PC's own servers come from 127.0.0.1). A server a rule names only gets matches of its modes; a server no rule names takes every mode, as before. When several rules name a server, it hosts all of their modes." }),
+        el("p", { class: "note", text: "Battle Royale is every Battle Royale mode but Creative, so a Creative-only server beside Battle Royale-only servers is one rule each. A limited-time mode covers its playlist on every build that has it. Other playlist takes any playlist's name (Playlist_Barrier) or id (204); an id covers every playlist with that id. Save the World is the servers its missions find. A party whose mode no free server hosts waits for one, as it does when every server is busy; with Region Fallback on, it plays on a server of another region that hosts its mode when its own region has none. Saved with Save Matchmaking Config." }),
+        list,
+        el("div", { class: "actions", style: "margin-top:12px" },
+          btn("Add rule", () => { form.serverGameModes.push({ address: "", port: "", modes: [] }); render(); }, "ghost")));
     }
 
     // The players allowed to open custom matchmaking keys (Core-Backend #186), granted or revoked per player.

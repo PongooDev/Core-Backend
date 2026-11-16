@@ -100,7 +100,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "creators", "creatorPayoutPercent", "creatorTwitchPrimePacks", "hideEmptyEventsTab",
-    "vivoxVoice", "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "fortnitemaresOutage", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards", "gifting", "giftingFriendDays"]) {
+    "vivoxVoice", "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "fortnitemaresReplacesDefaults", "fortnitemaresOutage", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback", "customMatchNoRewards", "serverGameModes", "gifting", "giftingFriendDays"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -112,7 +112,9 @@ export function createContext(config) {
   // Each region's hosting IPs and the custom matchmaking servers (#227).
   const regionHostingIps = () => settings.get().regionHostingIps ?? {};
   const customServers = () => settings.get().customMatchServers ?? [];
-  const sessions = createSessionStore({ regionFallback, serverRegions, regionHostingIps, customServers });
+  // The server game modes (#227, matchmaking/server-modes.js): the modes each gameserver hosts, by its IP and game port.
+  const serverModes = () => settings.get().serverGameModes ?? [];
+  const sessions = createSessionStore({ regionFallback, serverRegions, regionHostingIps, customServers, serverModes });
   // The admin panel's tournament events (#263), whose dedicated servers and bots (#282) the matchmaking service follows.
   const tournaments = createTournamentStore(config.dataDir);
   configureShowdown(() => tournaments);
@@ -172,7 +174,7 @@ export function createContext(config) {
       },
       serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
       regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true,
-      tournamentServers: () => tournaments.runningServers(), quiet: config.requestLog === false }),
+      tournamentServers: () => tournaments.runningServers(), serverModes, quiet: config.requestLog === false }),
     network,
     // Fortnite's own Vivox voice chat against Core (vivox/service.js): 5.10 and later, while the admin panel's switch is on.
     vivox: createVivoxService({ dataDir: config.dataDir, network, settings, config, accounts, quiet: config.requestLog === false }),

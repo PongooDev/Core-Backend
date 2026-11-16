@@ -3,6 +3,7 @@ import { log } from "../log.js";
 import { allowsHosting, createNetwork, isLoopback, normalizeAddress, requestAddress } from "../network.js";
 import { reservationsOf } from "./custom-servers.js";
 import { regionAllowsAddress, regionOf, servedRegions } from "./regions.js";
+import { saveTheWorldPlaylist, serverHosts } from "./server-modes.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
 // with "Unable to read session settings!". buildUniqueId is read as a string.
@@ -135,12 +136,20 @@ function countOpenSlots(session) {
 // server regions, asked each search (#142).
 // regionHostingIps and customServers (Core-Backend #227): the admin panel's, asked each search. A search finds neither a
 // session whose server's IP isn't one of its region's hosting IPs (listed after it registered) nor one on a custom
-// matchmaking server, which never takes public players.
-export function createSessionStore({ regionFallback: fallsBack = () => true, serverRegions = () => [], regionHostingIps = () => ({}), customServers = () => [] } = {}) {
+// matchmaking server, which never takes public players. serverModes (#227, server-modes.js): the admin panel's server game
+// modes, asked each search. The search is Save the World's (its missions' FORTEMPTY and FORTPVE sessions; Battle Royale's
+// servers take their matches from the matchmaking service), so it finds no session of a server whose game modes leave Save
+// the World out, by the IP the session was registered from and its game port. A Battle Royale session (FORTATHENA) is the
+// matchmaking service's to place, and stays as it was.
+const battleRoyaleGameMode = "FORTATHENA";
+export function createSessionStore({ regionFallback: fallsBack = () => true, serverRegions = () => [], regionHostingIps = () => ({}), customServers = () => [],
+  serverModes = () => [] } = {}) {
   const sessions = new Map();
   const served = (region) => servedRegions(region, serverRegions());
+  const hostsSaveTheWorld = (session) => session.attributes?.GAMEMODE_s === battleRoyaleGameMode
+    || serverHosts(session.sourceAddress, session.serverPort, saveTheWorldPlaylist, serverModes());
   const searchable = (session) => regionAllowsAddress(session.attributes?.[regionKey], session.sourceAddress, regionHostingIps())
-    && reservationsOf(session.sourceAddress, customServers()).length === 0;
+    && reservationsOf(session.sourceAddress, customServers()).length === 0 && hostsSaveTheWorld(session);
   // Called after every change a search can see (a session made, updated, filled, emptied, started or ended).
   const watchers = new Set();
   const changed = () => {

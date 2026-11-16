@@ -14,6 +14,7 @@ import { defaultGiftingFriendDays, giftingFriendDaysValue } from "../store/gifti
 import { regionPingServers } from "../matchmaking/qos.js";
 import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
+import { serverModeRules } from "../matchmaking/server-modes.js";
 import { allowedBuildList } from "../builds/allowed.js";
 import { defaultBotModes, sanitizeBotFillLobby, sanitizeBotModeCounts, sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { battleRoyaleSeasons } from "../builds/detect.js";
@@ -196,6 +197,9 @@ const defaults = {
   // servers of its own plays on a public server when none of its own is free (off: it waits for one).
   customMatchServers: [],
   customMatchFallback: false,
+  // Server game modes (#227, matchmaking/server-modes.js): [{ address, port, modes }], the game modes the gameservers at an
+  // IP or range (and game port, null for any) host. A server no rule names hosts any mode.
+  serverGameModes: [],
   // Whether a custom matchmaking key's match (#186) counts for nothing beyond its stats: no challenge progress, no season
   // XP and no Battle Royale V-Bucks (services/fortnite/battleroyale.js, services/mcp/commands/server.js), as Epic's
   // custom matches gave none. On by default; off, a custom match counts as a public one does.
@@ -750,6 +754,7 @@ export function createSettingsStore(dataDir) {
       settings.regionPingServers = regionPingServers(loaded.regionPingServers) ?? {};
       settings.customMatchServers = customMatchServers(loaded.customMatchServers) ?? [];
       settings.customMatchFallback = loaded.customMatchFallback === true;
+      settings.serverGameModes = serverModeRules(loaded.serverGameModes) ?? [];
       settings.customMatchNoRewards = loaded.customMatchNoRewards !== false;
       settings.allowedBuilds = allowedBuildList(loaded.allowedBuilds) ?? null;
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
@@ -825,6 +830,7 @@ export function createSettingsStore(dataDir) {
         regionPingServers: JSON.parse(JSON.stringify(settings.regionPingServers ?? {})),
         customMatchServers: JSON.parse(JSON.stringify(settings.customMatchServers ?? [])),
         customMatchFallback: settings.customMatchFallback === true,
+        serverGameModes: JSON.parse(JSON.stringify(settings.serverGameModes ?? [])),
         customMatchNoRewards: settings.customMatchNoRewards !== false,
         allowedBuilds: settings.allowedBuilds ? [...settings.allowedBuilds] : null,
         structureLimits: { ...settings.structureLimits },
@@ -939,6 +945,7 @@ export function createSettingsStore(dataDir) {
       settings.regionPingServers = regionPingServers(partial.regionPingServers) ?? settings.regionPingServers;
       settings.customMatchServers = customMatchServers(partial.customMatchServers) ?? settings.customMatchServers;
       if (typeof partial.customMatchFallback === "boolean") settings.customMatchFallback = partial.customMatchFallback;
+      settings.serverGameModes = serverModeRules(partial.serverGameModes) ?? settings.serverGameModes;
       if (typeof partial.customMatchNoRewards === "boolean") settings.customMatchNoRewards = partial.customMatchNoRewards;
       const builds = allowedBuildList(partial.allowedBuilds);
       if (partial.allowedBuilds !== undefined && builds !== undefined) settings.allowedBuilds = builds;
