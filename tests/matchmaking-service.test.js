@@ -5,7 +5,7 @@ import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { assignmentBucket, bucketKey, bucketMatches, canStartMatch, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
+import { assignmentBucket, bucketKey, bucketMatches, canStartMatch, customScopeOf, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
 import { regionGroup, regionList, regionMembers, regionOf, regionsOverlap, servedRegions } from "../src/matchmaking/regions.js";
 import { certUserAgent, dedicatedServerToken, del, get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -1317,10 +1317,10 @@ test("players with the same custom key share a match of their own; a key no allo
 });
 
 // A player on a build (its User-Agent's changelist) queued for Duos in NA with a custom key, past Connecting and Waiting.
-async function queueWithKeyOn(backend, player, customKey, changelist) {
+async function queueWithKeyOn(backend, player, customKey, changelist, { region = "NA", playlist = 10 } = {}) {
   const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
     path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
-      `&bucketId=858118782:0:NA:10&player.platform=Windows&player.option.customKey=${customKey}`,
+      `&bucketId=858118782:0:${region}:${playlist}&player.platform=Windows&player.option.customKey=${customKey}`,
     headers: { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-CL-${changelist}`, Authorization: `bearer ${player.token}` } });
   assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
   const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
@@ -1413,6 +1413,58 @@ test("a custom match has one host: the first allowed party to queue with its key
     assert.equal(await Promise.race([assigned, new Promise((done) => setTimeout(() => done("none"), 1000))]), "none");
     secondConnection.send(startMatchPress);
     assert.deepEqual((await assigned).payload.teams.flat(2), [second.accountId]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a custom match is its key's, mode's and region's: allowed players in different regions each host their own (#186)", async () => {
+  assert.equal(customScopeOf({ customKey: null, bucketId: "858118782:0:NA:10" }), null);
+  assert.equal(customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:na:10" }), customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:NA:10" }));
+  assert.notEqual(customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:NA:10" }), customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:EU:10" }));
+  assert.notEqual(customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:NA:10" }), customScopeOf({ customKey: "CoreKey1", bucketId: "858118782:0:NA:2" }));
+
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    // Only NA has servers: with the region fallback EU's players play on them, which used to put EU's host in NA's match.
+    const first = await regionServer(backend, "ScopeServer1", "NA");
+    const second = await regionServer(backend, "ScopeServer2", "NA");
+    connections.push(first.connection, second.connection);
+    const naHost = await userLogin(backend.port, "NaHost");
+    const euHost = await userLogin(backend.port, "EuHost");
+    const naGuest = await userLogin(backend.port, "NaGuest");
+    const euGuest = await userLogin(backend.port, "EuGuest");
+    const lost = await userLogin(backend.port, "LostGuest");
+    await allowCustomKeys(backend, naHost);
+    await allowCustomKeys(backend, euHost);
+
+    // Same key and mode, different regions: each allowed player hosts a match of their own, both with the button.
+    const naHostConnection = await queueWithKeyOn(backend, naHost, "CoreKey1", 4573279, { region: "NA" });
+    connections.push(naHostConnection);
+    assert.equal((await nextQueued(naHostConnection)).payload.status["ticket.status.canStartMatch"], "true");
+    const euHostConnection = await queueWithKeyOn(backend, euHost, "CoreKey1", 4573279, { region: "EU" });
+    connections.push(euHostConnection);
+    assert.equal((await nextQueued(euHostConnection)).payload.status["ticket.status.canStartMatch"], "true");
+
+    // Guests join the match of their own region; in a mode nobody opened the key in, they are refused.
+    const naGuestConnection = await queueWithKeyOn(backend, naGuest, "CoreKey1", 4573279, { region: "NA" });
+    const euGuestConnection = await queueWithKeyOn(backend, euGuest, "CoreKey1", 4573279, { region: "EU" });
+    const lostConnection = await queueWithKeyOn(backend, lost, "CoreKey1", 4573279, { region: "NA", playlist: 2 });
+    connections.push(naGuestConnection, euGuestConnection, lostConnection);
+    assert.equal(await lostConnection.next(), null);
+    assert.equal(lostConnection.closeReason(), "match.custom_key_not_supported");
+    assert.equal((await nextQueued(naGuestConnection)).payload.status["ticket.status.canStartMatch"], undefined);
+    assert.equal((await nextQueued(euGuestConnection)).payload.status["ticket.status.canStartMatch"], undefined);
+
+    // Each host starts their own match, with their own region's players.
+    const assigns = [nextOf(first.connection, "AssignMatch"), nextOf(second.connection, "AssignMatch")];
+    naHostConnection.send(startMatchPress);
+    euHostConnection.send(startMatchPress);
+    const teams = (await Promise.all(assigns)).map((assign) => assign.payload.teams.flat(2).sort());
+    const expected = [[naHost.accountId, naGuest.accountId].sort(), [euHost.accountId, euGuest.accountId].sort()];
+    assert.deepEqual(teams.sort(), expected.sort());
   } finally {
     for (const connection of connections) connection.close();
     backend.close();

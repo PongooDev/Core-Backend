@@ -252,10 +252,11 @@ export const showsMatchStart = (build) => Number(build) >= firstMatchStartBuild 
 // when the key isn't empty). Players with the same key share a match of their own, apart from everyone else's, and its
 // AssignMatch tells the server so (match.option.customKey: 2.4's OnGivenMatchAssignment 0x4210A0 flags a match whose key
 // isn't empty). Who may use a key is the backend's to say: a party with a player the admin panel allows
-// (ticket.customKeyHost) opens one; anyone may then queue with that key while its match waits for a server, forms or
-// (late joining on) is in its warmup. Any other key the service turns away by closing the connection with the error
-// code as the close reason (MatchmakingServiceClient HandleWebSocketConnectionClosed 0x29CDC00 reports any close but
-// Play's as an error with that text), which the lobby shows as "Custom matchmaking key is not supported" (0x20D93C0).
+// (ticket.customKeyHost) opens one in the mode and region it queued in (customScopeOf); anyone may then queue with that
+// key, mode and region while its match waits for a server, forms or (late joining on) is in its warmup. Any other key
+// the service turns away by closing the connection with the error code as the close reason (MatchmakingServiceClient
+// HandleWebSocketConnectionClosed 0x29CDC00 reports any close but Play's as an error with that text), which the lobby
+// shows as "Custom matchmaking key is not supported" (0x20D93C0).
 export const customKeyNotSupported = "match.custom_key_not_supported";
 const customKeyRefusedCode = 4000;
 
@@ -264,15 +265,21 @@ const customKeyRefusedCode = 4000;
 // "true" shows the button (SetVisibility SelfHitTestInvisible), any other value leaves it as it is, and a Queued without
 // the key collapses it. Pressing it (6.31 0x2FA4280) has UFortMatchmakingV2's matchmaking service client send the command
 // "p.StartMatch" over its WebSocket (0x73FBA0): {"name": "Exec", "payload": {"command": "p.StartMatch"}}. A custom match
-// has one host: the first party allowed to open custom keys (ticket.customKeyHost) that queued with its key and mode. It
-// alone hears canStartMatch while the match forms, and the match waits for its press instead of the gather time; other
-// allowed parties with the key join as players. Should the host leave, the next allowed party still in the match hosts it,
-// and with none the match goes back to the gather time. Earlier builds have no button: their custom matches keep it.
+// has one host: the first party allowed to open custom keys (ticket.customKeyHost) that queued with its key, mode and
+// region. It alone hears canStartMatch while the match forms, and the match waits for its press instead of the gather
+// time; other allowed parties with the same key, mode and region join as players (in another mode or region they host a
+// match of their own). Should the host leave, the next allowed party still in the match hosts it, and with none the match
+// goes back to the gather time. Earlier builds have no button: their custom matches keep it.
 export const firstCanStartMatchBuild = 3935073;
 export const startMatchCommand = "p.StartMatch";
 export const canStartMatch = (ticket) => Boolean(ticket?.customKey && ticket.customKeyHost) && Number(ticket.build) >= firstCanStartMatchBuild;
 // Which queue a bucket and key are: the bucket's (bucketKey), apart for each key.
 export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (customKey ? `|key:${customKey}` : "");
+// A custom match's scope (#186): its key, mode and region, as the parties queued for them (their own bucket's build,
+// region and playlist, before any server's region or the region fallback changed it), or null for a public match.
+// Allowed players who queue with the same key in another mode or region each open and host a match of their own,
+// and a key is open (keyOpen) only in the mode and region its host queued in.
+export const customScopeOf = (ticket) => (ticket?.customKey ? `${bucketKey(ticket.bucketId)}|key:${ticket.customKey}` : null);
 // Playground (Core-Backend #299): Update v4.50's Playground (Playlist_Playground, 35, one team of 4) put a party on an
 // island of its own, the party alone, with nobody else matched in: "An hour on the island with up to 3 friends". Epic
 // added a Fill / No Fill choice for it only in a later season, after 5.0, the last build Core supports, so every
@@ -808,7 +815,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         }
         return true;
       }
-      if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
+      if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && (forming.customScope ?? null) === customScopeOf(party.ticket)
+        && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
         && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
@@ -829,7 +837,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
       const bucket = parseBucket(matchBucket, party.ticket.build);
       if (!allowsServerAssignment(server.regionField || bucket.region, bucket.playlistId)) continue;
-      server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, parties: [party], players: party.size, started: Date.now(),
+      server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, customScope: customScopeOf(party.ticket), parties: [party], players: party.size, started: Date.now(),
         gatherMs: partyOnly ? 0 : gatherOf(), partyOnly };
       say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
         (party.customKey ? `, custom key ${party.customKey}` : "") + (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`) +
@@ -1012,7 +1020,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     servers.delete(server);
     // The server starts the match on the socket's normal close (status 1000).
     server.ws.close(1000);
-    matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, customKey: forming.customKey ?? null, assigned: Date.now(),
+    matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, customKey: forming.customKey ?? null, customScope: forming.customScope ?? null, assigned: Date.now(),
       parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
       noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)),
       // A Playground match's room is its party (#299).
@@ -1041,7 +1049,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       // The match's server (a host until its session goes) takes its server regions' parties (Core-Backend #142).
       const host = hosts.get(sessionId);
       const wanted = host ? bucketKey(inServerRegion(host, party.ticket.bucketId), { anyRegion }) : key;
-      if (open.until - now >= lateJoinMarginMs && (open.customKey ?? null) === party.customKey && bucketKey(open.bucketId, { anyRegion }) === wanted
+      if (open.until - now >= lateJoinMarginMs && (open.customKey ?? null) === party.customKey && (open.customScope ?? null) === customScopeOf(party.ticket) && bucketKey(open.bucketId, { anyRegion }) === wanted
         && open.players.size + pending + party.size <= open.maxPlayers) {
         return [sessionId, open];
       }
@@ -1111,7 +1119,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (!entry) {
       if (!match) return { sessionId, playlistId, build, open: false, maxPlayers: null, parties: [], noFill };
       const session = sessions.get(sessionId);
-      entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
+      entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, customScope: match.customScope ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
         parties: [] };
       lateJoins.set(sessionId, entry);
       say(`Match ${entry.matchId} (session ${sessionId}, bucket ${entry.bucketId}) takes late parties during its warmup, up to ${entry.maxPlayers} players`);
@@ -1124,19 +1132,20 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     return { sessionId, playlistId, build, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
   }
 
-  // Whether a custom key is open (#186): a party allowed to use keys queues with it, waiting for a server or in its forming
-  // match, or its match takes late parties during its warmup.
-  function keyOpen(customKey) {
+  // Whether a ticket's custom key is open (#186) in its mode and region (customScopeOf): a party allowed to use keys queues
+  // with it there, waiting for a server or in its forming match, or its match takes late parties during its warmup.
+  function keyOpen(ticket) {
+    const scope = customScopeOf(ticket);
     const forming = [...servers].flatMap((server) => (server.forming && !server.forming.sent ? server.forming.parties : []));
-    if ([...waiting, ...forming].some((party) => !party.ws.closed && party.customKey === customKey && party.ticket.customKeyHost)) return true;
+    if ([...waiting, ...forming].some((party) => !party.ws.closed && party.ticket.customKeyHost && customScopeOf(party.ticket) === scope)) return true;
     const now = Date.now();
-    return lateJoin() && [...lateJoins].some(([sessionId, open]) => open.customKey === customKey && sessions.get(sessionId)
+    return lateJoin() && [...lateJoins].some(([sessionId, open]) => (open.customScope ?? null) === scope && sessions.get(sessionId)
       && now - open.heard <= lateJoinStaleMs && open.until - now >= lateJoinMarginMs);
   }
 
   function acceptPlayer(ws, ticket) {
-    if (ticket.customKey && !ticket.customKeyHost && !keyOpen(ticket.customKey)) {
-      say(`${ticket.accountId} queued with custom key ${ticket.customKey}, which no allowed player has opened: refused (${customKeyNotSupported})`);
+    if (ticket.customKey && !ticket.customKeyHost && !keyOpen(ticket)) {
+      say(`${ticket.accountId} queued with custom key ${ticket.customKey}, which no allowed player has opened in its mode and region: refused (${customKeyNotSupported})`);
       return ws.close(customKeyRefusedCode, customKeyNotSupported);
     }
     // A party's members may have picked different regions: the party is the same in any of them.
