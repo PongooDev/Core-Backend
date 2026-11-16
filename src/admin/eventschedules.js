@@ -79,7 +79,15 @@ export const eventCards = [
   // 7.00's (events/events.js): Save the World's Season 7 Warmup.
   { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00", ranges: [[4629139, 4629139]],
     about: "Save the World's start of Season 7: Mutant Storm alerts with Snowflake Tickets (10 a day), Mini-Boss alerts back to normal (no tickets), the Frostbite in the Weekly Store; the Season 7 lobby.",
-    flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] }
+    flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] },
+  // The Block (events/block.js): the map's, so `always`: served with the seasonal events off or another event mode, and
+  // never off (that leaves an empty crater no build showed).
+  { id: "block700", kind: "dated", dated: "block700", seasons: [7], name: "The Block", builds: "7.00", ranges: [[4629139, 4629139]], always: true,
+    key: "block", startLabel: "The Block lands",
+    about: "The slab that crushed Risky Reels. 7.00 shows Risky Reels until the Block lands (The Game Awards 2018, 7 December 01:30 UTC on Season 7's replay), then the blank Block with its signs; 7.00 has none of the community builds. A match keeps what it started with, so a change shows from the next match. 🟡 Epic's minute isn't recorded: the show's start." },
+  { id: "block710", kind: "dated", dated: "block710", seasons: [7], name: "The Block's community builds", builds: "7.10", ranges: [[4667333, 4667333]], always: true,
+    key: "slab1", endStep: "slab4", startLabel: "Grimy Greens goes up", endLabel: "DM Arena goes up",
+    about: "7.10's four community-built islands on the Block, each a level in its paks: Grimy Greens (KAANCITAK; 7.10 shipped with it on 18 December, so it is up from the replay's first day), Risky Runways (AKE, 23 December), Mysterious Markets (Bludriv, 30 December), DM Arena (KojackNumber2, 8 January, on to the season's end). A match keeps the one it started with, so a change shows from the next match; with none on (a custom schedule's gap) the Block is empty. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
@@ -172,7 +180,7 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
       return { tone: "off", text: card.id === "butterfly" ? "Off: 6.21 keeps Fortnitemares' Cube Monsters' days (POI0) on; the Butterfly plays only by the flag switches under Advanced" : "Off" };
     }
     if (event.mode === "build") return { tone: "dates", nowLabel: "on", onRanges: [[4225813, 4240749]], text: "As the build ran it: on in 5.10 (counting down to 7 August on Season 5's replay), off in 5.21" };
-    if (mode !== "auto") return { tone: "off", text: "Paused: runs in the Automatic event mode only" };
+    if (mode !== "auto" && !card.always) return { tone: "off", text: "Paused: runs in the Automatic event mode only" };
     // The Butterfly held before the event (Core-Backend #354): the map's pre-event state, with 6.21's Fortnitemares modes.
     if (event.mode === "before") {
       return { tone: "on", nowLabel: "before the event", text: "On now: the map before the event (Fortnitemares' Cube Monsters' days, POI0), and the Fortnitemares modes back with it; the Butterfly doesn't play" };
@@ -206,7 +214,7 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
 
   return eventCards.map((card) => {
     const control = controlOf(card);
-    const state = blocked && card.kind !== "contentUpdates" ? { tone: "off", text: blocked } : stateOf(card);
+    const state = blocked && card.kind !== "contentUpdates" && !card.always ? { tone: "off", text: blocked } : stateOf(card);
     return {
       id: card.id, kind: card.kind, name: card.name, builds: card.builds, seasons: card.seasons, about: card.about, ranges: card.ranges,
       flags: card.flags ?? datedEvent(card.dated)?.steps.flatMap((step) => step.flags).filter((flag, index, all) => all.indexOf(flag) === index) ?? [],

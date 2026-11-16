@@ -21,6 +21,7 @@ import { highStakesStates } from "../../events/highstakes.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
 import { distantFogStates } from "../../events/distantfog.js";
+import { blockStates } from "../../events/block.js";
 import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fortnitemares2018.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
@@ -65,7 +66,8 @@ import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fort
 // Stakes (EventFlag.LTM_Heist, events/highstakes.js; 5.41's too), and 6.00's floating island (EventFlag.BR_S6_Island_*,
 // events/island.js) on Season 6's replay, and 6.21's Butterfly (POI0, the Cube's crack and drain, POI1: events/butterfly.js)
 // when the admin panel schedules it, and 6.30's snowstorm (BR_S6_Approach_01 and _02) and 6.31's iceberg (BR_S6_Approach_03
-// and _Overlap, events/distantfog.js), each on its own build.
+// and _Overlap, events/distantfog.js), each on its own build, and Season 7's The Block (7.00's R0 and R1, 7.10's slab1 to
+// slab4: events/block.js), which is the map and so is served with the seasonal events off too.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -104,9 +106,10 @@ export function calendarRoutes({ tokens, settings }) {
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
     // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
     // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
-    // Butterfly (events/butterfly.js) and the Birthday Challenges on the admin's times (events/birthday2018.js) as one schedule.
+    // Butterfly (events/butterfly.js), the Birthday Challenges on the admin's times (events/birthday2018.js) and Season 7's The
+    // Block (events/block.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
-      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now));
+      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

@@ -529,6 +529,12 @@ export const distantFogOverlap = "BR_S6_Approach_Overlap";
 // watches only its pair.
 export const distantFogApproach630 = "BR_S6_Approach_01";
 export const distantFogOverlap630 = "BR_S6_Approach_02";
+// Season 7's The Block (BP_SlabScripting's calendar names, events/block.js): 7.00's R0 (Risky Reels stands) and R1 (the
+// Block has landed on it), 7.10's slab1 to slab4 (its four community builds). Plain names with no "EventFlag." prefix:
+// the blueprint hands them to a CalendarEventWatcher as strings.
+export const blockRiskyReels = "R0";
+export const blockLanded = "R1";
+export const blockSlab = (number) => `slab${number}`;
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;

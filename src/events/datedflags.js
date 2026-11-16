@@ -1,13 +1,13 @@
-import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
-  distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, islandCrack, islandDrain, islandMoveTo,
-  islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
+  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
+  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
 // (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js), 6.21's
-// Butterfly (events/butterfly.js) and 6.30's snowstorm and 6.31's iceberg (events/distantfog.js), on Season 6's replay
-// (an event's `season`, 5 without one). Each step is one or more calendar events served
-// from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
+// Butterfly (events/butterfly.js) and 6.30's snowstorm and 6.31's iceberg (events/distantfog.js), on Season 6's replay;
+// and The Block of 7.00 and 7.10 (events/block.js) on Season 7's (an event's `season`, 5 without one). Each step is one
+// or more calendar events served from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
 // - "dates": Epic's dates on its season's replay (store/itemshop.js seasonMoment), lap by lap (the default);
 // - "custom": the admin's own times [{step, startAt, endAt}] (ISO; endAt null: stays on), which stay, as the custom rift
@@ -27,8 +27,8 @@ export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
 // Season 6's replay: its 70 days, 27 September to 5 December 2018 (store/itemshop-season6.json).
 export const season6FirstDay = Date.parse("2018-09-27T00:00:00.000Z");
 export const season6EndDay = Date.parse("2018-12-06T00:00:00.000Z");
-// Season 7's replay: its 84 days, 6 December 2018 to 27 February 2019 (store/itemshop-season7.json). 7.00 has no dated map
-// event of its own yet (its Polar Peak thaw, Ice Storm and Prisoner are later updates').
+// Season 7's replay: its 84 days, 6 December 2018 to 27 February 2019 (store/itemshop-season7.json). Its dated map events
+// are The Block's (events/block.js); its Polar Peak thaw, Ice Storm and Prisoner are later updates'.
 export const season7FirstDay = Date.parse("2018-12-06T00:00:00.000Z");
 export const season7EndDay = Date.parse("2019-02-28T00:00:00.000Z");
 const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay] };
@@ -94,6 +94,19 @@ const islandRune8Build = 4464155;
 const butterflyAt = Date.parse("2018-11-04T18:00:00.000Z");
 const butterflyDrainAt = butterflyAt - 24 * 3600000;
 const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
+
+// The Block (events/block.js has how 7.00 and 7.10 play it). 7.00: Risky Reels stands from Season 7's first day until the
+// Block lands on it, which The Game Awards 2018 showed (6 December, 5:30 PM Pacific: 🟡 the show's start, no source gives
+// the minute; the Fortnite Wiki has Risky Reels gone on 7 December), and the blank Block from then to the season's end.
+// 7.10: its four community builds on the Fortnite Wiki's days (🟡 no hours: 00:00 UTC), DM Arena on to the season's end
+// (7.20's Looming Llama of 15 January isn't in 7.10's paks). 7.10 shipped with Grimy Greens up (Update v7.10, 18 December),
+// so on the replay it is up from the lap's first day, as 5.21's rift is formed from its lap's start (events/block.js has
+// why 7.10's blank Block can't be served instead).
+const blockLandsAt = Date.parse("2018-12-07T01:30:00.000Z");
+const at7 = (date) => Date.parse(`${date}T00:00:00.000Z`);
+const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23", "Risky Runways, by AKE"],
+  ["2018-12-30", "Mysterious Markets, by Bludriv"], ["2019-01-08", "DM Arena, by KojackNumber2"]];
+const blockModes = ["dates", "custom"];
 
 export const datedEvents = [
   { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
@@ -162,7 +175,16 @@ export const datedEvents = [
   { id: "tomatoRift", name: "Tomato Town's rift (5.21)", flag: tomatoRiftTell, anchor: "event", parts: 2, steps: [
     step("tell", "A rift forms over Uncle Pete's Pizza Pit", [tomatoRiftTell], season5FirstDay, Date.parse("2018-08-19T00:00:00.000Z")),
     step("event", "The rift spits out the stone tomato head", [tomatoRiftEvent], Date.parse("2018-08-19T00:00:00.000Z"), null)
-  ] }
+  ] },
+  // The Block is the map, not an event: no "off" (it would leave an empty crater no build ever showed), and it is served
+  // whatever the Seasonal Events switch and the event mode say (events/block.js).
+  { id: "block700", name: "The Block (7.00)", season: 7, flag: blockLanded, anchor: "block", parts: 2, modes: blockModes, steps: [
+    step("reels", "Risky Reels stands (the Block hasn't landed)", [blockRiskyReels], season7FirstDay, blockLandsAt),
+    step("block", "The Block has landed on Risky Reels (blank, with its signs)", [blockLanded], blockLandsAt, null)
+  ] },
+  { id: "block710", name: "The Block's community builds (7.10)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 4, modes: blockModes,
+    steps: blockBuilds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
+      index + 1 < blockBuilds.length ? at7(blockBuilds[index + 1][0]) : null)) }
 ];
 export const datedEvent = (id) => datedEvents.find((event) => event.id === id);
 export const datedModes = ["dates", "custom", "off"];
