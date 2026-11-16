@@ -42,6 +42,7 @@ import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { portalRoutes } from "./services/portal/routes.js";
 import { contentRoutes } from "./services/content/pages.js";
+import { corePresenceRoutes } from "./services/core/presence.js";
 import { coreStatusRoutes } from "./services/core/status.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
@@ -167,6 +168,7 @@ export function createContext(config) {
       tournamentServers: () => tournaments.runningServers(), quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
+    presenceWaitMs: config.presenceWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
     xmpp: createXmppService({
       tokens,
@@ -257,6 +259,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes(context));
+  app.use(corePresenceRoutes(context));
   app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 

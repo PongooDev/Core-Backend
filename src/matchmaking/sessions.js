@@ -141,7 +141,7 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
   const served = (region) => servedRegions(region, serverRegions());
   const searchable = (session) => regionAllowsAddress(session.attributes?.[regionKey], session.sourceAddress, regionHostingIps())
     && reservationsOf(session.sourceAddress, customServers()).length === 0;
-  // Called after every change a search can see (a session made, updated, filled, emptied or started).
+  // Called after every change a search can see (a session made, updated, filled, emptied, started or ended).
   const watchers = new Set();
   const changed = () => {
     for (const watcher of [...watchers]) watcher();
@@ -281,8 +281,11 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
       return session;
     },
 
+    // A session that ends takes its players with it, which the launcher's presence (core/presence.js) waits for.
     remove(id) {
-      return sessions.delete(id);
+      const removed = sessions.delete(id);
+      if (removed) changed();
+      return removed;
     },
 
     // Whether a search asks for a region no server of its build is in at all: {region} (null for "NONE"), or null.

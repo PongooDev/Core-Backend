@@ -190,7 +190,11 @@ friend's backend**, enter the address, **Test connection**, Save, and Play. With
 
 Your friend gets an account on your backend, named after their player name. Password requirements can be toggled in the admin panel's **Settings** tab (`requirePassword`, disabled by default). Accounts that have a password configured are always verified regardless of `requirePassword`; when `requirePassword` is turned on, passwordless accounts cannot log in until an admin sets a password or issues a reset link. Auto-registration (`allowAutoRegistration`, enabled by default) creates an account for any new name on first login: when `requirePassword` is on, it creates an account for any new name if provided with a valid 8+ character password; when off, it creates a passwordless account with whatever password was sent (such as the launcher's `Core` default). Dedicated gameservers (`CoreServer{n}` / `Server{n}` / `CoreServer-<PC>-{n}`) bypass password checks when connecting from your PC or from an IP in the **Trusted Hosting IPs** list in Settings ([Gameservers on other PCs](#gameservers-on-other-pcs)); from anywhere else those names, the `DedicatedServer` client's token and registering a game session are refused (players should not choose server names, as any login from loopback or a trusted hosting IP with those names is treated as a dedicated server). The admin panel and the launcher's `/core/api` routes still only answer on your PC (`GET /core/api/sessions` also on a trusted hosting IP); the one route other
 machines get is `GET /core/api/status` (`{"name":"Core-Backend","version":...,"serverRegions":[...]}`), which the launcher
-uses to check the connection and to give the servers it hosts their region (the first of the Server Regions).
+uses to check the connection and to give the servers it hosts their region (the first of the Server Regions). The
+launcher's Discord Rich Presence reads `GET /core/api/presence?username=<login>` (`{"displayName":...,"state":...}`,
+the state `lobby` while the account's game is logged in to XMPP and `match` while a gameserver has it registered in its
+session; with `&after=<state>` it answers once the state changes, or after 55 s): another machine is only told about an
+account whose game plays from that machine's address, and anyone else hears `offline` with no name.
 
 A player can link their own email to their account: optionally when registering on the web portal (`/register`), later
 in its **Email** tab, or by the host in the admin panel's account view. They can then sign in with that email instead of

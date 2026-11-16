@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
+import { normalizeAddress } from "../network.js";
 import { createRooms } from "./muc.js";
 import { Element, createStreamParser, xml } from "./xml.js";
 
@@ -64,6 +65,11 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   const connections = new Set();
   const serverRooms = new Set(publicRooms.map((name) => name.toLowerCase()));
   const leaveWaiters = new Set(); // checks run after anyone leaves a room
+  // Listeners run with the account id after one of its resources binds or a bound one closes (watchOnline).
+  const onlineWatchers = new Set();
+  const onlineChanged = (accountId) => {
+    for (const watcher of [...onlineWatchers]) watcher(accountId);
+  };
   const serverRoomLeaves = new Map(); // accountId -> Map(server room name -> when it last left it)
   const roomName = (room) => room.key.slice(0, room.key.indexOf("@"));
   const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()), log: say,
@@ -204,6 +210,7 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
     connection.jid = `${connection.bare}/${resource}`;
     say(`${connection.accountId} connected (${resource})`);
     reply(connection, iq, xml("bind", { xmlns: ns.bind }, xml("jid", {}, connection.jid)));
+    onlineChanged(connection.accountId);
   }
 
   function onStanza(connection, stanza) {
@@ -260,6 +267,9 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
       }
     });
     socket.on("error", () => socket.destroy());
+    // The game closing its socket without ending the stream: the HTTP server it came in on keeps a socket half-open
+    // (allowHalfOpen), so the account would stay online until something was next written to it.
+    socket.on("end", () => connection.close());
     socket.on("close", () => {
       connection.closed = true;
       connections.delete(connection);
@@ -284,6 +294,7 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
         }
       }
       say(`${connection.accountId} disconnected (${connection.resource})`);
+      onlineChanged(connection.accountId);
     });
   }
 
@@ -292,6 +303,13 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   return {
     handle,
     isOnline: (accountId) => online.has(accountId),
+    // The addresses an account's logged-in resources connect from (the launcher's presence asks who plays where).
+    addressesOf: (accountId) => [...new Set(bound(accountId).map((connection) => normalizeAddress(connection.socket.remoteAddress)))],
+    // listener(accountId) runs after an account's resource logs in or out; the returned function stops it.
+    watchOnline(listener) {
+      onlineWatchers.add(listener);
+      return () => onlineWatchers.delete(listener);
+    },
     // Logged-in accounts and their resources (the admin panel).
     onlineAccounts: () => [...online.entries()].map(([accountId, resources]) => ({ accountId, resources: [...resources.keys()] })),
     // Ends an account's streams (kick, ban); the client sees its XMPP connection drop.
