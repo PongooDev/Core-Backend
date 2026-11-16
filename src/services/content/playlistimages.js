@@ -71,7 +71,14 @@ export const playlistImagesBuild = 4039451;
 // tile, as 6.20's did (the page's BR_LTM_HolidayDisco is a later season's). 6.31's exe (CL-4573279) keeps the same names
 // (its strings against 6.30's). Its Team Rumble (Playlist_Respawn_24) has the Season 6 tile Epic's later page names for it,
 // BR06_ModeTile_TDM (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 477,366 bytes, the hash in its name the file's
-// SHA-1), with no border.
+// SHA-1), with no border. 7.00's exe (CL-4629139) keeps the same names (playlistinformation, playlist_info, special_border,
+// tournamentinformation; its strings against 6.31's) and adds one section, creativeads (Creative's hub, which Core doesn't
+// serve). Its Season 7 playlists take the tiles Epic's later page names for them (LawinServer's contentpages.json copy,
+// lastModified 2019-11-01; every URL on Epic's CDN, checked 2026-11-16: 200, image/jpeg, the hash in each name the file's
+// SHA-1), no border: Playlist_Classic_Squads the Unvaulted tile, BR_LTM_Unvaulted (526,103 bytes; its Solo and Duos take it
+// too), Playlist_Vamp_Squad the Siphon tile, BR_LTM_Siphon (2,339,610 bytes; its Solo and Duo too). Its Close Encounters,
+// Sniper Shootout, High Explosives, Soaring, Disco Domination, Team Rumble, 50v50 and Playground keep the tiles above. No
+// Season 7 tile for the default modes was found either.
 // The default modes' tiles (Core-Backend #354 asked for each season's own). Seasons 1 to 3 (before 4.0) read no tile from
 // the page: their tiles are the client's. From 4.0 the tile's own picture is one texture for every mode
 // (UI/Foundation/Textures/Tiles/T_Athena_Tile_Matchmaking_Default, 6.21's paks), so a mode's art is the page's. Every copy of
@@ -111,6 +118,8 @@ const discoDominationTile = `${cdn}/playlistinformation/BR06_LobbyTile_LTM_Disco
 const foodFightTile = `${cdn}/playlistinformation/BR06_LobbyTile_FoodFight-1024x512-5e1540a0a2ba0a1f663d32c60cfec3a360278672.png`;
 const wildWestTile = `${cdn}/playlistinformation/BR06_ModeTile_LTM_WildWest-1024x512-f67d9d1dd2ca0b290c92b1380240429f0f257a10.jpg`;
 const teamRumbleTile = `${cdn}/playlistinformation/BR06_ModeTile_TDM-1024x512-878ba9f92deb153ec85f2bcbce925e185344290e.jpg`;
+const unvaultedTile = `${cdn}/playlistinformation/BR_LTM_Unvaulted-1024x512-d3cbe3c4a756190279af4ce98773d6599f7aab4f.jpg`;
+const siphonTile = `${cdn}/playlistinformation/BR_LTM_Siphon-1024x512-66cb27084be50387682989b50a01dbc9e42f5a5d.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -170,7 +179,13 @@ export const epicPlaylistImages = {
   Playlist_WW_Solo: wildWestTile,
   Playlist_WW_Duos: wildWestTile,
   Playlist_WW_Squads: wildWestTile,
-  Playlist_Respawn_24: teamRumbleTile
+  Playlist_Respawn_24: teamRumbleTile,
+  Playlist_Classic_Solo: unvaultedTile,
+  Playlist_Classic_Duos: unvaultedTile,
+  Playlist_Classic_Squads: unvaultedTile,
+  Playlist_Vamp_Solo: siphonTile,
+  Playlist_Vamp_Duo: siphonTile,
+  Playlist_Vamp_Squad: siphonTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.
@@ -191,10 +206,15 @@ const defaultModes = [
 const reachesPlaylistImages = (bound) => typeof bound !== "number" || bound >= playlistImagesBuild;
 
 // Every playlist a build that reads playlistimages or playlistinformation has: the default modes and the LTMs of 4.0 on
-// (events/ltms.js), each once, as {playlistName, name, epic} (epic: Epic's picture, or null).
-export const playlistImageModes = () => {
+// (events/ltms.js), each once, as {playlistName, name, epic} (epic: Epic's picture, or null). The LTMs first in 7.00
+// (CL-4629139) or later are on the pages of those builds only, so an earlier build's page stays as it was (it never had
+// their playlists); the admin panel (no changelist) lists them all.
+const pagesOwnLtmsBuild = 4629139;
+const onPageOf = (ltm, changelist) => typeof ltm.builds[0] !== "number" || ltm.builds[0] < pagesOwnLtmsBuild
+  || changelist === undefined || !(changelistOf(changelist) < ltm.builds[0]);
+export const playlistImageModes = (changelist = undefined) => {
   const seen = new Set();
-  return [...defaultModes, ...ltms.filter((ltm) => ltm.playlistName && reachesPlaylistImages(ltm.builds[1]))
+  return [...defaultModes, ...ltms.filter((ltm) => ltm.playlistName && reachesPlaylistImages(ltm.builds[1]) && onPageOf(ltm, changelist))
     .map((ltm) => ({ playlistName: ltm.playlistName, name: ltm.name }))]
     .filter(({ playlistName }) => !seen.has(playlistName) && seen.add(playlistName))
     .map((mode) => ({ ...mode, epic: epicPlaylistImages[mode.playlistName] ?? null }));
@@ -216,7 +236,7 @@ export function playlistImageOf(playlistName, custom = {}, origin = undefined) {
 // read it.
 export function playlistImagesFor(changelist, custom = {}, origin = undefined) {
   if (!readsPlaylistImages(changelist)) return undefined;
-  const images = playlistImageModes()
+  const images = playlistImageModes(changelist)
     .map(({ playlistName }) => ({ image: playlistImageOf(playlistName, custom, origin), _type: "PlaylistImageEntry", playlistname: playlistName }))
     .filter((entry) => entry.image);
   return {
@@ -232,7 +252,7 @@ export function playlistImagesFor(changelist, custom = {}, origin = undefined) {
 // read it: Epic's shape, each playlist with a picture as {image, playlist_name, special_border, _type}.
 export function playlistInformationFor(changelist, custom = {}, origin = undefined) {
   if (!readsPlaylistInformation(changelist)) return undefined;
-  const playlists = playlistImageModes()
+  const playlists = playlistImageModes(changelist)
     .map(({ playlistName }) => ({ image: playlistImageOf(playlistName, custom, origin), playlist_name: playlistName,
       special_border: playlistBorders[playlistName] ?? "None", _type: "FortPlaylistInfo" }))
     .filter((entry) => entry.image);

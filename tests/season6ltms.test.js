@@ -150,7 +150,9 @@ test("#367: the admin panel's schedule shows the option and Duos' two windows wh
   assert.equal(solo.windows.length, 1);
   // Disco Domination (32 v 32) now has dates: 6.22's and 6.30's.
   const disco32 = ltmSchedule({}).list.find(({ id }) => id === "discoDomination32");
-  assert.deepEqual(disco32.windows.map(({ builds, start, last }) => [builds, start, last]), [["6.22", "2018-11-09", "2018-11-13"], ["6.30", "2018-11-14", "2018-11-26"]]);
+  assert.deepEqual(disco32.windows.map(({ builds, start, last }) => [builds, start, last]), [["6.22", "2018-11-09", "2018-11-13"], ["6.30", "2018-11-14", "2018-11-26"],
+    // and the 14 Days of Fortnite's on 7.00 (tests/build700.test.js).
+    ["7.00", "2018-12-23", "2018-12-24"]]);
   const soaring = ltmSchedule({}).list.find(({ id }) => id === "soaring50s");
   assert.deepEqual(soaring.windows.map(({ builds, start, last }) => [builds, start, last]), [["5.21", "2018-08-15", "2018-08-22"], ["6.00.0 to 6.01", "2018-09-27", "2018-10-09"]]);
 });

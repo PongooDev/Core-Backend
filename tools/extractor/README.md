@@ -9,7 +9,7 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
 (1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
-`4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build) and 4.21 (5.0, CL 4214610, the
+`4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build), 4.22 (7.00, CL 4629139) and 4.21 (5.0, CL 4214610, the
 first 4.21 build; 5.10, CL 4240749; 5.21, CL 4288479; 5.30, CL 4305896) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
@@ -400,6 +400,35 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `quests.json` and `objectivestats.json` (Canny Valley Act 2: 21 quests, the medbot objectives), and `world.json` (the
   Ghost Town zones BP_ZT_GhostTown_A and _B, the Stabilize the Rift landmark and its generator, and four primary missions'
   tags 6.30's paks lacked); the other thirteen are 6.30's, byte for byte.
+  7.00's (CL-4629139, Update v7.00, Season 7) is `4.22.0-4629139+++Fortnite+Release-7.00` (no `Build.version`; the
+  build folder is `7.00-CL-4629139.00-Cl-4629139\Fortnite`) with 6.31's full data (Cert's files with `gamedata/4573279`
+  applied) as the fifth argument, and the main key FModel's settings hold for its build folder. A full install: 16 paks
+  (407,616 files read for the flag scan), pakchunk0 and its s1 to s6, pakchunk1 and pakchunk1_s1, the language paks 2, 5, 7,
+  8 and 9, and the keyed pakchunk1000 and 1001 (the backend's keychain has both keys). Its DefaultGameData still names no
+  MissionAlerts (24 alerts and 4 storm spreads from the fifth argument). Three extractor changes:
+  - UE 4.22 is mapped (`GAME_UE4_22`): 7.00's FEngineVersion is 4.22 (its exe stores major 4, minor 22: `mov
+    dword_5749660, 160004h`), and its curve tables are 4.22's; read as 4.21 the Research page's stats
+    (ResearchSystemUpgradesTable) and the upgrades' `levelCosts`, `ratings` and `recycleXp` came out empty, with no error.
+  - its wraps (`AthenaItemWrapDefinition`, `AthenaItemWrap:Wrap_*`, Athena/Items/Cosmetics/ItemWraps) are cosmetics:
+    the Battle Pass's six and Wrap_Random, the locker's Random entry.
+  - Core-Launcher's config pak in a build's Paks folder (`pakchunkCoreConfig-WindowsClient_P.pak`, the purchase page's
+    NoRedist config, which 7.00's folder holds) is Core's, as the server-assets pak is, and isn't read.
+  Against 6.31 eleven files change: `athena.json` (113 cosmetics, none gone: Season 7's Battle Pass (Zenith, Lynx, Sgt.
+  Winter, Powder, Trog, Onesie, The Ice King, the pets Hamirez and Remus, the wraps, Festive and Twist...), its free tiers,
+  the shop's Waypoint, Cloudbreaker, Wingtip and Slushy Soldier, the Snowfall umbrella (Umbrella_Season_07), the Season 7
+  level 100 emoticon and spray; AthenaSeason7 (100 levels and tiers on its own level curve and Season 6's tier curve,
+  BRSeason7, tier offer 64A3020B..., Season7_Free_Schedule's ten weeks for everyone, Season7_Paid_Schedule's Snowfall
+  cumulative bundle, Zenith's and Lynx's progressive challenges, Sgt. Winter's at tier 23 and The Ice King's at 100, the
+  last three `cleanUpOnBundleCompletion`); and the loot tables), `banners.json` (22 Season 7 icons), `items.json`,
+  `characters.json`, `fabricator.json`, `cardpacks.json`, `alterations.json` and `upgrades.json` (the outfits' heroes,
+  Creative's devices and playsets as traps and weapons, the Legendary Troll Stash Llama for Snowflake Tickets,
+  CardPack_Jackpot_Winter2018_Tickets, Steel Wool Anthony HID_Outlander_024, HID_Constructor_020, HID_Constructor_019's
+  Epic versions gone), `quests.json` and `objectivestats.json` (Canny Valley Act 3's boss fight, the Storm King's e-mail and two
+  hidden video quests: the act's other quests were 6.31's already) and `world.json` (Act 3's landmarks, MissionGen_DeployTheProbe
+  in BP_ZT_Desert_DeployProbe and MissionGen_VindermanMansion in BP_ZT_TheGrasslands_Mansion, the Dudebro test zone and
+  its alert category, the Endless zones' rows); the other nine are 6.31's, byte for byte. Its Creative item classes
+  (FortCreativeRealEstatePlotItemDefinition, FortPlaysetItemDefinition: the creative profile's) have no profile type here
+  yet and are skipped.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

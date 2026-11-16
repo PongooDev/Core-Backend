@@ -77,6 +77,8 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 //   paks; pakchunk1000's key is unknown), so no Blueprint there calls it, and it takes an Alteration account item, which
 //   nothing gives: Core's perks are ids on their schematic (profiles/alterations.js), and 4.2's Perk Recombobulator has
 //   its own commands (Alterations.js). Which slot it filled and what it used up was the service's.
+// - SetCreativePlotIslandName {plotItemId, islandName} (7.00's, CL-4629139, UFortMcpProfileCreative): only its FName's
+//   initialiser (0x138EC0) references the FName (0x56F88B0); no wrapper in 7.00.
 // Each is told "Unknown command" (errors.com.epicgames.fortnite.operation_not_found, HTTP 400) and logged with the
 // build's unknown requests, as before.
 export const clientCommands = {
@@ -114,6 +116,12 @@ export const clientCommands = {
   ModifyQuickbar: modifyQuickbar,
   OpenCardPack: openCardPack,
   OpenCardPackBatch: openCardPackBatch,
+  // 7.00's (CL-4629139) UFortMcpProfileCampaign::PopulatePrerolledOffers (no parameters; sent by sub_32032B0 through its
+  // wrapper 0x15AB630, the Loot tab's llamas): Epic's service rolled each llama offer's contents ahead
+  // (UFortPrerollDataItem {FulfillmentId, Expiration, Items}, an account item new in 7.00) for the store to preview. Core
+  // rolls a llama when it is bought (cardpacks), so there is nothing to roll ahead: the profile as it is, without an
+  // error, and the store shows its llamas as before.
+  PopulatePrerolledOffers: () => {},
   PurchaseCatalogEntry: purchaseCatalogEntry,
   PurchaseHomebaseNode: purchaseHomebaseNode,
   PurchaseOrUpgradeHomebaseNode: purchaseOrUpgradeHomebaseNode,

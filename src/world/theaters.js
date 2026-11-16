@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, cramSession2018, currentEventsConfig, fortnitemares2018, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, currentEventsConfig, fortnitemares2018, isEventActive, passiveMiniBosses, season7Warmup2018, spring2018, storm2018 } from "../events/events.js";
 import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
 import { cramSessionMiniBossRewards } from "../events/cramsession2018.js";
 import { candy } from "../events/fortnitemares.js";
@@ -511,7 +511,10 @@ const alertRewards = {
     [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, () => [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]])),
   MissionAlert_Storm: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfModifierGroup(row.modifierTierGroup)}_high`, 1],
-    ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) || isEventActive(storm2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
+    ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) || isEventActive(storm2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : []),
+    // 7.00's Season 7 Warmup (events/events.js): "Mutant Storm mission alerts ... will grant Snowflake Tickets", Survive the
+    // Holidays' tickets (🟡 Core's amount, 10 per tile difficulty, as the storms' Storm Tickets).
+    ...(isEventActive(season7Warmup2018) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
   // Outside Spring It On! (4.2's, Core-Backend #277) a group alert pays two of its zone's evolution material packs: 🟡 Epic's

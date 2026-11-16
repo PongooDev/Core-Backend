@@ -16,7 +16,10 @@ import { newsImageValue } from "../services/content/images.js";
 // in-game tournaments' (inGame): an event of one is listed in the client's Events tab, queued from it and scored on
 // screen (tournaments/showdown.js). 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow and _SquadShow, 59071 to
 // 59073: the Showdown playlists with the Cube Monsters) are in-game ones too, and so are 6.30's Scavenger Pop-Up Cup ones
-// (Playlist_ShowdownAlt_Solo, _Duos and _Squads, 58074 to 58076), 6.31's Alchemist Pop-Up Cup on the same playlists. A later build's tournament playlist goes here.
+// (Playlist_ShowdownAlt_Solo, _Duos and _Squads, 58074 to 58076), 6.31's Alchemist Pop-Up Cup on the same playlists, and
+// 7.00's Explorer Pop-Up Cup (Update v7.00: "Material cap set to 700/500/300 ... Players receive 100/50/50 Wood/Stone/Metal
+// on elimination") on them too, its paks' Showdown and ShowdownAlt playlists being 6.31's. A later build's tournament
+// playlist goes here.
 export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads",
   "fortnitemaresShowSolo", "fortnitemaresShowDuos", "fortnitemaresShowSquads", "scavengerSolo", "scavengerDuos", "scavengerSquads"].map((id) => {
   const ltm = ltms.find((entry) => entry.id === id);

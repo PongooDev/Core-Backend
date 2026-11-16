@@ -118,7 +118,11 @@ const saleTitles = {
 // a later one of the season's, not 6.00's.
 // A season's picture goes to the builds whose game data is that season's (AthenaSeason). Seasons 1 to 5 have none: their
 // builds before 5.30 don't read the field, and 5.30 to 5.41 cook Season 5's own picture. Save the World keeps its cooked
-// picture, as no Epic picture for it was found.
+// picture, as no Epic picture for it was found. 7.00 (CL-4629139, Season 7) still cooks Season 5's T_BR_Right_S5a for
+// Battle Royale (and T_Creative_Right for its new Creative tile), and no Season 7 picture of Epic's page was found (no copy
+// of the page between December 2018 and October 2019 survives, and every later copy's subgameselectdata image is empty or a
+// Season 8 one; searched 2026-11-16), so Season 7 has none here either: 🟡 its mode select shows the cooked Season 5
+// picture.
 const subgameSelectCdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/subgameselect";
 export const subgameSelectImages = {
   6: { battleRoyale: `${subgameSelectCdn}/BR06_In-Game_Mode-Select-1920x1080-4c0975cfecd29167b1c2ddf5d916fafbdcaa0f6c.jpg` }

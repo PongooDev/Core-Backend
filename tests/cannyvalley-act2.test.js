@@ -103,7 +103,9 @@ test("6.31's Stabilize the Rift is a landmark mission on a quest tile of zone 4,
       assert.ok(!alerts.some((alert) => alert.tileIndex === tileIndex), where);
       assert.equal(zoneOf(theater.regions.find((region) => region.tileIndices.includes(tileIndex))), 4, where);
       // Act 1's three landmarks stay where they were.
-      assert.equal(theater.tiles.filter((candidate) => candidate.requirements.activeQuestDefinition).length, landmarkMissions.length, where);
+      // (7.00's two Act 3 landmarks aren't 6.31's: build700.test.js.)
+      const ownLandmarks = landmarkMissions.filter(({ questId }) => !["cannyvalley_landmark_deploytheprobe", "cannyvalley_landmark_mansion"].includes(questId));
+      assert.equal(theater.tiles.filter((candidate) => candidate.requirements.activeQuestDefinition).length, ownLandmarks.length, where);
     }
   });
 });

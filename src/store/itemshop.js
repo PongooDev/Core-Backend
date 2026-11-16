@@ -138,15 +138,23 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // shop sold, on 3 days, the same way: Mothmando with Lamp and Flutterbug (30 November and 1 December), Scorecard (1
 // December) and Phone It In (3 December). Its other cosmetics, Longshot and Insight with their back blings, Mime Time,
 // Showstopper and the Llamalaxy spray, weren't sold in Season 6. Only 6.31's data has them, so 6.00's to 6.30's days are
-// as they were. A build's season is its athena data's
-// seasonNumber, Season 1 without one.
+// as they were.
+//
+// 7.00 (CL-4629139) is Season 7, with its own shop the same way: Epic's of Season 7, day by day from its first day, 6
+// December 2018, to its last, 27 February 2019 (itemshop-season7.json, the same wiki pages, 14 February from its Part 1),
+// replayed in an 84-day cycle from the day 7.00 is first served, so the season's countdown and its weeks' unlock days
+// (DaysSinceEventStart) run on Season 7's own calendar. Only the cosmetics 7.00's data has are in: its own that the shop
+// sold (Waypoint, Cloudbreaker, Wingtip, Slushy Soldier and Icicle, Backstroke, Accolades and Ground Pound) and the older
+// ones that came back; Content Update v7.10's to v7.40's (Krampus, Crackabella, Marshmello, the Ice Queen...) are left out,
+// so 21 of the 84 days have an empty featured section. A build's season is its athena data's seasonNumber, Season 1
+// without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
   3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json"),
-  6: readHistory("itemshop-season6.json") };
+  6: readHistory("itemshop-season6.json"), 7: readHistory("itemshop-season7.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
@@ -162,8 +170,9 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
-// 3.0 is first served, Season 4 on the day 4.0 is, Season 5 on the day 5.0 is, and Season 6 on the day 6.00 is.
-const anchoredSeasons = [2, 3, 4, 5, 6];
+// 3.0 is first served, Season 4 on the day 4.0 is, Season 5 on the day 5.0 is, Season 6 on the day 6.00 is, and Season 7
+// on the day 7.00 is.
+const anchoredSeasons = [2, 3, 4, 5, 6, 7];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {
@@ -594,7 +603,12 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_262_athena_commando_m_madcommander": "AthenaBackpack:bid_143_madcommandermale",
   "AthenaCharacter:cid_263_athena_commando_f_madcommander": "AthenaBackpack:bid_144_madcommanderfemale",
   "AthenaCharacter:cid_264_athena_commando_m_animaljackets": "AthenaBackpack:bid_145_animaljacketsmale",
-  "AthenaCharacter:cid_265_athena_commando_f_animaljackets": "AthenaBackpack:bid_146_animaljacketsfemale"
+  "AthenaCharacter:cid_265_athena_commando_f_animaljackets": "AthenaBackpack:bid_146_animaljacketsfemale",
+  // 7.00's (CL-4629139) outfits Season 7's days sell with a back bling of their own, as 7.00's back bling names pair them
+  // (🟡 Season 7's pages carry no bundled_with): Waypoint's Signal Hub (bid_165_bluebadassfemale) and Slushy Soldier's
+  // Slushy Jr. (bid_164_snowmanmale).
+  "AthenaCharacter:cid_290_athena_commando_f_bluebadass": "AthenaBackpack:bid_165_bluebadassfemale",
+  "AthenaCharacter:cid_280_athena_commando_m_snowman": "AthenaBackpack:bid_164_snowmanmale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

@@ -260,7 +260,12 @@ function everyTokenStyle() {
   const locker = new Set(dataBuilds.flatMap((build) => inBuild(build, lockerCosmetics)).map((id) => id.toLowerCase()));
   const tokens = new Map();
   for (const build of dataBuilds) {
-    for (const [id, token] of Object.entries(inBuild(build, () => athenaVariantTokens() ?? {}))) if (locker.has(token.cosmetic.toLowerCase())) tokens.set(id.toLowerCase(), token);
+    // A token whose style starts unlocked gates nothing (7.00's Scratchmark's three).
+    const unlocked = (token) => inBuild(build, () => (athenaCosmetics()[token.cosmetic]?.variants ?? [])
+      .some((entry) => entry.channel === token.channel && entry.unlocked.includes(token.variant)));
+    for (const [id, token] of Object.entries(inBuild(build, () => athenaVariantTokens() ?? {}))) {
+      if (locker.has(token.cosmetic.toLowerCase()) && !unlocked(token)) tokens.set(id.toLowerCase(), token);
+    }
   }
   return tokens;
 }

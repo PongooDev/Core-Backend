@@ -191,7 +191,8 @@ const eventBuilds = [
   { version: "6.21", cl: 4526925, event: "Fortnitemares" },
   { version: "6.22", cl: 4543176, event: "Fortnitemares" },
   { version: "6.30", cl: 4573096, event: "Fortnitemares" },
-  { version: "6.31", cl: 4573279, event: "Fortnitemares" }
+  { version: "6.31", cl: 4573279, event: "Fortnitemares" },
+  { version: "7.00", cl: 4629139, event: "Season 7 Warmup" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin
@@ -1373,8 +1374,9 @@ export function adminRoutes(context) {
     // now as 6.21's (CL-4526925), with its own (Shogun, Spooky Team Leader, Ruckus, Mayhem, Growler, Flapjackie, Yee-Haw!...),
     // now as 6.22's (CL-4543176), with its own (the NFL outfits, their referees, tools and glider, Spike It, Denied, A.X.E.),
     // now as 6.30's (CL-4573096), with its own (Castor, Elmira, Maki Master, Tender Defender, Taro, Nara, Riot, Night Slicer...),
-    // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279" }[s];
+    // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In). Season 7's as 7.00's
+    // (CL-4629139), its only build.
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279", 7: "4629139" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);

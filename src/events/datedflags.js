@@ -27,7 +27,11 @@ export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
 // Season 6's replay: its 70 days, 27 September to 5 December 2018 (store/itemshop-season6.json).
 export const season6FirstDay = Date.parse("2018-09-27T00:00:00.000Z");
 export const season6EndDay = Date.parse("2018-12-06T00:00:00.000Z");
-const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay] };
+// Season 7's replay: its 84 days, 6 December 2018 to 27 February 2019 (store/itemshop-season7.json). 7.00 has no dated map
+// event of its own yet (its Polar Peak thaw, Ice Storm and Prisoner are later updates').
+export const season7FirstDay = Date.parse("2018-12-06T00:00:00.000Z");
+export const season7EndDay = Date.parse("2019-02-28T00:00:00.000Z");
+const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay] };
 export const datedSeasonOf = (event) => event.season ?? 5;
 const daysOf = (event) => seasonDays[datedSeasonOf(event)];
 // The replay's moment now for an event's season: momentNowMs is that moment (ms), or a function of the season that gives it.

@@ -211,6 +211,18 @@ const playlistTeams630Build = 4573096;
 // have the teams above (events/ltms.js).
 const playlistTeamsFrom631 = { 280: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 } };
 const playlistTeams631Build = 4573279;
+// 7.00's (CL-4629139) Classic, the 14 Days of Fortnite's Unvaulted (214 to 216, Playlist_Classic_Solo, _Duos and _Squads),
+// and Vamp, its Siphon (265 to 267, Playlist_Vamp_Solo, _Duo and _Squad): 100 teams of 1, 2 and 4. Its Close Encounters (44
+// to 46), Sniper Shootout (39 to 41) and Soaring Solos (185 to 187) have the teams above, its others 6.31's (events/ltms.js).
+const playlistTeamsFrom700 = {
+  214: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  215: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  216: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  265: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  266: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  267: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams700Build = 4629139;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -406,6 +418,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams700Build && playlistTeamsFrom700[playlistId]) return playlistTeamsFrom700[playlistId];
   if (Number(build) >= playlistTeams631Build && playlistTeamsFrom631[playlistId]) return playlistTeamsFrom631[playlistId];
   if (Number(build) >= playlistTeams630Build && playlistTeamsFrom630[playlistId]) return playlistTeamsFrom630[playlistId];
   if (Number(build) >= playlistTeams622Build && playlistTeamsFrom622[playlistId]) return playlistTeamsFrom622[playlistId];

@@ -216,6 +216,12 @@ export const serverCommands = {
   UnlockProfiles: accepted,
   LockProfileForWrite: accepted,
   UnlockProfileForWrite: accepted,
+  // 7.00's (CL-4629139) Creative servers' UFortMcpProfileCreative commands: SetLastUsedCreativePlot {plotItemId} (sent from
+  // sub_C65E80 through its wrapper 0x15B6A40) and ModifyCreativePlotPermissions {permission, accountIds} (sub_C97DA0, 0x15B5410),
+  // the island a player last loaded and who may build on it. Core's creative profile holds no island (profiles/ids.js) and
+  // no Creative server runs here yet, so nothing is kept: the profile as it is.
+  SetLastUsedCreativePlot: accepted,
+  ModifyCreativePlotPermissions: accepted,
   // A player's first time in a theater: the server sends it while theater0's player_loadout still says bPlayerIsNew, and
   // won't save that profile until it doesn't (UFortMcpProfileWorld::IsSafeToSave checks CachedPlayerLoadout).
   InitializeTheater({ tracker, profileId }) {

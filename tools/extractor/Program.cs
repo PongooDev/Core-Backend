@@ -44,6 +44,10 @@ var game = engine switch
     "4.19" => EGame.GAME_UE4_19,
     "4.20" => EGame.GAME_UE4_20,
     "4.21" => EGame.GAME_UE4_21,
+    // 7.00 (CL 4629139, Season 7) is UE 4.22: its FEngineVersion is 4.22 (the exe stores 0x00160004, major 4 and minor 22),
+    // and its curve tables are 4.22's (ECurveTableMode: read as 4.21, the Research page's ResearchSystemUpgradesTable and the
+    // upgrade level costs, ratings and recycle XP came out empty).
+    "4.22" => EGame.GAME_UE4_22,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
@@ -52,8 +56,12 @@ var provider = new DefaultFileProvider(paksFolder, SearchOption.TopDirectoryOnly
 // Core's own pak isn't the build's data: Core-Launcher installs the server assets beside the build's paks
 // (pakchunkCoreServerAssets-WindowsClient_P.pak, Core-ServerAssets), and read with them it doubles the build's files
 // (6.01's folder with it: no display asset matched, the map pins doubled, heroes the build's own readable paks lack). A
-// folder holding one has only its other paks read; a folder without one is read whole, as before.
-var corePaks = paksFolder.Exists ? paksFolder.GetFiles("*CoreServerAssets*.pak") : [];
+// folder holding one has only its other paks read; a folder without one is read whole, as before. Core-Launcher's config
+// pak (pakchunkCoreConfig-WindowsClient_P.pak, the purchase page's NoRedist config for 6.01+, which 7.00's folder holds) is
+// Core's too and isn't read either.
+var corePaks = paksFolder.Exists
+    ? paksFolder.GetFiles("*CoreServerAssets*.pak").Concat(paksFolder.GetFiles("pakchunkCoreConfig-*.pak")).ToArray()
+    : [];
 if (corePaks.Length > 0)
 {
     foreach (var pak in paksFolder.GetFiles("*.pak").Where(pak => !corePaks.Any(core => core.FullName == pak.FullName))) provider.RegisterVfs(pak);
@@ -2006,7 +2014,11 @@ static class ItemClasses
         // Battle Pass gives and the back bling slot holds ("Pets are now available in-game!"), and its lobby music
         // (Athena/Items/Cosmetics/MusicPacks, UAthenaMusicPackItemDefinition, EAthenaCustomizationCategory::MusicPack: "Players will
         // now have an option in the Locker to select their preferred music choice").
-        "AthenaPetCarrierItemDefinition", "AthenaMusicPackItemDefinition"
+        "AthenaPetCarrierItemDefinition", "AthenaMusicPackItemDefinition",
+        // 7.00's (CL 4629139, Season 7) wraps (Athena/Items/Cosmetics/ItemWraps, UAthenaItemWrapDefinition,
+        // AthenaItemWrap:Wrap_*: an ItemWrapMaterial for weapons and vehicles), which its Battle Pass gives ("Wraps... can be
+        // applied to weapons and vehicles") and the locker's wrap slots hold (EAthenaCustomizationCategory::ItemWrap).
+        "AthenaItemWrapDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()

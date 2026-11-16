@@ -48,6 +48,7 @@ import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
+import { linksRoutes } from "./services/links/links.js";
 import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
 import { statsRoutes } from "./services/fortnite/stats.js";
@@ -248,6 +249,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(storefrontRoutes(context));
   app.use(purchaseRoutes(context));
   app.use(chatRoutes(context));
+  // 7.00's Creative island codes (services/links/links.js).
+  app.use(linksRoutes(context));
   app.use(statsRoutes(context));
   app.use(feedbackRoutes(context));
   app.use(battleRoyaleRoutes(context));

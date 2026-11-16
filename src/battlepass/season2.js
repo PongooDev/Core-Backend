@@ -61,16 +61,26 @@ import { currentBattlePassConfig } from "./season1.js";
 // SeasonGrantsToEveryone). It is the first with pets (Bonesy, Camo, Scales: back blings) and lobby music (Squeaky Clean,
 // Eerie, OG (Remix)). The offers' texts are Core's again, in Season 5's form, from what AthenaSeason6's pass and its
 // first 26 tiers give.
+// Season 7's Battle Pass (7.00, CL-4629139) is AthenaSeason7's the same way: 100 tiers, the BRSeason7 storefront, its own
+// display assets (DA_BR_Season7_BattlePass, DA_BR_Season7_BattlePassWithLevels), its own tier offer (BattlePassLevelOfferID
+// 64A3020B098841A7805EE257D68C554F), at Epic's prices (Update v7.00: "New Season, new Battle Pass. 100 levels, over 100 new
+// rewards. Available in-game right now for 950 V-Bucks"; the bundle 2,800, the Fortnite Wiki's Season 7). Its tier 1
+// Battle Pass rewards give Zenith and Lynx, the Snowfall challenges (Season7_Paid_Schedule's cumulative bundle: complete
+// weekly challenges, collect the loading screens' tokens) and Zenith's and Lynx's progressive challenges (_ProgressiveA_),
+// its tier 23 Sgt. Winter's (Season7_SgtWinter_Schedule), its tier 100 The Ice King's (Season7_IceKing_Schedule); the free
+// half of the weeks is every player's (Season7_Free_Schedule, SeasonGrantsToEveryone). It is the first with Wraps (six,
+// AthenaItemWrap: profiles/athena.js's ItemWrap slots) and has two pets (Hamirez, Remus). The offers' texts are Core's
+// again, in Season 6's form, from what AthenaSeason7's pass and its first 26 tiers give.
 // The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4,
-// .season5, .season6).
+// .season5, .season6, .season7).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
 
 export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
-// Each season's default prices: Season 3's, Season 4's, Season 5's and Season 6's are Season 2's.
+// Each season's default prices: Season 3's, Season 4's, Season 5's, Season 6's and Season 7's are Season 2's.
 export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 },
-  5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 } };
+  5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 }, 7: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -172,15 +182,34 @@ const season6BundleDescription = [
   "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to Dire at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season7PassDescription = [
+  "Season 7: Dec 6 - Feb 27", "",
+  "Instantly get these items:",
+  "  • Zenith Outfit", "  • Lynx Outfit", "  • 50% Bonus Season Match XP", "  • 10% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • The Ice King plus 4 other outfits", "  • Progressive Zenith, Lynx, Sgt. Winter and The Ice King challenges", "  • 6 Wraps", "  • 2 Pets",
+  "  • 2 Music Tracks", "  • 3 Gliders", "  • 2 Back Blings", "  • 4 Contrails", "  • 8 Loading Screens", "  • 1300 V-Bucks",
+  "  • 120% Bonus Season Match XP", "  • 40% Bonus Season Friend Match XP", "  • Toys, Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season7BundleDescription = [
+  "Season 7: Dec 6 - Feb 27", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • Zenith Outfit", "  • Lynx Outfit", "  • Sgt. Winter Outfit", "  • Hamirez Pet", "  • Perfect Present Back Bling", "  • Tactical Sleigh Glider",
+  "  • 3 Wraps", "  • Festive Music", "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to The Ice King at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
   3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
   4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" },
   5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" },
-  6: { passOfferId: "core_br_season6_battlepass", pass: season6PassDescription, bundle: season6BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  6: { passOfferId: "core_br_season6_battlepass", pass: season6PassDescription, bundle: season6BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  7: { passOfferId: "core_br_season7_battlepass", pass: season7PassDescription, bundle: season7BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
-// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's, 5's and 6's) BattlePassLevelOfferID from Season 3, else the modal's.
+// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's, 5's, 6's and 7's) BattlePassLevelOfferID from Season 3, else the modal's.
 const seasonTierOfferId = (season) => season.battlePassLevelOfferId || tierOfferId;
 
 const seasonOffers = () => {

@@ -47,7 +47,9 @@ const slots = {
   // 6.00's (CL-4402180) lobby music (EAthenaCustomizationCategory::MusicPack, AthenaMusicPack:*, favorite_musicpack:
   // Update v6.00's "Players will now have an option in the Locker to select their preferred music choice"). Its pets are
   // back blings (AthenaBackpack:PetCarrier_*, UAthenaPetCarrierItemDefinition), so they go in the Backpack slot.
-  MusicPack: ["AthenaMusicPack", "favorite_musicpack"]
+  MusicPack: ["AthenaMusicPack", "favorite_musicpack"],
+  // 7.00's (CL-4629139) Wraps (EAthenaCustomizationCategory::ItemWrap, AthenaItemWrap:*, favorite_itemwraps: wrapSlots below).
+  ItemWrap: ["AthenaItemWrap", "favorite_itemwraps"]
 };
 const slotOrder = ["None", ...Object.keys(slots)];
 
@@ -65,10 +67,10 @@ function defaultItemId(profile, slot) {
 const emptyDefaultSlots = (profile) => Object.keys(slotDefaults)
   .filter((slot) => !profile.stats.attributes[slots[slot][1]] && defaultItemId(profile, slot));
 
-// The enum comes as its name; its full name or its value are taken too.
+// The enum comes as its name; its full name or its value are taken too. The wrap slots are only a build's with wraps.
 function slotOf(value) {
   const name = typeof value === "number" ? slotOrder[value] : String(value ?? "").split("::").pop();
-  return Object.keys(slots).find((slot) => slot.toLowerCase() === name?.toLowerCase());
+  return Object.keys(slots).find((slot) => slot.toLowerCase() === name?.toLowerCase() && (slot !== "ItemWrap" || hasWrapSlots()));
 }
 
 const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
@@ -171,9 +173,10 @@ const victoryUmbrella = "AthenaGlider:solo_umbrella";
 // Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards, and Season 4's
 // 4.0's AthenaSeason4 SeasonFirstWinRewards, Umbrella_Season_04 ("Wet Paint"), and Season 5's 5.0's AthenaSeason5
 // SeasonFirstWinRewards, Umbrella_Season_05, and Season 6's 6.00's AthenaSeason6 SeasonFirstWinRewards, Umbrella_Season_06
-// ("Webrella").
+// ("Webrella"), and Season 7's 7.00's AthenaSeason7
+// SeasonFirstWinRewards, Umbrella_Season_07 ("Snowfall").
 const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol", 4: "AthenaGlider:umbrella_season_04",
-  5: "AthenaGlider:umbrella_season_05", 6: "AthenaGlider:umbrella_season_06" };
+  5: "AthenaGlider:umbrella_season_05", 6: "AthenaGlider:umbrella_season_06", 7: "AthenaGlider:umbrella_season_07" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
 const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
 const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],
@@ -409,6 +412,7 @@ export function setUpAthena(session) {
   }
   if (seasonNeedsSwitch(profile)) switchSeason(session);
   if (danceSlotsNeedSettling(profile)) settleDanceSlots(tracker);
+  if (wrapSlotsNeedSettling(profile)) settleWrapSlots(tracker);
   if (randomSlotsNeedSettling(profile)) settleRandomSlots(tracker);
   // The styles owned cosmetics come with, for items that lack them (profiles/variants.js, Core-Backend #259).
   grantDefaultVariants(session);
@@ -444,13 +448,21 @@ function inEveryBuild(ids) {
 // Accounts are shared by every build, so it is every build's tokens, each as the newest build that has it names it. A
 // build without styles (before 4.0) has no token and adds nothing; an item's variants are the item's whichever build
 // asks, as they have been since #259 (a 1.8 client is sent the Skull Trooper with the styles a 6.02 login or this gave
-// it, an attribute it doesn't read). Made on first use.
+// it, an attribute it doesn't read). Made on first use. A token whose style its cosmetic starts with unlocked
+// (bStartUnlocked) gates nothing and isn't one: 7.00's (CL-4629139) Lynx's Scratchmark has all four of its Emissive styles
+// unlocked from the start, beside its three tokens (VTID_076 to _078); no earlier build's data has such a token.
 let styleTokens;
+const startsUnlocked = (token) => (athenaCosmetics()[token.cosmetic]?.variants ?? [])
+  .some((entry) => entry.channel === token.channel && (entry.unlocked ?? []).includes(token.variant));
 function everyStyleToken() {
   if (!styleTokens) {
     styleTokens = new Map();
     for (const build of [...dataBuilds].sort((a, b) => Number(a) - Number(b))) {
-      for (const [id, token] of Object.entries(inBuild(build, () => athenaVariantTokens() ?? {}))) styleTokens.set(id.toLowerCase(), { ...token, build });
+      inBuild(build, () => {
+        for (const [id, token] of Object.entries(athenaVariantTokens() ?? {})) {
+          if (!startsUnlocked(token)) styleTokens.set(id.toLowerCase(), { ...token, build });
+        }
+      });
     }
   }
   return styleTokens;
@@ -674,6 +686,32 @@ function settleDanceSlots(tracker) {
   }
 }
 
+// The locker's wraps (Core-Backend's 7.00 bring-up): 7.00 (CL-4629139) adds Wraps (UAthenaItemWrapDefinition, Update
+// v7.00: "Level up your Battle Pass to unlock different Wraps, then equip them in your locker to items like vehicles,
+// shotguns, rifles and more"; its Battle Pass gives six, AthenaItemWrap:Wrap_001 to _006, and Wrap_Random is its Random
+// entry). The loadout's wraps are a list (FFortAthenaLoadout ItemWraps, a TArray<UAthenaItemWrapDefinition*>, 7.00's SDK),
+// one per locker wrap slot (the slots ItemWrapSlotMetadata's FortItemWrapMappingData lists: vehicles, assault rifles,
+// shotguns...), and the athena profile keeps them in favorite_itemwraps (the stat UFortMcpProfileAthena reads, 7.00's
+// sub_D2CB0's FString), seven ids, "" for an empty slot, as other backends' Season 7 profiles keep it (LawinServer's
+// athena.json: seven). EquipBattleRoyaleCustomization's indexWithinSlot names the slot; -1 is every slot (the locker's
+// apply-to-all, as those backends take it). Builds before 7.00 have no wraps: their profile doesn't get the stat, and
+// their requests know no ItemWrap slot (as before).
+const firstWrapsBuild = 4629139;
+export const wrapSlotCount = 7;
+const hasWrapSlots = () => Number(currentBuild()) >= firstWrapsBuild;
+
+function wrapSlotsNeedSettling(profile) {
+  if (!namesAthenaBuild() || !hasWrapSlots()) return false;
+  const wraps = profile.stats.attributes.favorite_itemwraps;
+  return !Array.isArray(wraps) || wraps.length !== wrapSlotCount || wraps.some((id) => typeof id !== "string");
+}
+
+function settleWrapSlots(tracker) {
+  const wraps = tracker.profile.stats.attributes.favorite_itemwraps;
+  const kept = Array.isArray(wraps) ? wraps : [];
+  tracker.setStat("favorite_itemwraps", Array.from({ length: wrapSlotCount }, (_, index) => (typeof kept[index] === "string" ? kept[index] : "")));
+}
+
 // The locker's Random entries (Core-Backend #278): from 4.0 (CL-4039451) the client has random customization selectors
 // (UFortKismetLibrary::IsItemDefRandomCustomizationSelector; its data's CID_Random, BID_Random, Glider_Random,
 // Pickaxe_Random, LSID_Random and Trails_Random, "Random Outfit" and so on). They are never profile items: the client
@@ -741,10 +779,13 @@ export function equipCustomization(session, slotName, itemToSlot, indexWithinSlo
       throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `${item.templateId} doesn't go in the ${slot} slot`);
     }
   }
+  if (slot === "ItemWrap" && wrapSlotsNeedSettling(tracker.profile)) settleWrapSlots(tracker);
   const held = tracker.profile.stats.attributes[stat];
   if (Array.isArray(held)) {
+    // A wrap for every slot at once (indexWithinSlot -1).
+    const all = slot === "ItemWrap" && Number(indexWithinSlot) === -1;
     const index = Number.isInteger(indexWithinSlot) && indexWithinSlot >= 0 && indexWithinSlot < held.length ? indexWithinSlot : 0;
-    if (held[index] !== itemId) tracker.setStat(stat, held.map((id, at) => (at === index ? itemId : id)));
+    if (held.some((id, at) => (all || at === index) && id !== itemId)) tracker.setStat(stat, held.map((id, at) => (all || at === index ? itemId : id)));
   } else if (held !== itemId) tracker.setStat(stat, itemId);
   applyVariantUpdates(session, itemId, variantUpdates);
 }

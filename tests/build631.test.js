@@ -139,7 +139,8 @@ test("6.31's event flags are 6.30's", () => {
   assert.deepEqual(activeEventFlags(v631), activeEventFlags(v630));
   for (const flag of ["EventFlag.Fortnitemares", fortnitemaresPhase2, ltmFortnitemares, ltmLilKevin, lobbySeason6, "EventFlag.PassiveStorms"]) {
     assert.ok(activeEventFlags(v631).includes(flag), flag);
-    assert.equal(season4Flag(flag).builds[1], Number(v631), flag);
+    // Their switches run on to 7.00 (CL-4629139), whose paks keep them (build700.test.js).
+    assert.equal(season4Flag(flag).builds[1], 4629139, flag);
   }
   assert.equal(activeEventFlags(v631).includes(islandPoi(1)), false);
   assert.equal(season4Flag(islandPoi(1)).builds[1], 4543176, "the Cube's end stays 6.22's");

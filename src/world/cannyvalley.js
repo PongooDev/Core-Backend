@@ -47,6 +47,9 @@
 // - the scenery around them desert, as Act 1's.
 // 6.30's data (CL-4573096) already has the act's 21 quests, but not the Ghost Town zones or the landmark's generator and
 // zone, so 6.30 keeps Act 1's map. Zone 5 (Act 3: 6.31's paks start Act3 with a few quests and no zones) stays as it was.
+// 7.00 (CL-4629139) brings Act 3's two landmark zones (Deploy the Probe's desert, the Vinderman Mansion's grassland), which
+// world/landmarks.js places in zone 5; Act 3's other quests ask only for zone 5's difficulty (>= 30), so the rest of zone 5
+// keeps its map.
 //
 // No theater layout ships with the client (World/Theaters has only Theater_Athena and Theater_TEST_PerfMem), and the world
 // info the layouts come from (tools/theaters) is Epic's of 2017-07-25, before the rework: its Canny Valley is forest,

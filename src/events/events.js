@@ -455,6 +455,20 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // none new and none gone. Its Save the World data keeps Fortnitemares (Hexsylvania's zone themes and quests, Part 2's
 // rewards) and Update v6.31 ends none of it, so 6.31 serves 6.30's flags (🟡 Epic's end of Save the World's Fortnitemares
 // isn't in the notes).
+//
+// 7.00 (CL-4629139, Update v7.00, 6 December 2018), Season 7. Every EventFlag.* in its paks (the same byte scan, all
+// 407,616 uasset, umap, uexp and ini files of its 16 paks, the keyed pakchunk1000 and 1001 with them): 6.31's 36 names less
+// none, and two more: EventFlag.LobbySeason7 (Items/Events/Shared's Season 7 lobby) and EventFlag.WinterBattleBus (1.11's
+// holiday bus flag, back in the paks). Season 7 ends Season 6's events: 7.00 serves LobbySeason7 (LobbySeason6, Battle
+// Royale's Fortnitemares and Lil' Kev challenges, PassiveStorms and Save the World's Fortnitemares and its Mini-Bosses with
+// Candy end with 6.31; they still switch by hand, events/season4flags.js), and Save the World's "Season 7 Warmup":
+// "Mutant Storm mission alerts are now more numerous, will grant Snowflake Tickets and additional Survivor/Hero/Schematic XP
+// when completed, and have a quota of 10 per 24 hour period" (EventFlag.ActiveStorms, the StormCategory rows, quota 10, with
+// Snowflake Tickets: world/theaters.js) and "Miniboss mission alerts have returned to normal. Fewer are available on the
+// map, quota of 3 per 24 hours, no event tickets" (EventFlag.PassiveMiniBosses). Its Legendary Troll Stash Llama for 1,000
+// Snowflake Tickets (CardPack_Jackpot_Winter2018_Tickets, new in its data) and the Event Store's Airheart aren't offered yet
+// (🟡). The Winter bus and the gift supply drops (SupplyDropGift) aren't 7.00's own (Content Update v7.10's holidays): by
+// their switches only.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -463,6 +477,9 @@ export const blockbuster2018Phase4 = "EventFlag.Blockbuster2018Phase4";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
 export const lobbySeason6 = "EventFlag.LobbySeason6";
+export const lobbySeason7 = "EventFlag.LobbySeason7";
+// 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
+export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
 export const fortnitemares2018 = "Fortnitemares2018";
 export const ltmFortnitemares = "EventFlag.LTM_Fortnitemares";
@@ -535,6 +552,7 @@ const build621 = 4526925;
 const build622 = 4543176;
 const build630 = 4573096;
 const build631 = 4573279;
+const build700 = 4629139;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -585,6 +603,10 @@ const events = [
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
+  // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup.
+  { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build700 },
+  { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build700 },
+  { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build700 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

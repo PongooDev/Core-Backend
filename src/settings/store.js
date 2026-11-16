@@ -62,16 +62,24 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 6.30's (CL-4573096) Food Fight (24 and 12 a side), Wild West (Solo, Duos, Squads) and Disco Domination (32 v 32, Alt).
   "foodFight", "foodFight12", "wildWestSolo", "wildWestDuos", "wildWestSquads", "discoDomination32Alt630",
   // 6.31's (CL-4573279) Team Rumble.
-  "teamRumble"];
+  "teamRumble",
+  // 7.00's (CL-4629139) 50v50, Close Encounters (Squads, Solo, Duos), High Explosives (Solo, Squads), Unvaulted (Squads,
+  // Solo, Duos), Siphon (Solo, Duos, Squads), Sniper Shootout (Duos, Solo, Squads) and Soaring Solos, Duos and Squads.
+  "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos",
+  "highExplosivesSeason7Solo", "highExplosivesSeason7Squads", "unvaultedSquads", "unvaultedSolo", "unvaultedDuos",
+  "siphonSolo", "siphonDuos", "siphonSquads", "sniperShootoutSeason7Duos", "sniperShootoutSeason7Solo", "sniperShootoutSeason7Squads",
+  "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
 // 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos, 6.00's 50v50 and 6.02's Disco Domination are on by default from the
 // start: a settings file without its key takes the default. So are 6.20's Fortnitemares and 6.22's Team Terror (a server
-// owner's request: "enable the playlist by default"), 6.30's Food Fight and Wild West, the modes 6.30 shipped with, and 6.31's Team Rumble.
+// owner's request: "enable the playlist by default"), 6.30's Food Fight and Wild West, the modes 6.30 shipped with, 6.31's Team Rumble,
+// and 7.00's 50v50 (its shipped lobby's) and Close Encounters (Update v7.01's mode, whose playlists 7.00's paks have).
 const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6", "discoDomination602",
   "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "teamTerror",
-  "foodFight", "wildWestSolo", "wildWestDuos", "wildWestSquads", "teamRumble"];
+  "foodFight", "wildWestSolo", "wildWestDuos", "wildWestSquads", "teamRumble",
+  "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.

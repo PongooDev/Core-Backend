@@ -59,6 +59,27 @@ export const landmarkMissions = [
     questId: "cannyvalley_landmark_rift",
     missionGenerator: "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_StabilizeTheRift.MissionGen_StabilizeTheRift_C",
     zoneTheme: "/Game/World/ZoneThemes/Landmarks/ZT_StabilizeTheRift/BP_ZT_StabilizeTheRift.BP_ZT_StabilizeTheRift_C"
+  },
+  // 7.00's (CL-4629139) Act 3 landmarks, Update v7.00's "Canny Valley Act 3 ... 2 new landmark zones". 6.31's data already
+  // has Act 3's quests (Quests/CannyValley/Act3: their objectives all at Zone.Difficulty >= 30, zone 5's row,
+  // Theater_Hard_Zone5), the two landmarks' among them, but not their generators or zones; 7.00's world data adds both:
+  // - CannyValley_Landmark_DeployTheProbe (objective Stat.Mission.Primary.Landmark.DeployTheProbe, >= 30): MissionGen_DeployTheProbe
+  //   (CannyValleyLandmarks/DeployTheProbe) in BP_ZT_Desert_DeployProbe ("Desert", Stat.ZoneTheme.Desert, the desert tile
+  //   BP_Hex_Arid01);
+  // - CannyValley_Landmark_Mansion (Landmark.Mansion, >= 30): MissionGen_VindermanMansion (CannyValleyLandmarks/
+  //   VindermanMansion) in BP_ZT_TheGrasslands_Mansion.
+  // Both go in zone 5, as Act 2's went in zones 3 and 4. Act 3's last landmark, CannyValley_Landmark_BossFight
+  // (Landmark.BossFight, the campaign's end: "We're working on an ending song and video that will be added in at a later
+  // date"), has no generator in 7.00's data, so it stays unplayable here, as it was in Epic's 7.00.
+  {
+    questId: "cannyvalley_landmark_deploytheprobe",
+    missionGenerator: "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_DeployTheProbe.MissionGen_DeployTheProbe_C",
+    zoneTheme: "/Game/World/ZoneThemes/ZT_Arid/BP_ZT_Desert_DeployProbe.BP_ZT_Desert_DeployProbe_C"
+  },
+  {
+    questId: "cannyvalley_landmark_mansion",
+    missionGenerator: "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_VindermanMansion.MissionGen_VindermanMansion_C",
+    zoneTheme: "/Game/World/ZoneThemes/ZT_TheGrasslands/BP_ZT_TheGrasslands_Mansion.BP_ZT_TheGrasslands_Mansion_C"
   }
 ];
 
@@ -115,7 +136,8 @@ const zoneOf = (region, theater) => Number((region.regionTags?.gameplayTags ?? [
 // Places the build's landmark missions on their theater's layout (a theater's FFortTheaterMapData, changed in place),
 // before its tiles are linked to their quests. world is the build's world data (missionGenerators, zoneThemes). Builds
 // without a landmark's quest, generator or zone theme (before 5.10 for Canny Valley's, before 6.31 for Stabilize the
-// Rift, before 6.30 for Stonewood's and Plankerton's) leave its theater as it was.
+// Rift, before 7.00 for Deploy the Probe and the Vinderman Mansion, before 6.30 for Stonewood's and Plankerton's) leave its
+// theater as it was.
 export function placeLandmarks(data, world) {
   const theater = theaterOf(data);
   const landmarks = landmarksByTheater[theater];

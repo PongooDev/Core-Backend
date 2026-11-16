@@ -56,7 +56,12 @@ export function chatRoutes({ tokens, xmpp }) {
   // (services/fortnite/cloudstorage.js, Core-Backend #238); its login asks once as sub game "[NoMode]" (3.2 0xC4B520).
   // 6.20 asks from UFortChatManager, which keeps that setting itself, and starts in Athena: without it the Founders tab
   // was never given a room in Battle Royale's lobby (Core-Backend #344, cloudstorage.js).
-  router.post("/fortnite/api/game/v2/chat/:accountId/recommendGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, async (req, res) => {
+  // 7.00 (CL-4629139) renamed the request: UFortChatManager's URL (its constructor, 0x14FF2B0) is
+  // /api/game/v2/chat/`accountId/reserveGeneralChatRooms/`subgame/`platform, and 6.31's recommendGeneralChatRooms is gone
+  // from its exe (its strings against 6.31's). Its answer, FGeneralChatReturn (7.00's SDK: GlobalChatRooms and
+  // FounderChatRooms of FGeneralChatRoom {RoomName, CurrentMembersCount, MaxMembersCount, PublicFacingShardName} and the
+  // five flags), is the one below, so both names get it. Without it 7.00's Global and Founders tabs were never given a room.
+  const generalChatRoomsOfSubGame = async (req, res) => {
     await afterGlobalRoomLeft(xmpp, req.params.accountId);
     const athena = req.params.subGame.toLowerCase() === "athena";
     const shard = (roomName) => ({ ...room(roomName), publicFacingShardName: "" });
@@ -69,7 +74,9 @@ export function chatRoutes({ tokens, xmpp }) {
       bIsFounderChatDisabled: false,
       bIsSubGameGlobalChatDisabled: false
     });
-  });
+  };
+  router.post("/fortnite/api/game/v2/chat/:accountId/recommendGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, generalChatRoomsOfSubGame);
+  router.post("/fortnite/api/game/v2/chat/:accountId/reserveGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, generalChatRoomsOfSubGame);
 
   return router;
 }

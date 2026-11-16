@@ -271,7 +271,15 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // 6.31's data): from 29 November 00:00 UTC on Season 6's replay, 6.30's weeks before it, at a legendary schematic's 1,680
 // Gold, one (🟡 Epic's price and limit aren't recorded). Its Airheart ("Available in the Event Store on November 28") isn't
 // in 6.31's data (no Constructor hero or R.O.S.I.E. ability), so it isn't offered.
+// 7.00's (CL-4629139; Update v7.00), Season 7: "Frostbite Sniper Rifle has returned to the Weekly Store! ... Available from
+// December 5 at 7 PM ET until December 12 at 7 PM ET" (SID_Sniper_Standard_Winter_SR_Ore_T01, Survive the Holidays 2017's
+// "Frostbite"): from Season 7's first day on its replay, at a legendary schematic's 1,680 Gold, one (🟡 Epic's price and
+// limit aren't recorded; Core keeps it after 13 December, the week Update v7.01 brought the next). Without its own entry
+// 7.00 took 6.31's weeks, on Season 6's replay.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4629139, season: 7, weeks: [
+    { from: null, items: [{ templateId: "Schematic:sid_sniper_standard_winter_sr_ore_t01", price: 1680, limit: 1 }] }
+  ] },
   { firstBuild: 4573279, season: 6, weeks: [
     { from: "2018-11-29T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_shovel_halloween_sr_ore_t01", price: 1680, limit: 1 }] },
     { from: "2018-11-22T00:00:00.000Z", items: [{ templateId: "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01", price: 2800, limit: 1 },
