@@ -15,6 +15,7 @@ import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
 import { giveLootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
 import { respecTokensNeedSetUp, setUpRespecTokens } from "./respec.js";
+import { setUpSkillTreeUnlocks, skillTreeUnlocksNeedSetUp } from "./skilltree.js";
 import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -67,6 +68,8 @@ import { levelStartXp, settleLevel, switchXpScale, xpScaleNeedsSwitch } from "./
 //   voucher or llama to open (profiles/lootllamas.js): the Loot tab otherwise shows nothing and the UI stays locked.
 // - From 6.30, one Upgrades and one Research respec token, once per account (profiles/respec.js, Core's choice: nothing
 //   in the game's data grants them).
+// - From 6.30, the quest reward nodes (build levels, squad slots, Transformation, Evolution...) that stand for the skill
+//   tree nodes the account bought before 6.30, once, in a gift box (profiles/skilltree.js, CoreV2 #469).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -106,7 +109,8 @@ export function needsSetUp(profile, settings = {}) {
     || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
     || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile)
-    || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile) || respecTokensNeedSetUp(profile);
+    || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile) || respecTokensNeedSetUp(profile)
+    || skillTreeUnlocksNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -189,4 +193,6 @@ export function setUpProfile(session, profileId = "profile0") {
   giveLootLlamaVoucher(session);
   // 6.30's Upgrades and Research respec tokens, one each, once (profiles/respec.js).
   setUpRespecTokens(session);
+  // 6.30's quest reward unlocks for the skill tree nodes the account bought before 6.30, once (profiles/skilltree.js).
+  setUpSkillTreeUnlocks(session);
 }
