@@ -182,8 +182,20 @@ function newModeFiles(changelist) {
 // account holds Token:founderchatunlock (0x11661B0) and its Founders room isn't joined yet. Without that token no
 // rooms were asked for at all, so the Founders tab never joined its room and a message sent there went nowhere. With
 // the setting it asks every time, and HandleQueryRecommendedChatRoomsComplete (0x10DD170) joins both answered rooms.
-const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", "",
-  "[/Script/FortniteGame.FortChatManager]", "bIsAthenaGlobalChatEnabled=true", ""].join("\r\n");
+// Core-Backend #378: 7.00 (CL-4629139) ships general chat switched off altogether: its DefaultGame.ini's
+// [/Script/FortniteGame.FortChatManager] has bShouldRequestGeneralChatRooms, bShouldJoinGlobalChat and
+// bShouldJoinFounderChat false beside bIsAthenaGlobalChatEnabled (Epic turned them on by hotfix). With
+// bShouldRequestGeneralChatRooms (+0x1F1) false, UFortChatManager::AttemptJoinReservedChatRooms (7.00 0x10DFD00) asks for no
+// rooms and disables both tabs (the reporter's log: "ShouldRequestRooms: 0, ChatRestricted: 0", then DisableGlobalChatRoom
+// and DisableFounderChatRoom with DisableReason 1), so the lobby's chat had no tab at all and Send went nowhere; and
+// HandleReserveChatRoomsComplete joins the Global room only with bShouldJoinGlobalChat ("Global Chat Room Found, bShouldJoin:
+// %d") and the Founders room with bShouldJoinFounderChat. So from 7.00 the section turns all three on too; an earlier
+// build's section is as it was (their shipped values already have them on).
+const chatManagerFrom700 = ["bShouldRequestGeneralChatRooms=true", "bShouldJoinGlobalChat=true", "bShouldJoinFounderChat=true"];
+const chatRoomsSwitchBuild = 4629139;
+const chatSection = (build) => ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", "",
+  "[/Script/FortniteGame.FortChatManager]", "bIsAthenaGlobalChatEnabled=true",
+  ...(Number(build) >= chatRoomsSwitchBuild ? chatManagerFrom700 : []), ""].join("\r\n");
 // Battle Royale replays (Core-Backend #251), Season 3.5's: the client records each match itself, to its Saved/Demos folder
 // (FLocalFileNetworkReplayStreamer, UnsavedReplay-<date>.replay), and the Career tab's Replays screen lists that folder; no
 // service is asked. UFortRuntimeOptions (config RuntimeOptions, GetDefault: 3.5.2 0x105DD40) holds the game's three replay
@@ -249,7 +261,7 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
   // 7.00's Creative early access notice on the lobby's "Start a server" tile (profiles/creative.js, Core-Backend #379).
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build), ...creativeAccessGlobals(build)])
     + customKeySection(build)
-    + forcedQueueSection(build) + chatSection
+    + forcedQueueSection(build) + chatSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + (vivox?.gameSection?.(req, build) ?? "")
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);

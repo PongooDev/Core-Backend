@@ -574,6 +574,28 @@ test("the system hotfix turns on Battle Royale's general chat in UFortChatManage
   }
 });
 
+// Core-Backend #378: 7.00 ships general chat off (bShouldRequestGeneralChatRooms, bShouldJoinGlobalChat and
+// bShouldJoinFounderChat false), so no tab joined a room; its hotfix turns them on. 6.31's section is as it was.
+test("#378: the system hotfix turns on 7.00's general chat rooms in UFortChatManager; 6.31's section is unchanged", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const chatManagerOf = async (build) => {
+      const lines = (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined,
+        `game=Fortnite, engine=UE4, build=${build}`)).body.toString("utf8").split("\r\n");
+      const section = lines.indexOf("[/Script/FortniteGame.FortChatManager]");
+      assert.notEqual(section, -1, build);
+      const next = lines.findIndex((line, index) => index > section && (line === "" || line.startsWith("[")));
+      return lines.slice(section + 1, next);
+    };
+    assert.deepEqual(await chatManagerOf("++Fortnite+Release-7.00-CL-4629139"), ["bIsAthenaGlobalChatEnabled=true",
+      "bShouldRequestGeneralChatRooms=true", "bShouldJoinGlobalChat=true", "bShouldJoinFounderChat=true"]);
+    assert.deepEqual(await chatManagerOf("++Fortnite+Release-6.31-CL-4573279"), ["bIsAthenaGlobalChatEnabled=true"]);
+  } finally {
+    backend.close();
+  }
+});
+
 test("a large ClientSettings.Sav, sent chunked or sized, is stored whole and listed with its own hashes (#264)", async () => {
   const backend = await startBackend();
   try {
