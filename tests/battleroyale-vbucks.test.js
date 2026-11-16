@@ -184,37 +184,34 @@ test("a placement pays its best tier, not their sum, and kills, a win and the pl
   assert.equal(matchVbucks(example, 11, { place: 2, kills: 4 }), 4 * 5);
 });
 
-// CoreV2 #294: a limited-time playlist paid nothing; it pays as the mode of its teams in the match's build.
-test("a limited-time playlist pays as its teams' mode: solo, duos, squads or 50v50, nothing for a single team", () => {
-  const build41 = 4053532;
-  assert.equal(rewardModeOf(33, build41), "solo", "4.1's Infinity Gauntlet, 100 teams of 1");
-  assert.equal(rewardModeOf(27, build41), "squads", "Solid Gold, 100 teams of 4");
-  assert.equal(rewardModeOf(40, build41), "duos", "Sniper Shootout duos");
-  assert.equal(rewardModeOf(22, build41), "squads", "Teams of 20, 5 teams of 20");
-  assert.equal(rewardModeOf(50, build41), "fiftyFifty", "50v50 v2, 2 teams of 50");
-  assert.equal(rewardModeOf(35, build41), null, "Playground, one team");
-  assert.equal(rewardModeOf(99, build41), null);
-  assert.equal(rewardModeOf(16, 3901517), "duos", "3.0's Take To The Skies");
-  assert.equal(rewardModeOf(16, 3807424), "squads", "1.11's, 100 teams of 4");
-  assert.equal(matchVbucks(example, 33, { place: 1, kills: 2 }, build41), 2 * 10 + 100 + 250);
-  assert.equal(matchVbucks(example, 27, { place: 2, kills: 1 }, build41), 40 + 60);
-  assert.equal(matchVbucks(example, 35, { place: 1, kills: 5 }, build41), 0);
+// Core-Backend #124: the card pays the main modes' playlists (and 50v50's own column) only; CoreV2 #294's LTM pay-by-teams is gone.
+test("only the main playlists pay: an LTM, Playground and a tournament earn nothing, whatever their teams", () => {
+  assert.equal(rewardModeOf(2), "solo");
+  assert.equal(rewardModeOf(10), "duos");
+  assert.equal(rewardModeOf("9"), "squads");
+  assert.equal(rewardModeOf(11), "fiftyFifty");
+  for (const [id, what] of [[33, "4.1's Infinity Gauntlet, 100 teams of 1"], [27, "Solid Gold, 100 teams of 4"], [40, "Sniper Shootout duos"],
+    [22, "Teams of 20"], [50, "50v50 v2"], [35, "Playground"], [16, "Take To The Skies"], [12, "Sneaky Silencers"], [47, "Fortnitemares Solo"],
+    [58073, "a tournament's Squads"], [99, "unknown"], [0, "none"], [NaN, "not a number"]]) {
+    assert.equal(rewardModeOf(id), null, what);
+    assert.equal(matchVbucks(example, id, { place: 1, kills: 2 }), 0, what);
+  }
+  assert.equal(matchVbucks(example, 2, { place: 1, kills: 2 }), 2 * 10 + 100 + 250, "solo still pays");
 });
 
-test("an LTM's report pays its teams' mode once, with the match's build", async () => {
+test("an LTM's report pays nothing, a main playlist's report on the same build pays", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "RewardsLtm");
     const dedicated = await dedicatedServerToken(backend.port);
     await settings(backend, { battleRoyaleVbucks: true, battleRoyaleRewards: example });
     const before = await balance(backend, player);
-    // The report's build is the test client's (1.2), whose server table gives Sneaky Silencers (12) 100 teams of 4: a
-    // squads match, 4th with 3 kills (top 6).
-    const body = { playlistId: 12, matchId: "ltm294", results: [{ accountId: player.accountId, place: 4, kills: 3, secondsAlive: 600 }] };
+    // Sneaky Silencers (12) is 100 teams of 4 on the test client's build (1.2): it paid as squads before #124.
+    const body = { playlistId: 12, matchId: "ltm124", results: [{ accountId: player.accountId, place: 4, kills: 3, secondsAlive: 600 }] };
     assert.equal((await results(backend, dedicated, body)).status, 200);
+    assert.equal(await balance(backend, player), before);
+    await results(backend, dedicated, { ...body, playlistId: 9, matchId: "main124" });
     assert.equal(await balance(backend, player), before + 3 * 40 + 60);
-    await results(backend, dedicated, body);
-    assert.equal(await balance(backend, player), before + 3 * 40 + 60, "paid once");
   } finally {
     backend.close();
   }

@@ -157,7 +157,7 @@ test("Team Rumble: 6.31's Playlist_Respawn_24 (280), two teams of 20 in squads, 
   assert.equal(playlistIdOfName("playlist_respawn_24", v631), 280);
   assert.equal(parseBucket(`${v631}:0:NAE:playlist_respawn_24`, v631).playlistId, 280);
   assert.deepEqual(playlistTeamsOf(`${v631}:0:NAE:playlist_respawn_24`, v631), { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 });
-  assert.equal(rewardModeOf(280, v631), "squads");
+  assert.equal(rewardModeOf(280), null, "an LTM earns no V-Bucks (#124)");
   withConfig(replay, () => {
     const dated = { ltmOriginalDates: true, matchmakingModes: defaults.matchmakingModes };
     assert.equal(inOriginalWindow("teamRumble", v631, at("2018-11-26T23:59:00Z"), dated), false);

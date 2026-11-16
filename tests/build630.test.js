@@ -164,7 +164,7 @@ test("Food Fight: 6.30's Playlist_Barrier (204), two teams of 24 in squads, on b
   assert.equal(parseBucket(`${v630}:0:NAE:playlist_barrier`, v630).playlistId, 204);
   assert.deepEqual(playlistTeamsOf(`${v630}:0:NAE:playlist_barrier`, v630), { maxTeamCount: 2, maxTeamSize: 24, maxSquadSize: 4 });
   assert.deepEqual(playlistTeamsOf(`${v630}:0:NAE:playlist_barrier_12`, v630), { maxTeamCount: 2, maxTeamSize: 12, maxSquadSize: 4 });
-  assert.equal(rewardModeOf(204, v630), "squads");
+  assert.equal(rewardModeOf(204), null, "an LTM earns no V-Bucks (#124)");
   withConfig(replay, () => {
     const dated = { ltmOriginalDates: true, matchmakingModes: defaults.matchmakingModes };
     assert.equal(inOriginalWindow("foodFight", v630, at("2018-11-13T23:59:00Z"), dated), false);
@@ -193,7 +193,7 @@ test("Wild West: 6.30's Playlist_WW_Solo, _Duos and _Squads (900 to 902), on by 
     assert.deepEqual(playlistTeamsOf(`${v630}:0:NAE:${name.toLowerCase()}`, v630), { maxTeamCount: 100, maxTeamSize: size, maxSquadSize: size }, name);
     assert.match(epicPlaylistImages[name], /BR06_ModeTile_LTM_WildWest-1024x512-f67d9d1dd2ca0b290c92b1380240429f0f257a10\.jpg$/);
   }
-  assert.equal(rewardModeOf(901, v630), "duos");
+  assert.equal(rewardModeOf(901), null, "an LTM earns no V-Bucks (#124)");
   withConfig(replay, () => {
     const dated = { ltmOriginalDates: true, matchmakingModes: defaults.matchmakingModes };
     assert.equal(inOriginalWindow("wildWestSquads", v630, at("2018-11-19T12:00:00Z"), dated), false);

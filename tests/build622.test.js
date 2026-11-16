@@ -170,7 +170,7 @@ test("Team Terror: 6.22's Playlist_Deimos_50 (450), two teams of 32 in squads, o
   assert.deepEqual(playlistTeamsOf(`${v622}:0:NAE:playlist_deimos_50`, v622), { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 });
   // As the other large-team modes: the 32 a side Disco Domination's teams, squads' rewards.
   assert.deepEqual(playlistTeamsOf(`${v622}:0:NAE:playlist_deimos_50`, v622), playlistTeamsOf(`${v622}:0:NAE:playlist_disco_32`, v622));
-  assert.equal(rewardModeOf(450, v622), rewardModeOf(217, v622));
+  assert.equal(rewardModeOf(450), null, "an LTM earns no V-Bucks (#124)");
   // Two solos face each other, as in 50v50 (#135); a party of four is one squad on one side.
   const teams = playlistTeamsOf(`${v622}:0:NAE:playlist_deimos_50`, v622);
   const formed = formTeams([{ players: ["a"], fill: true }, { players: ["b"], fill: true }, { players: ["c", "d", "e", "f"], fill: false }], teams, { teamsAreSquads: false });
