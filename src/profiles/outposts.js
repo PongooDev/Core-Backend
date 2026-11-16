@@ -105,30 +105,12 @@ export function expandStormShield(session, questId) {
   if (level > (tracker.profile.items[itemId].attributes.level ?? 0)) tracker.setItemAttribute(itemId, "level", level);
 }
 
-// The quests a claimed Storm Shield Defense quest grants (its rewards and hidden rewards) that the account doesn't hold,
-// for ClientQuestLogin to grant (Core-Backend #210). A build's data can add one to a defense players already finished:
-// 3.0's OutpostQuest_T1_L5 (Stonewood's SSD 5) gains StonewoodQuest_Reactive_Fetch_Hoverboard, the Hoverboard's
-// questline, which a claim made on an earlier build never granted. Epic's players past that defense got it with the
-// update 🟡; here they get it at their next quest login. Reward choices are left out: which one was taken isn't kept.
-export function missedStormShieldQuests(profile) {
-  const held = new Set(Object.values(profile.items).map(questIdOf).filter(Boolean));
-  const missed = new Set();
-  for (const item of Object.values(profile.items)) {
-    const quest = item.attributes?.quest_state === "Claimed" && getQuest(questIdOf(item) ?? "");
-    if (!quest?.expandsStormShield) continue;
-    for (const { templateId } of [...(quest.rewards ?? []), ...(quest.hiddenRewards ?? [])]) {
-      const [type, questId] = templateId.toLowerCase().split(":");
-      if (type === "quest" && !held.has(questId) && getQuest(questId)) missed.add(questId);
-    }
-  }
-  return [...missed];
-}
-
 // The perk resources a claimed Storm Shield Defense gives with a missed quest of the Perk Recombobulator's: 4.2's
 // Plankerton SSD 2 (OutpostQuest_T2_L2) hides Challenge_ReplaceAlteration and rewards 1,200 RE-PERK!, neither of which a
 // claim made before 4.2 gave. Update v4.20: "Players who have already completed Plankerton Storm Shield Defense 2 will
-// already have the quests unlocked, including the initial resources." So when missedStormShieldQuests gives such a
-// quest, these come with it, once (the quest is held from then on).
+// already have the quests unlocked, including the initial resources." So when the quest login gives such a quest as
+// missed (profiles/questline.js settleQuestLine, which also gave 3.0's Hoverboard questline from Stonewood's SSD 5,
+// Core-Backend #210), these come with it, once (the quest is held from then on).
 export function missedStormShieldResources(profile, missed) {
   const wanted = new Set(missed.map((questId) => questId.toLowerCase()));
   const resources = [];

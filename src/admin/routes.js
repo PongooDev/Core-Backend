@@ -740,7 +740,8 @@ export function adminRoutes(context) {
     return { removed: removable.length, kept: copies.length - removable.length };
   }));
 
-  // {itemId, action: complete | claim | remove}
+  // {itemId, action: complete | claim}. A quest is moved on the way the game moves it. There's no taking one out: the
+  // game never does, and the quest line hangs on each one (Core-Backend #368: a removed quest stopped what came after it).
   router.post("/admin/api/accounts/:accountId/quests", change(({ req, res, session }) => {
     const { itemId, action } = req.body ?? {};
     const tracker = session.profile("profile0");
@@ -751,8 +752,6 @@ export function adminRoutes(context) {
     } else if (action === "claim") {
       if (item.attributes.quest_state === "Active") completeQuest(session, itemId);
       if (tracker.profile.items[itemId]?.attributes.quest_state === "Completed") claimQuest(session, itemId);
-    } else if (action === "remove") {
-      tracker.removeItem(itemId);
     } else {
       return invalid(res, `Unknown quest action ${action}`);
     }

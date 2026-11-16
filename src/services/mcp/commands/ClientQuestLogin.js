@@ -5,9 +5,9 @@ import { convertEventLeftovers } from "../../../events/leftovers.js";
 import { eventQuestsToRestore, removeEndedEventQuests, startEventRuns } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
-import { missedStormShieldQuests, missedStormShieldResources } from "../../../profiles/outposts.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
 import { grant, refreshHeldItems, revertHeldProgress } from "../../../profiles/progress.js";
+import { settleQuestLine } from "../../../profiles/questline.js";
 import { eventFlagsNotification } from "./RequestEventFlags.js";
 
 // The client may send this several times a session and logs out after 5 failed retries, so it must always succeed.
@@ -26,9 +26,11 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // startEventRuns, #347). An ended event's unspent tickets become its llamas, once
 // (events/leftovers.js, #129, #174).
 //
-// A Storm Shield Defense already claimed grants the quests a newer build's data added to it, such as 3.0's Hoverboard
-// questline from Stonewood's SSD 5 (profiles/outposts.js, #210), and with 4.2's Perk Recombobulator quest from Plankerton's
-// SSD 2 the RE-PERK! the defense now gives (#270).
+// The quest line is settled with the build's data (profiles/questline.js, #368): a quest a claimed quest now grants is
+// given, or claimed when the player is already past it, and the claimed quests' unlocks the account lacks are given (from
+// 6.30 in a gift box). That brings 3.0's Hoverboard questline to an account past Stonewood's SSD 5 (#210), 4.2's Perk
+// Recombobulator quest from Plankerton's SSD 2 with the RE-PERK! the defense now gives (#270), and 6.30's squad slots,
+// Transformation, Research and the quests it put ahead of where a player was.
 //
 // On athena (1.8's Battle Royale quest log), its daily challenges (profiles/athena.js), with the event flags all the
 // same in case that quest manager is the one asking.
@@ -40,9 +42,7 @@ export function clientQuestLogin({ session, notifications, profileId }) {
     convertEventLeftovers(session);
     for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
     for (const questId of eventQuestsToRestore(session.profile("profile0").profile)) grant(session, `Quest:${questId}`, 1);
-    const missed = missedStormShieldQuests(session.profile("profile0").profile);
-    for (const { templateId, quantity } of missedStormShieldResources(session.profile("profile0").profile, missed)) grant(session, templateId, quantity);
-    for (const questId of missed) grant(session, `Quest:${questId}`, 1);
+    settleQuestLine(session);
     // 6.20's Fortnitemares: a founder's two heroes (events/fortnitemares2018.js).
     settleFounderHeroes2018(session, grant);
     refreshDailyQuests(session);

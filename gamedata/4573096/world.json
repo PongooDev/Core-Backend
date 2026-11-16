@@ -1290,7 +1290,17 @@
     },
     "/Game/Missions/Primary/LaunchTheBalloon/RtL_Stormquest_2018": {
       "tags": [
-        "Stat.Mission.Primary.LaunchWeatherBalloon.Landmark.StormQuest2018"
+        "Stat.Mission.Primary.Landmark.Lars"
+      ]
+    },
+    "/Game/Missions/Primary/PlankertonLandmarks/LiberatePlankHarbor/LiberatePlankHarbor": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.PlankHarbor"
+      ]
+    },
+    "/Game/Missions/Primary/RefuelTheBase/RefuelTheBase": {
+      "tags": [
+        "Stat.Mission.Primary.RefuelTheHomebase"
       ]
     },
     "/Game/Missions/Primary/RepairTheShelter/1stRepairTheShelter": {
@@ -1311,6 +1321,11 @@
     "/Game/Missions/Primary/ScanTheComet/StC_Landmark": {
       "tags": [
         "Stat.Mission.Primary.Landmark.Observe.BlockbusterQuest2018"
+      ]
+    },
+    "/Game/Missions/Primary/StonewoodLandmarks/ConstructorBuildOff/BuildOff_Gate": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.BuildOff"
       ]
     },
     "/Game/Missions/Primary/StormShield/LtR_CannyValley": {

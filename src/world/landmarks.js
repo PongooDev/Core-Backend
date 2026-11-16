@@ -1,4 +1,4 @@
-import { missionMeets, missionObjectives, questPath } from "./quests.js";
+import { difficultyOf, missionMeets, missionObjectives, questPath } from "./quests.js";
 
 // 5.10's (CL-4240749) Canny Valley Act 1 (Core-Backend #339). Its main quests start at the first Storm Shield Defense
 // (OutpostQuest_T3_L1 gives CannyValley_Landmark_Welcome, "Please Hold": "Can be only completed in Thunder Route 99",
@@ -62,27 +62,79 @@ export const landmarkMissions = [
   }
 ];
 
-const cannyValley = "Stat.Theater.PvE03";
-const isCannyValley = (data) => data.runtimeInfo.theaterType === "Standard"
-  && (data.runtimeInfo.theaterTags?.gameplayTags ?? []).some(({ tagName }) => tagName === cannyValley);
-// A zone region's number (Stat.Theater.PvE03.Difficulty0<n>), 0 for the theater's other regions.
-const zoneOf = (region) => Number((region.regionTags?.gameplayTags ?? [])
-  .map(({ tagName }) => /^Stat\.Theater\.PvE03\.Difficulty0(\d)$/.exec(tagName)?.[1]).find(Boolean) ?? 0);
+// 6.30's (CL-4573096) Stonewood and Plankerton landmarks, Update v6.30's "Added new Landmark Zones and Missions: Build
+// Off!, Plank Harbor, Steel Icarus" (Core-Backend #368). Each is a story quest of 6.30's reworked quest line whose
+// objective is a landmark mission (ObjectiveStatTable Complete, Stat.Mission.Primary.Landmark.*), and like Canny Valley's
+// no tile of the layouts Core has (older than 6.30) runs one, so the quest line stopped there:
+// - StonewoodQuest_Landmark_BuildOff ("Build Off!", given by StonewoodQuest_Fetch_ResearchCrates after Stonewood's SSD 3,
+//   Zone.Difficulty >=5; it leads to StonewoodQuest_Filler_1_D3 and Stonewood's SSD 4): MissionGen_BuildOff
+//   (StonewoodLandmarks/ConstructorBuildOff/BuildOff_Gate, Stat.Mission.Primary.Landmark.BuildOff) in BP_ZT_BuildOff ("The
+//   Durr Burger Build-Off");
+// - PlankertonQuest_Landmark_PlankHarbor (given by PlankertonQuest_Outpost_L5, >=20): MissionGen_PlankHarbor3Gate
+//   (PlankertonLandmarks/LiberatePlankHarbor, Landmark.PlankHarbor) in BP_ZT_PlankHarbor ("Plank Harbor");
+// - PlankertonQuest_Landmark_Lars ("Steel Icarus", "Launch Lars deep into the storm!", given by
+//   PlankertonQuest_Reactive_Speakers, >=20; it leads to PlankertonQuest_Outpost_L6): the only generator whose mission is
+//   Stat.Mission.Primary.Landmark.Lars, Into the Storm's MissionGen_RtL_StormQuest2018Landmark (3.5's
+//   LaunchTheBalloon/RtL_Stormquest_2018), in the zone theme that event gave it, ZT_IntotheStorm's BP_ZT_LaunchingLars.
+// They take their tiles as Canny Valley's do (🟡 which tile is Core's: Epic's 6.30 layout isn't kept): Build Off in
+// Stonewood's zone 3 (Theater_Start_Zone3, 5), the two Plankerton ones in the first of its zones at 20
+// (Theater_Normal_Zone5, zone 4's harder region). Builds before 6.30 have none of the quests: those layouts stay as they
+// were. 6.30's world data lacked these missions' MissionInfo (its extraction kept 6.22's: no BuildOff_Gate or
+// LiberatePlankHarbor, RtL_Stormquest_2018 still Into the Storm's LaunchWeatherBalloon tag); gamedata/4573096/world.json
+// has them as 6.30's paks do (BuildOff_Gate Stat.Mission.Primary.Landmark.BuildOff, LiberatePlankHarbor
+// Landmark.PlankHarbor, RtL_Stormquest_2018 Landmark.Lars, "Steel Icarus"), as 6.31's data already had.
+export const stonewoodLandmarks = [
+  {
+    questId: "stonewoodquest_landmark_buildoff",
+    missionGenerator: "/Game/World/MissionGens/Stonewood/SW_Landmarks/MissionGen_BuildOff.MissionGen_BuildOff_C",
+    zoneTheme: "/Game/World/ZoneThemes/Onboarding/BP_ZT_BuildOff.BP_ZT_BuildOff_C"
+  }
+];
+export const plankertonLandmarks = [
+  {
+    questId: "plankertonquest_landmark_plankharbor",
+    missionGenerator: "/Game/World/MissionGens/Plankerton/Plank_Landmarks/MissionGen_PlankHarbor3Gate.MissionGen_PlankHarbor3Gate_C",
+    zoneTheme: "/Game/World/ZoneThemes/Landmarks/ZT_PlankHarbor/BP_ZT_PlankHarbor.BP_ZT_PlankHarbor_C"
+  },
+  {
+    questId: "plankertonquest_landmark_lars",
+    missionGenerator: "/Game/World/MissionGens/MissionGen_RtL_StormQuest2018Landmark.MissionGen_RtL_StormQuest2018Landmark_C",
+    zoneTheme: "/Game/World/ZoneThemes/ZT_IntotheStorm/BP_ZT_LaunchingLars.BP_ZT_LaunchingLars_C"
+  }
+];
 
-// Places the build's landmark missions on Canny Valley's layout (a theater's FFortTheaterMapData, changed in place),
+const landmarksByTheater = { 1: stonewoodLandmarks, 2: plankertonLandmarks, 3: landmarkMissions };
+// A main theater's number (Stat.Theater.PvE0<n>), 0 for the others.
+const theaterOf = (data) => (data.runtimeInfo.theaterType === "Standard" ? Number((data.runtimeInfo.theaterTags?.gameplayTags ?? [])
+  .map(({ tagName }) => /^Stat\.Theater\.PvE0(\d)$/.exec(tagName)?.[1]).find(Boolean) ?? 0) : 0);
+// A zone region's number (Stat.Theater.PvE0<theater>.Difficulty0<n>), 0 for the theater's other regions.
+const zoneOf = (region, theater) => Number((region.regionTags?.gameplayTags ?? [])
+  .map(({ tagName }) => /^Stat\.Theater\.PvE0(\d)\.Difficulty0(\d)$/.exec(tagName))
+  .find((match) => Number(match?.[1]) === theater)?.[2] ?? 0);
+
+// Places the build's landmark missions on their theater's layout (a theater's FFortTheaterMapData, changed in place),
 // before its tiles are linked to their quests. world is the build's world data (missionGenerators, zoneThemes). Builds
-// before 5.10 have none of the generators (and before 6.31 not Stabilize the Rift's): those layouts stay as they were.
+// without a landmark's quest, generator or zone theme (before 5.10 for Canny Valley's, before 6.31 for Stabilize the
+// Rift, before 6.30 for Stonewood's and Plankerton's) leave its theater as it was.
 export function placeLandmarks(data, world) {
-  if (!isCannyValley(data)) return;
-  const zones = data.regions.filter((region) => zoneOf(region) && region.missionData?.difficultyWeights?.length === 1)
-    .sort((a, b) => zoneOf(a) - zoneOf(b));
+  const theater = theaterOf(data);
+  const landmarks = landmarksByTheater[theater];
+  if (!landmarks) return;
+  // A zone's regions by zone, then by difficulty (Stonewood's zone 3 is Theater_Start_Zone3 and a harder Start_Zone4 region).
+  const rowOf = (region) => region.missionData.difficultyWeights[0].difficultyInfo.rowName;
+  const zones = data.regions.filter((region) => zoneOf(region, theater) && region.missionData?.difficultyWeights?.length === 1)
+    .sort((a, b) => zoneOf(a, theater) - zoneOf(b, theater) || difficultyOf(rowOf(a)) - difficultyOf(rowOf(b)));
   const taken = new Set();
-  for (const landmark of landmarkMissions) {
+  // A Normal tile of the zone; Stonewood's zones have none (every one of their tiles is AlwaysActive), so there one of those.
+  const freeTile = (region) => ["Normal", "AlwaysActive"].map((type) => region.tileIndices
+    .find((index) => data.tiles[index].tileType === type && !data.tiles[index].requirements?.activeQuestDefinition && !taken.has(index)))
+    .find((index) => index !== undefined);
+  for (const landmark of landmarks) {
     const quest = questPath(landmark.questId);
     const [objective] = missionObjectives(landmark.questId);
     if (!quest || !objective || !world.missionGenerators?.[landmark.missionGenerator] || !world.zoneThemes?.[landmark.zoneTheme]) continue;
-    const zone = zones.find((region) => missionMeets(objective, landmark.missionGenerator, region.missionData.difficultyWeights[0].difficultyInfo.rowName));
-    const tileIndex = zone?.tileIndices.find((index) => data.tiles[index].tileType === "Normal" && !taken.has(index));
+    const zone = zones.find((region) => missionMeets(objective, landmark.missionGenerator, rowOf(region)) && freeTile(region) !== undefined);
+    const tileIndex = zone && freeTile(zone);
     if (tileIndex === undefined) continue;
     taken.add(tileIndex);
     const tile = data.tiles[tileIndex];

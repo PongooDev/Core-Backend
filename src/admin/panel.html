@@ -4287,16 +4287,7 @@
           ["Completed", (q) => done(q) ? when(q) : "—"],
           ["", (q) => el("div", { class: "actions" },
             q.state === "Active" ? btn("Complete", () => post("quests", { itemId: q.itemId, action: "complete" }, `${q.name ?? q.questId} completed`), "ghost small") : null,
-            q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.name ?? q.questId} claimed`), "ghost small") : null,
-            btn("Remove", async () => {
-              if (await confirmModal(`Remove quest ${q.name ?? q.questId}?`, {
-                title: "Remove Quest",
-                confirmText: "Remove",
-                confirmKind: "danger"
-              })) {
-                post("quests", { itemId: q.itemId, action: "remove" }, `${q.name ?? q.questId} removed`);
-              }
-            }, "danger small"))]
+            q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.name ?? q.questId} claimed`), "ghost small") : null)]
         ], matching, a.quests.length ? "No quests match." : "No quests yet."));
       };
       search.addEventListener("input", render);

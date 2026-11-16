@@ -53,7 +53,8 @@ function zoneGate(region) {
 //
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none. Every build has
 // the same layouts, finished with the requesting build's quests, but Canny Valley from 5.10: its first act's landmarks
-// (world/landmarks.js) and zones (world/cannyvalley.js), and from 6.31 its second act's, which that world info predates.
+// (world/landmarks.js) and zones (world/cannyvalley.js), and from 6.31 its second act's, and from 6.30 Stonewood's and
+// Plankerton's landmarks and Refuel the Homebase, which that world info predates.
 //
 // 1.7.2 tags the campaign's theaters Theater.MainProgression (its ActivitiesTags define the tag), and only a theater with
 // it takes quest driven missions (SharedMissionLists TheaterTagQuery: the tapes of ReactiveQuest_DistressCalls and the
@@ -77,6 +78,24 @@ const miniBossesUnlocked = [{ missionAlertCategoryName: "MiniBossCategory", bRes
 const withAlertCategoryRequirements = (data) => (theaterZone(data) && miniBossesStay()
   ? { ...data, runtimeInfo: { ...data.runtimeInfo, missionAlertCategoryRequirements: miniBossesUnlocked } } : data);
 
+// Update v6.30 (CL-4573096) made Refuel the Homebase a primary mission in place of the BluGlo Siphon secondary one (and
+// raised Plankerton's ambient BluGlo to make up for it). 6.30's data has its generator, MissionGen_RefuelTheBase
+// (RefuelTheBase, Stat.Mission.Primary.RefuelTheHomebase),
+// and quests that ask for one: PlankertonQuest_Mechanical_RefuelIntro on Plankerton's main line (>=14, between
+// PlankertonQuest_Filler_5_D2 and _4_D2) and Canny Valley's CannyValleyQuest_Filler_2_D3 and _4_D5. The layouts Core has
+// are older than 6.30, so no zone rolled it and the main line stopped there (Core-Backend #368). From 6.30 each zone of
+// Plankerton, Canny Valley and Twine Peaks rolls it beside its own missions, at their weight (🟡 Epic's 6.30 weights
+// aren't kept); Stonewood keeps its missions, as it never had the Siphon.
+const refuelTheHomebase = "/Game/World/MissionGens/MissionGen_RefuelTheBase.MissionGen_RefuelTheBase_C";
+function addRefuelTheHomebase(data, world) {
+  if (theaterZone(data) < 2 || !world.missionGenerators?.[refuelTheHomebase]) return;
+  for (const region of data.regions) {
+    const weights = region.missionData?.missionWeights;
+    if (!weights?.length || weights.some(({ missionGenerator }) => missionGenerator === refuelTheHomebase)) continue;
+    region.missionData.missionWeights = [...weights, { missionGenerator: refuelTheHomebase, weight: 1 }];
+  }
+}
+
 const layout = perBuild((read) => {
   const { theaters = [], rewards = {} } = read("theaters", {});
   const world = read("world", {});
@@ -91,10 +110,12 @@ const layout = perBuild((read) => {
       const zoneQuest = zoneGate(region);
       if (zoneQuest) region.requirements = { ...region.requirements, questDefinition: zoneQuest };
     }
-    // 5.10's Canny Valley landmark missions (world/landmarks.js, Core-Backend #339, and 6.31's Stabilize the Rift), before
-    // the tiles are linked, its first act's desert, Thunder Route 99 and bunker zones around them (world/cannyvalley.js,
-    // #341) and 6.31's second act's Ghost Town zones.
+    // 5.10's Canny Valley landmark missions (world/landmarks.js, Core-Backend #339, and 6.31's Stabilize the Rift) and
+    // 6.30's Stonewood and Plankerton ones (Build Off!, Plank Harbor, Steel Icarus, #368), before the tiles are linked,
+    // 6.30's Refuel the Homebase (#368), Canny Valley's first act's desert, Thunder Route 99 and bunker zones around its
+    // landmarks (world/cannyvalley.js, #341) and 6.31's second act's Ghost Town zones.
     placeLandmarks(data, world);
+    addRefuelTheHomebase(data, world);
     drawCannyValleyAct1(data, world);
     drawCannyValleyAct2(data, world);
     const links = linkedQuests(data);

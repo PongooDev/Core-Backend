@@ -1,9 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { getItem } from "../src/gamedata/items.js";
 import { activeAlterations, allPerks, alterationSlots, perkChoices, perkSection, setPerk, convertLegacy, convertedAlterations, hasAlterationData, hasLegacyAlterations,
   respecOptions, rollAlterations, upgradeRecipe } from "../src/profiles/alterations.js";
+import { claimQuest, completeQuest, grant } from "../src/profiles/progress.js";
+import { findQuestItem } from "../src/profiles/quests.js";
+import { openSession } from "../src/profiles/session.js";
+import { createProfileStore } from "../src/profiles/store.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // 4.2's Perk Recombobulator (Core-Backend #270).
@@ -129,14 +136,34 @@ test("4.2: schematics get perks, and RespecAlteration and UpgradeAlteration chan
 });
 
 test("4.2: a Plankerton SSD 2 claimed before 4.2 gives its RE-PERK! with the missed Recombobulator quest", async () => {
-  const { missedStormShieldQuests, missedStormShieldResources } = await import("../src/profiles/outposts.js");
-  const profile = { items: { ssd: { templateId: "Quest:outpostquest_t2_l2", attributes: { quest_state: "Claimed" }, quantity: 1 } } };
-  at42(() => {
-    const missed = missedStormShieldQuests(profile);
-    assert.ok(missed.includes("challenge_replacealteration"));
-    assert.deepEqual(missedStormShieldResources(profile, missed), [{ quantity: 1200, templateId: "AccountResource:reagent_alteration_generic" }]);
-    assert.deepEqual(missedStormShieldResources(profile, missed.filter((questId) => questId !== "challenge_replacealteration")), []);
-  });
+  const { settleQuestLine } = await import("../src/profiles/questline.js");
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-reperk-"));
+  try {
+    const store = createProfileStore(dataDir);
+    inBuild(v41, () => {
+      const session = openSession(store, "reperk41");
+      grant(session, "Quest:outpostquest_t2_l2", 1);
+      const itemId = findQuestItem(session.profile("profile0").profile, "outpostquest_t2_l2");
+      completeQuest(session, itemId);
+      claimQuest(session, itemId);
+      session.commit();
+    });
+    at42(() => {
+      const session = openSession(store, "reperk41");
+      const { profile } = session.profile("profile0");
+      const amount = () => Object.values(profile.items).filter((item) => item.templateId === "AccountResource:reagent_alteration_generic")
+        .reduce((sum, item) => sum + item.quantity, 0);
+      const before = amount();
+      assert.ok(settleQuestLine(session).granted.includes("challenge_replacealteration"));
+      assert.equal(profile.items[findQuestItem(profile, "challenge_replacealteration")].attributes.quest_state, "Active");
+      assert.equal(amount() - before, 1200);
+      // Once: the quest is held from then on.
+      assert.deepEqual(settleQuestLine(session), { claimed: [], granted: [], unlocks: [] });
+      assert.equal(amount() - before, 1200);
+    });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });
 
 // Core-Backend #288: the admin panel sets a schematic's perk to any the Perk Recombobulator allows in that slot.

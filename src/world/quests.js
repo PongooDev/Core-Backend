@@ -75,8 +75,8 @@ const theaterOfName = { stonewoodquest: "Stat.Theater.PvE01", plankertonquest: "
 const questTheater = (questId) => theaterOfName[questId.split("_")[0]];
 
 // The story: main quests (Task, Onboarding) and a theater's side quests (Optional, <theater>quest_side_*), not the
-// achievements, challenges or event quests.
-function isStory(questId, quest) {
+// achievements, challenges or event quests (profiles/questline.js reads a player's place in the quest line from these).
+export function isStory(questId, quest) {
   if (quest.deprecated || /^(test|progressiontest)/.test(questId)) return false;
   return ["Task", "Onboarding"].includes(quest.type) || (quest.type === "Optional" && Boolean(questTheater(questId)));
 }

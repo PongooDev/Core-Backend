@@ -174,3 +174,7 @@ export function eventQuestsToRestore(profile) {
 // Whether a quest belongs to an event the requesting build doesn't run now: nothing grants it then (profiles/items.js),
 // not even the claim of a quest the event left finished.
 export const isEndedEventQuest = (questId) => endedEventQuests().has(questId.toLowerCase());
+
+// Whether a quest belongs to any event's quest line in the requesting build's data, running or not: the event's own
+// rules give and take those (removeEndedEventQuests, startEventRuns, eventQuestsToRestore), not the campaign's.
+export const isEventQuest = (questId) => data().lines.some((line) => line.quests.has(String(questId).toLowerCase()));
