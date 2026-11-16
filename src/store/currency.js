@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { releasedOn } from "../builds/detect.js";
 import { currentBuild, inBuild, onTheServer } from "../builds/context.js";
 import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
@@ -133,7 +134,7 @@ const summitStrikerPack = {
 // for $14.99 (the wiki's Deep Freeze Bundle page, ID Pack_DeepFreeze). Epic put it in the store on 14 November 2018 (Update
 // v6.30) and took it out after 23 January 2019, past Season 6's end (Epic's tweet of 18 January said "leaves the store after
 // January 21", but the wiki's Item Shop History lists it on 21, 22 and 23 January and not on the 24th; EA36-OGFN's report
-// on #356 gives the 23rd), so on a Season 6 build it is on sale from 14 November on the season's replay (store/itemshop.js seasonMoment).
+// on #356 gives the 23rd), so on 6.20 to 6.22 (released before it) it is on sale from 14 November on the season's replay (store/itemshop.js seasonMoment), and on 6.30 and 6.31 (released on that day and after) whatever day the replay stands at, to its end.
 // 6.20's to 6.31's paks (CL-4497486 to CL-4573279) all hold the four cosmetics and the bundle's featured display asset
 // (DA_Featured_CID_TBD_Athena_Commando_M_RaptorArcticCamo_Bundle, a FortMtxOfferData); 6.00's and 6.10's don't have the
 // cosmetics. It is bought once per account, as the starter packs.
@@ -213,7 +214,7 @@ export const purchaseCount = (profile0, offerId) => profile0?.stats?.attributes?
 // have its cosmetics, a one-per-account offer until it is bought. An offer sold in more than one season lists them
 // ({season, unlessOffered}): a season whose builds sell another starter pack in its place, where they have that pack's
 // cosmetics, offers it only on the builds without them. A window may also carry Epic's moments ({from, until}, UTC ms): it
-// then holds while the season's replay stands inside them (store/itemshop.js seasonMoment).
+// then holds while the season's replay stands inside them (store/itemshop.js seasonMoment), its {from} also holding on a build released on or after it (builds/detect.js releasedOn).
 const hasCosmetics = (offer) => (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId));
 const onSale = (offer, now) => {
   if (!offer.season) return true;
@@ -223,7 +224,10 @@ const onSale = (offer, now) => {
     if (window.season !== season || (window.unlessOffered && hasCosmetics(findRealMoneyOffer(window.unlessOffered)))) return false;
     if (window.from === undefined && window.until === undefined) return true;
     const moment = seasonMoment(now, null, season).getTime();
-    return (window.from === undefined || moment >= window.from) && (window.until === undefined || moment < window.until);
+    // A build released on or after the window's start was never played before it: it sells at once, up to the window's end.
+    const released = releasedOn(currentBuild());
+    const started = window.from === undefined || moment >= window.from || (released !== null && released >= window.from);
+    return started && (window.until === undefined || moment < window.until);
   });
 };
 export const isOffered = (offer, profile0, now = new Date()) => onSale(offer, now)

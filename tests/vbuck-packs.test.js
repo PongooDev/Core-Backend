@@ -645,7 +645,7 @@ test("#356: the Summit Striker Pack is Season 6's on 6.20 and later, all season;
 const freezeCosmetics = ["AthenaCharacter:CID_261_Athena_Commando_M_RaptorArcticCamo", "AthenaBackpack:BID_142_RaptorArcticCamo",
   "AthenaPickaxe:Pickaxe_ID_097_RaptorArcticCamo", "AthenaGlider:Glider_ID_074_RaptorArcticCamo"];
 const freezeOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_bundle_br_deepfreeze");
-test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November, on 6.20 and later", async () => {
+test("#356: the Deep Freeze Bundle is sold at once on 6.30 and 6.31, from 14 November on the replay on 6.20 to 6.22", async () => {
   const bundle = findRealMoneyOffer("core_bundle_br_deepfreeze");
   assert.deepEqual([bundle.title, bundle.season, bundle.price, bundle.currencyCode, bundle.oncePerAccount], ["Deep Freeze Bundle", 6, 1499, "USD", true]);
   // Last sale day 23 January 2019 (the window ends at the start of the 24th).
@@ -654,7 +654,8 @@ test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November
   assert.deepEqual(bundle.grants, [{ templateId: "Currency:MtxPurchased", quantity: 1000 }]);
   for (const build of ["4402180", "4480234"]) assert.equal(inBuild(build, () => lockerCosmeticId(freezeCosmetics[0])), undefined, build);
 
-  // Epic's moments: not on sale on the replay before 14 November, on sale from it.
+  // Epic's moments: 6.20 to 6.22 (released before 14 November) offer it only from that day on the replay; 6.30 and 6.31
+  // (released on and after it) offer it whatever day the replay stands at.
   const day = 24 * 60 * 60 * 1000;
   const states = (build) => inBuild(build, () => {
     const out = [];
@@ -663,7 +664,8 @@ test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November
     }
     return out;
   });
-  for (const build of ["4497486", "4573096", "4573279"]) {
+  for (const build of ["4573096", "4573279"]) assert.ok(states(build).every(([, offered]) => offered), build);
+  for (const build of ["4497486", "4526925", "4543176"]) {
     const seen = states(build);
     assert.ok(seen.some(([moment, offered]) => moment < "2018-11-14" && !offered), build);
     assert.ok(seen.some(([moment, offered]) => moment === "2018-11-14" && offered), build);
@@ -677,7 +679,9 @@ test("#356: the Deep Freeze Bundle is sold on Season 6's replay from 14 November
     // A start 50 days back puts today's replay at 16 November; 3 days back, at 30 September.
     const startOf = (daysAgo) => new Date(Date.now() - daysAgo * day).toISOString().slice(0, 10);
     assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: startOf(3) } })).status, 200);
-    assert.equal(freezeOf(await catalog(backend.port, player.token, agent630)), undefined);
+    // 6.30 and 6.31 show it at once; 6.20 to 6.22 wait for the replay to reach 14 November.
+    for (const userAgent of [agent630, agent631]) assert.equal(freezeOf(await catalog(backend.port, player.token, userAgent))?.title, "Deep Freeze Bundle", userAgent);
+    for (const userAgent of [agent620, agent621, agent622]) assert.equal(freezeOf(await catalog(backend.port, player.token, userAgent)), undefined, userAgent);
     assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 6: startOf(50) } })).status, 200);
     for (const userAgent of [agent620, agent621, agent622, agent630, agent631]) {
       const offer = freezeOf(await catalog(backend.port, player.token, userAgent));

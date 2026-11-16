@@ -7,6 +7,17 @@ export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2",
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
+// The day Epic released a build (UTC, ms): the Update's day the version's comments below give, for the builds Core has
+// recorded it for (Season 6's), null for the rest. A dated offer (store/currency.js) is on sale at once on a build released
+// on or after its start day, whatever day its season's replay stands at, as such a build was never played before it.
+export const buildReleases = {
+  4395664: Date.UTC(2018, 8, 27), 4402180: Date.UTC(2018, 8, 27), 4417689: Date.UTC(2018, 9, 3), 4424678: Date.UTC(2018, 9, 3),
+  4442095: Date.UTC(2018, 9, 10), 4461277: Date.UTC(2018, 9, 10), 4464155: Date.UTC(2018, 9, 16), 4476098: Date.UTC(2018, 9, 16),
+  4480234: Date.UTC(2018, 9, 16), 4497486: Date.UTC(2018, 9, 24), 4526925: Date.UTC(2018, 10, 1), 4543176: Date.UTC(2018, 10, 6),
+  4573096: Date.UTC(2018, 10, 14), 4573279: Date.UTC(2018, 10, 27)
+};
+export const releasedOn = (changelist) => buildReleases[changelist] ?? null;
+
 // The builds with Battle Royale's athena profile and locker: 1.8 (CL-3724489) and later, oldest first.
 export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist) => Number(changelist) >= 3724489)
   .sort((a, b) => Number(a) - Number(b));
