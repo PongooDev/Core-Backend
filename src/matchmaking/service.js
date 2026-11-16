@@ -301,6 +301,16 @@ export const customScopeOf = (ticket) => (ticket?.customKey ? `${bucketKey(ticke
 // teams with bots" teammates (noFill), as anywhere else.
 export const playgroundPlaylists = new Set(ltms.filter((ltm) => /^Playlist_Playground/.test(ltm.playlistName ?? "")).map((ltm) => ltm.playlistId));
 export const isPartyOnlyBucket = (bucketId, build) => playgroundPlaylists.has(parseBucket(bucketId, build).playlistId);
+// 7.00's Creative (PongooDev/CoreV2#471, events/ltms.js `creative`, Playlist_PlaygroundV2, 35) is party-only too, as Playground
+// is: a party's own server, assigned at once, no other party matched in. But its friends join it in progress through the
+// social panel's "Join Creative Server" (Update v7.00: "Players will have the ability to join in progress games with any of
+// their Epic friends, even if they are not in a party together"; the playlist's bAllowJoinInProgress, MaxPlayers 16), which
+// is no matchmaking, so its match's room is the playlist's 16 players, not its party (the warmup answer's maxPlayers).
+export const creativePlaylistName = "playlist_playgroundv2";
+export const creativeMaxPlayers = 16;
+export const isCreativeBucket = (bucketId) => String(parseBucket(bucketId).playlistName ?? "").toLowerCase() === creativePlaylistName;
+const partyRoomOf = (forming, server) => (isCreativeBucket(forming.bucketId) ? Math.max(forming.players, Math.min(creativeMaxPlayers, server.maxPlayers ?? creativeMaxPlayers))
+  : forming.players);
 
 // Custom match options (Update v6.01's "Playground Custom Options": starting health and shields, gravity, time of day...).
 // A playlist names its options (UFortPlaylist::UserOptions, a UPlaylistUserOptions: 6.01's Playlist_Playground has
@@ -1037,7 +1047,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
       noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)),
       // A Playground match's room is its party (#299).
-      partyOnly: Boolean(forming.partyOnly), maxPlayers: forming.partyOnly ? forming.players : server.maxPlayers });
+      partyOnly: Boolean(forming.partyOnly), maxPlayers: forming.partyOnly ? partyRoomOf(forming, server) : server.maxPlayers });
     // The session keeps its match's custom key, which its players' results and quest progress are counted by (#186,
     // matchmaking/sessions.js rewardlessMatch).
     sessions.setCustomKey?.(server.sessionId, forming.customKey ?? null);
@@ -1113,6 +1123,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const reportedBucket = match?.bucketId ?? entry?.bucketId;
     // The match's playlist, for its tournament event's bots (#282).
     const playlistId = reportedBucket ? parseBucket(reportedBucket, parseBucket(reportedBucket).netcl).playlistId : null;
+    // Its name where the bucket names one (from 4.4), which tells 7.00's Creative from its Playground (both 35) for the bots.
+    const playlistName = reportedBucket ? parseBucket(reportedBucket).playlistName : null;
     // The match's build (its bucket's changelist), for the playlist's mode there (#352: the gameserver's own requests name
     // no build, and Playground's PlaylistId 35 is two modes, Season 4's and Season 5's and 6's).
     const build = reportedBucket ? parseBucket(reportedBucket).netcl : null;
@@ -1123,14 +1135,14 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // A Playground match takes nobody but its party (#299): closed, its room the party's.
     if (match?.partyOnly) {
       if (lateJoins.delete(sessionId)) say(`Match ${match.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, playlistId, build, open: false, partyOnly: true, maxPlayers: match.maxPlayers, parties: [], noFill };
+      return { sessionId, playlistId, playlistName, build, open: false, partyOnly: true, maxPlayers: match.maxPlayers, parties: [], noFill };
     }
     if (!open || !lateJoin() || !(secondsLeft > 0)) {
       if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, playlistId, build, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
+      return { sessionId, playlistId, playlistName, build, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
     }
     if (!entry) {
-      if (!match) return { sessionId, playlistId, build, open: false, maxPlayers: null, parties: [], noFill };
+      if (!match) return { sessionId, playlistId, playlistName, build, open: false, maxPlayers: null, parties: [], noFill };
       const session = sessions.get(sessionId);
       entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, customScope: match.customScope ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
         parties: [] };
@@ -1142,7 +1154,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     entry.heard = now;
     entry.until = now + secondsLeft * 1000;
     placeWaiting();
-    return { sessionId, playlistId, build, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
+    return { sessionId, playlistId, playlistName, build, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
   }
 
   // Whether a ticket's custom key is open (#186) in its mode and region (customScopeOf): a party allowed to use keys queues

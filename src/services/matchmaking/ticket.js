@@ -3,8 +3,11 @@ import { requireAuth } from "../../accounts/auth.js";
 import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
-import { ltmModes, ltmOfPlaylist, ltmOn } from "../../events/ltms.js";
+import { ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
+import { creativeEntitled, settleCreativePlots } from "../../profiles/creative.js";
+import { openSession } from "../../profiles/session.js";
+import { notifyProfiles } from "../mcp/profile.js";
 import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
 import { customMatchOptionsOf, customMatchOptionsText, parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
@@ -22,7 +25,7 @@ import { notRegionHost } from "./sessions.js";
 // the address and port the connection came in on (network.js directHost).
 const customKeyLength = { min: 4, max: 16 };
 
-export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network, tournaments }) {
+export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network, tournaments, profiles, stomp }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => {
@@ -46,8 +49,10 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       return buildNotAllowed(res, allowedBuilds, currentBuild());
     }
     const bucketId = String(req.query.bucketId ?? "");
-    const { playlistId } = parseBucket(bucketId);
-    const ltm = ltmOfPlaylist(playlistId);
+    const bucket = parseBucket(bucketId);
+    const { playlistId } = bucket;
+    // By the playlist's name where the bucket names one: 7.00's Creative and Playground share PlaylistId 35.
+    const ltm = ltmOfBucketPlaylist(bucket);
     const mode = { 2: "solo", 10: "duo", 9: "squad" }[playlistId] ?? ltm?.id;
     const settingsValue = settings?.get?.();
     const modes = ltmModes(currentBuild(), settingsValue);
@@ -82,6 +87,23 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
         "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on; " +
         "6.21's Fortnitemares modes: after the Butterfly, Events page)");
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
+    }
+    // 7.00's Creative (PongooDev/CoreV2#471, profiles/creative.js): Update v7.00's early access, Battle Pass owners only
+    // until 13 December 2018 on Season 7's replay, then everyone. Each of a party's players asks for their own ticket, so
+    // each is checked. No response of Epic's for it is known (7.00's client has no text of its own for one): the same refusal
+    // as a mode that is off. A player who may play gets their islands here at the latest, before their server asks.
+    if (ltm?.id === "creative" && profiles) {
+      const session = openSession(profiles, accountId);
+      if (!creativeEntitled(session)) {
+        log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: Creative is in early access for Season 7 Battle Pass owners ` +
+          "until 13 December 2018 on Season 7's replay (Update v7.00)");
+        return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled",
+          "Creative is in early access for Battle Pass owners until 13 December 2018");
+      }
+      if (settleCreativePlots(session)) {
+        session.commit();
+        notifyProfiles({ stomp }, session);
+      }
     }
     // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill
     // (FFortPartyRepState::bSquadFill) and "true" otherwise (1.7.2 0x2E68050, 1.8 0x2EACF10); the other members' tickets

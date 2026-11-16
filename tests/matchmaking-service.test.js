@@ -1843,6 +1843,41 @@ test("Playground is a match of the party's own: assigned at once, no other party
   }
 });
 
+// PongooDev/CoreV2#471: 7.00's Creative (Playlist_PlaygroundV2, 35 as Playground) is its party's own too, but its room is the
+// playlist's 16 players (friends join in progress from the social panel, not through matchmaking), and it has no bots.
+test("7.00's Creative is its party's own match, its room the playlist's 16 players, without the panel's bots (#471)", async () => {
+  const today = new Date();
+  const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()) - 19 * 86_400_000).toISOString().slice(0, 10);
+  const backend = await startBackend({ matchmakingGatherMs: 5000, events: { seasonStarts: { 7: start } } });
+  const connections = [];
+  try {
+    await settingsOf(backend, { lateJoin: true, bots: { forcePlayerAIs: true, count: 30, fillPlayerTeams: true } });
+    const token = await dedicatedServerToken(backend.port);
+    const server = await regionServer(backend, "CreativeServer1", "NA");
+    connections.push(server.connection);
+    const leader = await userLogin(backend.port, "CrLeader");
+    const mate = await userLogin(backend.port, "CrMate");
+    const agent700 = "Fortnite/++Fortnite+Release-7.00-CL-4629139 Windows/10.0.19045.1.256.64bit";
+    const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+      path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${leader.accountId}?partyPlayerIds=${leader.accountId},${mate.accountId}` +
+        "&bucketId=858118782:0:NA:playlist_playgroundv2&player.platform=Windows",
+      headers: { "User-Agent": agent700, Authorization: `bearer ${leader.token}` } });
+    assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+    const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+    connections.push(connection);
+    const assign = await nextOf(server.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams.flat(2), [leader.accountId, mate.accountId]);
+    assert.match(assign.payload.bucketId, /:playlist_playgroundv2$/);
+    server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(connection, "Play")).payload.sessionId, server.session.id);
+    const answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [leader.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([answer.open, answer.lateJoin, answer.maxPlayers, answer.bots, answer.botsMode], [false, false, 16, null, { id: "creative", enabled: false }]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
 // CoreV2 #377: from 4.4 the leader's client sends player.option.fillTeam only as "true" (Fill) and leaves it out for
 // No Fill, so a 4.4+ party whose tickets don't carry it plays without fill: no bots on its team.
 test("a 4.4+ party whose tickets leave out player.option.fillTeam plays without fill; one that sends true fills (#377)", async () => {

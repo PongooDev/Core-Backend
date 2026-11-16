@@ -6,9 +6,10 @@ import { sendError } from "../../errors.js";
 // links-public-service-live.ol.epicgames.com; 7.00's DefaultEngine.ini), new in 7.00 (CL-4629139) for Creative: its exe
 // names /api/`namespace/mnemonic/`mnemonic (QueryLinkByMnemonicUrl, an island code), /api/`namespace/author/`accountid
 // (QueryLinksByAccountUrl, a player's published islands) and /api/`namespace/author/`accountid/mnemonic/`mnemonic
-// (CreateLinkUrl, publishing one), each under the service's /links (LogOnlineLinks: "Querying links AccountId=%s"). Core
-// publishes no island yet (profiles/ids.js keeps the creative profile empty), so no code leads anywhere: a code is
-// Epic's "not found", a player has no links, and publishing is refused. 6.31's exe names none of them.
+// (CreateLinkUrl, publishing one), each under the service's /links (LogOnlineLinks: "Querying links AccountId=%s"). 7.00
+// gave no player's island a code (a player's islands are their creative profile's, profiles/creative.js, visited on its
+// owner's server; codes were Epic's featured islands', whose content Core doesn't have), so no code leads anywhere: a
+// code is Epic's "not found", a player has no links, and publishing is refused. 6.31's exe names none of them.
 export function linksRoutes({ tokens }) {
   const router = express.Router();
   router.get("/links/api/:namespace/mnemonic/:mnemonic", requireAuth(tokens), (req, res) => {

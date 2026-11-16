@@ -594,7 +594,7 @@ const discoDomination32Window = [{ builds: [build622, build622], start: "2018-11
 // 7.00 (CL-4629139, Update v7.00, 6 December 2018), Season 7: Athena/Playlists (every playlist asset of its 16 paks)
 // keeps 6.31's (50v50, Soaring 50's, Disco Domination 32 v 32 and its Alt, High Explosives Solo and Squads, Playground,
 // Team Rumble, the Showdown and ShowdownAlt tournaments) and adds Season 7's: Playlist_PlaygroundV2 and _4 (35, "Creative",
-// Athena.Creative: the Creative subgame's islands, which Core's matchmaking doesn't host), Playlist_Playground16 (35, 16
+// Athena.Creative: the Creative subgame's islands, the `creative` mode below), Playlist_Playground16 (35, 16
 // players), Classic (Playlist_Classic_Solo, _Duos, _Squads: 214 to 216, "Classic Solos/Duos/Squads"), Close Encounters
 // (Shotguns: 44 to 46, Playlist_Close_Solo, _Duos, _Squad, back from 5.41), Sniper Shootout (Snipers: 39, 40 and 41
 // Playlist_Snipers), Soaring Solos, Duos and Squads (185 to 187, back from 5.41) and Vamp (Playlist_Vamp_Solo, _Duo,
@@ -1121,7 +1121,23 @@ export const ltms = [
   { id: "soaringSeason7Duos", name: "Soaring Duos (Season 7)", playlistId: 186, playlistName: "Playlist_Soaring_Duos", eventFlag: null, builds: [build700, build700], seasons: [7],
     teams: "100 Teams × 2", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Duos, back in 7.00's paks)." },
   { id: "soaringSeason7Squads", name: "Soaring Squads (Season 7)", playlistId: 187, playlistName: "Playlist_Soaring_Squads", eventFlag: null, builds: [build700, build700], seasons: [7],
-    teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Squads, back in 7.00's paks)." }
+    teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Squads, back in 7.00's paks)." },
+  // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
+  // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
+  // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,
+  // bEnablePlayspaceManager, Athena.Creative, the Athena_Playground, PG_Island_GroupMaster and StarterIsland levels). Not a
+  // limited-time mode but Season 7's new one, which 7.00's shipped lobby lists as its own (DefaultGame.ini:
+  // "PlaylistName=Playlist_PlaygroundV2, PlaylistAccess=(bEnabled=true, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false,
+  // bDisplayAsNew=true, bDisplayAsLimitedTime=false, DisplayPriority=16)"; 7.00's FPlaylistAccess has AdvertiseType where 5.0's
+  // had bDisplayAsNew, so its line here says AdvertiseType=New). So it is on by default and kept in the lobby's list as
+  // shipped, with no limited-time banner (limitedTime false, services/fortnite/cloudstorage.js), and the admin panel's switch
+  // turns it off. Its Original dates are the whole season: Creative stayed after it. A Creative match is its party's alone, as
+  // Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
+  // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
+  // v7.00's early access).
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build700], seasons: [7], defaultOn: true,
+    advertise: "New", limitedTime: false, original: season7Window,
+    teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -1149,6 +1165,13 @@ const byId = new Map(ltms.map((ltm) => [ltm.id, ltm]));
 export const ltmOfPlaylist = (playlistId, build = currentBuild()) => {
   const of = ltms.filter((ltm) => ltm.playlistId === Number(playlistId));
   return of.find((ltm) => inRange(ltm.builds, build)) ?? of[0] ?? null;
+};
+// A matchmaking bucket's LTM (matchmaking/service.js parseBucket's {playlistId, playlistName}): by its PlaylistName where the
+// bucket names one (from 4.4), so two playlists sharing an id are told apart (7.00's Creative, Playlist_PlaygroundV2, and its
+// Playground, Playlist_Playground, are both 35), else by its id as ltmOfPlaylist.
+export const ltmOfBucketPlaylist = ({ playlistId, playlistName } = {}, build = currentBuild()) => {
+  const named = playlistName ? ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === String(playlistName).toLowerCase()) : [];
+  return named.find((ltm) => inRange(ltm.builds, build)) ?? named[0] ?? (playlistId === null || playlistId === undefined ? null : ltmOfPlaylist(playlistId, build));
 };
 // A playlist's id by its PlaylistName, in any case, or null for a name Core has no id for. From 4.4 (CL-4117433) the
 // client's matchmaking bucket names its playlist, lowercased, where 4.2 and earlier gave the id ("%u:%d:%s:%s" against
@@ -1254,7 +1277,7 @@ export const ltmPlaylistOverrides = (build, settingsValue = settingsProvider(), 
 // LTMs enabled while it is on (ltmOn, as the ticket checks it) and hidden while it is off. Each entry: {name, enabled,
 // priority, ltm}.
 export const frontEndPlaylistBuild = build500;
-const shippedPriority = { Playlist_50v50: 10, Playlist_Playground: 15 };
+const shippedPriority = { Playlist_50v50: 10, Playlist_Playground: 15, Playlist_PlaygroundV2: 16 };
 export function ltmFrontEndPlaylists(build, settingsValue = settingsProvider(), now = new Date()) {
   if (Number(build) < frontEndPlaylistBuild) return [];
   const seen = new Set();

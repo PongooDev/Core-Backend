@@ -49,6 +49,7 @@ import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { linksRoutes } from "./services/links/links.js";
+import { dssRoutes } from "./services/dss/dss.js";
 import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
 import { statsRoutes } from "./services/fortnite/stats.js";
@@ -222,6 +223,8 @@ export function createApp(config, context = createContext(config)) {
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
   app.use(replayRoutes(context));
+  // 7.00's Creative islands on the DSS, its servers' sidecar requests (services/dss/dss.js), read raw before any body parser.
+  app.use(dssRoutes(context));
   // The admin panel's news image upload (#215) reads its larger body itself, after the admin gate (admin/routes.js).
   const json = express.json();
   app.use((req, res, next) => (req.path === "/admin/api/news/image" ? next() : json(req, res, next)));

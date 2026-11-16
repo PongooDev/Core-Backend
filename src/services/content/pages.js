@@ -234,9 +234,44 @@ export function emergencyNoticeFor(notice, changelist) {
   };
 }
 
+// 7.00's (CL-4629139) Creative hub's ads (PongooDev/CoreV2#471): UFortCreativeAdsView's list, which 0x2F89AB0 reads from the
+// page's creativeads section, ad_info.ads[], each into FCreativeAdData {Header, Sub_Header, Description, Creator_Name,
+// Island_Code, Ad_Type (EFortCreativeAdType: Default, Playset, Toy, Game, Island, Knob), Ad_Color_Preset
+// (EFortCreativeAdColorPreset: Default, Emphasized, Common, Uncommon, Rare, Epic, Legendary), Image} (JSON to UStruct, its
+// field names read case-insensitively). No copy of Epic's page from December 2018 to October 2019 survives (pages.js above),
+// so Epic's ads aren't known: the section is served with none, or the host's (config.json "creativeAds": [{header,
+// sub_header, description, creator_name, island_code, ad_type, ad_color_preset, image}]). No earlier build gets it.
+const creativeAdsBuild = 4629139;
+const adTypes = ["Default", "Playset", "Toy", "Game", "Island", "Knob"];
+const adColorPresets = ["Default", "Emphasized", "Common", "Uncommon", "Rare", "Epic", "Legendary"];
+const maxCreativeAds = 20;
+const adText = (value, limit = 512) => (typeof value === "string" ? value.slice(0, limit) : "");
+const enumName = (names, value) => names.find((name) => name.toLowerCase() === String(value ?? "").toLowerCase()) ?? names[0];
+export function creativeAdsFor(changelist, configured = undefined) {
+  if (Number(changelist) < creativeAdsBuild) return null;
+  const ads = (Array.isArray(configured) ? configured : []).filter((ad) => ad && typeof ad === "object").slice(0, maxCreativeAds).map((ad) => ({
+    header: adText(ad.header, 128),
+    sub_header: adText(ad.sub_header, 128),
+    description: adText(ad.description),
+    creator_name: adText(ad.creator_name, 64),
+    island_code: adText(ad.island_code, 32),
+    ad_type: enumName(adTypes, ad.ad_type),
+    ad_color_preset: enumName(adColorPresets, ad.ad_color_preset),
+    image: adText(ad.image, 1024)
+  }));
+  return {
+    _title: "creative-ads",
+    ad_info: { _type: "Creative Ad Info", ads },
+    _activeDate: "2018-12-06T00:00:00.000Z",
+    lastModified: "2026-11-16T00:00:00.000Z",
+    _locale: "en-US"
+  };
+}
+
 // (the Events tab's tournaments: tournaments/showdown.js tournamentInformationFor)
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
-  imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined, playlistImages = undefined) {
+  imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined, playlistImages = undefined, creativeAds = undefined) {
+  const creativeads = creativeAdsFor(changelist, creativeAds);
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
   // The mode select tiles (playlistimages.js): 4.0's to 5.30's playlistimages (Core-Backend #260, #319) and 5.40's
   // playlistinformation (#321), whose pictures the CMS cache keeps as the news one.
@@ -252,7 +287,8 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
       ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image),
       ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image),
       ...Object.values(subgameselectdata).map((entry) => entry.message.image),
-      ...showdownImagesFor(changelist, new Date(), undefined, imageOrigin)].filter(Boolean))],
+      ...showdownImagesFor(changelist, new Date(), undefined, imageOrigin),
+      ...(creativeads?.ad_info.ads ?? []).map((ad) => ad.image)].filter(Boolean))],
     battleRoyaleNews,
     subgameselectdata,
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
@@ -260,7 +296,9 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
     ...(playlistimages ? { playlistimages } : {}),
     ...(playlistinformation ? { playlistinformation } : {}),
     // 6.10's Events tab: its tournaments' texts (tournaments/showdown.js).
-    ...(tournamentinformation ? { tournamentinformation } : {})
+    ...(tournamentinformation ? { tournamentinformation } : {}),
+    // 7.00's Creative hub's ads.
+    ...(creativeads ? { creativeads } : {})
   };
   if (loginMessage) {
     page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };
@@ -286,7 +324,7 @@ export function contentRoutes(context, config = {}) {
     const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
     res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req), settings.saveTheWorldNews ?? config.saveTheWorldNews,
-      settings.lobbyNotice ?? config.lobbyNotice, settings.playlistImages ?? config.playlistImages));
+      settings.lobbyNotice ?? config.lobbyNotice, settings.playlistImages ?? config.playlistImages, config.creativeAds));
   });
   router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
   // The tournaments' own pictures (tournaments/showdown.js showdownImageSlots, Core-Backend #336).

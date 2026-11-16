@@ -9,9 +9,9 @@ const knownProfiles = ["metadata", "athena", "collection_book_*0", "theater*", "
 // 7.00 (CL-4629139) has Creative's profile, creative (UFortMcpProfileCreative, its three commands below; the profile id
 // FortMcpProfile's sub_128A640 maps with athena, campaign, common_core, common_public and metadata). Its islands
 // (FortCreativeRealEstatePlotItemDefinition) and prefabs (FortPlaysetItemDefinition) are its items (their MCP templates'
-// static profile type "creative": the definitions' constructors, 0xFFE170 and 0xD78D10). Core keeps it empty: no island
-// is anyone's yet (Creative's islands, their saves and their codes are a later step), so the Creative hub has none to
-// show, and nothing else asks. 6.31 has the class too but its front end has no Creative, and an earlier build's request
+// static profile type "creative": the definitions' constructors, 0xFFE170 and 0xD78D10). It holds the account's four
+// islands once it may have them, and their stats (profiles/creative.js, PongooDev/CoreV2#471); the islands' saves are the
+// DSS's (services/dss/dss.js). 6.31 has the class too but its front end has no Creative, and an earlier build's request
 // for it stays refused as before.
 export const creativeProfileBuild = 4629139;
 const hasCreativeProfile = () => Number(currentBuild()) >= creativeProfileBuild;

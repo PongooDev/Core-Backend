@@ -6,6 +6,7 @@ import { McpError, sendError } from "../../errors.js";
 import { log, recordUnknown } from "../../log.js";
 import { mtxProfileId, noteClientBuild, usesCommonProfiles } from "../../profiles/common.js";
 import { isKnownProfile } from "../../profiles/ids.js";
+import { settleCreativePlots } from "../../profiles/creative.js";
 import { lockTimeout } from "../../profiles/locks.js";
 import { settleCloudSaves } from "../../profiles/outposts.js";
 import { openSession, storedProfileId } from "../../profiles/session.js";
@@ -140,6 +141,9 @@ function runCommand(commands, context, {
     const commandProfileId = profileId === "campaign" ? storedId : profileId;
     // Storm shields go where the requesting build's client looks for them: profile0, or metadata from 1.7.2.
     if (storedId === "profile0" || profileId === "metadata") settleCloudSaves(session);
+    // 7.00's Creative islands, once the account may have them (profiles/creative.js): whoever asks for the profile first,
+    // the player's lobby or a Creative server, finds them.
+    if (profileId === "creative") settleCreativePlots(session);
     const tracker = session.profile(profileId);
     const notifications = [];
     // Some server commands change several players at once (EarnScore); each other player gets their own session.

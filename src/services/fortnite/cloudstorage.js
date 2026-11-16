@@ -96,6 +96,8 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // it binds its completion handlers (0x10F8290, 0x10F4460) on UFortGameInstance's UpdateManager (+0x598) and calls its
 // UUpdateManager::StartCheck (vtable +0x240) with bInCheckHotfixOnly false; the hotfix part ends in 0x10F4190 ("Hotfix
 // check complete, nothing to do." / "need to restart."), then AFortGameModeFrontEnd::OnUpdateCheckComplete.
+// 7.00's (CL-4629139) shipped list adds Creative, Playlist_PlaygroundV2 (PongooDev/CoreV2#471, events/ltms.js `creative`):
+// kept as shipped, enabled while its switch is on, AdvertiseType New and no limited-time banner (the LTM's limitedTime).
 // UFortMatchmakingContext's matchmaking starts (0x111DA10, 0x114AF10, 0x114CF20 ...) run the same check through 0x112D820
 // (IsWaitingOnUpdateManager is its pending handle, +0x1B8), and UFortMatchmakingV2::OnUpdateCheckComplete cancels the
 // matchmaking "to receive update" when it brought one. The hotfix manager compares the listing's hashes with the last
@@ -130,7 +132,7 @@ function frontEndPlaylistLines(changelist) {
         return entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=true, bVisibleWhenDisabled=${enabled}, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=3`);
       }
       return entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ` +
-        `${advertise(ltm.id === "playgroundV2" ? "Updated" : ltm.advertise ?? "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`);
+        `${advertise(ltm.id === "playgroundV2" ? "Updated" : ltm.advertise ?? "None")}, bDisplayAsLimitedTime=${ltm.limitedTime !== false}, DisplayPriority=${priority}`);
     })];
 }
 // The FortGameInstance section: the event queues' globals (3.0), the playlist overrides (3.5.1) and the lobby's playlists (5.0).
@@ -215,16 +217,29 @@ const runtimeOptionsFiles = (changelist, settingsValue, url = null) => (Number(c
     "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue, { creatorsUrl: url }),
     ...showdownRuntimeOptions(changelist, settingsValue), ...giftingRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
 } : {});
+// 7.00's (CL-4629139) Creative servers keep their islands in the DSS through the sidecar service (services/dss/dss.js,
+// PongooDev/CoreV2#471): USidecarSys's base URL is the "MCP" online subsystem's FOnlineSidecarServiceMcp (OSS +0x378, made
+// in 0x614A92 by 0x51B310), configured by [OnlineSubsystemMcp.OnlineSidecarServiceMcp], which 7.00's DefaultEngine.ini
+// points at a local sidecar process (Protocol "http", Domain "127.0.0.1:8000", no ServiceName). Core has no sidecar: this
+// backend answers its /api/dss/v1 routes, so the section points the service here, by the same address and port as
+// STOMP's. A server whose requests go through Core's HTTP proxy reaches the routes either way (the proxy takes the
+// absolute-form http://127.0.0.1:8000/... to this backend); 🟡 that the OSS takes the section from a hotfix, as STOMP's, isn't
+// seen in a running server. Clients have no use for the sidecar. No earlier build gets the section.
+const sidecarBuild = 4629139;
+const sidecarSection = (build, address, port, proxied) => (Number(build) >= sidecarBuild
+  ? ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", `Protocol=${proxied ? "https" : "http"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]
+  : []);
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
+  const build = getBuild(req);
   const engineNetwork = [
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
-    "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
+    "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, "",
+    ...sidecarSection(build, address, port, proxied)
   ].join("\r\n");
-  const build = getBuild(req);
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })

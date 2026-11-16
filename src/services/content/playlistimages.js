@@ -72,8 +72,8 @@ export const playlistImagesBuild = 4039451;
 // (its strings against 6.30's). Its Team Rumble (Playlist_Respawn_24) has the Season 6 tile Epic's later page names for it,
 // BR06_ModeTile_TDM (on Epic's CDN, checked 2026-11-14: 200, image/jpeg, 477,366 bytes, the hash in its name the file's
 // SHA-1), with no border. 7.00's exe (CL-4629139) keeps the same names (playlistinformation, playlist_info, special_border,
-// tournamentinformation; its strings against 6.31's) and adds one section, creativeads (Creative's hub, which Core doesn't
-// serve). Its Season 7 playlists take the tiles Epic's later page names for them (LawinServer's contentpages.json copy,
+// tournamentinformation; its strings against 6.31's) and adds one section, creativeads (Creative's hub: pages.js
+// creativeAdsFor). Its Season 7 playlists take the tiles Epic's later page names for them (LawinServer's contentpages.json copy,
 // lastModified 2019-11-01; every URL on Epic's CDN, checked 2026-11-16: 200, image/jpeg, the hash in each name the file's
 // SHA-1), no border: Playlist_Classic_Squads the Unvaulted tile, BR_LTM_Unvaulted (526,103 bytes; its Solo and Duos take it
 // too), Playlist_Vamp_Squad the Siphon tile, BR_LTM_Siphon (2,339,610 bytes; its Solo and Duo too). Its Close Encounters,

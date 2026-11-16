@@ -10,15 +10,20 @@ import { effectiveBots } from "../tournaments/store.js";
 // as with Force player AIs and Fill players' teams with bots both off. A tournament event's own bots (#282) are its own
 // switch and win over this one, as they win over the rest of the panel's.
 const defaultModeOfPlaylist = { 2: "solo", 10: "duo", 9: "squad" };
+// The modes whose switch is off unless the panel turns it on: 7.00's Creative (PongooDev/CoreV2#471), a party's own
+// islands, where Epic had no bots.
+export const noBotModes = new Set(["creative"]);
 export const botModeIds = ["solo", "duo", "squad", ...ltmIds];
 const known = new Set(botModeIds);
+const botModeOnByDefault = (id) => !noBotModes.has(id);
 
-export const defaultBotModes = () => Object.fromEntries(botModeIds.map((id) => [id, true]));
+export const defaultBotModes = () => Object.fromEntries(botModeIds.map((id) => [id, botModeOnByDefault(id)]));
 
-// Each mode's switch: the given one when it is a boolean, else the current one (on unless it is false).
+// Each mode's switch: the given one when it is a boolean, else the current one (its default when it has none).
 export function sanitizeBotModes(input, current = null) {
   const given = input && typeof input === "object" && !Array.isArray(input) ? input : {};
-  return Object.fromEntries(botModeIds.map((id) => [id, typeof given[id] === "boolean" ? given[id] : current?.[id] !== false]));
+  return Object.fromEntries(botModeIds.map((id) => [id, typeof given[id] === "boolean" ? given[id]
+    : typeof current?.[id] === "boolean" ? current[id] : botModeOnByDefault(id)]));
 }
 
 // Each mode's own bot count (Core-Backend #352: "a different number of ais for each game mode"), in the settings'
@@ -62,11 +67,17 @@ export function sanitizeBotFillLobby(input, current = null) {
 // The playlist is its id (a number, or its digits) or, from 4.4's buckets and 5.30's game mode, its PlaylistName.
 export function botModeCandidates(playlist, build = currentBuild()) {
   if (playlist === null || playlist === undefined || playlist === "") return [];
+  // A PlaylistName an LTM of the build has (or only one LTM has, for a request naming no build) is that LTM's alone: 7.00's
+  // Creative (Playlist_PlaygroundV2) and Playground (Playlist_Playground) share PlaylistId 35.
+  const sameName = ltms.filter((ltm) => ltm.playlistName && ltm.playlistName.toLowerCase() === String(playlist).toLowerCase());
+  const named = sameName.find((ltm) => hasLtm(ltm.id, build)) ?? (sameName.length === 1 ? sameName[0] : undefined);
+  if (named && (known.has(named.id) || noBotModes.has(named.id))) return [named.id];
   const number = Number(playlist);
   const playlistId = Number.isInteger(number) && number > 0 ? number : playlistIdOfName(String(playlist), build);
   if (!Number.isInteger(playlistId) || playlistId <= 0) return [];
   if (Object.hasOwn(defaultModeOfPlaylist, playlistId)) return [defaultModeOfPlaylist[playlistId]];
-  const of = ltms.filter((ltm) => ltm.playlistId === playlistId && known.has(ltm.id));
+  // Creative is only ever its PlaylistName's (above): by its id, 35, the match is Playground's.
+  const of = ltms.filter((ltm) => ltm.playlistId === playlistId && known.has(ltm.id) && !noBotModes.has(ltm.id));
   const onBuild = of.filter((ltm) => hasLtm(ltm.id, build));
   return (onBuild.length ? onBuild.slice(0, 1) : of).map((ltm) => ltm.id);
 }
@@ -92,7 +103,8 @@ export function botModeFor(bots, playlist, build) {
 
 // Whether the panel's bots play in a mode: on unless its switch is off. A match whose mode isn't known (no playlist yet,
 // or one Core has no mode for) keeps them, as before the setting.
-export const botsInMode = (bots, mode) => mode === null || mode === undefined || bots?.modes?.[mode] !== false;
+export const botsInMode = (bots, mode) => mode === null || mode === undefined
+  || (botModeOnByDefault(mode) ? bots?.modes?.[mode] !== false : bots?.modes?.[mode] === true);
 
 // The bots a match of the mode plays with, in the settings' shape: in a mode that is off, Force player AIs and Fill
 // players' teams with bots are off; in one that fills its lobby, Force player AIs with the most bots a match takes; in one
