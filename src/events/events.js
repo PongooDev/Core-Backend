@@ -469,6 +469,18 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // Snowflake Tickets (CardPack_Jackpot_Winter2018_Tickets, new in its data) and the Event Store's Airheart aren't offered yet
 // (🟡). The Winter bus and the gift supply drops (SupplyDropGift) aren't 7.00's own (Content Update v7.10's holidays): by
 // their switches only.
+//
+// 7.10 (CL-4667333, Update v7.10, 18 December 2018), Season 7. Every EventFlag.* in its paks (the same byte scan, all
+// 320,285 uasset, umap, uexp and ini files its paks mount, the keyed pakchunk1001 to 1015 with them; pakchunk1000's key
+// isn't in the keychain): 7.00's less EventFlag.Fortnitemares (Hexsylvania's quest map's) and EventFlag.WinterBattleBus
+// (the Winter Bus is a locker item in 7.10, BBID_WinterBus), and two more: EventFlag.LTM_14DaysOfFortnite (the 14 Days
+// of Fortnite challenges' schedule and bundle, Schedule_14DaysOfFortnite: events/fourteendays.js serves it on its dates)
+// and EventFlag.Frostnite (Save the World's Frostnite: "Frostnite is a new experience in 7.10, testing player's
+// survival in a long winter night", served by 7.10 itself). 7.10 keeps 7.00's LobbySeason7 and the Season 7 Warmup's
+// alerts (🟡 Update v7.10 ends neither).
+export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
+export const frostnite = "EventFlag.Frostnite";
+export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -559,6 +571,7 @@ const build622 = 4543176;
 const build630 = 4573096;
 const build631 = 4573279;
 const build700 = 4629139;
+const build710 = 4667333;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -609,10 +622,11 @@ const events = [
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
-  // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup.
-  { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build700 },
-  { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build700 },
-  { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build700 },
+  // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's too, and its Frostnite.
+  { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build710 },
+  { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build710 },
+  { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build710 },
+  { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build710 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

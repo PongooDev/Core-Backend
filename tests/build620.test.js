@@ -287,9 +287,9 @@ test("6.20's event flags:Fortnitemares (its quest map's Part 1, the Mini-Bosses,
   assert.equal(inBuild(v620, () => hasEventEnded(fortnitemares)), false);
   assert.equal(inBuild(v18, () => isEventActive(fortnitemares)), true, "1.8's own run");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4629139], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4667333], flag);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4629139], "and on to 7.00 (tests/build631.test.js, tests/build700.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4667333], "and on to 7.10 (tests/build631.test.js, tests/build710.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610), "BR_Winter_CandyCaneGuns is gone from 6.20's paks");
   // The admin's switches: Part 2's quest map on, the lobby off.
   withConfig({ mode: "auto", season4Flags: { overrides: { "EventFlag.FortnitemaresPhase2": "on", "EventFlag.LobbySeason6Halloween": "off" } } }, () => {

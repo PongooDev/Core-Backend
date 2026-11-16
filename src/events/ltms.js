@@ -613,10 +613,42 @@ const discoDomination32Window = [{ builds: [build622, build622], start: "2018-11
 // Content Update modes were); the rest by their switches, each with the Original dates above (🟡 Close Encounters' end isn't
 // in the notes: Update v7.10's day, 18 December, here).
 const build700 = 4629139;
-const season7Window = [{ builds: [build700, build700], start: "2018-12-06", end: "2019-02-28" }];
+// 7.10 (CL-4667333, Update v7.10, 18 December 2018), Season 7: the 14 Days of Fortnite's build. Its Athena/Playlists (every
+// playlist asset of its paks, all but the keyed pakchunk1000) keeps 7.00's but Playlist_PlaygroundV2_4, and brings back or
+// adds the 14 Days' modes: Teams of 33 (Playlist_33: 151, 3 teams of 33 in squads of 4, "Three teams of thirty-three
+// players fight to the finish!", new), Team Terror (Playlist_Deimos_50: 450), Food Fight (Playlist_Barrier and _12, and
+// Playlist_Barrier_16: 207, 2 × 16, new), Close Encounters 50's (Playlist_Close_50: 4750, 2 × 50, new), High Explosive
+// 50s (Playlist_50v50HE: 203, 2 × 50, new), Barebones (Playlist_Hard_Solo, _Duos, _Squads: 240 to 242, new), Slide
+// (Playlist_Slide_*: 160 to 162), Ground Game (Playlist_Ground_*: 110 to 112, new), Sneaky Silencers (Playlist_Sneaky_*:
+// 260 to 262), One Shot (Playlist_Low_*: 250 to 252, new), Score Royale, Solid Gold, Steady Storm and Wild West, and a
+// few never offered in Season 7 (Blitz!, Fly Explosives, Final Fight, Teams of 20, Solid Gold 50s, Trios, Infinite Blades,
+// Playlist_Fortnite_B_*), which have no mode here. Its shipped DefaultGame.ini's lobby is 7.00's but the tournaments'
+// lines (the Showdown and ShowdownAlt playlists aren't listed any more; the in-game tournaments' own window turns theirs
+// on, tournaments/showdown.js).
+// Update v7.10: "The 14 Days of Fortnite event will feature both new and returning LTMs. Large team modes switch every two
+// days and small team modes rotate every 24 hours. Starting December 19, log in each day at 9 AM ET(1400 UTC) to find out
+// which modes are available to explore." The Fortnite Wiki's 14 Days of Fortnite has the days: large Teams of 33 (days 1
+// and 2), Team Terror, Disco Domination, Team Rumble, Food Fight, Close Encounters 50's and High Explosives 50's (days 13
+// and 14); small Unvaulted (Squads), Siphon (Solo), Barebones (Squads), Slide (Solo), Sniper Shootout (Duos), Close
+// Encounters (Squads), Solid Gold (Squads), Score Royale (Duos), Ground Game (Squads), Sneaky Silencers (Solo), Wild West
+// (Squads), Steady Storm (Solo), High Explosives (Squads) and One Shot (Squads). Each window here is its day(s) from 14:00
+// UTC (day 1: 19 December 2018), on 7.10. Which Food Fight and Disco Domination playlists the 14 Days used is read from
+// Epic's later page (LawinServer's contentpages.json copy, 2019): the 14 Days' tiles, BR_LTM_<mode> as Unvaulted's and
+// Siphon's, name Playlist_Barrier_16 (BR_LTM_FoodFight16), new in 7.10's paks, and Playlist_Disco_32_Alt
+// (BR_LTM_HolidayDisco: the wiki's "During the 14 Days of Fortnite rerun of Disco Domination, it featured unique holiday
+// tracks"), and Wild West's Squads BR_LTM_WildWest; Teams of 33's tile is BR07_14-DoF_Social (🟡 the playlists are read
+// from the tiles' names, not from a schedule of Epic's). On by default (as 6.30's Content Update modes were): every 14
+// Days mode, besides 7.00's 50v50, Playground, Team Rumble and Close Encounters; 7.00's other modes on 7.10 by their
+// switches. Without Original dates every one of them is on at once, as Epic never ran them; with them, each on its day.
+const build710 = 4667333;
+const season7Window = [{ builds: [build700, build710], start: "2018-12-06", end: "2019-02-28" }];
 const closeEncountersSeason7Window = [{ builds: [build700, build700], start: "2018-12-11", end: "2018-12-18" }];
 const closeEncountersSeason7SquadsWindow = [...closeEncountersSeason7Window, { builds: [build700, build700], start: "2018-12-24", end: "2018-12-25" }];
 const fourteenDays = (start, end) => [{ builds: [build700, build700], start, end }];
+// 7.10's 14 Days of Fortnite days: day n from 14:00 UTC of 18 December + n, for `days` days.
+const fourteenDaysStart = Date.parse("2018-12-19T14:00:00Z");
+const fourteenDays710 = (day, days = 1) => [{ builds: [build710, build710], start: fourteenDaysStart + (day - 1) * 86400000,
+  end: fourteenDaysStart + (day - 1 + days) * 86400000 }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -876,7 +908,7 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build700], seasons: [5, 6, 7], defaultOn: true,
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build710], seasons: [5, 6, 7], defaultOn: true,
     original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -896,7 +928,7 @@ export const ltms = [
   { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
-  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build700], seasons: [5, 6, 7], newIn: build521,
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build710], seasons: [5, 6, 7], newIn: build521,
     original: [...update521Window, ...soaringSeason6Window],
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
@@ -976,7 +1008,7 @@ export const ltms = [
     advertise: "New", defaultOn: true,
     original: discoDominationWindow,
     teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, Update v6.02's mode; 6.10: fewer bandages, no Common weapons)." },
-  { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build700], seasons: [6, 7],
+  { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build710], seasons: [6, 7],
     advertise: "New", original: discoDomination32Window,
     teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two, for 24 to 64 players (Playlist_Disco_32, 6.02's)." },
   { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build631], seasons: [6],
@@ -1015,11 +1047,11 @@ export const ltms = [
     teams: "100 Teams × 4", description: "Squads with glider redeploy: press Jump when falling from a height (Playlist_GRD_Squads, 6.10's)." },
   // 6.10's Showdown playlists (above), the in-game tournaments' (tournaments/store.js): no lobby mode and no switch. The
   // lobby lists each as shipped, disabled, and a ticket for one is taken while a tournament event of it runs.
-  { id: "showdownSolo", name: "Tournament (Solo)", playlistId: 58071, playlistName: "Playlist_Showdown_Solo", eventFlag: null, builds: [build6100, build700], seasons: [6, 7], tournament: true,
+  { id: "showdownSolo", name: "Tournament (Solo)", playlistId: 58071, playlistName: "Playlist_Showdown_Solo", eventFlag: null, builds: [build6100, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 1", description: "The in-game tournaments' Solo playlist: points for placements and eliminations, shown in the match (Playlist_Showdown_Solo, 6.10's)." },
-  { id: "showdownDuos", name: "Tournament (Duos)", playlistId: 58072, playlistName: "Playlist_Showdown_Duos", eventFlag: null, builds: [build6100, build700], seasons: [6, 7], tournament: true,
+  { id: "showdownDuos", name: "Tournament (Duos)", playlistId: 58072, playlistName: "Playlist_Showdown_Duos", eventFlag: null, builds: [build6100, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 2", description: "The in-game tournaments' Duos playlist, for full duos (Playlist_Showdown_Duos, 6.10's)." },
-  { id: "showdownSquads", name: "Tournament (Squads)", playlistId: 58073, playlistName: "Playlist_Showdown_Squads", eventFlag: null, builds: [build6100, build700], seasons: [6, 7], tournament: true,
+  { id: "showdownSquads", name: "Tournament (Squads)", playlistId: 58073, playlistName: "Playlist_Showdown_Squads", eventFlag: null, builds: [build6100, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 4", description: "The in-game tournaments' Squads playlist, for full squads (Playlist_Showdown_Squads, 6.10's)." },
   // 6.20's (above): Fortnitemares, on by default by its Original dates, and two more Disco Dominations by their switches.
   { id: "fortnitemares2018Solo", name: "Fortnitemares (Solo)", playlistId: 47, playlistName: "Playlist_Deimos_Solo", eventFlag: null, builds: [build620, build621], seasons: [6],
@@ -1067,30 +1099,30 @@ export const ltms = [
     teams: "100 Teams × 4", description: "Wild West in squads (Playlist_WW_Squad, 6.30's)." },
   { id: "discoDomination32Alt630", name: "Disco Domination (32 v 32, Alt; 6.30, 6.31)", playlistId: 232, playlistName: "Playlist_Disco_32_Alt", eventFlag: null, builds: [build630, build700], seasons: [6, 7],
     teams: "2 Teams × 32", description: "6.20's Disco Domination with two teams of thirty-two on DiscoGameModifierNoA, back in 6.30's paks and kept in 6.31's (Playlist_Disco_32_Alt)." },
-  { id: "scavengerSolo", name: "Pop-Up Cup (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build630, build700], seasons: [6, 7], tournament: true,
+  { id: "scavengerSolo", name: "Pop-Up Cup (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build630, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 1", description: "The in-game tournaments' Solo playlist of the Pop-Up Cups: 6.30's Scavenger, 6.31's Alchemist (Playlist_ShowdownAlt_Solo)." },
-  { id: "scavengerDuos", name: "Pop-Up Cup (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build630, build700], seasons: [6, 7], tournament: true,
+  { id: "scavengerDuos", name: "Pop-Up Cup (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build630, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 2", description: "The in-game tournaments' Duos playlist of the Pop-Up Cups (6.30's Scavenger, 6.31's Alchemist), for full duos (Playlist_ShowdownAlt_Duos)." },
-  { id: "scavengerSquads", name: "Pop-Up Cup (Squads)", playlistId: 58076, playlistName: "Playlist_ShowdownAlt_Squads", eventFlag: null, builds: [build630, build700], seasons: [6, 7], tournament: true,
+  { id: "scavengerSquads", name: "Pop-Up Cup (Squads)", playlistId: 58076, playlistName: "Playlist_ShowdownAlt_Squads", eventFlag: null, builds: [build630, build710], seasons: [6, 7], tournament: true,
     teams: "100 Teams × 4", description: "The in-game tournaments' Squads playlist of the Pop-Up Cups (6.30's Scavenger, 6.31's Alchemist), for full squads (Playlist_ShowdownAlt_Squads)." },
   // 6.31's (above): Team Rumble on by default, listed as New, by its Original dates when those are on.
-  { id: "teamRumble", name: "Team Rumble", playlistId: 280, playlistName: "Playlist_Respawn_24", eventFlag: null, builds: [build631, build700], seasons: [6, 7],
-    advertise: "New", defaultOn: true, original: [...teamRumbleWindow, ...fourteenDays("2018-12-25", "2018-12-27")],
+  { id: "teamRumble", name: "Team Rumble", playlistId: 280, playlistName: "Playlist_Respawn_24", eventFlag: null, builds: [build631, build710], seasons: [6, 7],
+    advertise: "New", defaultOn: true, original: [...teamRumbleWindow, ...fourteenDays("2018-12-25", "2018-12-27"), ...fourteenDays710(7, 2)],
     teams: "2 Teams × 20", description: "Two teams of twenty, a bus each: respawn after 5 seconds with your inventory, eliminated players drop ammo and materials, Uncommon weapons or better; the first team to 100 eliminations wins (Playlist_Respawn_24, 6.31's)." },
   // 7.00's (CL-4629139; above): 50v50, Playground (above), Team Rumble (above) and Update v7.01's Close Encounters on by
   // default, the others by their switches, each by its Original dates when those are on.
-  { id: "fiftyFiftySeason7", name: "50v50 (Season 7)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build700, build700], seasons: [7], defaultOn: true,
+  { id: "fiftyFiftySeason7", name: "50v50 (Season 7)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build700, build710], seasons: [7], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height (Playlist_50v50, 7.00's)." },
-  { id: "closeEncountersSeason7Squads", name: "Close Encounters (Season 7, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build700, build700], seasons: [7],
-    advertise: "New", defaultOn: true, original: closeEncountersSeason7SquadsWindow,
+  { id: "closeEncountersSeason7Squads", name: "Close Encounters (Season 7, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build700, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: [...closeEncountersSeason7SquadsWindow, ...fourteenDays710(6)],
     teams: "100 Teams × 4", description: "Shotguns only, with jetpacks and Heavy Shotguns in chests and supply drops and a faster storm late in the match (Playlist_Close_Squad, 7.00's; Update v7.01's mode)." },
-  { id: "closeEncountersSeason7Solo", name: "Close Encounters (Season 7, Solo)", playlistId: 44, playlistName: "Playlist_Close_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "closeEncountersSeason7Solo", name: "Close Encounters (Season 7, Solo)", playlistId: 44, playlistName: "Playlist_Close_Solo", eventFlag: null, builds: [build700, build710], seasons: [7],
     advertise: "New", defaultOn: true, original: closeEncountersSeason7Window,
     teams: "100 Teams × 1", description: "Shotguns and jetpacks only, close quarters (Playlist_Close_Solo, 7.00's; Update v7.01's mode)." },
-  { id: "closeEncountersSeason7Duos", name: "Close Encounters (Season 7, Duos)", playlistId: 45, playlistName: "Playlist_Close_Duos", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "closeEncountersSeason7Duos", name: "Close Encounters (Season 7, Duos)", playlistId: 45, playlistName: "Playlist_Close_Duos", eventFlag: null, builds: [build700, build710], seasons: [7],
     advertise: "New", defaultOn: true, original: closeEncountersSeason7Window,
     teams: "100 Teams × 2", description: "Shotguns and jetpacks only, close quarters (Playlist_Close_Duos, 7.00's; Update v7.01's mode)." },
-  { id: "highExplosivesSeason7Solo", name: "High Explosives (Season 7, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "highExplosivesSeason7Solo", name: "High Explosives (Season 7, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 1", description: "Explosive weapons only (Playlist_HighExplosives_Solo, 7.00's)." },
   { id: "highExplosivesSeason7Squads", name: "High Explosives (Season 7, Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build700, build700], seasons: [7],
     original: fourteenDays("2018-12-31", "2019-01-01"),
@@ -1098,30 +1130,89 @@ export const ltms = [
   { id: "unvaultedSquads", name: "Unvaulted (Squads)", playlistId: 216, playlistName: "Playlist_Classic_Squads", eventFlag: null, builds: [build700, build700], seasons: [7],
     original: fourteenDays("2018-12-19", "2018-12-20"),
     teams: "100 Teams × 4", description: "Battle Royale with vaulted weapons back in the loot: the 14 Days of Fortnite's day 1 (Playlist_Classic_Squads, \"Classic Squads\", 7.00's)." },
-  { id: "unvaultedSolo", name: "Unvaulted (Solo)", playlistId: 214, playlistName: "Playlist_Classic_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "unvaultedSolo", name: "Unvaulted (Solo)", playlistId: 214, playlistName: "Playlist_Classic_Solo", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 1", description: "Battle Royale with vaulted weapons back in the loot (Playlist_Classic_Solo, \"Classic Solos\", 7.00's)." },
-  { id: "unvaultedDuos", name: "Unvaulted (Duos)", playlistId: 215, playlistName: "Playlist_Classic_Duos", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "unvaultedDuos", name: "Unvaulted (Duos)", playlistId: 215, playlistName: "Playlist_Classic_Duos", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 2", description: "Battle Royale with vaulted weapons back in the loot (Playlist_Classic_Duos, \"Classic Duos\", 7.00's)." },
   { id: "siphonSolo", name: "Siphon (Solo)", playlistId: 265, playlistName: "Playlist_Vamp_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
     original: fourteenDays("2018-12-20", "2018-12-21"),
     teams: "100 Teams × 1", description: "Eliminations restore health and shield: the 14 Days of Fortnite's day 2 (Playlist_Vamp_Solo, \"Vamp\", 7.00's)." },
-  { id: "siphonDuos", name: "Siphon (Duos)", playlistId: 266, playlistName: "Playlist_Vamp_Duo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "siphonDuos", name: "Siphon (Duos)", playlistId: 266, playlistName: "Playlist_Vamp_Duo", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 2", description: "Eliminations restore health and shield (Playlist_Vamp_Duo, \"Vamp\", 7.00's)." },
-  { id: "siphonSquads", name: "Siphon (Squads)", playlistId: 267, playlistName: "Playlist_Vamp_Squad", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "siphonSquads", name: "Siphon (Squads)", playlistId: 267, playlistName: "Playlist_Vamp_Squad", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 4", description: "Eliminations restore health and shield (Playlist_Vamp_Squad, \"Vamp\", 7.00's)." },
   { id: "sniperShootoutSeason7Duos", name: "Sniper Shootout (Season 7, Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build700, build700], seasons: [7],
     original: fourteenDays("2018-12-23", "2018-12-24"),
     teams: "100 Teams × 2", description: "Sniper rifles and revolvers only: the 14 Days of Fortnite's day 5 (Playlist_Snipers_Duos, 7.00's)." },
-  { id: "sniperShootoutSeason7Solo", name: "Sniper Shootout (Season 7, Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "sniperShootoutSeason7Solo", name: "Sniper Shootout (Season 7, Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 1", description: "Sniper rifles and revolvers only (Playlist_Snipers_Solo, 7.00's)." },
-  { id: "sniperShootoutSeason7Squads", name: "Sniper Shootout (Season 7, Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "sniperShootoutSeason7Squads", name: "Sniper Shootout (Season 7, Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 4", description: "Sniper rifles and revolvers only (Playlist_Snipers, 7.00's)." },
-  { id: "soaringSeason7Solo", name: "Soaring Solos (Season 7)", playlistId: 185, playlistName: "Playlist_Soaring_Solo", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "soaringSeason7Solo", name: "Soaring Solos (Season 7)", playlistId: 185, playlistName: "Playlist_Soaring_Solo", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 1", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Solo, back in 7.00's paks)." },
-  { id: "soaringSeason7Duos", name: "Soaring Duos (Season 7)", playlistId: 186, playlistName: "Playlist_Soaring_Duos", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "soaringSeason7Duos", name: "Soaring Duos (Season 7)", playlistId: 186, playlistName: "Playlist_Soaring_Duos", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 2", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Duos, back in 7.00's paks)." },
-  { id: "soaringSeason7Squads", name: "Soaring Squads (Season 7)", playlistId: 187, playlistName: "Playlist_Soaring_Squads", eventFlag: null, builds: [build700, build700], seasons: [7],
+  { id: "soaringSeason7Squads", name: "Soaring Squads (Season 7)", playlistId: 187, playlistName: "Playlist_Soaring_Squads", eventFlag: null, builds: [build700, build710], seasons: [7],
     teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy (Playlist_Soaring_Squads, back in 7.00's paks)." },
+  // 7.10's (CL-4667333; above): the 14 Days of Fortnite's modes, on by default, each by its day when Original dates is on
+  // (Team Rumble and Close Encounters (Squads) are 7.00's entries above, with their 7.10 days).
+  { id: "teamsOf33", name: "Teams of 33", playlistId: 151, playlistName: "Playlist_33", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(1, 2),
+    teams: "3 Teams × 33", description: "Three teams of thirty-three, a bus each, extra loot and resources and a more lethal storm: the 14 Days of Fortnite's days 1 and 2 (Playlist_33, 7.10's)." },
+  { id: "unvaultedSquads710", name: "Unvaulted (Squads; 7.10)", playlistId: 216, playlistName: "Playlist_Classic_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(1),
+    teams: "100 Teams × 4", description: "Only the weapons and items of the game's first two seasons: the 14 Days of Fortnite's day 1 (Playlist_Classic_Squads, 7.10's)." },
+  { id: "siphonSolo710", name: "Siphon (Solo; 7.10)", playlistId: 265, playlistName: "Playlist_Vamp_Solo", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(2),
+    teams: "100 Teams × 1", description: "Eliminations restore health and shield: the 14 Days of Fortnite's day 2 (Playlist_Vamp_Solo, 7.10's)." },
+  { id: "teamTerror710", name: "Team Terror (7.10)", playlistId: 450, playlistName: "Playlist_Deimos_50", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(3, 2),
+    teams: "2 Teams × 32", description: "Two teams of thirty-two with Cube Monsters joining the fight: the 14 Days of Fortnite's days 3 and 4 (Playlist_Deimos_50, back in 7.10's paks)." },
+  { id: "barebonesSquads", name: "Barebones (Squads)", playlistId: 242, playlistName: "Playlist_Hard_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(3),
+    teams: "100 Teams × 4", description: "The map, compass, storm timer and much of the HUD turned off: the 14 Days of Fortnite's day 3 (Playlist_Hard_Squads, 7.10's)." },
+  { id: "slideSolo", name: "Slide (Solo)", playlistId: 160, playlistName: "Playlist_Slide_Solo", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(4),
+    teams: "100 Teams × 1", description: "Ice blocks on everyone's feet and an infinite-ammo Grappler each: the 14 Days of Fortnite's day 4 (Playlist_Slide_Solo, 7.10's)." },
+  { id: "holidayDisco", name: "Disco Domination (Holiday; 7.10)", playlistId: 232, playlistName: "Playlist_Disco_32_Alt", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(5, 2),
+    teams: "2 Teams × 32", description: "Disco Domination, two teams of thirty-two, with holiday tracks: the 14 Days of Fortnite's days 5 and 6 (Playlist_Disco_32_Alt, 7.10's)." },
+  { id: "sniperShootoutDuos710", name: "Sniper Shootout (Duos; 7.10)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(5),
+    teams: "100 Teams × 2", description: "Sniper rifles and revolvers only: the 14 Days of Fortnite's day 5 (Playlist_Snipers_Duos, 7.10's)." },
+  { id: "solidGoldSquads710", name: "Solid Gold (Squads; 7.10)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(7),
+    teams: "100 Teams × 4", description: "Legendary weapons only: the 14 Days of Fortnite's day 7 (Playlist_SolidGold_Squads, back in 7.10's paks)." },
+  { id: "scoreRoyaleDuos710", name: "Score Royale (Duos; 7.10)", playlistId: 102, playlistName: "Playlist_Score_Duos", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(8),
+    teams: "100 Teams × 2", description: "Points for coins, loot containers, foraged items and eliminations; the first to the Winning Score wins: the 14 Days of Fortnite's day 8 (Playlist_Score_Duos, back in 7.10's paks)." },
+  { id: "foodFight16", name: "Food Fight (16 v 16)", playlistId: 207, playlistName: "Playlist_Barrier_16", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(9, 2),
+    teams: "2 Teams × 16", description: "Durrburger against Pete's Pizza, a barrier down the middle: build a fort round your mascot, then destroy theirs once it lowers: the 14 Days of Fortnite's days 9 and 10 (Playlist_Barrier_16, 7.10's)." },
+  { id: "groundGameSquads", name: "Ground Game (Squads)", playlistId: 112, playlistName: "Playlist_Ground_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(9),
+    teams: "100 Teams × 4", description: "Fewer building materials and less ammo can be carried: the 14 Days of Fortnite's day 9 (Playlist_Ground_Squads, 7.10's)." },
+  { id: "sneakySilencersSolo710", name: "Sneaky Silencers (Solo; 7.10)", playlistId: 260, playlistName: "Playlist_Sneaky_Solo", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(10),
+    teams: "100 Teams × 1", description: "Suppressed weapons and stealth (\"Shhhhh be very very quiet!\"): the 14 Days of Fortnite's day 10 (Playlist_Sneaky_Solo, 7.10's)." },
+  { id: "closeEncounters50s", name: "Close Encounters 50's", playlistId: 4750, playlistName: "Playlist_Close_50", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(11, 2),
+    teams: "2 Teams × 50", description: "Two teams of fifty with Shotguns and Jetpacks only: the 14 Days of Fortnite's days 11 and 12 (Playlist_Close_50, 7.10's)." },
+  { id: "wildWestSquads710", name: "Wild West (Squads; 7.10)", playlistId: 902, playlistName: "Playlist_WW_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(11),
+    teams: "100 Teams × 4", description: "Shotguns, Six Shooters, Hunting Rifles and Dynamite: the 14 Days of Fortnite's day 11 (Playlist_WW_Squads, back in 7.10's paks)." },
+  { id: "steadyStormSolo710", name: "Steady Storm (Solo; 7.10)", playlistId: 160, playlistName: "Playlist_Steady_Solo", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(12),
+    teams: "100 Teams × 1", description: "The storm never stops closing in: the 14 Days of Fortnite's day 12 (Playlist_Steady_Solo, back in 7.10's paks)." },
+  { id: "highExplosives50s", name: "High Explosives 50's", playlistId: 203, playlistName: "Playlist_50v50HE", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(13, 2),
+    teams: "2 Teams × 50", description: "Two teams of fifty with explosive weapons only, extra loot and a shorter match: the 14 Days of Fortnite's days 13 and 14 (Playlist_50v50HE, 7.10's)." },
+  { id: "highExplosivesSquads710", name: "High Explosives (Squads; 7.10)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    defaultOn: true, original: fourteenDays710(13),
+    teams: "100 Teams × 4", description: "Explosive weapons only: the 14 Days of Fortnite's day 13 (Playlist_HighExplosives_Squads, 7.10's)." },
+  { id: "oneShotSquads", name: "One Shot (Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build710, build710], seasons: [7],
+    advertise: "New", defaultOn: true, original: fourteenDays710(14),
+    teams: "100 Teams × 4", description: "Low gravity, 50 health, sniper rifles only and Bandages the only healing: the 14 Days of Fortnite's day 14 (Playlist_Low_Squads, 7.10's)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
   // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,
@@ -1136,7 +1227,7 @@ export const ltms = [
   // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
   // v7.00's early access).
-  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build700], seasons: [7], defaultOn: true,
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build710], seasons: [7], defaultOn: true,
     alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];
@@ -1335,7 +1426,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02", [build6100]: "6.10.0", [build6101]: "6.10.1", [build610]: "6.10", [build620]: "6.20", [build621]: "6.21", [build622]: "6.22", [build630]: "6.30", [build631]: "6.31", [build700]: "7.00" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02", [build6100]: "6.10.0", [build6101]: "6.10.1", [build610]: "6.10", [build620]: "6.20", [build621]: "6.21", [build622]: "6.22", [build630]: "6.30", [build631]: "6.31", [build700]: "7.00", [build710]: "7.10" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

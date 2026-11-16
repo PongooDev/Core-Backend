@@ -185,16 +185,18 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     // (not MusicPack_000_Default, the empty slot's) and the rest, and drops 5.41's Purple Bus and Birthday emoticon, which stay;
     // 6.01 Maximilian, Hay Man, Straw Ops and the rest, and drops the Birthday Bus, which stays; 6.02 Dark Bomber, Skull
     // Ranger, Plague, Scourge, Hollowhead and the rest; 6.10 Guan Yu, Spider Knight, Arachne and the rest; 7.00 Season 7's:
-    // Zenith, Lynx, The Ice King, the wraps (not Wrap_Random, the locker's Random entry), Hamirez and Remus and the rest).
+    // Zenith, Lynx, The Ice King, the wraps (not Wrap_Random, the locker's Random entry), Hamirez and Remus and the rest;
+    // 7.10 Krampus, Crackabella, Fishstick, the 14 Days' rewards and the rest).
     const lockerIds = [...new Set([...inBuild("4132537", () => Object.keys(athenaCosmetics())), ...inBuild("4166199", () => Object.keys(athenaCosmetics())),
       ...inBuild("4363240", () => Object.keys(athenaCosmetics())), ...inBuild("4402180", () => Object.keys(athenaCosmetics())),
       ...inBuild("4424678", () => Object.keys(athenaCosmetics())), ...inBuild("4461277", () => Object.keys(athenaCosmetics())),
       ...inBuild("4480234", () => Object.keys(athenaCosmetics())), ...inBuild("4497486", () => Object.keys(athenaCosmetics())),
       ...inBuild("4526925", () => Object.keys(athenaCosmetics())), ...inBuild("4543176", () => Object.keys(athenaCosmetics())),
       ...inBuild("4573096", () => Object.keys(athenaCosmetics())), ...inBuild("4573279", () => Object.keys(athenaCosmetics())),
-      ...inBuild("4629139", () => Object.keys(athenaCosmetics()))]),
+      ...inBuild("4629139", () => Object.keys(athenaCosmetics())), ...inBuild("4667333", () => Object.keys(athenaCosmetics())),
+      // 1.11's Winter Bus (back in 7.10's data), 3.5.2's Smooth Ride and 3.6's Ride the Lightning.
       "AthenaBattleBus:bbid_winterbus", "AthenaDance:eid_smoothride",
-      "AthenaSkyDiveContrail:trails_id_008_ridethelightning"]
+      "AthenaSkyDiveContrail:trails_id_008_ridethelightning"])]
       .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|musicpack_000_default|^athena[a-z]+:[a-z]+_random$/i.test(id));
     const bannerRows = inBuild("3724489", bannerIds);
     const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
@@ -269,14 +271,16 @@ test("what giveAllCosmetics gave stays once the panel gives the full locker", ()
   // (BRSeason06RobotShoulderLogo), and 6.31's thirteen (Longshot, Insight, Mothmando, their gear, Mime Time, Phone It In,
   // Scorecard, Showstopper, the Llamalaxy spray; no new banner), and 7.00's hundred and eleven (Season 7's Battle Pass with
   // its six wraps, Hamirez and Remus, Waypoint, Cloudbreaker, Wingtip, Slushy Soldier and the rest; not Wrap_Random, the
-  // Random entry, or the Snowfall umbrella, a first win's) and its twenty-two Season 7 banners.
-  assert.deepEqual(grantFullLocker(session), { cosmetics: 737, banners: inBuild("4629139", bannerIds).length - held });
+  // Random entry, or the Snowfall umbrella, a first win's) and its twenty-two Season 7 banners, and 7.10's seventy-three
+  // (Krampus, Crackabella, Fishstick, the 14 Days' rewards and the rest; its Winter Bus is 1.11's, held already) and its
+  // ten banners.
+  assert.deepEqual(grantFullLocker(session), { cosmetics: 810, banners: inBuild("4667333", bannerIds).length - held });
   session.commit();
   for (const profileId of ["athena", "profile0"]) createProfileStore(dataDir).save(session.profile(profileId).profile);
 
   session = locker({});
-  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 737);
-  assert.equal(removeFullLocker(session).cosmetics, total + 737 - 6);
+  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 810);
+  assert.equal(removeFullLocker(session).cosmetics, total + 810 - 6);
 })));
 
 // Core-Backend #161: the full locker gave Cert's EID_GunShow, a consumable emote no one was given, which 1.11's emote
@@ -385,8 +389,8 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // The builds with Battle Royale, the newest the default (no build a player last played is recorded).
     let listed = await list();
     assert.equal(listed.status, 200);
-    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }, { build: "4395664", version: "6.00.0" }, { build: "4402180", version: "6.00" }, { build: "4417689", version: "6.01.0" }, { build: "4424678", version: "6.01" }, { build: "4442095", version: "6.02.0" }, { build: "4461277", version: "6.02" }, { build: "4464155", version: "6.10.0" }, { build: "4476098", version: "6.10.1" }, { build: "4480234", version: "6.10" }, { build: "4497486", version: "6.20" }, { build: "4526925", version: "6.21" }, { build: "4543176", version: "6.22" }, { build: "4573096", version: "6.30" }, { build: "4573279", version: "6.31" }, { build: "4629139", version: "7.00" }]);
-    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["4629139", "7.00", false]);
+    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }, { build: "4395664", version: "6.00.0" }, { build: "4402180", version: "6.00" }, { build: "4417689", version: "6.01.0" }, { build: "4424678", version: "6.01" }, { build: "4442095", version: "6.02.0" }, { build: "4461277", version: "6.02" }, { build: "4464155", version: "6.10.0" }, { build: "4476098", version: "6.10.1" }, { build: "4480234", version: "6.10" }, { build: "4497486", version: "6.20" }, { build: "4526925", version: "6.21" }, { build: "4543176", version: "6.22" }, { build: "4573096", version: "6.30" }, { build: "4573279", version: "6.31" }, { build: "4629139", version: "7.00" }, { build: "4667333", version: "7.10" }]);
+    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["4667333", "7.10", false]);
     for (const bad of ["3700114", "3532353", "nope"]) {
       assert.equal((await list(`?build=${bad}`)).status, 400, bad);
       assert.equal((await give({ build: bad, templateIds: ["AthenaPickaxe:halloweenscythe"] })).status, 400, bad);

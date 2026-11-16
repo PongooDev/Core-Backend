@@ -139,7 +139,7 @@ test("the admin panel sets the Cube's times, checks them, and 5.30's timeline se
     const back = await dated({ event: "cube", schedule: null, mode: "dates" });
     assert.deepEqual([back.body.datedFlags.events[0].mode, back.body.datedFlags.events[0].schedule], ["dates", []]);
     const overview = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/admin/api/events/overview" });
-    assert.equal(overview.body.datedFlags.events.length, 10, "the Cube, the floating island, the Butterfly, High Stakes, the Birthday Challenges, Tomato Town's rift, 6.30's snowstorm, 6.31's iceberg and 7.00's and 7.10's Block");
+    assert.equal(overview.body.datedFlags.events.length, 11, "the Cube, the floating island, the Butterfly, High Stakes, the 14 Days of Fortnite, the Birthday Challenges, Tomato Town's rift, 6.30's snowstorm, 6.31's iceberg and 7.00's and 7.10's Block");
 
     // The custom mode alone starts from the replay's dates now.
     const custom = await dated({ event: "tomatoRift", mode: "custom" });

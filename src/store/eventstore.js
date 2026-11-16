@@ -276,7 +276,20 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // "Frostbite"): from Season 7's first day on its replay, at a legendary schematic's 1,680 Gold, one (🟡 Epic's price and
 // limit aren't recorded; Core keeps it after 13 December, the week Update v7.01 brought the next). Without its own entry
 // 7.00 took 6.31's weeks, on Season 6's replay.
+// 7.10's (CL-4667333): Update v7.01's "Ralphie's Revenge is returning and will be available in the Weekly Store ... Available
+// from December 12 at 7 PM ET until December 19th 7 PM ET" (SID_Sniper_BBGun_SR_Ore_T01, Survive the Holidays 2017's,
+// "Ralphie's Revenge" in its weapons' names) and Content Update v7.10 #1's "The Cocoa .45 Pistol will be available on the
+// Weekly Store ... from December 26 at 7 PM ET until January 2 at 7 PM ET" (SID_Pistol_Silenced_Christmas_SR_Ore_T01, new in
+// 7.10's data, "Cocoa .45"): from 13 and 27 December 00:00 UTC on Season 7's replay, 7.00's Frostbite before them, at a
+// legendary schematic's 1,680 Gold, one each (🟡 Epic's prices and limits aren't recorded; Core keeps the Cocoa .45 after 2
+// January). Update v7.10's own Weekly Store names nothing (its Cloaked Shadow is the Event Store's, its Winter Llama the
+// llamas', neither offered yet).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4667333, season: 7, weeks: [
+    { from: "2018-12-27T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_silenced_christmas_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-12-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_sniper_bbgun_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_sniper_standard_winter_sr_ore_t01", price: 1680, limit: 1 }] }
+  ] },
   { firstBuild: 4629139, season: 7, weeks: [
     { from: null, items: [{ templateId: "Schematic:sid_sniper_standard_winter_sr_ore_t01", price: 1680, limit: 1 }] }
   ] },

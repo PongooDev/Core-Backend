@@ -1,6 +1,9 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
-  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+
+// 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
+export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -168,6 +171,18 @@ export const datedEvents = [
   ] },
   // The Birthday Challenges (5.10, Schedule_Birthday2018_BR, events/birthday2018.js; 5.21's paks keep them): the Fortnite
   // Wiki's Fortnite 1st Birthday, 24 July to 7 August 2018 (🟡 days, not hours: midnight UTC, as birthdayEndedAt).
+  // The 14 Days of Fortnite (7.10, events/fourteendays.js): Update v7.10's "Starting December 19, log in each day at 9 AM
+  // ET(1400 UTC)" to the original end, and the week Epic brought the challenges back (the Fortnite Wiki: "14 Days of
+  // Fortnite has been extended for a limited time!", 7 January 2019, "LAST CHANCE", 14 January; 🟡 their hours are Core's,
+  // 14:00 UTC and the end of 14 January). Each step serves the challenges' flag and CalendarEvent_Season7_14DaysOfFortnite,
+  // the calendar event the bundle names (its CalendarEventName), with their activeSince.
+  { id: "fourteenDays", name: "the 14 Days of Fortnite (7.10)", season: 7, flag: ltm14DaysOfFortnite, anchor: "challenges", parts: 2,
+    challenges: "Schedule_14DaysOfFortnite", steps: [
+      step("challenges", "The 14 Days of Fortnite: a challenge a day and its modes", [ltm14DaysOfFortnite, fourteenDaysCalendarEvent],
+        Date.parse("2018-12-19T14:00:00.000Z"), Date.parse("2019-01-02T14:00:00.000Z")),
+      step("extended", "The challenges back for a week", [ltm14DaysOfFortnite, fourteenDaysCalendarEvent],
+        Date.parse("2019-01-07T14:00:00.000Z"), Date.parse("2019-01-15T00:00:00.000Z"))
+    ] },
   { id: "birthday", name: "the Birthday Challenges (5.10 – 5.21)", flag: anniversary2018BR, anchor: "challenges", parts: 1,
     challenges: "Schedule_Birthday2018_BR", modes: ["build", "dates", "custom", "off"], defaultMode: "build", steps: [
       step("challenges", "The Birthday Challenges", [anniversary2018BR], Date.parse("2018-07-24T00:00:00.000Z"), Date.parse("2018-08-07T00:00:00.000Z"))

@@ -184,13 +184,13 @@ test("6.01's event flags are 6.00's: LobbySeason6, the ticketless storms and Cra
   }
   // Every range that ran to 6.01 runs to 6.21 now (tests/build602.test.js, tests/build610.test.js, tests/build620.test.js,
   // tests/build621.test.js, tests/build622.test.js), but BR.CandyCaneGuns', whose item 6.20's paks drop.
-  const v602 = "4629139"; // 7.00 now (tests/build700.test.js)
+  const v602 = "4667333"; // 7.10 now (tests/build710.test.js); EventFlag.Fortnitemares stops at 7.00
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], 4480234);
   assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v602)]);
   assert.equal(season4Flag("EventFlag.BirthdayBattleBus").builds[1], Number(v600), "BR_Decor_BirthdayBus isn't in 6.01's paks");
   for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses"]) {
-    assert.equal(season4Flag(flag).builds[1], Number(v602), flag);
+    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : Number(v602), flag);
   }
   for (const flag of ["EventFlag.BR_S5_Cube_TurnOn", "EventFlag.LTM_Heist", "EventFlag.RoadTrip2018", "EventFlag.Horde"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v541), flag);

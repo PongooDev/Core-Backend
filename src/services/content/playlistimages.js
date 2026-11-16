@@ -99,7 +99,8 @@ export const playlistImagesBuild = 4039451;
 // Fortnite's playlists (7.10's, not 7.00's) have Epic's tiles on that later page (BR07_14-DoF_Social for Playlist_33,
 // BR_LTM_Barebones, _Slide, _OneShot, _GroundGame, _SneakySilencers, _CloseEncounters50s, _HighExplosives50s,
 // _FoodFight16; each checked on the CDN 2026-11-16: 200, image/jpeg, the hash in its name the file's SHA-1); they come in
-// with 7.10's LTMs, as every picture here is a playlist some build's LTM names.
+// with 7.10's LTMs (below), as every picture here is a playlist some build's LTM names, and so do the 14 Days' Holiday
+// Disco (BR_LTM_HolidayDisco) and Wild West (BR_LTM_WildWest), checked the same way, on 7.10's page only.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -132,6 +133,22 @@ const wildWestTile = `${cdn}/playlistinformation/BR06_ModeTile_LTM_WildWest-1024
 const teamRumbleTile = `${cdn}/playlistinformation/BR06_ModeTile_TDM-1024x512-878ba9f92deb153ec85f2bcbce925e185344290e.jpg`;
 const unvaultedTile = `${cdn}/playlistinformation/BR_LTM_Unvaulted-1024x512-d3cbe3c4a756190279af4ce98773d6599f7aab4f.jpg`;
 const siphonTile = `${cdn}/playlistinformation/BR_LTM_Siphon-1024x512-66cb27084be50387682989b50a01dbc9e42f5a5d.jpg`;
+// 7.10's (CL-4667333) 14 Days of Fortnite tiles, from the same later page (each on Epic's CDN, checked 2026-11-16: 200,
+// image/jpeg, the hash in each name the file's SHA-1): Teams of 33's BR07_14-DoF_Social (560,784 bytes), and the BR_LTM_
+// set Unvaulted's and Siphon's belong to: Barebones (275,328), Slide (146,738), Ground Game (327,861), Sneaky Silencers
+// (395,165), One Shot (429,759), High Explosives 50's (192,574), Close Encounters 50's (246,657), Food Fight 16
+// (400,783), Holiday Disco (2,620,828) and Wild West (374,293).
+const teamsOf33Tile = `${cdn}/playlistinformation/BR07_14-DoF_Social-1024x512-5fa7dd4752d1f0cc1a101f09cb170d0f5b2a31cf.jpg`;
+const barebonesTile = `${cdn}/playlistinformation/BR_LTM_Barebones-1024x512-4a29337febb04e9043d57c9e61afe849f8a9e9c7.jpg`;
+const slideTile = `${cdn}/playlistinformation/BR_LTM_Slide-1024x512-189625349e80dc81e225691aa952ffd280996058.jpg`;
+const groundGameTile = `${cdn}/playlistinformation/BR_LTM_GroundGame-1024x512-37a4d1d335b4c9427bdc672db0f335f4df813874.jpg`;
+const sneakySilencersTile = `${cdn}/playlistinformation/BR_LTM_SneakySilencers-1024x512-1669e2eeddca63b61e9b94cc19c3ec502fd33f29.jpg`;
+const oneShotTile = `${cdn}/playlistinformation/BR_LTM_OneShot-1024x512-9914c2c88b21f72f9628681e0cbcd20bb7311a3f.jpg`;
+const highExplosives50sTile = `${cdn}/playlistinformation/BR_LTM_HighExplosives50s-1024x512-3a8d44af3c2718b5aaaaebbd4627258a657bf0bf.jpg`;
+const closeEncounters50sTile = `${cdn}/playlistinformation/BR_LTM_CloseEncounters50s-1024x512-03dcc058e1bec3e853b3ee20594128805223b5a3.jpg`;
+const foodFight16Tile = `${cdn}/playlistinformation/BR_LTM_FoodFight16-1024x512-309538a1b961b5ab0c22417ab34170cc302bbab8.jpg`;
+const holidayDiscoTile = `${cdn}/playlistinformation/BR_LTM_HolidayDisco-1024x512-684bd4b41613e59d895a477389515a8b4878da6a.jpg`;
+const wildWest14DaysTile = `${cdn}/playlistinformation/BR_LTM_WildWest-1024x512-42779242a5a73d654332d9d0afe0983f9d8401d0.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -197,8 +214,29 @@ export const epicPlaylistImages = {
   Playlist_Classic_Squads: unvaultedTile,
   Playlist_Vamp_Solo: siphonTile,
   Playlist_Vamp_Duo: siphonTile,
-  Playlist_Vamp_Squad: siphonTile
+  Playlist_Vamp_Squad: siphonTile,
+  // 7.10's 14 Days of Fortnite playlists (above, events/ltms.js's 7.10 modes), new to Core: only 7.10's page lists them.
+  Playlist_33: teamsOf33Tile,
+  Playlist_Hard_Squads: barebonesTile,
+  Playlist_Slide_Solo: slideTile,
+  Playlist_Ground_Squads: groundGameTile,
+  Playlist_Sneaky_Solo: sneakySilencersTile,
+  Playlist_Low_Squads: oneShotTile,
+  Playlist_50v50HE: highExplosives50sTile,
+  Playlist_Close_50: closeEncounters50sTile,
+  Playlist_Barrier_16: foodFight16Tile
 };
+// The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
+// and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads
+// (BR_LTM_WildWest, which the later page names for it). 6.30's to 7.00's pages keep 6.30's tiles for them.
+const epicPlaylistImagesFrom710 = {
+  Playlist_Disco_32_Alt: holidayDiscoTile,
+  Playlist_WW_Squads: wildWest14DaysTile
+};
+const playlistImages710Build = 4667333;
+// Epic's picture of a playlist on a build's page (any build's for none).
+export const epicPlaylistImageOf = (playlistName, changelist = undefined) =>
+  (changelistOf(changelist) >= playlistImages710Build ? epicPlaylistImagesFrom710[playlistName] : undefined) ?? epicPlaylistImages[playlistName] ?? null;
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.
 export const playlistBorders = {
@@ -229,7 +267,7 @@ export const playlistImageModes = (changelist = undefined) => {
   return [...defaultModes, ...ltms.filter((ltm) => ltm.playlistName && reachesPlaylistImages(ltm.builds[1]) && onPageOf(ltm, changelist))
     .map((ltm) => ({ playlistName: ltm.playlistName, name: ltm.name }))]
     .filter(({ playlistName }) => !seen.has(playlistName) && seen.add(playlistName))
-    .map((mode) => ({ ...mode, epic: epicPlaylistImages[mode.playlistName] ?? null }));
+    .map((mode) => ({ ...mode, epic: epicPlaylistImageOf(mode.playlistName, changelist) }));
 };
 
 const changelistOf = (changelist) => (/^\d+$/.test(changelist ?? "") ? Number(changelist) : NaN);
@@ -238,10 +276,10 @@ export const readsPlaylistImages = (changelist) =>
 export const readsPlaylistInformation = (changelist) => changelistOf(changelist) >= playlistInformationBuild;
 
 // The host's picture of a playlist when it has one, else Epic's: the URL the client is handed (an upload under origin).
-export function playlistImageOf(playlistName, custom = {}, origin = undefined) {
+export function playlistImageOf(playlistName, custom = {}, origin = undefined, changelist = undefined) {
   const own = custom?.[playlistName];
   if (typeof own === "string" && own) return newsImageUrl(own, origin);
-  return epicPlaylistImages[playlistName] ?? "";
+  return epicPlaylistImageOf(playlistName, changelist) ?? "";
 }
 
 // The content page's playlistimages section for the requesting build (4.0 to 5.30), or undefined for one that doesn't
@@ -265,7 +303,7 @@ export function playlistImagesFor(changelist, custom = {}, origin = undefined) {
 export function playlistInformationFor(changelist, custom = {}, origin = undefined) {
   if (!readsPlaylistInformation(changelist)) return undefined;
   const playlists = playlistImageModes(changelist)
-    .map(({ playlistName }) => ({ image: playlistImageOf(playlistName, custom, origin), playlist_name: playlistName,
+    .map(({ playlistName }) => ({ image: playlistImageOf(playlistName, custom, origin, changelist), playlist_name: playlistName,
       special_border: playlistBorders[playlistName] ?? "None", _type: "FortPlaylistInfo" }))
     .filter((entry) => entry.image);
   return {

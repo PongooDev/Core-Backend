@@ -429,6 +429,27 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   its alert category, the Endless zones' rows); the other nine are 6.31's, byte for byte. Its Creative item classes
   (FortCreativeRealEstatePlotItemDefinition, FortPlaysetItemDefinition: the creative profile's) have no profile type here
   yet and are skipped.
+  7.10's (CL-4667333, Update v7.10, Season 7; 7.01 isn't extracted, Core has no copy of its paks) is
+  `4.22.0-4667333+++Fortnite+Release-7.10` (no `Build.version`; the build folder is `7.10-CL-4667333\7.10`) with 7.00's full
+  data (Cert's files with `gamedata/4629139` applied) as the fifth argument, and the main key FModel's settings hold for
+  its build folder. Its install has 26 paks (341,138 files): pakchunk0 and its s1 to s7, pakchunk1 and pakchunk1_s1, and the
+  keyed pakchunk1000 to 1015, all read on the backend's keychain but pakchunk1000, whose key it hasn't (its cosmetics, the
+  Gingerbread outfits among them, aren't in the data); no language paks. Its DefaultGameData still names no MissionAlerts (24
+  alerts and 4 storm spreads from the fifth argument). One extractor change: a challenge bundle's quest that comes
+  `DaysFromEventStart` (EChallengeBundleQuestUnlockType; QuestBundle_14DaysOfFortnite's thirteen after its first) carries
+  `unlockType` and `unlockValue`, and a quest that names its own gift box (its QuestInfo's GiftBoxToUse, GB_14DaysofFortnite)
+  carries `giftBox`; only 7.10's 14 Days bundle has either, and earlier overlays aren't refreshed. Against 7.00 twelve files
+  change: `athena.json` (74 cosmetics, none gone: Krampus, Crackabella, Sugarplum, Grimbles, Glimmer, Fishstick, DJ Bop, Disco
+  Diva, Tinseltoes, Red-nosed Ranger, Snowfoot, Maven, Ark, Paradox and Lace, Cloaked Shadow, the Winter Bus, the Candy Cane
+  and Disco wraps and the 14 Days' rewards; 37 display assets; Schedule_14DaysOfFortnite (EventName
+  EventFlag.LTM_14DaysOfFortnite, CategoryID 14DoF) and its bundle; Season 7's weeks 3 to 6 with their own challenges, 51
+  quests and 175 objective stats; the loot tables), `banners.json` (10 icons), `items.json`, `characters.json`,
+  `cardpacks.json`, `fabricator.json`, `alterations.json`, `upgrades.json` and `collectionbook.json` (the Medieval weapons, the
+  Winter Llama and its banners, Frostnite's heroes and weapons, the Cocoa .45, the new outfits' heroes), `quests.json` and
+  `objectivestats.json` (Save the World's 14 Days quests, WinterQuest_2018_*) and `world.json` (Frostnite, the Endless mode:
+  BP_ZT_Endless_Winter, MissionGen_Endless and its challenge variants, their primary missions; BP_ZT_Celebrate and
+  MissionGen_CelebrateNewYear2018); the other eight are 7.00's, byte for byte. 7.10's Creative plots (Arctic_Medium,
+  TheBlock_Season7) are FortCreativeRealEstatePlotItemDefinitions, still skipped.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

@@ -146,8 +146,14 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // (DaysSinceEventStart) run on Season 7's own calendar. Only the cosmetics 7.00's data has are in: its own that the shop
 // sold (Waypoint, Cloudbreaker, Wingtip, Slushy Soldier and Icicle, Backstroke, Accolades and Ground Pound) and the older
 // ones that came back; Content Update v7.10's to v7.40's (Krampus, Crackabella, Marshmello, the Ice Queen...) are left out,
-// so 21 of the 84 days have an empty featured section. A build's season is its athena data's seasonNumber, Season 1
-// without one.
+// so 21 of the 84 days have an empty featured section. 7.10 (CL-4667333) adds the 40 of its cosmetics the shop sold, 89
+// times on 37 of the season's days from 19 December on, the same way, each in its tile and at its price (a 7.10 cosmetic
+// that joins a tile of the day's earlier cosmetics takes that tile's number, a tile of its own the day's next number):
+// Red-nosed Ranger, Crackabella, Tinseltoes, Grimbles, Krampus, Glimmer, Fishstick, Sugarplum, Disco Diva, DJ Bop,
+// Snowfoot, Maven, Ark, Paradox, Lace and Cloaked Shadow, their harvesting tools and gliders, the Gingerbread set's Cookie
+// Cutter and Gingersled, the Candy Cane wrap and the emotes Crackdown, Unwrapped, Clean Groove, Shaolin Sit-up, Mind Blown,
+// Lazy Shuffle and Cheer Up; the outfits sold with a back bling come with it (bundledBackBlings). Only 7.10's data has
+// them, so 7.00's days are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -608,7 +614,26 @@ export const bundledBackBlings = {
   // (🟡 Season 7's pages carry no bundled_with): Waypoint's Signal Hub (bid_165_bluebadassfemale) and Slushy Soldier's
   // Slushy Jr. (bid_164_snowmanmale).
   "AthenaCharacter:cid_290_athena_commando_f_bluebadass": "AthenaBackpack:bid_165_bluebadassfemale",
-  "AthenaCharacter:cid_280_athena_commando_m_snowman": "AthenaBackpack:bid_164_snowmanmale"
+  "AthenaCharacter:cid_280_athena_commando_m_snowman": "AthenaBackpack:bid_164_snowmanmale",
+  // 7.10's (CL-4667333) the same way, by its back blings' names: Maven's Techie, Glimmer's Glimmering Cloak, Snowfoot's Snow
+  // Star, Ark's Ark Wings, Crackabella's Snackshot, Sugarplum's Flutterfrost, Grimbles' Luminous Lamp, DJ Bop's Glow Show,
+  // Paradox's Eternal, Lace's Stitches, Disco Diva's Disco Ball, Krampus' Brat Bag, Fishstick's Saltwater Satchel and Cloaked
+  // Shadow's Shadow Wings. Red-nosed Ranger and Tinseltoes have none (bid_192_winterholidayfemale, Combat Wreath, is the
+  // 14 Days of Fortnite's day 5 reward).
+  "AthenaCharacter:cid_297_athena_commando_f_math": "AthenaBackpack:bid_170_mathfemale",
+  "AthenaCharacter:cid_298_athena_commando_f_icemaiden": "AthenaBackpack:bid_180_icemaiden",
+  "AthenaCharacter:cid_299_athena_commando_m_snowninja": "AthenaBackpack:bid_181_snowninjamale",
+  "AthenaCharacter:cid_300_athena_commando_f_angel": "AthenaBackpack:bid_178_angel",
+  "AthenaCharacter:cid_302_athena_commando_f_nutcracker": "AthenaBackpack:bid_183_nutcrackerfemale",
+  "AthenaCharacter:cid_303_athena_commando_f_snowfairy": "AthenaBackpack:bid_184_snowfairyfemale",
+  "AthenaCharacter:cid_304_athena_commando_m_gnome": "AthenaBackpack:bid_185_gnomemale",
+  "AthenaCharacter:cid_308_athena_commando_f_fortnitedj": "AthenaBackpack:bid_188_fortnitedjfemale",
+  "AthenaCharacter:cid_309_athena_commando_m_streetgoth": "AthenaBackpack:bid_189_streetgothmale",
+  "AthenaCharacter:cid_310_athena_commando_f_streetgoth": "AthenaBackpack:bid_190_streetgothfemale",
+  "AthenaCharacter:cid_312_athena_commando_f_funkops": "AthenaBackpack:bid_195_funkopsfemale",
+  "AthenaCharacter:cid_314_athena_commando_m_krampus": "AthenaBackpack:bid_194_krampus",
+  "AthenaCharacter:cid_315_athena_commando_m_teriyakifish": "AthenaBackpack:bid_193_teriyakifishmale",
+  "AthenaCharacter:cid_317_athena_commando_m_winterghoul": "AthenaBackpack:bid_191_winterghoulmale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

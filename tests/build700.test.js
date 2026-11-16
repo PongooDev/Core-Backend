@@ -69,11 +69,11 @@ test("7.00 is known, on its own data, Season 7's first build", () => {
   assert.equal(allowedBuildList(["7.00"]).join(), v700);
   assert.equal(dataBuild(v700), v700);
   assert.equal(dataBuild("4600000"), v631, "a build between 6.31 and 7.00 plays on 6.31's");
-  assert.equal(dataBuild("4700000"), v700, "a later build Core doesn't know plays on 7.00's");
+  assert.equal(dataBuild("4650000"), v700, "a build between 7.00 and 7.10 plays on 7.00's");
   assert.equal(releasedOn(v700), Date.UTC(2018, 11, 6));
-  assert.equal(buildOfSeason(7), v700);
+  assert.equal(buildOfSeason(7), "4667333", "Season 7's newest is 7.10");
   assert.equal(buildOfSeason(6), v631, "Season 6's newest is still 6.31");
-  assert.equal(seasonName(7), "Season 7 (7.00)");
+  assert.equal(seasonName(7), "Season 7 (7.00 – 7.10)");
   const season = inBuild(v700, athenaSeason);
   assert.equal(season.seasonNumber, 7);
   assert.equal(season.storefront, "BRSeason7");
@@ -164,9 +164,10 @@ test("7.00's event flags: the Season 7 lobby and Save the World's Season 7 Warmu
   assert.equal(inBuild(v700, () => isEventActive(season7Warmup2018)), true);
   assert.equal(inBuild(v631, () => isEventActive(season7Warmup2018)), false);
   assert.equal(activeEventFlags(v631).includes(lobbySeason7), false);
-  assert.deepEqual(season4Flag(lobbySeason7).builds, [4629139, 4629139]);
-  assert.deepEqual(season4Flag("EventFlag.WinterBattleBus").builds, [4629139, 4629139]);
-  assert.equal(season4Flag(lobbySeason6).builds[1], 4629139, "Season 6's lobby still switches by hand on 7.00");
+  assert.deepEqual(season4Flag(lobbySeason7).builds, [4629139, 4667333], "7.00's and 7.10's");
+  assert.deepEqual(season4Flag("EventFlag.WinterBattleBus").builds, [4629139, 4629139], "gone from 7.10's paks");
+  assert.equal(season4Flag(lobbySeason6).builds[0] <= 4629139 && season4Flag(lobbySeason6).builds[1] >= 4629139, true,
+    "Season 6's lobby still switches by hand on 7.00");
 });
 
 test("7.00's modes: 50v50, Playground, Team Rumble and Close Encounters on by default; Season 7's others by their switches", () => {
@@ -219,8 +220,12 @@ test("Season 7's shop: 84 days of 7.00's cosmetics, replayed from 7.00's first d
   assert.equal(history.length, 84);
   assert.deepEqual([history[0].date, history.at(-1).date], ["2018-12-06", "2019-02-27"]);
   const c700 = inBuild(v700, athenaCosmetics);
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c700[id])), "only 7.00's cosmetics");
+  const c710 = inBuild("4667333", athenaCosmetics);
+  // 7.10's own (Krampus, Crackabella...) are in the history too; 7.00 is shown only its own.
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c710[id])), "only 7.10's cosmetics");
   configureItemShop(() => shopConfig);
+  const offered700 = inBuild(v700, () => itemShopOffers(at("2018-12-20T12:00:00Z"), shopConfig));
+  assert.ok([...offered700.BRWeeklyStorefront, ...offered700.BRDailyStorefront].every(({ templateId }) => c700[templateId]), "7.00 sells only its own");
   t.after(() => configureItemShop(null));
   const featured = (iso) => inBuild(v700, () => itemShopOffers(at(iso), shopConfig)).BRWeeklyStorefront.map(({ templateId }) => templateId);
   assert.ok(featured("2018-12-06T12:00:00Z").includes("AthenaCharacter:cid_100_athena_commando_m_cuchulainn"), "Battle Hound on Season 7's first day");

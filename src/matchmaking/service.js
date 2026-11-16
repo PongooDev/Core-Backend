@@ -224,6 +224,32 @@ const playlistTeamsFrom700 = {
   267: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams700Build = 4629139;
+// 7.10's (CL-4667333) 14 Days of Fortnite playlists, by their assets: Teams of 33 (151, Playlist_33: 3 × 33 in squads of
+// 4), Food Fight (207, Playlist_Barrier_16: 2 × 16), Close Encounters 50's (4750, Playlist_Close_50) and High Explosive
+// 50s (203, Playlist_50v50HE), both 2 × 50 in squads of 4; Ground Game (110 to 112), Barebones (240 to 242), One Shot (250
+// to 252), Sneaky Silencers (260 to 262), Score Royale's Squads (100) and High Explosives' Duos (2302): 100 teams of 1, 2
+// and 4. Its Slide (160 to 162, the ids Steady Storm's playlists have too) and its other playlists have the teams above.
+const playlistTeamsFrom710 = {
+  151: { maxTeamCount: 3, maxTeamSize: 33, maxSquadSize: 4 },
+  207: { maxTeamCount: 2, maxTeamSize: 16, maxSquadSize: 4 },
+  4750: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  203: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  110: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  111: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  112: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  240: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  241: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  242: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  250: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  251: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  252: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  260: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  261: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  262: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  100: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  2302: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 }
+};
+const playlistTeams710Build = 4667333;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -429,6 +455,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams710Build && playlistTeamsFrom710[playlistId]) return playlistTeamsFrom710[playlistId];
   if (Number(build) >= playlistTeams700Build && playlistTeamsFrom700[playlistId]) return playlistTeamsFrom700[playlistId];
   if (Number(build) >= playlistTeams631Build && playlistTeamsFrom631[playlistId]) return playlistTeamsFrom631[playlistId];
   if (Number(build) >= playlistTeams630Build && playlistTeamsFrom630[playlistId]) return playlistTeamsFrom630[playlistId];

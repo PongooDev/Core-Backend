@@ -3,6 +3,7 @@ import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { activeEventFlags } from "../events/events.js";
 import { highStakesFlagsNow } from "../events/highstakes.js";
+import { fourteenDaysFlagsNow } from "../events/fourteendays.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
@@ -14,7 +15,7 @@ import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
-import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
+import { giveGiftBox, heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { forgetOrigin } from "./origins.js";
 import { grant } from "./progress.js";
@@ -950,6 +951,7 @@ function completeQuest(session, itemId) {
   if (quest.type === "AthenaChallengeBundleQuest" || quest.hidden) {
     log("Battle Royale", `${session.accountId} completed the challenge ${questIdOf(item)}`);
     claimAthenaQuest(session, itemId);
+    giveQuestGiftBox(session, itemId);
     countBundleQuest(session, itemId, (rewardSession, reward) => giveSeasonReward(rewardSession, reward, seasonFunctions));
     itemObjectives(session, "HasCompletedQuest", `Quest:${questIdOf(item)}`, 1);
     return;
@@ -976,6 +978,25 @@ function collectEarlierRewards(session, itemId, quest) {
     log("Battle Royale", `${session.accountId}: ${questIdOf(other)} collected on completing ${questIdOf(tracker.profile.items[itemId])} (2.1)`);
     claimAthenaQuest(session, otherId);
   }
+}
+
+// 7.10's (CL-4667333) 14 Days of Fortnite challenges each name the gift box their rewards come in (QuestBundle_14DaysOfFortnite's
+// QuestInfos' GiftBoxToUse, GB_14DaysofFortnite: its header widget ItemReceived14DaysPresent, Battle Royale's only): the
+// bundle's entry for the quest carries it (athena.json giftBox), and the quest's rewards the player now holds (the day's
+// cosmetic and its present token) are shown in it, as a bundle's completion rewards are in theirs (profiles/challenges.js
+// giveBundleRewards), the box's HeaderTemplateId the bundle. No earlier build's bundle names a quest's own box.
+function giveQuestGiftBox(session, questItemId) {
+  const tracker = session.profile("athena");
+  const item = tracker.profile.items[questItemId];
+  const bundleItem = tracker.profile.items[item?.attributes?.challenge_bundle_id ?? ""];
+  const bundle = bundleItem && athenaChallengeBundles()?.[String(bundleItem.templateId).split(":")[1]?.toLowerCase()];
+  const giftBox = bundle?.quests.find((entry) => entry.quest === questIdOf(item))?.giftBox;
+  if (!giftBox) return;
+  const loot = (athenaQuestOf(item)?.rewards ?? []).map(({ templateId, quantity }) => {
+    const held = findItem(tracker.profile, templateId);
+    return held ? { profileId: "athena", itemId: held, templateId: tracker.profile.items[held].templateId, quantity } : null;
+  }).filter(Boolean);
+  giveGiftBox(session, giftBox, loot, { HeaderTemplateId: bundleItem.templateId });
 }
 
 // ClaimQuestReward on athena: a Completed challenge's rewards, its XP (AthenaSeasonalXP) to the season level and any
@@ -1367,12 +1388,13 @@ function settleSeasonGrants(session) {
 // EventFlag.Anniversary2018_BR) is given once, at the quest login, while the requesting build serves that flag
 // (events/events.js birthday2018); nothing else grants it (Epic's servers did). Once given it stays. 5.40's
 // Schedule_LTM_Heist (the High Stakes Challenges, EventFlag.LTM_Heist) the same while its dates serve the flag
-// (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316).
+// (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316);
+// 7.10's Schedule_14DaysOfFortnite (EventFlag.LTM_14DaysOfFortnite) while its dates serve it (events/fourteendays.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

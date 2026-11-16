@@ -83,10 +83,34 @@ function take(tracker, templateId, quantity) {
   return emptied;
 }
 
-// UFortSchematicItem::ServerCraftSchematic, times over. Returns the backpack items it made.
-function craft(session, theater, schematicId, times, depth) {
+// 7.10's (CL-4667333) Down Tier Crafting: "Schematics that have been evolved to higher tiers can now also craft all the
+// lower-tier versions of the weapon/trap. The lower-tier versions of the schematic are lower level, but also cost
+// lower-tier ingredients to craft" (Update v7.10). Its CraftWorldItem has a third parameter, TargetSchematicTier (an
+// EFortItemTier after NumTimesToCraft: 7.10's exe, IDA 13338, the function's property list at 0x5372158; 7.00's has none),
+// which the request carries as targetSchematicTier, its name ("III") or its value (3). A tier under the schematic's own
+// crafts the same schematic's version of that tier, the items' template with the tier's suffix (sid_..._ore_t03; a crystal
+// schematic's tiers under 4 are ore's, as its evolutions came from them), at the schematic's level held to that version's
+// MaxLevel (its tier's top, 30 for tier 3), with that version's recipe; anything else crafts the schematic itself, as
+// before. 🟡 The level rule is Core's reading of the notes: Epic's service isn't in the client.
+const tierNames = ["No_Tier", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+const tierNumberOf = (value) => {
+  if (Number.isInteger(value)) return value;
+  const index = tierNames.indexOf(String(value ?? "").replace(/^EFortItemTier::/, ""));
+  return index >= 0 ? index : 0;
+};
+const tierSuffix = /_t(\d\d)$/i;
+function downTierTemplate(templateId, tier) {
+  const own = templateId.match(tierSuffix);
+  if (!own || !(tier >= 1 && tier < Number(own[1]))) return undefined;
+  const lowered = templateId.replace(tierSuffix, `_t${String(tier).padStart(2, "0")}`);
+  return [lowered, lowered.replace(/_crystal_/i, "_ore_")].find((id) => getItem(id)?.class === "FortSchematicItemDefinition");
+}
+
+// UFortSchematicItem::ServerCraftSchematic, times over. Returns the backpack items it made. A down-tier craft (above) passes
+// the version it crafts as `version`, the schematic as the account holds it but for its template and level.
+function craft(session, theater, schematicId, times, depth, version = undefined) {
   const account = session.profile("profile0").profile;
-  const schematic = account.items[schematicId];
+  const schematic = version ?? account.items[schematicId];
   const recipe = schematicRecipe(schematic);
   if (!recipe) invalid(`${schematic.templateId} has no crafting recipe`);
   if (!hasUnlocked(account, recipe.catalysts)) short(`Unlock ${recipe.catalysts.join(", ")} on the skill tree first`);
@@ -147,5 +171,9 @@ export function craftWorldItem({ req, session, tracker, profileId }) {
   }
   const times = req.body?.numTimesToCraft ?? 1;
   if (!Number.isInteger(times) || times <= 0) invalid(`Can't craft ${times} times`);
-  craft(session, tracker, schematicId, times, 0);
+  const schematic = account.items[schematicId];
+  const lower = downTierTemplate(schematic.templateId, tierNumberOf(req.body?.targetSchematicTier));
+  const version = lower ? { ...schematic, templateId: lower,
+    attributes: { ...(schematic.attributes ?? {}), level: Math.min(schematic.attributes?.level ?? 1, getItem(lower).maxLevel ?? Infinity) } } : undefined;
+  craft(session, tracker, schematicId, times, 0, version);
 }

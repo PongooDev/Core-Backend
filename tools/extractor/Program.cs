@@ -1377,6 +1377,18 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
                     ["grantWithBundle"] = info["bGrantWithBundle"]?.GetValue<bool>() ?? unlock is "GrantWithBundle" or "RequiresBattlePass"
                 };
                 if (unlock == "RequiresBattlePass") quest["requiresBattlePass"] = true;
+                // 7.10 (CL 4667333) adds DaysFromEventStart: a quest of an event's bundle that comes UnlockValue days after the
+                // event began (QuestBundle_14DaysOfFortnite: the first with the bundle, one more each day to the fourteenth),
+                // written as unlockType and unlockValue.
+                if (unlock == "DaysFromEventStart")
+                {
+                    quest["unlockType"] = unlock;
+                    quest["unlockValue"] = info["UnlockValue"]?.GetValue<int>() ?? 0;
+                }
+                // And a quest's own gift box (its GiftBoxToUse: GB_14DaysofFortnite, the box each day's reward is shown in),
+                // written as giftBox, the box's template id; earlier bundles name none.
+                if (info["GiftBoxToUse"] is { } questBox && AssetName(AssetPath(questBox)) is { Length: > 0 } questBoxName and not "None")
+                    quest["giftBox"] = $"GiftBox:{questBoxName.ToLowerInvariant()}";
                 return (object)quest;
             }).ToList(),
             ["completionThreshold"] = properties["CompletionThreshold"]?.GetValue<int>() ?? 0,

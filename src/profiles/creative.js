@@ -97,17 +97,36 @@ export function earlyAccessMessage(now = new Date()) {
 
 export const plotsOf = (profile) => Object.entries(profile.items).filter(([, item]) => isPlot(item));
 
-// The account's four islands, once it is entitled, on 7.00 and later. Returns how many were given.
+// 7.10's (CL-4667333) islands: Update v7.10's "A cold front brings in 4 new Winter themed Islands you can select from the
+// player Rift on the starter island" and "Players now have 2 total 'The Block' Islands instead of 1" (Update v7.01's "The
+// Block: New 5th Island to build on"). 7.10's paks add two plot definitions under /Game/Playgrounds/Items/Plots:
+// Arctic_Medium ("Arctic Island {islandIndex}", BasePlayset PID_Playset_60x60_Composed_Arctic, 65 x 65) and
+// TheBlock_Season7 ("The Block {islandIndex}", PID_Temp_Island_Flat_60x60_001, 65 x 65, SortIndex 3; Temperate_Medium's is
+// 1). So a 7.10 request gives an entitled account four Arctic islands and two Blocks beside its four islands, numbered
+// each from 1. 7.00's data has neither definition, so a 7.00 request gives only the four, and a 7.00 client isn't sent the
+// six an account got on 7.10 (gamedata/templates.js, as any template its data lacks); they wait for a 7.10 client.
+const arcticPlotTemplateId = "CreativePlot:arctic_medium";
+const blockPlotTemplateId = "CreativePlot:theblock_season7";
+const plotSetsBuild = 4667333;
+const plotSets = (build = currentBuild()) => [{ templateId: plotTemplateId, count: plotCount },
+  ...(Number(build) >= plotSetsBuild ? [{ templateId: arcticPlotTemplateId, count: 4 }, { templateId: blockPlotTemplateId, count: 2 }] : [])];
+
+// The account's islands, once it is entitled, on 7.00 and later: four, and from 7.10 four Arctic islands and two Blocks.
+// Returns how many were given.
 export function settleCreativePlots(session, now = new Date()) {
   if (!hasCreative() || !creativeEntitled(session, now)) return 0;
   const tracker = session.profile("creative");
-  const have = plotsOf(tracker.profile);
-  const used = new Set(have.map(([, item]) => item.attributes?.islandIndex));
   let given = 0;
-  for (let index = 1; have.length + given < plotCount && index <= plotCount * 2; index++) {
-    if (used.has(index)) continue;
-    tracker.addItem(crypto.randomUUID(), { templateId: plotTemplateId, attributes: { islandIndex: index, islandName: "", item_seen: false }, quantity: 1 });
-    given++;
+  for (const { templateId, count } of plotSets()) {
+    const have = plotsOf(tracker.profile).filter(([, item]) => String(item.templateId).toLowerCase() === templateId.toLowerCase());
+    const used = new Set(have.map(([, item]) => item.attributes?.islandIndex));
+    let added = 0;
+    for (let index = 1; have.length + added < count && index <= count * 2; index++) {
+      if (used.has(index)) continue;
+      tracker.addItem(crypto.randomUUID(), { templateId, attributes: { islandIndex: index, islandName: "", item_seen: false }, quantity: 1 });
+      added++;
+    }
+    given += added;
   }
   if (given) log("Creative", `${session.accountId}: ${given} Creative island${given === 1 ? "" : "s"} given (${ownsCreativeBattlePass(session) ? "Season 7 Battle Pass" : "13 December 2018 on Season 7's replay"})`);
   return given;

@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest } from "../gamedata/athena.js";
 import { log } from "../log.js";
 import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
+import { eventDaysOf } from "../events/fourteendays.js";
 import { giveGiftBox } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { isOriginalOwner } from "./origins.js";
@@ -290,8 +291,18 @@ export function previewPlan(draft, now = new Date(), settingsValue = settingsPro
 // bundle (QuestBundle_S5_Week_<n>, in Season5_Free_Schedule, which every player gets) marks its last four
 // RequiresBattlePass (athena.json requiresBattlePass). A player without the pass gets the first three; buying it gives
 // the rest of every week held (topUpBundle, at the purchase's settle and every login).
-const givesQuest = (tracker, { grantWithBundle, requiresBattlePass, quest }) => grantWithBundle && Boolean(getAthenaQuest(quest))
-  && (!requiresBattlePass || tracker.profile.stats.attributes.book_purchased === true);
+// 7.10's (CL-4667333) event bundle quests that come DaysFromEventStart (QuestBundle_14DaysOfFortnite's thirteen after its
+// first: the extractor's unlockType and unlockValue) are given once their schedule's event has run that many days
+// (events/fourteendays.js eventDaysOf), at the first quest login after, and stay given. No other build's data has one.
+const dayUnlocked = ({ unlockType, unlockValue }, eventName, now) => unlockType === "DaysFromEventStart"
+  && (eventDaysOf(eventName, now) ?? -1) >= unlockValue;
+const givesQuest = (tracker, entry, eventName = null, now = new Date()) => (entry.grantWithBundle || dayUnlocked(entry, eventName, now))
+  && Boolean(getAthenaQuest(entry.quest)) && (!entry.requiresBattlePass || tracker.profile.stats.attributes.book_purchased === true);
+// The event a held schedule item's schedule runs with (its eventName), or null.
+const scheduleEventOf = (profile, scheduleItemId) => {
+  const item = scheduleItemId && profile.items[scheduleItemId];
+  return (item && athenaChallengeSchedules()?.[idOf(item.templateId)]?.eventName) ?? null;
+};
 
 // One quest item per quest definition (CoreV2 #433). The game keeps a player's quests by their definition: the quest
 // manager's GetQuestWithDefinition returns the one quest of a definition, and the progress the gameserver shows the client
@@ -312,9 +323,10 @@ function grantBundle(session, scheduleItemId, bundleId, athena) {
   if (!bundle) return null;
   const bundleItemId = crypto.randomUUID();
   const questIds = [];
+  const eventName = scheduleEventOf(tracker.profile, scheduleItemId);
   for (const entry of bundle.quests) {
     const { quest } = entry;
-    if (!givesQuest(tracker, entry)) continue;
+    if (!givesQuest(tracker, entry, eventName)) continue;
     const held = heldQuest(tracker.profile, quest);
     if (held) {
       if (!questIds.includes(held[0])) questIds.push(held[0]);
@@ -351,9 +363,10 @@ function topUpBundle(session, bundleItemId, bundleId, athena) {
   const questIds = [...(bundleItem.attributes.grantedquestinstanceids ?? [])];
   const heldQuests = new Set(questIds.map((id) => idOf(tracker.profile.items[id]?.templateId)).filter(Boolean));
   const added = [];
+  const eventName = scheduleEventOf(tracker.profile, bundleItem.attributes.challenge_bundle_schedule_id);
   for (const entry of bundle.quests) {
     const { quest } = entry;
-    if (heldQuests.has(quest) || !givesQuest(tracker, entry)) continue;
+    if (heldQuests.has(quest) || !givesQuest(tracker, entry, eventName)) continue;
     const held = heldQuest(tracker.profile, quest);
     if (held) {
       heldQuests.add(quest);
@@ -582,9 +595,10 @@ function bundleDone(tracker, bundleItem) {
   if (!bundle) return false;
   const questIds = bundleItem.attributes.grantedquestinstanceids ?? [];
   const held = questIds.map((id) => tracker.profile.items[id]).filter(Boolean);
-  // Every quest the bundle gives this player is held (none still to come from newer data, topUpBundle) and done.
+  // Every quest the bundle gives this player is held (none still to come from newer data, topUpBundle, or on a later day of
+  // its event: 7.10's DaysFromEventStart) and done.
   const given = new Set(held.map((quest) => idOf(quest.templateId)));
-  return bundle.quests.filter((entry) => givesQuest(tracker, entry)).every(({ quest }) => given.has(quest))
+  return bundle.quests.filter((entry) => givesQuest(tracker, entry) || entry.unlockType === "DaysFromEventStart").every(({ quest }) => given.has(quest))
     && held.length > 0 && held.every((quest) => ["Completed", "Claimed"].includes(quest.attributes.quest_state));
 }
 

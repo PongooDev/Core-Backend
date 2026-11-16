@@ -194,11 +194,11 @@ test("6.10's event flags are 6.02's: LobbySeason6, the ticketless storms and Cra
   }
   // Every range that ran to 6.10 runs to 6.21 now (tests/build620.test.js, tests/build621.test.js), but BR.CandyCaneGuns',
   // whose item 6.20 drops.
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4629139], "and on to 7.00 (tests/build631.test.js, tests/build700.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4667333], "and on to 7.10 (tests/build631.test.js, tests/build710.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610));
   for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], 4629139, flag);
+    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : 4667333, flag);
   }
   for (const flag of ["EventFlag.BR_S5_Cube_TurnOn", "EventFlag.LTM_Heist", "EventFlag.RoadTrip2018", "EventFlag.Horde"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v541), flag);

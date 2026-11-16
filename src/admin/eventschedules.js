@@ -77,7 +77,7 @@ export const eventCards = [
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." },
   // 7.00's (events/events.js): Save the World's Season 7 Warmup.
-  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00", ranges: [[4629139, 4629139]],
+  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.10", ranges: [[4629139, 4667333]],
     about: "Save the World's start of Season 7: Mutant Storm alerts with Snowflake Tickets (10 a day), Mini-Boss alerts back to normal (no tickets), the Frostbite in the Weekly Store; the Season 7 lobby.",
     flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] },
   // The Block (events/block.js): the map's, so `always`: served with the seasonal events off or another event mode, and
@@ -87,7 +87,15 @@ export const eventCards = [
     about: "The slab that crushed Risky Reels. 7.00 shows Risky Reels until the Block lands (The Game Awards 2018, 7 December 01:30 UTC on Season 7's replay), then the blank Block with its signs; 7.00 has none of the community builds. A match keeps what it started with, so a change shows from the next match. 🟡 Epic's minute isn't recorded: the show's start." },
   { id: "block710", kind: "dated", dated: "block710", seasons: [7], name: "The Block's community builds", builds: "7.10", ranges: [[4667333, 4667333]], always: true,
     key: "slab1", endStep: "slab4", startLabel: "Grimy Greens goes up", endLabel: "DM Arena goes up",
-    about: "7.10's four community-built islands on the Block, each a level in its paks: Grimy Greens (KAANCITAK; 7.10 shipped with it on 18 December, so it is up from the replay's first day), Risky Runways (AKE, 23 December), Mysterious Markets (Bludriv, 30 December), DM Arena (KojackNumber2, 8 January, on to the season's end). A match keeps the one it started with, so a change shows from the next match; with none on (a custom schedule's gap) the Block is empty. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." }
+    about: "7.10's four community-built islands on the Block, each a level in its paks: Grimy Greens (KAANCITAK; 7.10 shipped with it on 18 December, so it is up from the replay's first day), Risky Runways (AKE, 23 December), Mysterious Markets (Bludriv, 30 December), DM Arena (KojackNumber2, 8 January, on to the season's end). A match keeps the one it started with, so a change shows from the next match; with none on (a custom schedule's gap) the Block is empty. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  // 7.10's (events/fourteendays.js, events/events.js): the 14 Days of Fortnite's challenges on their dates, and Frostnite.
+  { id: "fourteenDays", kind: "dated", dated: "fourteenDays", seasons: [7], name: "The 14 Days of Fortnite", builds: "7.10", ranges: [[4667333, 4667333]],
+    key: "challenges", endStep: "extended", startLabel: "Challenges start", endLabel: "Extension ends",
+    about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
+    flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
+  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10", ranges: [[4667333, 4667333]],
+    about: "Save the World's Frostnite: the quest map's Frostnite page. Its missions (the Endless mode, BP_ZT_Endless_Winter) aren't on the world map yet.",
+    flags: ["EventFlag.Frostnite"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
