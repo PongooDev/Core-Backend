@@ -38,7 +38,7 @@ test("the bots by mode: on unless the mode's switch is off, an unknown mode keep
   const modes = sanitizeBotModes({ solo: false, duo: "no", nope: false }, { duo: false });
   assert.deepEqual(Object.keys(modes).sort(), [...botModeIds].sort());
   assert.deepEqual([modes.solo, modes.duo, modes.squad, "nope" in modes], [false, false, true, false]);
-  assert.ok(Object.entries(sanitizeBotModes(null)).every(([id, on]) => on === (id !== "creative")), "on but Creative's (#471)");
+  assert.ok(Object.values(sanitizeBotModes(null)).every((on) => on === true));
 });
 
 test("a settings file from before #352 keeps the bots in every mode, and one saved after keeps its switches", () => {
@@ -48,7 +48,7 @@ test("a settings file from before #352 keeps the bots in every mode, and one sav
     const migrated = createSettingsStore(dataDir).get().bots;
     assert.deepEqual([migrated.forcePlayerAIs, migrated.count, migrated.level], [true, 40, 8]);
     assert.deepEqual(Object.keys(migrated.modes).sort(), [...botModeIds].sort());
-    assert.ok(Object.entries(migrated.modes).every(([id, on]) => on === (id !== "creative")));
+    assert.ok(Object.values(migrated.modes).every((on) => on === true));
     fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ bots: { forcePlayerAIs: true, count: 40, modes: { duo: false, fiftyFifty: false } } }));
     const kept = createSettingsStore(dataDir).get().bots.modes;
     assert.deepEqual([kept.solo, kept.duo, kept.squad, kept.fiftyFifty, kept.playground], [true, false, true, false, true]);
@@ -65,10 +65,10 @@ test("the panel's game modes with bots: every one on, the config round-trip, par
   try {
     const first = await overview(backend);
     assert.deepEqual(Object.keys(first.bots.modes).sort(), [...botModeIds].sort());
-    // Every mode's switch is on but 7.00's Creative's (PongooDev/CoreV2#471: a party's own islands, no bots unless turned on).
-    assert.ok(Object.entries(first.bots.modes).every(([id, on]) => on === (id !== "creative")));
-    // Every mode the panel lists has a switch.
-    for (const playlist of first.playlists) assert.equal(first.bots.modes[playlist.id], playlist.id !== "creative", playlist.id);
+    assert.ok(Object.values(first.bots.modes).every((on) => on === true));
+    // Every mode the panel lists has a switch (7.00's Creative isn't listed: always on, never with bots, #375).
+    for (const playlist of first.playlists) assert.equal(first.bots.modes[playlist.id], true, playlist.id);
+    assert.equal("creative" in first.bots.modes, false);
 
     let res = await mmConfig(backend, { bots: { modes: { duo: false, squad: false, fiftyFifty: false } } });
     assert.equal(res.status, 200);
@@ -82,7 +82,7 @@ test("the panel's game modes with bots: every one on, the config round-trip, par
     assert.deepEqual([res.body.bots.count, res.body.bots.modes.duo], [20, false]);
 
     res = await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {});
-    assert.ok(Object.entries(res.body.bots.modes).every(([id, on]) => on === (id !== "creative")));
+    assert.ok(Object.values(res.body.bots.modes).every((on) => on === true));
   } finally {
     backend.close();
   }

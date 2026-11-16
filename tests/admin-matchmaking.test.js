@@ -47,7 +47,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       teamRumble: true, fiftyFiftySeason7: true, closeEncountersSeason7Squads: true, closeEncountersSeason7Solo: true, closeEncountersSeason7Duos: true,
       highExplosivesSeason7Solo: false, highExplosivesSeason7Squads: false, unvaultedSquads: false, unvaultedSolo: false, unvaultedDuos: false,
       siphonSolo: false, siphonDuos: false, siphonSquads: false, sniperShootoutSeason7Duos: false, sniperShootoutSeason7Solo: false,
-      sniperShootoutSeason7Squads: false, soaringSeason7Solo: false, soaringSeason7Duos: false, soaringSeason7Squads: false, creative: true });
+      sniperShootoutSeason7Squads: false, soaringSeason7Solo: false, soaringSeason7Duos: false, soaringSeason7Squads: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
@@ -61,8 +61,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // its three tournament playlists the Tournaments tab's too), and 6.22's Team Terror, and 6.30's six (Food Fight's two, Wild
     // West's three and Disco Domination (32 v 32, Alt) back; its three tournament playlists the Tournaments tab's too), and
     // 6.31's Team Rumble, and 7.00's eighteen (50v50, Close Encounters' three, High Explosives' two, Unvaulted's, Siphon's,
-    // Sniper Shootout's and Soaring's three each, and Creative, PongooDev/CoreV2#471)
-    assert.equal(ov.playlists.length, 125);
+    // Sniper Shootout's and Soaring's three each). 7.00's Creative is a game mode always on, with no switch (#375).
+    assert.equal(ov.playlists.length, 124);
+    assert.equal(ov.playlists.some((p) => p.id === "creative"), false);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
       "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
@@ -81,7 +82,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos",
       "highExplosivesSeason7Solo", "highExplosivesSeason7Squads", "unvaultedSquads", "unvaultedSolo", "unvaultedDuos",
       "siphonSolo", "siphonDuos", "siphonSquads", "sniperShootoutSeason7Duos", "sniperShootoutSeason7Solo", "sniperShootoutSeason7Squads",
-      "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads", "creative"]);
+      "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -226,7 +227,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       teamRumble: true, fiftyFiftySeason7: true, closeEncountersSeason7Squads: true, closeEncountersSeason7Solo: true, closeEncountersSeason7Duos: true,
       highExplosivesSeason7Solo: false, highExplosivesSeason7Squads: false, unvaultedSquads: false, unvaultedSolo: false, unvaultedDuos: false,
       siphonSolo: false, siphonDuos: false, siphonSquads: false, sniperShootoutSeason7Duos: false, sniperShootoutSeason7Solo: false,
-      sniperShootoutSeason7Squads: false, soaringSeason7Solo: false, soaringSeason7Duos: false, soaringSeason7Squads: false, creative: true });
+      sniperShootoutSeason7Squads: false, soaringSeason7Solo: false, soaringSeason7Duos: false, soaringSeason7Squads: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);
@@ -252,7 +253,7 @@ test("the player bots settings: defaults, sanitizing, the config round-trip and 
       assert.equal(noCustomMatchBots, true, "no bots in custom matches by default (#352)");
       assert.deepEqual(modeCounts, {}, "no mode has a count of its own");
       assert.deepEqual(fillLobby, {}, "no mode fills its lobby");
-      assert.ok(modes && Object.entries(modes).every(([id, on]) => on === (id !== "creative")), "every mode keeps its bots (Creative's off by default, #471)");
+      assert.ok(modes && Object.values(modes).every((on) => on === true), "every mode keeps its bots");
       return rest;
     };
     assert.deepEqual(plain((await admin(backend, "/matchmaking/overview")).body.bots), defaults);

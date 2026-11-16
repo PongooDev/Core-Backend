@@ -97,7 +97,8 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // UUpdateManager::StartCheck (vtable +0x240) with bInCheckHotfixOnly false; the hotfix part ends in 0x10F4190 ("Hotfix
 // check complete, nothing to do." / "need to restart."), then AFortGameModeFrontEnd::OnUpdateCheckComplete.
 // 7.00's (CL-4629139) shipped list adds Creative, Playlist_PlaygroundV2 (PongooDev/CoreV2#471, events/ltms.js `creative`):
-// kept as shipped, enabled while its switch is on, AdvertiseType New and no limited-time banner (the LTM's limitedTime).
+// kept as shipped, always enabled (a game mode with no switch, Core-Backend #375), AdvertiseType New and no limited-time
+// banner (the LTM's limitedTime).
 // UFortMatchmakingContext's matchmaking starts (0x111DA10, 0x114AF10, 0x114CF20 ...) run the same check through 0x112D820
 // (IsWaitingOnUpdateManager is its pending handle, +0x1B8), and UFortMatchmakingV2::OnUpdateCheckComplete cancels the
 // matchmaking "to receive update" when it brought one. The hotfix manager compares the listing's hashes with the last

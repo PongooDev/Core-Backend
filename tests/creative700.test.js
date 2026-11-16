@@ -4,10 +4,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
-import { ltmFrontEndPlaylists, ltmOfBucketPlaylist, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
+import { ltmFrontEndPlaylists, ltmIds, ltmOfBucketPlaylist, ltmOn, ltmSchedule, playlistIdOfName } from "../src/events/ltms.js";
 import { botModeCandidates, botModeIds, botsForMode, defaultBotModes, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { isPartyOnlyBucket, parseBucket } from "../src/matchmaking/service.js";
-import { creativeEntitled, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
+import { creativeEntitled, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { contentPage, creativeAdsFor } from "../src/services/content/pages.js";
@@ -60,23 +60,27 @@ test("7.00's lobby lists Creative as shipped (Playlist_PlaygroundV2, New, no lim
   inBuild(v700, () => {
     const creative = ltmFrontEndPlaylists(v700, {}).find(({ name }) => name === "Playlist_PlaygroundV2");
     assert.deepEqual([creative.ltm.id, creative.enabled, creative.priority], ["creative", true, 16]);
-    assert.equal(ltmOn("creative", v700, { matchmakingModes: { creative: false } }), false, "the admin panel's switch");
-    assert.equal(ltmOn("creative", v700, { ltmOriginalDates: true }), true, "the whole season");
+    // A game mode always on (#375): a setting saved off before, or Original dates, changes nothing; no switch to list.
+    assert.equal(ltmOn("creative", v700, { matchmakingModes: { creative: false } }), true);
+    assert.equal(ltmOn("creative", v700, { ltmOriginalDates: true, matchmakingModes: { creative: false } }), true);
+    assert.equal(ltmOn("creative", v631, {}), false, "where the build has it");
+    assert.equal(ltmIds.includes("creative"), false);
+    assert.equal(ltmSchedule({}).list.some(({ id }) => id === "creative"), false);
     const bucket = parseBucket(`${v700}:0:NAE:playlist_playgroundv2`, v700);
     assert.equal(bucket.playlistId, 35);
     assert.equal(ltmOfBucketPlaylist(bucket).id, "creative");
     assert.equal(ltmOfBucketPlaylist(parseBucket(`${v700}:0:NAE:playlist_playground`, v700)).id, "playgroundV2", "Playground keeps its own");
     assert.equal(isPartyOnlyBucket(`${v700}:0:NAE:playlist_playgroundv2`, v700), true);
-    // No bots unless the panel's Player bots card turns its switch on (off by default, as no other mode's is).
+    // Never bots, and no Player bots switch of its own (#375).
     assert.deepEqual(botModeCandidates("playlist_playgroundv2", v700), ["creative"]);
     assert.deepEqual(botModeCandidates("Playlist_PlaygroundV2", "unknown"), ["creative"]);
     assert.deepEqual(botModeCandidates("playlist_playground", v700), ["playgroundV2"]);
     const bots = { forcePlayerAIs: true, count: 10, fillPlayerTeams: true, modes: {} };
     assert.deepEqual([botsForMode(bots, "creative").forcePlayerAIs, botsForMode(bots, "creative").fillPlayerTeams], [false, false]);
-    assert.equal(botsForMode({ ...bots, modes: { creative: true } }, "creative").forcePlayerAIs, true, "turned on");
+    assert.equal(botsForMode({ ...bots, modes: { creative: true } }, "creative").forcePlayerAIs, false, "not even a saved switch");
     assert.equal(botsForMode(bots, "playgroundV2").forcePlayerAIs, true, "Playground as before");
-    assert.ok(botModeIds.includes("creative"));
-    assert.deepEqual([defaultBotModes().creative, sanitizeBotModes({}, { solo: true }).creative, sanitizeBotModes({ creative: true }).creative], [false, false, true]);
+    assert.equal(botModeIds.includes("creative"), false);
+    assert.deepEqual([defaultBotModes().creative, sanitizeBotModes({ creative: true }).creative], [undefined, undefined]);
   });
   assert.equal(ltmFrontEndPlaylists(v631, {}).some(({ name }) => name === "Playlist_PlaygroundV2"), false, "6.31 has no Creative");
   assert.equal(playlistIdOfName("playlist_playgroundv2", v631), 35);
@@ -107,6 +111,7 @@ test("early access: four islands for a Season 7 Battle Pass owner, for everyone 
     assert.equal(islandsForEveryone(new Date("2018-12-12T23:59:59Z")), false);
     assert.equal(islandsForEveryone(new Date("2018-12-13T00:00:00Z")), true);
     assert.equal(islandsForEveryone(new Date("2019-02-28T00:00:00Z")), false, "the replay's next cycle starts on 6 December again");
+    assert.match(earlyAccessMessage(new Date("2018-12-12T12:00:00Z")), /replay is on 2018-12-12, 1 day before it/);
     withSession("earlynobp", (session) => {
       assert.equal(creativeEntitled(session, new Date("2018-12-10T12:00:00Z")), false);
       assert.equal(settleCreativePlots(session, new Date("2018-12-10T12:00:00Z")), 0);
@@ -143,7 +148,11 @@ test("a 7.00 player in early access: no islands and no Creative ticket without t
     assert.deepEqual(profileOf(before).items, {});
     const refused = await ticket(backend.port, player);
     assert.deepEqual([refused.status, refused.body.errorCode], [400, "errors.com.epicgames.fortnite.matchmaking_disabled"]);
-    assert.match(refused.body.errorMessage, /early access/);
+    // Who was refused, why and how to get in (Core-Backend #375): the replay's day 3 is 8 December, 5 days before the 13th.
+    assert.match(refused.body.errorMessage, /early access for Season 7 Battle Pass owners until 13 December 2018/);
+    assert.match(refused.body.errorMessage, /replay is on 2018-12-08, 5 days before it/);
+    assert.match(refused.body.errorMessage, /Buy the Season 7 Battle Pass/);
+    assert.match(refused.body.errorMessage, /Season start \(day 1\), set at least 7 days back/);
     assert.equal((await ticket(backend.port, player, "playlist_playground")).status, 200, "Playground isn't Creative");
 
     const owner = await userLogin(backend.port, "CreativePass");
@@ -158,7 +167,7 @@ test("a 7.00 player in early access: no islands and no Creative ticket without t
   }
 });
 
-test("from 13 December on the replay every 7.00 player has islands and queues Creative; the admin panel's switch turns it off", async () => {
+test("from 13 December on the replay every 7.00 player has islands and queues Creative; a matchmaking setting saved off for it is ignored (#375)", async () => {
   const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(9) } } });
   try {
     const player = await userLogin(backend.port, "CreativeLate");
@@ -176,9 +185,10 @@ test("from 13 December on the replay every 7.00 player has islands and queues Cr
   const off = await startBackend({ dataDir: offDir, events: { seasonStarts: { 7: startForDay(9) } } });
   try {
     const player = await userLogin(off.port, "CreativeOff");
-    const refused = await ticket(off.port, player);
-    assert.equal(refused.status, 400);
-    assert.match(refused.body.errorMessage, /currently disabled/);
+    const accepted = await ticket(off.port, player);
+    assert.equal(accepted.status, 200, "always on, as Save the World and Battle Royale");
+    const lobby = (await as(off.port, await clientToken(off.port), "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini")).body;
+    assert.ok(lobby.includes("PlaylistName=Playlist_PlaygroundV2, PlaylistAccess=(bEnabled=true,"), "and in the lobby");
   } finally {
     await off.close();
   }

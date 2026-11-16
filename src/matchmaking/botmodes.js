@@ -10,20 +10,18 @@ import { effectiveBots } from "../tournaments/store.js";
 // as with Force player AIs and Fill players' teams with bots both off. A tournament event's own bots (#282) are its own
 // switch and win over this one, as they win over the rest of the panel's.
 const defaultModeOfPlaylist = { 2: "solo", 10: "duo", 9: "squad" };
-// The modes whose switch is off unless the panel turns it on: 7.00's Creative (PongooDev/CoreV2#471), a party's own
-// islands, where Epic had no bots.
+// The modes whose matches never take the panel's bots, and which its Player bots card doesn't list: 7.00's Creative
+// (PongooDev/CoreV2#471, Core-Backend #375), a party's own islands, a game mode always on with no switch of its own.
 export const noBotModes = new Set(["creative"]);
 export const botModeIds = ["solo", "duo", "squad", ...ltmIds];
 const known = new Set(botModeIds);
-const botModeOnByDefault = (id) => !noBotModes.has(id);
 
-export const defaultBotModes = () => Object.fromEntries(botModeIds.map((id) => [id, botModeOnByDefault(id)]));
+export const defaultBotModes = () => Object.fromEntries(botModeIds.map((id) => [id, true]));
 
-// Each mode's switch: the given one when it is a boolean, else the current one (its default when it has none).
+// Each mode's switch: the given one when it is a boolean, else the current one (on unless it is false).
 export function sanitizeBotModes(input, current = null) {
   const given = input && typeof input === "object" && !Array.isArray(input) ? input : {};
-  return Object.fromEntries(botModeIds.map((id) => [id, typeof given[id] === "boolean" ? given[id]
-    : typeof current?.[id] === "boolean" ? current[id] : botModeOnByDefault(id)]));
+  return Object.fromEntries(botModeIds.map((id) => [id, typeof given[id] === "boolean" ? given[id] : current?.[id] !== false]));
 }
 
 // Each mode's own bot count (Core-Backend #352: "a different number of ais for each game mode"), in the settings'
@@ -103,8 +101,7 @@ export function botModeFor(bots, playlist, build) {
 
 // Whether the panel's bots play in a mode: on unless its switch is off. A match whose mode isn't known (no playlist yet,
 // or one Core has no mode for) keeps them, as before the setting.
-export const botsInMode = (bots, mode) => mode === null || mode === undefined
-  || (botModeOnByDefault(mode) ? bots?.modes?.[mode] !== false : bots?.modes?.[mode] === true);
+export const botsInMode = (bots, mode) => mode === null || mode === undefined || (!noBotModes.has(mode) && bots?.modes?.[mode] !== false);
 
 // The bots a match of the mode plays with, in the settings' shape: in a mode that is off, Force player AIs and Fill
 // players' teams with bots are off; in one that fills its lobby, Force player AIs with the most bots a match takes; in one

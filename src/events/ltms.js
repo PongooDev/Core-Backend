@@ -1129,14 +1129,15 @@ export const ltms = [
   // limited-time mode but Season 7's new one, which 7.00's shipped lobby lists as its own (DefaultGame.ini:
   // "PlaylistName=Playlist_PlaygroundV2, PlaylistAccess=(bEnabled=true, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false,
   // bDisplayAsNew=true, bDisplayAsLimitedTime=false, DisplayPriority=16)"; 7.00's FPlaylistAccess has AdvertiseType where 5.0's
-  // had bDisplayAsNew, so its line here says AdvertiseType=New). So it is on by default and kept in the lobby's list as
-  // shipped, with no limited-time banner (limitedTime false, services/fortnite/cloudstorage.js), and the admin panel's switch
-  // turns it off. Its Original dates are the whole season: Creative stayed after it. A Creative match is its party's alone, as
-  // Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
+  // had bDisplayAsNew, so its line here says AdvertiseType=New). It is kept in the lobby's list as shipped, with no
+  // limited-time banner (limitedTime false, services/fortnite/cloudstorage.js). Creative is a game mode as Save the World and
+  // Battle Royale are (the owner's decision, Core-Backend #375), so it is always on where the build has it (alwaysOn): no
+  // admin panel switch, no Original dates, and a matchmaking setting saved for it before is ignored. A Creative match is its
+  // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
   // v7.00's early access).
   { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build700], seasons: [7], defaultOn: true,
-    advertise: "New", limitedTime: false, original: season7Window,
+    alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
@@ -1159,7 +1160,9 @@ const inRange = ([first, last], build) => compareToBound(build, first) >= 0 && c
 // The builds an LTM is new in (newIn: one changelist or a list).
 const newInBuilds = (ltm) => (ltm.newIn === undefined ? [] : [].concat(ltm.newIn));
 const isNewIn = (ltm, build) => newInBuilds(ltm).includes(Number(build));
-export const ltmIds = ltms.map(({ id }) => id);
+// The modes the admin panel switches (every LTM but the game modes that are always on where the build has them: 7.00's
+// Creative, Core-Backend #375).
+export const ltmIds = ltms.filter(({ alwaysOn }) => !alwaysOn).map(({ id }) => id);
 const byId = new Map(ltms.map((ltm) => [ltm.id, ltm]));
 // A playlist's LTM: the requesting build's (3.5.1 gave 23 and 26 to other modes), else any build's.
 export const ltmOfPlaylist = (playlistId, build = currentBuild()) => {
@@ -1244,7 +1247,8 @@ export function configureLtms(provider) {
 export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
   const ltm = byId.get(id);
   if (!ltm || !hasLtm(id, build) || ltm.tournament) return false;
-  if (isNewIn(ltm, build)) return true;
+  // A game mode always on where the build has it (7.00's Creative, #375), whatever the settings say.
+  if (ltm.alwaysOn || isNewIn(ltm, build)) return true;
   // 6.21's Fortnitemares modes (Core-Backend #354): the Leaky Lake's state, not the dates; off once the Butterfly has
   // happened, by the admin's switch before it.
   const lake = ltm.untilButterfly ? leakyLakeState(now, build) : null;
@@ -1365,7 +1369,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     // Whether Original dates replays Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367).
     fortnitemaresOutage: fortnitemaresOutageOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
-    list: ltms.filter((ltm) => !ltm.tournament).map((ltm) => ({
+    // Neither a tournament playlist (the Tournaments tab's) nor a game mode always on (7.00's Creative, #375) has a switch.
+    list: ltms.filter((ltm) => !ltm.tournament && !ltm.alwaysOn).map((ltm) => ({
       id: ltm.id,
       name: ltm.name,
       playlistId: ltm.playlistId,

@@ -68,21 +68,19 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos",
   "highExplosivesSeason7Solo", "highExplosivesSeason7Squads", "unvaultedSquads", "unvaultedSolo", "unvaultedDuos",
   "siphonSolo", "siphonDuos", "siphonSquads", "sniperShootoutSeason7Duos", "sniperShootoutSeason7Solo", "sniperShootoutSeason7Squads",
-  "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads",
-  // 7.00's Creative (PongooDev/CoreV2#471).
-  "creative"];
+  "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
 // 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos, 6.00's 50v50 and 6.02's Disco Domination are on by default from the
 // start: a settings file without its key takes the default. So are 6.20's Fortnitemares and 6.22's Team Terror (a server
 // owner's request: "enable the playlist by default"), 6.30's Food Fight and Wild West, the modes 6.30 shipped with, 6.31's Team Rumble,
-// and 7.00's 50v50 (its shipped lobby's), Close Encounters (Update v7.01's mode, whose playlists 7.00's paks have) and
-// Creative (its shipped lobby's, PongooDev/CoreV2#471).
+// and 7.00's 50v50 (its shipped lobby's) and Close Encounters (Update v7.01's mode, whose playlists 7.00's paks have).
+// 7.00's Creative has no switch: always on (events/ltms.js alwaysOn, Core-Backend #375).
 const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6", "discoDomination602",
   "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "teamTerror",
   "foodFight", "wildWestSolo", "wildWestDuos", "wildWestSquads", "teamRumble",
-  "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos", "creative"];
+  "fiftyFiftySeason7", "closeEncountersSeason7Squads", "closeEncountersSeason7Solo", "closeEncountersSeason7Duos"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.

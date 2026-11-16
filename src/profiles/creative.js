@@ -56,6 +56,22 @@ export const islandsForEveryone = (now = new Date()) => seasonMoment(now, null, 
 // Whether the account may have islands and play Creative now (Update v7.00's early access).
 export const creativeEntitled = (session, now = new Date()) => ownsCreativeBattlePass(session) || islandsForEveryone(now);
 
+// Season 7's replay date now ("YYYY-MM-DD"), and how many days are left until 13 December 2018 on it (0 once there).
+export const creativeReplayDay = (now = new Date()) => seasonMoment(now, null, creativeSeason).toISOString().slice(0, 10);
+export const daysUntilIslandsForEveryone = (now = new Date()) =>
+  Math.max(0, Math.ceil((allIslandsDay - seasonMoment(now, null, creativeSeason).getTime()) / 86_400_000));
+
+// The early access refusal (Core-Backend #375): what the player was refused for and how they get in. 7.00's client has no
+// text of its own for a refused ticket but its "Weird. We couldn't connect to the match.", so this is the backend console's
+// and the error's message.
+export function earlyAccessMessage(now = new Date()) {
+  const days = daysUntilIslandsForEveryone(now);
+  return `Creative is in early access for Season 7 Battle Pass owners until 13 December 2018 (Update v7.00), and Season 7's ` +
+    `replay is on ${creativeReplayDay(now)}, ${days} day${days === 1 ? "" : "s"} before it. Buy the Season 7 Battle Pass in the ` +
+    "lobby's Battle Pass tab, or wait until the replay reaches 13 December; a host can move it there with the admin panel's " +
+    "Season 7 events page, Season start (day 1), set at least 7 days back";
+}
+
 export const plotsOf = (profile) => Object.entries(profile.items).filter(([, item]) => isPlot(item));
 
 // The account's four islands, once it is entitled, on 7.00 and later. Returns how many were given.

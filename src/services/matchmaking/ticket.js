@@ -5,7 +5,7 @@ import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
-import { creativeEntitled, settleCreativePlots } from "../../profiles/creative.js";
+import { creativeEntitled, earlyAccessMessage, settleCreativePlots } from "../../profiles/creative.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
 import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
@@ -77,7 +77,8 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     }
     // 6.21's Fortnitemares modes follow the Leaky Lake's state (Core-Backend #354, events/ltms.js untilButterfly), as the
     // lobby lists them.
-    const off = tournamentEvent ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
+    // 7.00's Creative is always on (#375): a matchmaking setting saved for it before changes nothing.
+    const off = tournamentEvent || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
       : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
@@ -90,15 +91,16 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     }
     // 7.00's Creative (PongooDev/CoreV2#471, profiles/creative.js): Update v7.00's early access, Battle Pass owners only
     // until 13 December 2018 on Season 7's replay, then everyone. Each of a party's players asks for their own ticket, so
-    // each is checked. No response of Epic's for it is known (7.00's client has no text of its own for one): the same refusal
-    // as a mode that is off. A player who may play gets their islands here at the latest, before their server asks.
+    // each is checked. No response of Epic's for it is known, and 7.00's client shows any refused ticket as "Weird. We
+    // couldn't connect to the match." (it has texts only for its tournament, ban and custom key codes), so the backend
+    // console says who was refused, why and how to get in (Core-Backend #375). A player who may play gets their islands here
+    // at the latest, before their server asks.
     if (ltm?.id === "creative" && profiles) {
       const session = openSession(profiles, accountId);
       if (!creativeEntitled(session)) {
-        log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: Creative is in early access for Season 7 Battle Pass owners ` +
-          "until 13 December 2018 on Season 7's replay (Update v7.00)");
-        return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled",
-          "Creative is in early access for Battle Pass owners until 13 December 2018");
+        const message = earlyAccessMessage();
+        log("Matchmaking", `Refused ${accounts?.get?.(accountId)?.displayName ?? accountId}'s Creative ticket: ${message}`);
+        return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", message);
       }
       if (settleCreativePlots(session)) {
         session.commit();
