@@ -233,7 +233,7 @@ test("6.20's and 6.21's Fortnitemares modes have Epic's tiles in playlistinforma
   }
 });
 
-test("#354: Seasons 4 to 6 serve Epic's own default-mode tiles, BR_LobbyTileArt, the only ones Epic's pages named for them; 3.6 reads none", () => {
+test("#354: Seasons 4 to 7 serve Epic's own default-mode tiles, BR_LobbyTileArt, the only ones Epic's pages named for them; 3.6 reads none", () => {
   const tile = (mode) => new RegExp(`/playlisttiles/BR_LobbyTileArt_${mode}-512x512-[0-9a-f]{40}\.png$`);
   for (const build of [v40, v530]) {
     const byName = Object.fromEntries(playlistImagesFor(build).playlistimages.images.map((entry) => [entry.playlistname, entry.image]));
@@ -241,7 +241,8 @@ test("#354: Seasons 4 to 6 serve Epic's own default-mode tiles, BR_LobbyTileArt,
     assert.match(byName.Playlist_DefaultDuo, tile("Duo"), build);
     assert.match(byName.Playlist_DefaultSquad, tile("Squad"), build);
   }
-  for (const build of [v540, "4402180", "4526925", "4573279"]) {
+  // Season 7 (7.00) too: no Season 7 default-mode tile exists anywhere (src/services/content/playlistimages.js).
+  for (const build of [v540, "4402180", "4526925", "4573279", "4629139"]) {
     const byName = Object.fromEntries(playlistInformationFor(build).playlist_info.playlists.map((entry) => [entry.playlist_name, entry.image]));
     assert.match(byName.Playlist_DefaultSolo, tile("Solo"), build);
     assert.match(byName.Playlist_DefaultDuo, tile("Duo"), build);

@@ -88,6 +88,18 @@ export const playlistImagesBuild = 4039451;
 // of them. The first season tiles for the default modes there are Season X's and 11's (playlistinformation/v94/
 // 10BR_Launch_ModeTiles_* and 11BR_Launch_ModeTiles_*, still on the CDN), for builds Core doesn't run. So Seasons 4 to 6 keep
 // Epic's BR_LobbyTileArt, and the admin panel's News page sets a season's own picture for any mode.
+// Season 7 the same (#354 again, for 7.00, searched 2026-11-16): 7.00's and 7.10's paks have no tile of their own for any
+// mode (UI/Foundation/Textures/Tiles still holds only T_Athena_Tile_Matchmaking_Default; the playlist assets name only their
+// 64-pixel MissionIcon), the Wayback Machine has no capture of Epic's content page between December 2018 and October 2019
+// (fortnitecontent-website-prod07's first is 2019-10-13; fortnite-public-service-prod11 has none), and its captures of the
+// CDN's playlistinformation, playlisttiles and subgameselect folders (and every other fortnite-game folder's BR07 or
+// ModeTile files) hold Season 7 tiles for limited time modes only (BR07_14-DoF_Social, BR07_ModeTile_*), none for Solo,
+// Duos or Squads; nor do the community copies of Epic's pages (LawinServer and its forks, Neon, Neodyme's asset index,
+// Reload, Aura, Neonite's per-season library, which starts at Season X). So 7.00 keeps BR_LobbyTileArt too. The 14 Days of
+// Fortnite's playlists (7.10's, not 7.00's) have Epic's tiles on that later page (BR07_14-DoF_Social for Playlist_33,
+// BR_LTM_Barebones, _Slide, _OneShot, _GroundGame, _SneakySilencers, _CloseEncounters50s, _HighExplosives50s,
+// _FoodFight16; each checked on the CDN 2026-11-16: 200, image/jpeg, the hash in its name the file's SHA-1); they come in
+// with 7.10's LTMs, as every picture here is a playlist some build's LTM names.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
