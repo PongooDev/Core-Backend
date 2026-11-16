@@ -264,10 +264,79 @@ export function cloudStorageRoutes({ tokens, network, settings }) {
   return router;
 }
 
+// The game's settings file and the builds that read it (CoreV2 #468). Epic's service kept the one ClientSettings.Sav an
+// account uploaded, and a client only ever read one saved by its own build or an earlier one, since nobody went back to an
+// older build. Core's builds share the file, so going back gave an older build the file a newer one saved. The record's version doesn't keep
+// them apart: UFortClientSettingsRecord loads only its own version (ReadFromArchive, 3.3 0xC1B770: "Can't load version %d,
+// older than %d or invalid"), but 3.3's and 4.1's are both 15 (their constructors, 3.3 0xB3AF30 and 4.1 0xBB9F90, set the
+// oldest and newest version, +0xBC and +0xB8, to 15). So 3.3 loads 4.1's file, and its key bindings (UserActionBindings,
+// +0x230) with it, which hold the actions 4.1's Input tab lists and 3.3's doesn't: BuildConfirm, EditSelect, EmotePicker,
+// LockerEmote1 to 6, PickerNextWheel, PickerPreviousWheel and SquadQuickChatPicker. Opening Settings builds the Input tab,
+// whose UFortInputOptions::ConstructKeyBindList (3.3 0x2881D40) takes the record's bindings as they are
+// (UFortClientSettingsRecord::GetActionBindings, 0xB4D1E0, hands back UserActionBindings once it holds any) and skips each
+// whose action it doesn't list, but finds the row it made for a binding by the binding's place in that list. After the first
+// skipped one it reads past its rows and copies an FText from nothing (0x288463B -> 0x121C0FA, reading address 0x8): the
+// game crashed as Settings opened. 4.1's (0x2A279F0) walks its own list and looks each action up in the bindings, so 4.1
+// takes an older build's file.
+// So a build is never given a file a newer build saved, as no build on Epic's was. The file's header names the build that
+// saved it (3.3 0xC53880: the magic 0xF057217E, the UE4 version, then the engine version, whose changelist is at offset 14,
+// then the record version). Each upload is also kept as its builder's copy (<account>/clientsettings/<changelist>.Sav), and
+// a build gets its own copy (its last upload); else the last upload of an older build, so the settings carry on to a newer
+// build as on Epic's; else none, and it starts from its defaults as a new account does ("No client settings found, using
+// defaults", 3.3 0xD87E90) until its first upload makes its copy. A file of no known build (no header, or no build in the
+// request) is served as before. Unlike before, a build with a copy keeps it when an older build saves after it: the older
+// build's file lacks the newer one's own bindings (3.3's has none of 4.1's emote keys), which the newer build would set to
+// their defaults again.
+const clientSettingsName = "clientsettings.sav";
+const isClientSettings = (filename) => filename.toLowerCase() === clientSettingsName;
+const recordMagic = 0xF057217E;
+const headerLength = 18;
+export function clientSettingsBuilder(data) {
+  if (!Buffer.isBuffer(data) || data.length < headerLength || data.readUInt32LE(0) !== recordMagic) return null;
+  const changelist = data.readUInt32LE(14) & 0x7FFFFFFF;
+  return changelist > 0 ? changelist : null;
+}
+function fileBuilder(file) {
+  const handle = fs.openSync(file, "r");
+  try {
+    const data = Buffer.alloc(headerLength);
+    return clientSettingsBuilder(data.subarray(0, fs.readSync(handle, data, 0, headerLength, 0)));
+  } finally {
+    fs.closeSync(handle);
+  }
+}
+function writeFile(file, data) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(`${file}.tmp`, data);
+  fs.renameSync(`${file}.tmp`, file);
+}
+
 export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) {
   const router = express.Router();
   const base = "/fortnite/api/cloudstorage/user/:accountId";
   const folder = (accountId) => path.join(dataDir, "accounts", accountId, "cloudstorage");
+  const buildCopies = (accountId) => path.join(dataDir, "accounts", accountId, "clientsettings");
+  const buildCopy = (accountId, changelist) => path.join(buildCopies(accountId), `${changelist}.Sav`);
+  const requestBuild = (req) => (/^\d+$/.test(getBuild(req)) ? Number(getBuild(req)) : null);
+
+  // The file of a user file's name the requesting build is given: the stored one, but ClientSettings.Sav's as above.
+  // Null when there is none for it.
+  function servedFile(req, filename) {
+    const stored = path.join(folder(req.params.accountId), filename);
+    if (!fs.existsSync(stored)) return null;
+    const build = requestBuild(req);
+    if (!isClientSettings(filename) || build === null) return stored;
+    const builder = fileBuilder(stored);
+    if (builder === null || builder === build) return stored;
+    const dir = buildCopies(req.params.accountId);
+    const copies = (fs.existsSync(dir) ? fs.readdirSync(dir) : []).map((name) => /^(\d+)\.Sav$/.exec(name)).filter(Boolean)
+      .map((match) => ({ builder: Number(match[1]), file: path.join(dir, match[0]) }));
+    const own = copies.find((copy) => copy.builder === build);
+    if (own) return own.file;
+    const older = [{ builder, file: stored }, ...copies].filter((copy) => copy.builder < build)
+      .map((copy) => ({ ...copy, at: fs.statSync(copy.file).mtimeMs })).sort((a, b) => b.at - a.at);
+    return older[0]?.file ?? null;
+  }
 
   // A storm shield's build is saved in its owner's user cloud storage (<core item id>_r<zone>_a<0|1>.sav), which the
   // zone server lists, reads and writes for that owner (UFortUserCloudHelperComponent) with its own signed-in account's
@@ -304,8 +373,7 @@ export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) 
   router.get(base, requireOwnerOrHost, (req, res) => {
     const dir = folder(req.params.accountId);
     const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name) && !name.endsWith(".tmp")) : [];
-    res.json(files.map((filename) => {
-      const file = path.join(dir, filename);
+    res.json(files.map((filename) => ({ filename, file: servedFile(req, filename) })).filter(({ file }) => file).map(({ filename, file }) => {
       const data = fs.readFileSync(file);
       return {
         ...header(filename, data),
@@ -318,22 +386,36 @@ export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) 
   });
 
   router.get(`${base}/:filename`, requireOwnerOrHost, checkFilename, (req, res) => {
-    if (!fs.existsSync(req.file)) {
+    const file = servedFile(req, req.params.filename);
+    if (!file) {
       return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     }
-    res.type("application/octet-stream").send(fs.readFileSync(req.file));
+    res.type("application/octet-stream").send(fs.readFileSync(file));
   });
 
-  // The body is read before any refusal, so the answer never cuts off an upload in progress.
+  // The body is read before any refusal, so the answer never cuts off an upload in progress. A ClientSettings.Sav is also
+  // kept as its builder's copy; the one it replaces is kept as its own builder's first when that has none yet (a file
+  // saved before Core kept copies), with its upload time.
   router.put(`${base}/:filename`, express.raw({ type: () => true, limit: "16mb" }), requireOwnerOrHost, checkFilename, (req, res) => {
-    fs.mkdirSync(path.dirname(req.file), { recursive: true });
-    fs.writeFileSync(`${req.file}.tmp`, Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0));
-    fs.renameSync(`${req.file}.tmp`, req.file);
+    const data = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    if (isClientSettings(req.params.filename)) {
+      const previous = fs.existsSync(req.file) ? fileBuilder(req.file) : null;
+      if (previous !== null && !fs.existsSync(buildCopy(req.params.accountId, previous))) {
+        const { atime, mtime } = fs.statSync(req.file);
+        writeFile(buildCopy(req.params.accountId, previous), fs.readFileSync(req.file));
+        fs.utimesSync(buildCopy(req.params.accountId, previous), atime, mtime);
+      }
+      const builder = clientSettingsBuilder(data) ?? requestBuild(req);
+      if (builder !== null) writeFile(buildCopy(req.params.accountId, builder), data);
+    }
+    writeFile(req.file, data);
     res.status(204).end();
   });
 
+  // ClientSettings.Sav goes for every build, its copies with it.
   router.delete(`${base}/:filename`, requireOwnAccount, checkFilename, (req, res) => {
     fs.rmSync(req.file, { force: true });
+    if (isClientSettings(req.params.filename)) fs.rmSync(buildCopies(req.params.accountId), { recursive: true, force: true });
     res.status(204).end();
   });
 

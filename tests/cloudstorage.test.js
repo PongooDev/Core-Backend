@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
+import fs from "node:fs";
 import http from "node:http";
+import path from "node:path";
 import { certUserAgent, clientToken, dedicatedServerToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
 
 // Battle Royale's global chat (Core-Backend #238), in every build's DefaultGame.ini; 6.20 keeps it in UFortChatManager (#344).
@@ -57,6 +59,10 @@ test("user files can be written, listed with their SHA-1, read back and deleted"
 // A ClientSettings.Sav as the game writes it (UFortClientSettingsRecord, Core-Backend #228): the record header (magic
 // 0xF057217E, UE4 version, engine version and changelist, branch), then tagged properties, among them the HUD's net
 // stats element, the controller platform and the Battle Royale input preset, then key bindings to tens of KB.
+const agentOf = (version, changelist) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-${version}-CL-${changelist}`;
+const build31 = agentOf("3.1", 3915963);
+const listAs = async (port, path, token, userAgent) => JSON.parse((await raw(port, "GET", path, token, undefined, userAgent)).body.toString("utf8"));
+
 function clientSettingsSav() {
   const parts = [];
   const int = (value) => { const b = Buffer.alloc(4); b.writeInt32LE(value); parts.push(b); };
@@ -82,7 +88,7 @@ test("a ClientSettings.Sav round-trips byte for byte, listed so the game downloa
 
     const first = clientSettingsSav();
     assert.ok(first.length > 30000);
-    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, first)).status, 204);
+    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, first, build31)).status, 204);
 
     // Changed again: the net stats turned off. The listing's hash follows the new file, so the game's cached copy no
     // longer matches it and it downloads this one.
@@ -90,12 +96,14 @@ test("a ClientSettings.Sav round-trips byte for byte, listed so the game downloa
     const flag = Buffer.from("HUD.TopLeft.NetDebugUI\0\x05\0\0\0None\0", "latin1");
     second[second.indexOf(flag) + flag.length] = 0;
     assert.notEqual(sha1(second), sha1(first));
-    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, second)).status, 204);
+    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, second, build31)).status, 204);
 
-    const listed = await get(backend.port, base, token);
+    // A 3.1 file, as 3.1 uploads and reads it (CoreV2 #468: a build is never given a newer build's file).
+    const listed = await raw(backend.port, "GET", base, token, undefined, build31);
     assert.equal(listed.status, 200);
-    assert.equal(listed.body.length, 1, "the temporary file of a write is never listed");
-    const [file] = listed.body;
+    const listing = JSON.parse(listed.body.toString("utf8"));
+    assert.equal(listing.length, 1, "the temporary file of a write is never listed");
+    const [file] = listing;
     assert.equal(file.filename, "ClientSettings.Sav");
     assert.equal(file.uniqueFilename, "ClientSettings.Sav");
     assert.equal(file.hash, sha1(second));
@@ -105,7 +113,7 @@ test("a ClientSettings.Sav round-trips byte for byte, listed so the game downloa
     assert.equal(file.accountId, accountId);
     assert.ok(!Number.isNaN(Date.parse(file.uploaded)));
 
-    const read = await raw(backend.port, "GET", `${base}/${file.uniqueFilename}`, token);
+    const read = await raw(backend.port, "GET", `${base}/${file.uniqueFilename}`, token, undefined, build31);
     assert.equal(read.status, 200);
     assert.ok(read.body.equals(second), "read back byte for byte");
     assert.equal(sha1(read.body), file.hash);
@@ -113,17 +121,114 @@ test("a ClientSettings.Sav round-trips byte for byte, listed so the game downloa
     // The same file, uploaded with no content type, is stored as it came too.
     const plain = await new Promise((resolve, reject) => {
       const req = http.request({ host: "127.0.0.1", port: backend.port, method: "PUT", path: `${base}/ClientSettings.Sav`,
-        headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}` } }, (res) => { res.resume(); res.on("end", () => resolve(res.statusCode)); });
+        headers: { "User-Agent": build31, Authorization: `bearer ${token}` } }, (res) => { res.resume(); res.on("end", () => resolve(res.statusCode)); });
       req.on("error", reject);
       req.end(first);
     });
     assert.equal(plain, 204);
-    assert.ok((await raw(backend.port, "GET", `${base}/ClientSettings.Sav`, token)).body.equals(first));
-    assert.equal((await get(backend.port, base, token)).body[0].hash, sha1(first));
+    assert.ok((await raw(backend.port, "GET", `${base}/ClientSettings.Sav`, token, undefined, build31)).body.equals(first));
+    assert.equal((await listAs(backend.port, base, token, build31))[0].hash, sha1(first));
 
     // Kept per account: another player's settings are their own.
     const other = await userLogin(backend.port, "OtherSettingsPlayer");
     assert.deepEqual((await get(backend.port, `/fortnite/api/cloudstorage/user/${other.accountId}`, other.token)).body, []);
+  } finally {
+    backend.close();
+  }
+});
+
+// A ClientSettings.Sav's record header as each build writes it (3.3 0xC53880: the magic, the UE4 version, the engine version
+// with its changelist and branch, record version 15), then something of the build's own.
+function settingsOf(changelist, branch, marker) {
+  const head = Buffer.alloc(18);
+  head.writeUInt32LE(0xF057217E, 0);
+  head.writeInt32LE(516, 4);
+  head.writeUInt16LE(4, 8);
+  head.writeUInt16LE(20, 10);
+  head.writeUInt16LE(0, 12);
+  head.writeUInt32LE(changelist, 14);
+  const str = (value) => {
+    const length = Buffer.alloc(4);
+    length.writeInt32LE(value.length + 1);
+    return Buffer.concat([length, Buffer.from(`${value}\0`, "latin1")]);
+  };
+  const version = Buffer.alloc(4);
+  version.writeInt32LE(15);
+  return Buffer.concat([head, str(branch), version, str("UserActionBindings"), str(marker), str("None")]);
+}
+
+test("an older build is never given a newer build's ClientSettings.Sav, and a build keeps its own (CoreV2 #468)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "SwitchingPlayer");
+    const base = `/fortnite/api/cloudstorage/user/${accountId}`;
+    const sha1 = (data) => crypto.createHash("sha1").update(data).digest("hex");
+    const build32 = agentOf("3.2", 3935073);
+    const build33 = agentOf("3.3", 3942182);
+    const build41 = agentOf("4.1", 4053532);
+    const build50 = agentOf("5.00", 4214610);
+    const settingsListed = async (agent) => (await listAs(backend.port, base, token, agent)).filter((file) => file.filename === "ClientSettings.Sav");
+    const read = (agent) => raw(backend.port, "GET", `${base}/ClientSettings.Sav`, token, undefined, agent);
+    async function served(agent, data) {
+      const listed = await settingsListed(agent);
+      if (!data) {
+        assert.deepEqual(listed, [], "nothing listed");
+        assert.equal((await read(agent)).status, 404);
+        return;
+      }
+      assert.equal(listed.length, 1);
+      assert.equal(listed[0].hash, sha1(data));
+      assert.equal(listed[0].length, data.length);
+      assert.ok((await read(agent)).body.equals(data), "read back as listed");
+    }
+
+    // The reporter's account: the file 4.1 saved last, from before the backend kept a copy per build. Its record is
+    // version 15, as 3.3's is, and its key bindings hold actions 3.3's Input tab doesn't list.
+    const of41 = settingsOf(4053532, "++Fortnite+Release-4.1", "EmotePicker");
+    const stored = path.join(backend.dataDir, "accounts", accountId, "cloudstorage", "ClientSettings.Sav");
+    fs.mkdirSync(path.dirname(stored), { recursive: true });
+    fs.writeFileSync(stored, of41);
+    const earlier = new Date(Date.now() - 3600 * 1000);
+    fs.utimesSync(stored, earlier, earlier);
+    // Another user file (a storm shield's save) is every build's.
+    const shield = crypto.randomBytes(500);
+    assert.equal((await raw(backend.port, "PUT", `${base}/fd40e9fb-be63-463b-9910-357308ea4cb4_r0_a0.sav`, token, shield, build41)).status, 204);
+
+    // 4.1 and newer builds get it, as before. 3.3 and 3.2 get none: their defaults, as a new account's.
+    await served(build41, of41);
+    await served(build50, of41);
+    await served(build33, null);
+    await served(build32, null);
+    for (const agent of [build32, build33, build41, build50]) {
+      assert.ok((await listAs(backend.port, base, token, agent)).some((file) => file.hash === sha1(shield)), "other files are listed for every build");
+    }
+
+    // 3.3 saves its own. 4.1 keeps the one it saved, with its upload time; 5.0, which never saved one, gets the last
+    // older build's: 3.3's. 3.2 still gets none.
+    const of33 = settingsOf(3942182, "++Fortnite+Release-3.3", "TrapPicker");
+    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, of33, build33)).status, 204);
+    await served(build33, of33);
+    await served(build41, of41);
+    assert.ok(Math.abs(Date.parse((await settingsListed(build41))[0].uploaded) - earlier.getTime()) < 2000, "4.1's file keeps its upload time");
+    await served(build50, of33);
+    await served(build32, null);
+
+    // 4.1 saves again: its new file, which 5.0 now gets too; 3.3 keeps its own.
+    const of41b = settingsOf(4053532, "++Fortnite+Release-4.1", "LockerEmote1");
+    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, of41b, build41)).status, 204);
+    await served(build41, of41b);
+    await served(build50, of41b);
+    await served(build33, of33);
+
+    // A file without the record header names no build, so every build gets it, as before.
+    const unknown = crypto.randomBytes(300);
+    assert.equal((await raw(backend.port, "PUT", `${base}/ClientSettings.Sav`, token, unknown, build50)).status, 204);
+    await served(build50, unknown);
+    await served(build32, unknown);
+
+    // Deleting the file deletes it for every build.
+    assert.equal((await raw(backend.port, "DELETE", `${base}/ClientSettings.Sav`, token, undefined, build50)).status, 204);
+    for (const agent of [build32, build33, build41, build50]) await served(agent, null);
   } finally {
     backend.close();
   }
