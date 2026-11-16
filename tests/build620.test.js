@@ -1,4 +1,4 @@
-import { test } from "node:test";
+import { mock, test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -56,6 +56,15 @@ const withConfig = (config, run) => {
     return run();
   } finally {
     configureEvents(null);
+  }
+};
+// The login reads the clock (Season 6's replay laps every 70 days), so a test that expects a day's parts logs in at that day.
+const loginAt = (session, iso) => {
+  mock.timers.enable({ apis: ["Date"], now: new Date(iso) });
+  try {
+    athenaQuestLogin(session);
+  } finally {
+    mock.timers.reset();
   }
 };
 const at = (iso) => new Date(iso);
@@ -162,7 +171,7 @@ test("the Fortnitemares Challenges: Schedule_Fortnitemares while LTM_Fortnitemar
     assert.equal(plan.totalWeeks, 10);
     withSession(v620, "fnm620", (session) => {
       setUpAthena(session);
-      athenaQuestLogin(session);
+      loginAt(session, "2018-10-25T12:00:00Z");
       const bundlesHeld = (now) => {
         settleChallengeSchedules(session, seasonRewardFunctions(), now);
         return Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId)

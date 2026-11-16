@@ -1,4 +1,4 @@
-import { test } from "node:test";
+import { mock, test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -24,6 +24,15 @@ const v621 = "4526925";
 const v610 = "4480234";
 const v541 = "4363240";
 const replay = { mode: "auto", seasonStarts: { 6: "2018-09-27" } };
+// The login reads the clock (Season 6's replay laps every 70 days), so a test that expects a day's parts logs in at that day.
+const loginAt = (session, iso) => {
+  mock.timers.enable({ apis: ["Date"], now: new Date(iso) });
+  try {
+    athenaQuestLogin(session);
+  } finally {
+    mock.timers.reset();
+  }
+};
 const at = (iso) => new Date(iso);
 const agentOf = (build, version) => `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.19045.1.256.64bit`;
 const withConfig = (config, run) => {
@@ -145,7 +154,7 @@ test("#345: the admin's manual parts and Unlock all parts now give the parts at 
       .filter((id) => id.startsWith("ChallengeBundle:questbundle_fortnitemares")).sort();
     withChallengeSettings({}, () => {
       setUpAthena(session);
-      athenaQuestLogin(session);
+      loginAt(session, "2018-10-25T12:00:00Z");
       settleChallengeSchedules(session, seasonRewardFunctions(), now);
     });
     assert.deepEqual(held(), ["ChallengeBundle:questbundle_fortnitemares_part1"]);

@@ -1,4 +1,4 @@
-import { test } from "node:test";
+import { mock, test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -56,6 +56,15 @@ const withConfig = (config, run) => {
     return run();
   } finally {
     configureEvents(null);
+  }
+};
+// The login reads the clock (Season 6's replay laps every 70 days), so a test that expects a day's parts logs in at that day.
+const loginAt = (session, iso) => {
+  mock.timers.enable({ apis: ["Date"], now: new Date(iso) });
+  try {
+    athenaQuestLogin(session);
+  } finally {
+    mock.timers.reset();
   }
 };
 const at = (iso) => new Date(iso);
@@ -164,7 +173,7 @@ test("6.21's challenges: the Lil' Kev challenges while LTM_LilKevin is served, t
   // The Fortnitemares parts still open by the files' days on Season 6's replay.
   withConfig(replay, () => withSession(v621, "fnm621", (session) => {
     setUpAthena(session);
-    athenaQuestLogin(session);
+    loginAt(session, "2018-10-25T12:00:00Z");
     const parts = (now) => {
       settleChallengeSchedules(session, seasonRewardFunctions(), now);
       return held(session).filter((id) => id.startsWith("ChallengeBundle:questbundle_fortnitemares")).length;
