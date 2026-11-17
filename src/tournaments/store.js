@@ -44,12 +44,28 @@ const placementTable = [[1, 100], [2, 94], [3, 91], [4, 88], [5, 85], [6, 80], [
 //   eliminations", and "in 1 point increments for reaching the Top 10, the Top 3, or a Top 1 Victory Royale".) Each step
 //   is one of the client's reward tiers (tournaments/showdown.js), and one point each is what its match HUD counts: the
 //   running total next to the health bar adds 1 for each "+N POINTS" alert, whatever N is.
+// - The Winter Royale, November and December 2018 (Core-Backend #383, tournaments/winterroyale.js has its schedule and
+//   sources). Its qualifiers: "Victory Royale: +3 points, Top 3: +1 point, Top 10: +1 point, 7 eliminations: +1 point, 5
+//   eliminations: +1 point, 3 eliminations: +1 point" (the steps add up: a win is 5 points), and "The highest score each
+//   player receives during a single session will be counted" (bestWindow: a player's place is their best window's
+//   points, not their sum). Its finals: "Victory Royale: 3 Points, 2nd-3rd Place: 2 Points, 7+ Eliminations: 3 Points,
+//   5-6 Eliminations: 2 Points, Big Bonus: After 7 Eliminations, +1 Point will be added to each elimination" (a step at
+//   5, one at 7 and one for each elimination after it, up to the steps' 100), the 200 finalists playing "five Solos
+//   matches" in the heats (countedMatches 5), the top 100 going on to the Grand Finals, whose matches aren't recorded
+//   (🟡 every one counts, on the finals' points).
+const winterRoyaleFinalsSteps = [[5, 2], [7, 1], ...Array.from({ length: 93 }, (_, index) => [8 + index, 1])];
 // countedMatches null: every match counts; minimumMatches 0: nobody waits to be ranked.
 export const rulesets = {
   soloShowdownMay2018: { name: "Solo Showdown, May 2018 (4.2)", placementPoints: placementTable, pointsPerElimination: 0, countedMatches: 50, minimumMatches: 50 },
   soloShowdownJuly2018: { name: "Solo Showdown, July 2018", placementPoints: placementTable, pointsPerElimination: 6, countedMatches: 25, minimumMatches: 25 },
   inGameOctober2018: { name: "In-game tournament, October 2018 (6.10+: a point a step)", placementPoints: [[1, 3], [3, 2], [10, 1]], pointsPerElimination: 0,
-    eliminationPoints: [[3, 1], [5, 1], [7, 1]], countedMatches: null, minimumMatches: 0 }
+    eliminationPoints: [[3, 1], [5, 1], [7, 1]], countedMatches: null, minimumMatches: 0 },
+  winterRoyale2018Qualifiers: { name: "Winter Royale qualifiers, November 2018 (best session counts)", placementPoints: [[1, 5], [3, 2], [10, 1]],
+    pointsPerElimination: 0, eliminationPoints: [[3, 1], [5, 1], [7, 1]], countedMatches: null, minimumMatches: 0, bestWindow: true },
+  winterRoyale2018Finals: { name: "Winter Royale finals heats, 2018 (five matches)", placementPoints: [[1, 3], [3, 2]], pointsPerElimination: 0,
+    eliminationPoints: winterRoyaleFinalsSteps, countedMatches: 5, minimumMatches: 0 },
+  winterRoyale2018GrandFinals: { name: "Winter Royale Grand Finals, 2018", placementPoints: [[1, 3], [3, 2]], pointsPerElimination: 0,
+    eliminationPoints: winterRoyaleFinalsSteps, countedMatches: null, minimumMatches: 0 }
 };
 export const defaultRuleset = "soloShowdownMay2018";
 // An event on an in-game tournament playlist (6.10+) made without a ruleset scores Epic's in-game way.
@@ -179,6 +195,72 @@ export function validateImages(images, current = {}, dataDir = null) {
     next[key] = image;
   }
   return next;
+}
+
+// An in-game event's texts and colours in the game (Core-Backend #383): the content page's tournament_info entry
+// (tournaments/showdown.js tournamentInformationFor) as Epic's service filled it, field by field, in place of Core's own
+// (each left out keeps Core's). The fields are the ones every client from 6.10 to 7.20 reads (FShowdownTournamentData in
+// the SDKs of 6.10 to 7.20; 7.00's ShowdownTournamentPosterFront and PosterBack show where each goes):
+// - texts: title_line_1 and title_line_2 (the poster's title), schedule_info (the line under the title on the Events
+//   tab's tile, and EVENT DETAILS' MetaDate), short_format_title (EVENT DETAILS' MetaTitle, the line above its dates),
+//   long_format_title (EVENT DETAILS' DateText), flavor_description, details_description, pin_earned_text;
+// - colours, "RRGGBB" or "RRGGBBAA" with an optional "#" (FColor::FromHex), stored without the "#".
+export const displayTextFields = ["title_line_1", "title_line_2", "schedule_info", "short_format_title", "long_format_title", "flavor_description",
+  "details_description", "pin_earned_text"];
+export const displayColorFields = ["base_color", "primary_color", "secondary_color", "highlight_color", "title_color", "shadow_color",
+  "background_left_color", "background_right_color", "background_text_color", "poster_fade_color"];
+const maxDisplayText = 1000;
+// Checks and normalises an event's texts and colours: {field: value} of the fields above; a field "" or null is left out
+// (Core's own). Throws an Error with the reason.
+export function validateDisplay(display) {
+  if (display === undefined || display === null) return {};
+  if (typeof display !== "object" || Array.isArray(display)) throw new Error("Texts and colours are {title_line_1, ..., base_color, ...}.");
+  const next = {};
+  for (const [key, value] of Object.entries(display)) {
+    if (!displayTextFields.includes(key) && !displayColorFields.includes(key)) throw new Error(`No text or colour ${key}.`);
+    if (value === null || value === undefined || String(value).trim() === "") continue;
+    if (typeof value !== "string") throw new Error(`${key} is text.`);
+    if (displayColorFields.includes(key)) {
+      const hex = value.trim().replace(/^#/, "");
+      if (!/^[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(hex)) throw new Error(`${key} is a colour as RRGGBB or RRGGBBAA.`);
+      next[key] = hex.toUpperCase();
+    } else {
+      if (value.length > maxDisplayText) throw new Error(`${key} is at most ${maxDisplayText} characters.`);
+      next[key] = value;
+    }
+  }
+  return next;
+}
+
+// An invite-only event (Core-Backend #383): Epic's qualifiers invited their best players to the finals ("Players with the
+// Top 200 scores will be invited to compete in the Winter Royale Finals", the Winter Royale Qualifiers' own text). Clients
+// of 6.10 to 7.20 have no eligibility of their own (no tokens or requirements in FShowdownTournament; the events
+// service's eventTemplates and player tokens came later): Epic's service answered each account its own list, so a
+// finalist's Events tab had the finals and anyone else's didn't. An event's qualifier is {eventId, places}: once that
+// event is over, the players ranked within places on its leaderboard (a tie shares the rank; only those who qualified by
+// its minimum matches) are invited; nobody before, and nobody while it is deleted. Only invited players have the event
+// listed, queue for it and score in it.
+export const maxQualifierPlaces = 1000;
+// Checks and normalises an event's qualifier: null for none, else {eventId, places}. eventOf(id) answers an event or null.
+// self: the event's own id (none for a new one); an event can't be its own qualifier, directly or down a chain. Throws an
+// Error with the reason.
+export function validateQualifier(qualifier, eventOf = () => null, self = null) {
+  if (qualifier === undefined || qualifier === null || qualifier === "") return null;
+  if (typeof qualifier !== "object" || Array.isArray(qualifier)) throw new Error("A qualifier is {eventId, places}.");
+  const eventId = String(qualifier.eventId ?? "");
+  if (!eventOf(eventId)) throw new Error(`No tournament event ${eventId} to qualify from.`);
+  const places = Number(qualifier.places);
+  if (!isWhole(places, 1, maxQualifierPlaces)) throw new Error(`The places invited are a whole number from 1 to ${maxQualifierPlaces}.`);
+  for (let id = eventId, steps = 0; id && steps <= maxEvents; steps += 1) {
+    if (self !== null && id === self) throw new Error("An event can't qualify players for itself.");
+    id = eventOf(id)?.qualifier?.eventId ?? null;
+  }
+  return { eventId, places };
+}
+// The players a qualifier invites: those ranked within places on its leaderboard once it is over, else none.
+export function invitedFrom(qualifierEvent, places, now = new Date()) {
+  if (!qualifierEvent || statusOf(qualifierEvent, now) !== "ended") return new Set();
+  return new Set(leaderboardOf(qualifierEvent).filter((row) => row.qualified && row.rank <= places).map((row) => row.accountId));
 }
 
 // An event's prizes (Core-Backend #361, given by tournaments/payouts.js). Epic's tournaments gave theirs two ways, and an
@@ -312,20 +394,35 @@ function placeWindows(event, list) {
 // An event's leaderboard: its players by points, then wins, eliminations and average placement (lower is better), as the
 // contest rules break ties. Ranks are 1 up, a tie on all four sharing one.
 // Each match's points come from the event's scoring now, so a change to it rescores the matches already played.
+// A ruleset with bestWindow (the Winter Royale's qualifiers, #383) ranks each player by their best window alone: its
+// points, matches, wins, eliminations and placements (the first of two windows worth as much), noted as bestWindow.
 export function leaderboardOf(event, nameOf = (accountId) => accountId) {
   const ruleset = scoringOf(event);
+  const pointsOf = (matches) => matches.reduce((total, match) => total + matchPoints(ruleset, match), 0);
   const rows = Object.entries(event.players ?? {}).map(([accountId, player]) => {
-    const counted = player.matches;
+    let counted = player.matches;
+    let best = null;
+    if (ruleset.bestWindow) {
+      const byWindow = new Map();
+      for (const match of counted) {
+        const id = matchWindowOf(event, match);
+        if (!byWindow.has(id)) byWindow.set(id, []);
+        byWindow.get(id).push(match);
+      }
+      for (const [id, matches] of byWindow) if (best === null || pointsOf(matches) > pointsOf(byWindow.get(best))) best = id;
+      counted = best === null ? [] : byWindow.get(best);
+    }
     const sum = (pick) => counted.reduce((total, match) => total + pick(match), 0);
     return {
       accountId,
       displayName: nameOf(accountId),
-      points: sum((match) => matchPoints(ruleset, match)),
+      points: pointsOf(counted),
       matches: counted.length,
       wins: counted.filter((match) => match.place === 1).length,
       eliminations: sum((match) => match.kills),
       averagePlacement: counted.length ? Math.round((sum((match) => match.place) / counted.length) * 100) / 100 : null,
-      qualified: counted.length >= ruleset.minimumMatches
+      qualified: counted.length >= ruleset.minimumMatches,
+      ...(ruleset.bestWindow ? { bestWindow: best } : {})
     };
   });
   rows.sort((a, b) => b.points - a.points || b.wins - a.wins || b.eliminations - a.eliminations
@@ -361,6 +458,14 @@ export function createTournamentStore(dataDir) {
   };
   const save = () => writeJson(file, load());
   const get = (id) => (Object.hasOwn(load().events, id) ? load().events[id] : null);
+  // The players an invite-only event lets in now (#383): its qualifier's (invitedFrom), or null for an open event.
+  const invitedTo = (event, now = new Date()) => (event?.qualifier ? invitedFrom(get(event.qualifier.eventId), event.qualifier.places, now) : null);
+  // Whether a player may have an event listed, queue for it and score in it (#383): any event open to everyone, an
+  // invite-only one when they're invited.
+  const isInvited = (event, accountId, now = new Date()) => {
+    const invited = invitedTo(event, now);
+    return invited === null || invited.has(accountId);
+  };
 
   return {
     list() {
@@ -376,7 +481,9 @@ export function createTournamentStore(dataDir) {
     // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional), images (an in-game event's
     // pictures, validateImages; optional, Core's own where left out), payoutTable (its prizes, #361,
     // tournaments/payouts.js validatePayoutTable; optional, none), windows (its times, #364, validateWindows: in place of
-    // startsAt and endsAt; optional)}. Throws an Error with the reason.
+    // startsAt and endsAt; optional), display (an in-game event's texts and colours, #383, validateDisplay; optional,
+    // Core's own), qualifier (invite only, #383, validateQualifier; optional, open to everyone)}. Throws an Error with
+    // the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -397,9 +504,12 @@ export function createTournamentStore(dataDir) {
       const pinScore = playlist.inGame ? validatePinScore(options.pinScore) : null;
       const images = playlist.inGame && options.images ? validateImages(options.images, {}, dataDir) : {};
       const payoutTable = validatePayoutTable(options.payoutTable);
+      const display = playlist.inGame ? validateDisplay(options.display) : {};
+      const qualifier = validateQualifier(options.qualifier, get);
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: newId(), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), payoutTable, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), payoutTable, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {},
+        ...(Object.keys(display).length ? { display } : {}), ...(qualifier ? { qualifier } : {}) };
       if (windows) placeWindows(event, windows.map((window) => ({ ...window, id: null })));
       load().events[event.id] = event;
       save();
@@ -494,6 +604,35 @@ export function createTournamentStore(dataDir) {
       return event;
     },
 
+    // Sets an in-game event's texts and colours in the game (#383, validateDisplay: the whole set; {} or null for Core's
+    // own). Throws an Error with the reason; null when there's no such event.
+    setDisplay(id, display, now = new Date()) {
+      const event = get(id);
+      if (!event) return null;
+      if (!tournamentPlaylists.find((entry) => entry.id === event.playlist)?.inGame) throw new Error("Only an event in the game's Events tab (6.10+) has texts and colours there.");
+      const next = validateDisplay(display);
+      if (Object.keys(next).length) event.display = next;
+      else delete event.display;
+      event.displaySetAt = now.toISOString();
+      save();
+      return event;
+    },
+
+    // Makes an event invite only, or open again with null (#383, validateQualifier). Matches already played in it stay.
+    // Throws an Error with the reason; null when there's no such event.
+    setQualifier(id, qualifier) {
+      const event = get(id);
+      if (!event) return null;
+      const next = validateQualifier(qualifier, get, event.id);
+      if (next) event.qualifier = next;
+      else delete event.qualifier;
+      save();
+      return event;
+    },
+
+    invitedTo,
+    isInvited,
+
     // The dedicated servers of the running events (#282), [{playlistId, servers}], for the matchmaking service: a match
     // of one of these playlists plays only on its servers, and they take no other playlist's matches.
     runningServers(now = new Date()) {
@@ -540,13 +679,15 @@ export function createTournamentStore(dataDir) {
     // A report sent again for the same match (CoreV2's matchId) doesn't count twice. Returns the points it scored, by event.
     // team: the accounts the player played the match with, themselves among them (an in-game event's history names
     // them; kills are then the team's). only: one event's id, for a report that names its event. An event of several
-    // times (#364) takes it only within one of them, and notes which (window); the counted matches are the event's.
+    // times (#364) takes it only within one of them, and notes which (window); the counted matches are the event's. An
+    // invite-only event (#383) takes only its invited players' matches.
     recordResult(accountId, playlistId, { place, kills, matchId = null, build = null, team = null, only = null }, now = new Date()) {
       const scored = [];
       for (const event of Object.values(load().events)) {
         const window = event.playlistId === Number(playlistId) ? runningWindowOf(event, now) : null;
         if (!window || (only !== null && event.id !== only)) continue;
         if (build && !hasLtm(event.playlist, build)) continue;
+        if (!isInvited(event, accountId, now)) continue;
         const ruleset = scoringOf(event);
         const player = (event.players[accountId] ??= { matches: [] });
         if (matchId && player.matches.some((match) => match.matchId === matchId)) continue;

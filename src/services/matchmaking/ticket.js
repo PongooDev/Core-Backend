@@ -66,11 +66,13 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     // and player.option.windowId (UFortMatchmakingV2::StartMatchmaking, CL-4480234 0x10DDA70) when its Events tab has it
     // live; a refusal carries the code Epic's service gave, which the lobby has a text for ("Sorry, this tournament is
     // not currently active.", "You need to be in a full party for this tournament."). The match is an ordinary one of
-    // the playlist: the event's points come from its results (services/fortnite/battleroyale.js).
+    // the playlist: the event's points come from its results (services/fortnite/battleroyale.js). An invite-only event
+    // (Core-Backend #383) takes the party only when each of its players is invited.
     let tournamentEvent = null;
     if (ltm?.tournament) {
       const { event, error } = showdownTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),
-        windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild() }, new Date(), tournaments);
+        windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild(),
+        accountIds: [accountId, ...partyPlayerIds] }, new Date(), tournaments);
       if (error) {
         log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: ${error.message} (${error.code}; admin panel, Tournaments)`);
         return sendError(res, 400, error.code, error.message);

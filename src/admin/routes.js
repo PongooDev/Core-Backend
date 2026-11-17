@@ -81,10 +81,11 @@ import { rewardItem } from "../friendcodes/rewards.js";
 import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
 import { giftingFriendDays } from "../store/gifting.js";
 import { showItemImages } from "../services/portal/images.js";
-import { defaultInGameRuleset, defaultRuleset, leaderboardOf, matchesInWindow, maxWindows, rulesets, scoringOf, statusOf, tournamentPlaylists,
-  windowsOf } from "../tournaments/store.js";
-import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
+import { defaultInGameRuleset, defaultRuleset, displayColorFields, displayTextFields, leaderboardOf, matchesInWindow, maxQualifierPlaces, maxWindows,
+  rulesets, scoringOf, statusOf, tournamentPlaylists, windowsOf } from "../tournaments/store.js";
+import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownColors, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
 import { payEvent, payoutLines, settleEvent, unknownPayoutItems } from "../tournaments/payouts.js";
+import { createWinterRoyale, winterRoyaleFirstDay, winterRoyaleRegions } from "../tournaments/winterroyale.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -2685,6 +2686,11 @@ export function adminRoutes(context) {
     effectiveScoring: (({ placementPoints, pointsPerElimination, eliminationPoints = [] }) => ({ placementPoints, pointsPerElimination,
       ...(eliminationPoints.length ? { eliminationPoints } : {}) }))(scoringOf(event)),
     playerCount: Object.keys(event.players ?? {}).length,
+    // Its texts and colours in the game (#383, tournaments/store.js validateDisplay): the admin's, {} for Core's own.
+    display: event.display ?? {},
+    // Invite only (#383): {eventId, places, eventName (null when that event was deleted), invited: how many now}, or null.
+    qualifier: event.qualifier ? { ...event.qualifier, eventName: context.tournaments.get(event.qualifier.eventId)?.name ?? null,
+      invited: context.tournaments.invitedTo(event)?.size ?? 0 } : null,
     leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
   const tournamentsPayload = () => ({
     // inGame: 6.10's Showdown playlists, whose events the client's Events tab lists (tournaments/showdown.js).
@@ -2702,6 +2708,11 @@ export function adminRoutes(context) {
     defaultRulesets: { inGame: defaultInGameRuleset, other: defaultRuleset },
     // The most times an event can have (#364): as many as the game's EVENT DETAILS lists.
     maxWindows,
+    // An in-game event's texts and colours (#383): the fields, and Core's own colours.
+    displayFields: { texts: displayTextFields, colors: displayColorFields, defaultColors: showdownColors },
+    maxQualifierPlaces,
+    // Epic's Winter Royale of 2018 (#383, tournaments/winterroyale.js): its regions and Epic's own first day.
+    winterRoyale: { regions: Object.entries(winterRoyaleRegions).map(([id, { name }]) => ({ id, name })), firstDay: winterRoyaleFirstDay },
     events: context.tournaments.list().map(tournamentView)
   });
   // The game's lobbies ask again for their events (#336, tournaments/showdown.js createShowdownRefresh).
@@ -2819,6 +2830,47 @@ export function adminRoutes(context) {
     log("Admin", `Tournament event ${event.name} (${event.id}) times: ${windowsOf(event).map(({ startsAt, endsAt }) => `${startsAt ?? "its creation"} to ${endsAt ?? "its end"}`).join("; ")}`);
     tournamentsChanged();
     res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
+  // An in-game event's texts and colours in the game (#383, tournaments/store.js validateDisplay): body {display:
+  // {title_line_1, ..., base_color, ...}}, the whole set ({} or null for Core's own).
+  router.post("/admin/api/tournaments/:id/display", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.setDisplay(req.params.id, req.body?.display ?? null);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}) texts and colours: ${Object.keys(event.display ?? {}).join(", ") || "Core's own"}`);
+    tournamentsChanged();
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
+  // Invite only (#383, tournaments/store.js validateQualifier): body {qualifier: {eventId, places}}, or {qualifier: null}
+  // to open the event to everyone.
+  router.post("/admin/api/tournaments/:id/qualifier", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.setQualifier(req.params.id, req.body?.qualifier ?? null);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}): ${event.qualifier ? `invite only, the top ${event.qualifier.places} of ${event.qualifier.eventId}` : "open to everyone"}`);
+    tournamentsChanged();
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
+  // Epic's Winter Royale of 2018 (#383, tournaments/winterroyale.js): body {region: "NAE" or "EU", firstDay: "YYYY-MM-DD"
+  // (the qualifiers' first day)}. Makes its qualifiers, finals and Grand Finals.
+  router.post("/admin/api/tournament-presets/winter-royale-2018", (req, res) => {
+    let made;
+    try {
+      made = createWinterRoyale(context.tournaments, { region: req.body?.region ?? "NAE", firstDay: req.body?.firstDay });
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    log("Admin", `Winter Royale made: ${Object.values(made).map((event) => `${event.name} (${event.id})`).join(", ")}`);
+    tournamentsChanged();
+    res.status(201).json({ events: Object.values(made).map(tournamentView), ...tournamentsPayload() });
   });
   router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));
   router.post("/admin/api/tournaments/:id/end", tournamentAction("end", "ended"));

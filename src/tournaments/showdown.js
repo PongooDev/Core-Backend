@@ -147,21 +147,33 @@ import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windo
 //   - The current event, the lobby's Showdown state, matchmaking and the two timers (above) already go by window: the
 //     next window's countdown, its playlist turned on, PLAY waiting for its beginTime. Between two windows a ticket names
 //     none live and is refused as not active.
+// - Season 7 (Core-Backend #383; 7.00 CL-4629139's exe in IDA and its paks, the SDKs of 7.00, 7.10 and 7.20): the same
+//   Events tab. 7.00's exe still has FortMcpUtils' GetEventTournamentAndHistoryUrl and GetEventWindowHistoryUrl and reads
+//   FShowdownEventDownload; FShowdownTournament, FShowdownEventWindow and FShowdownEventData are 6.31's in all three SDKs, and
+//   FShowdownTournamentData, the content entry, has 6.10's fields. Nothing of eligibility is there: no tokens,
+//   eligibilityRequirements, requireAllTokens, requireAnyTokens, scoreLocations or eventTemplates in 7.00's exe (they are the
+//   later events service's, /api/v1/events/Fortnite/download, which 7.00 doesn't ask for), and EFortShowdownEventState
+//   (7.20's: FutureTBD, FutureScheduled, FutureNext, LiveParticipating, LiveNotParticipating, CompletedParticipated,
+//   CompletedNotPartipated, Cancelled) has no qualified state. A finalist's "you qualify" was Epic's service answering them
+//   a list with the finals in it, which nobody else's had (an invite-only event, store.js validateQualifier). Season 7's
+//   posters are 6.10's: the line under a tile's title is schedule_info (tournamentInformationFor).
 //
 // What Core serves. Epic's tournaments (their names, days, scoring and art) were its services' data, and none of it is in
 // the build's files, so there is no schedule to replay. The tournaments are the admin panel's own (tournaments/store.js,
-// its Tournaments tab): an event made on one of the three Showdown playlists is listed in the Events tab of the builds
-// that have the playlist, as a tournament of its event windows (eventWindowsOf: by default one, its start and end, from
+// its Tournaments tab; Epic's Winter Royale of 2018 is one the panel makes from its recorded rules, times and texts,
+// tournaments/winterroyale.js, #383): an event made on one of the three Showdown playlists is listed in the Events tab of
+// the builds that have the playlist, as a tournament of its event windows (eventWindowsOf: by default one, its start and end, from
 // its creation until it is ended when it has none, served as it always was; or the admin's times, #364, each a window
 // with the same rules), with the event's scoring as reward tiers, its name and rules as the tile's texts, and each player's
 // points from the matches the game server reports (services/fortnite/battleroyale.js recordresults, by the playlist), a
 // history for each window they played in. The event's leaderboard and prizes count every window (tournaments/store.js). With
 // no such event the list is empty, which is what a 6.10 lobby gets by default: the tab is there, as shipped, with no
-// tournament on it. Epic's pictures were on its CDN, not in the build: an event shows the admin's pictures, or Core's
-// own, made from the build's own textures (showdownImageSlots). The event's prizes (Core-Backend #361,
+// tournament on it. Epic's pictures were on its CDN, not in the build: an event shows the admin's pictures (the Winter
+// Royale's are Epic's, still on that CDN), or Core's own, made from the build's own textures (showdownImageSlots). Its
+// texts and colours are Core's, or the admin's over them (event.display, #383). The event's prizes (Core-Backend #361,
 // tournaments/payouts.js): its points prizes as the window's rewardTable, which no screen shows, and every prize in the
 // EVENT DETAILS text, which does; Core gives them. Not served, for want of Epic's data: regions or platforms (every
-// player is offered every event).
+// player is offered every event, but an invite-only one: #383).
 export const showdownBuild = 4464155;
 export const tournamentsCompleteMessage = "com.epicgames.tournaments.complete";
 export const placementStat = "PLACEMENT_STAT_INDEX";
@@ -247,13 +259,15 @@ export const hasShowdown = (build) => Number(build) >= showdownBuild && showdown
 
 const endOf = (event) => event.endedAt ?? event.endsAt ?? null;
 // The events a build's Events tab lists now: those of a Showdown playlist the build has, until two weeks after their end,
-// oldest first.
-export function showdownEvents(build, now = new Date(), store = storeProvider()) {
+// oldest first. With an account (a player's own list, #383): only the invite-only events they're invited to
+// (tournaments/store.js validateQualifier), as Epic's service answered each account its own tournaments.
+export function showdownEvents(build, now = new Date(), store = storeProvider(), accountId = null) {
   if (!store || !hasShowdown(build)) return [];
   return store.list().filter((event) => {
     const ltm = showdownPlaylistOf(event);
     const end = endOf(event);
-    return ltm && hasLtm(ltm.id, build) && (!end || Date.parse(end) + listedAfterEndMs > now.getTime());
+    return ltm && hasLtm(ltm.id, build) && (!end || Date.parse(end) + listedAfterEndMs > now.getTime())
+      && (accountId === null || (store.isInvited?.(event, accountId, now) ?? true));
   }).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 }
 
@@ -365,15 +379,17 @@ export function historiesOf(event, accountId) {
   }));
 }
 
-// GetEventTournamentAndHistoryUrl's answer for a player on a build.
+// GetEventTournamentAndHistoryUrl's answer for a player on a build: the events open to everyone and the invite-only ones
+// they're invited to (#383).
 export function tournamentAndHistory(accountId, build, now = new Date(), store = storeProvider()) {
-  const events = showdownEvents(build, now, store);
+  const events = showdownEvents(build, now, store, accountId);
   return { eventTournaments: events.map(tournamentOf), eventWindowHistories: events.flatMap((event) => historiesOf(event, accountId)) };
 }
 
-// GetEventWindowHistoryUrl's answer: the player's histories in one window, or null for a window the build isn't offered.
+// GetEventWindowHistoryUrl's answer: the player's histories in one window, or null for a window the build doesn't offer
+// them.
 export function eventWindowHistory(accountId, eventWindowId, build, now = new Date(), store = storeProvider()) {
-  const event = showdownEvents(build, now, store).find((own) => eventWindowsOf(own).some(({ id }) => id === eventWindowId));
+  const event = showdownEvents(build, now, store, accountId).find((own) => eventWindowsOf(own).some(({ id }) => id === eventWindowId));
   return event ? historiesOf(event, accountId).filter((history) => history.eventWindowId === eventWindowId) : null;
 }
 
@@ -394,6 +410,14 @@ function rulesText(event) {
 // The content page's tournamentinformation for a build (services/content/pages.js): an entry for each listed event,
 // keyed by its displayDataId, with its texts, the colours (showdownColors) and its pictures (showdownImageUrl; origin is
 // where the client reached the page, for the backend's own pictures). Undefined for a build without the Events tab.
+// The admin's texts and colours (event.display, #383: Epic's own for the Winter Royale, tournaments/winterroyale.js) go
+// over Core's, field by field. Where 7.00's posters show them (CL-4629139, UI/Frontend/Showdown, as 6.10's): the Events
+// tab's tile and the details screen's poster (ShowdownTournamentPosterFront's RefreshDataBP) show title_line_1 and
+// title_line_2 in upper case in title_color and, under them, schedule_info in upper case in base_color (Epic's Winter
+// Royale: "$1,000,000 in Prizes"; a Pop-Up Cup's: its day or its mode); the EVENT DETAILS side (ShowdownTournamentPosterBack)
+// shows the title lines, schedule_info as its MetaDate, flavor_description, short_format_title in upper case as its
+// MetaTitle ("Qualifying Sessions") and long_format_title as its DateText. The page is the same for every player: an
+// invite-only event's entry is there for everyone, and only the invited have its tile (tournamentAndHistory).
 export function tournamentInformationFor(build, now = new Date(), store = storeProvider(), origin = undefined) {
   if (!hasShowdown(build)) return undefined;
   const tournaments = showdownEvents(build, now, store).map((event) => {
@@ -409,6 +433,8 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     // Playlist_Deimos_Solo_WinterShow, _Duo_ and _Squad_.
     const mode = ltm.playlistName.replace(/^Playlist_Showdown(?:Alt)?_/, "")
       .replace(/^Playlist_Deimos_(Solo|Duo|Squad)_?(?:Winter)?Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
+    const pinned = Number.isInteger(event.pinScore);
+    const { pin_earned_text: pinEarnedText, ...display } = event.display ?? {};
     return {
       tournament_display_id: tournamentIdOf(event),
       title_line_1: event.name,
@@ -418,8 +444,9 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
       details_description: rulesText(event),
       short_format_title: event.name,
       long_format_title: `${event.name} (${mode})`,
-      ...(Number.isInteger(event.pinScore) ? { pin_score_requirement: event.pinScore, pin_earned_text: "Pin earned!" } : {}),
+      ...(pinned ? { pin_score_requirement: event.pinScore, pin_earned_text: pinEarnedText ?? "Pin earned!" } : {}),
       ...showdownColors,
+      ...display,
       ...Object.fromEntries(showdownImageSlots.map((slot) => [slot.field, showdownImageUrl(event, slot, origin)]).filter(([, url]) => url)),
       _type: "Tournament Display Info"
     };
@@ -431,7 +458,8 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     _activeDate: "2018-10-16T08:00:00.000Z",
     lastModified: new Date(Math.max(Date.parse("2026-11-13T00:00:00.000Z"),
       ...showdownEvents(build, now, store).map((event) => Math.max(Date.parse(event.endedAt ?? event.createdAt), event.imagesSetAt ? Date.parse(event.imagesSetAt) : 0,
-      event.payoutsSetAt ? Date.parse(event.payoutsSetAt) : 0, event.windowsSetAt ? Date.parse(event.windowsSetAt) : 0)))).toISOString(),
+      event.payoutsSetAt ? Date.parse(event.payoutsSetAt) : 0, event.windowsSetAt ? Date.parse(event.windowsSetAt) : 0,
+      event.displaySetAt ? Date.parse(event.displaySetAt) : 0)))).toISOString(),
     _locale: "en-US"
   };
 }
@@ -463,10 +491,16 @@ export function currentShowdownEvent(build, now = new Date(), store = storeProvi
 // Epic's service named it (the client has a text for each: 0x2EB3550). tournamentId and windowId are the ticket's
 // player.option.tournamentId and player.option.windowId ("" when the client sent none: it found no live tournament, as
 // before the lobby has the list). partySize is the ticket's party. Of an event of several times (#364), the window named
-// must be the one running.
-export function showdownTicket({ playlistId, tournamentId = "", windowId = "", partySize, build }, now = new Date(), store = storeProvider()) {
+// must be the one running. accountIds: the party's players (#383): an invite-only event takes a ticket only when every one
+// of them is invited, and is otherwise one that doesn't exist for them, as it isn't in their list: 7.00's lobby has a
+// text for six tournament codes (UFortAthenaMatchmakingWidget::OnMatchmakingError, CL-4629139 0x30305A0:
+// invalid_tournament_id, invalid_event_window_id, event_window_time_invalid, wrong_number_of_event_players,
+// event_region_invalid, event_platform_invalid), none for eligibility.
+export function showdownTicket({ playlistId, tournamentId = "", windowId = "", partySize, build, accountIds = [] }, now = new Date(), store = storeProvider()) {
   const refuse = (code, message) => ({ error: { code: `errors.com.epicgames.fortnite.${code}`, message } });
-  const events = showdownEvents(build, now, store).filter((event) => event.playlistId === Number(playlistId));
+  const party = [...new Set(accountIds.filter(Boolean))];
+  const events = showdownEvents(build, now, store).filter((event) => event.playlistId === Number(playlistId))
+    .filter((event) => party.every((accountId) => store.isInvited?.(event, accountId, now) ?? true));
   const named = tournamentId ? events.find((event) => tournamentIdOf(event) === tournamentId) : null;
   if (tournamentId && !named) return refuse("invalid_tournament_id", "Tournament does not exist.");
   if (named && windowId && !eventWindowsOf(named).some(({ id }) => id === windowId)) return refuse("invalid_event_window_id", `Tournament ${tournamentId} has no event window ${windowId}.`);

@@ -8988,9 +8988,17 @@ Each starts active; quests the account already has are left as they are.`, {
           const from = i ? all[i - 1][0] + 1 : 1;
           return `${from === upTo ? `#${upTo}` : `#${from}-${upTo}`}: ${points}`;
         }).join(", ");
-        const steps = (r.eliminationPoints ?? []).map(([count, points]) => `+${points} at ${count}`).join(", ");
+        // Steps of the same points one elimination apart read as one run (the Winter Royale finals' +1 for each after 7, #383).
+        const runs = [];
+        for (const [count, points] of r.eliminationPoints ?? []) {
+          const last = runs.at(-1);
+          if (last && last.points === points && last.to === count - 1) last.to = count;
+          else runs.push({ from: count, to: count, points });
+        }
+        const steps = runs.map(({ from, to, points }) => (from === to ? `+${points} at ${from}` : `+${points} at each of ${from} to ${to}`)).join(", ");
         const elims = [r.pointsPerElimination ? `${r.pointsPerElimination} per elimination` : "", steps ? `eliminations ${steps}` : ""].filter(Boolean).join(", ");
         return `Placement points (${brackets})${elims ? ` + ${elims}` : ", no elimination points"}; `
+          + `${r.bestWindow ? "only a player's best time counts, " : ""}`
           + `${Number.isInteger(r.countedMatches) ? `only a player's first ${r.countedMatches} matches count` : "every match counts"}, `
           + `${r.minimumMatches ? `${r.minimumMatches} to qualify` : "no minimum to qualify"}; ties go to wins, then eliminations, then average placement.`;
       };
@@ -9355,6 +9363,107 @@ Each starts active; quests the account already has are left as they are.`, {
           ...rows);
       };
 
+      // An in-game event's texts and colours in the game (Core-Backend #383): Epic's tournament_info fields, each left empty
+      // for Core's own. Where 7.00's posters show them: the tile's title lines with the line under them (schedule_info),
+      // and EVENT DETAILS' title lines, date line (schedule_info), short title, long title and text.
+      const displayLabels = {
+        title_line_1: "Title, first line", title_line_2: "Title, second line", schedule_info: "Line under the title (the tile; EVENT DETAILS' top line)",
+        short_format_title: "EVENT DETAILS' short title (above its dates)", long_format_title: "EVENT DETAILS' long title", flavor_description: "EVENT DETAILS' text",
+        details_description: "Rules text (the details screen)", pin_earned_text: "Text once the pin is earned",
+        base_color: "Dates and line under the title", primary_color: "Lobby box title, long title", secondary_color: "Secondary", highlight_color: "Borders and highlights",
+        title_color: "Title", shadow_color: "Boxes, ended dates", background_left_color: "Details screen background, left", background_right_color: "Details screen background, right",
+        background_text_color: "Big title behind the details", poster_fade_color: "Fade under the poster"
+      };
+      const eventDisplay = (event) => {
+        const fields = data.displayFields || { texts: [], colors: [], defaultColors: {} };
+        const current = event.display || {};
+        const long = new Set(["flavor_description", "details_description"]);
+        const inputs = {};
+        const row = (key, input, extra = null) => el("div", { style: "display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:6px 0; border-top:1px solid var(--line);" },
+          el("div", { style: "min-width:240px; flex:0 0 240px;" }, el("div", { style: "font-weight:600;", text: displayLabels[key] || key }), el("div", { class: "muted mono", style: "font-size:11px;", text: key })),
+          input, extra);
+        const textRows = fields.texts.map((key) => {
+          const input = long.has(key) ? el("textarea", { class: "field", rows: "3", style: "flex:1; min-width:260px;" }) : el("input", { class: "field", style: "flex:1; min-width:260px;", maxlength: "1000" });
+          input.value = current[key] || "";
+          input.placeholder = "Core's own";
+          inputs[key] = input;
+          return row(key, input);
+        });
+        const colorRows = fields.colors.map((key) => {
+          const input = el("input", { class: "field mono", maxlength: "9", style: "width:120px;", placeholder: fields.defaultColors[key] || "" });
+          input.value = current[key] || "";
+          const swatch = el("span", { style: "display:inline-block; width:22px; height:22px; border-radius:4px; border:1px solid var(--line);" });
+          const paint = () => { swatch.style.background = `#${(input.value.trim().replace(/^#/, "") || fields.defaultColors[key] || "000000").slice(0, 6)}`; };
+          input.addEventListener("input", paint);
+          paint();
+          inputs[key] = input;
+          return row(key, input, swatch);
+        });
+        const value = () => Object.fromEntries(Object.entries(inputs).map(([key, input]) => [key, input.value.trim()]).filter(([, text]) => text));
+        const count = Object.keys(current).length;
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Texts and colours in the game" }), chip(count ? `${count} set` : "Core's own", count ? "accent" : "")),
+          el("div", { class: "note", text: "What the Events tab, the poster and EVENT DETAILS show (6.10+, Epic's own fields). Empty, a field is Core's own: the event's name, its mode, its dates and its rules. Colours are RRGGBB (or RRGGBBAA), with or without #. A player sees a change at their next lobby." }),
+          el("details", { style: "margin-top:8px;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: "Edit texts and colours" }),
+            ...textRows, ...colorRows,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+              btn("Save texts and colours", async () => {
+                if (await act(api(`/admin/api/tournaments/${event.id}/display`, { display: value() }), "Texts and colours saved")) rerender();
+              }, "primary"),
+              count ? btn("Use Core's own", async () => {
+                if (await act(api(`/admin/api/tournaments/${event.id}/display`, { display: null }), "Back to Core's texts and colours")) rerender();
+              }, "ghost") : null)));
+      };
+
+      // Invite only (#383): the event is listed, queued and scored only for the players ranked within a number of places
+      // of another event once that one is over (Epic's qualifiers inviting their best to the finals).
+      const eventQualifier = (event) => {
+        const select = el("select", { class: "field", "aria-label": "Qualifying event" },
+          el("option", { value: "", text: "Open to everyone" }),
+          ...data.events.filter((other) => other.id !== event.id).map((other) => el("option", { value: other.id, text: other.name })));
+        select.value = event.qualifier?.eventId || "";
+        const places = el("input", { class: "field", type: "number", min: "1", max: String(data.maxQualifierPlaces || 1000), step: "1", style: "width:100px;", "aria-label": "Places invited" });
+        places.value = String(event.qualifier?.places || 100);
+        const q = event.qualifier;
+        const status = !q ? "Open to everyone: every player has it listed and can play it."
+          : q.eventName ? `Invite only: the top ${q.places} of ${q.eventName}, once it is over (tied players share a place). ${q.invited} player${q.invited === 1 ? " is" : "s are"} invited now; only they have it in the Events tab, queue for it and score in it.`
+            : "Invite only, but the event it invited from was deleted: nobody is invited.";
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Who can play" }), chip(q ? `Invite only, ${q.invited} invited` : "Everyone", q ? "accent" : "")),
+          el("div", { class: "note", text: status }),
+          el("div", { class: "actions", style: "gap:8px; margin-top:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap;" },
+            el("label", { class: "muted", text: "The top" }), places, el("label", { class: "muted", text: "of" }), select,
+            btn("Save", async () => {
+              const body = { qualifier: select.value ? { eventId: select.value, places: Number(places.value) } : null };
+              if (await act(api(`/admin/api/tournaments/${event.id}/qualifier`, body), body.qualifier ? "Event is invite only" : "Event is open to everyone")) rerender();
+            }, "primary")));
+      };
+
+      // Epic's Winter Royale of 2018 (#383): its qualifiers, finals and Grand Finals, made at once.
+      const nextSaturday = () => {
+        const day = new Date();
+        do day.setDate(day.getDate() + 1); while (day.getDay() !== 6);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`;
+      };
+      const winterRoyalePanel = () => {
+        const wr = data.winterRoyale;
+        if (!wr) return null;
+        const regionSelect = el("select", { class: "field", "aria-label": "Whose times" }, ...wr.regions.map((region) => el("option", { value: region.id, text: region.name })));
+        const dayInput = el("input", { class: "field", type: "date", "aria-label": "Qualifiers' first day" });
+        dayInput.value = nextSaturday();
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Epic's Winter Royale (2018)" })),
+          el("div", { class: "note", text: `Epic's $1,000,000 Winter Royale as it was recorded, made as three events: its qualifiers (six three-hour sessions over two days, Epic's points, only a player's best session counting, the pin at 25 points, and Epic's own posters, colours and texts in the Events tab), its finals (two heats of five matches, invite only for the qualifiers' top 200 once they are over) and its Grand Finals (invite only for the finals' top 100). They keep Epic's days and times of day (North America's in ET, Europe's in GMT), moved to start on the day you pick (Epic's was ${wr.firstDay}). All three are solo, on the Tournament (Solo) playlist (6.10 to 7.20). Epic's prizes were money: add your own on each event's page.` }),
+          el("div", { class: "actions", style: "gap:8px; margin-top:10px; align-items:center; justify-content:flex-start; flex-wrap:wrap;" },
+            el("label", { class: "muted", text: "Times of" }), regionSelect,
+            el("label", { class: "muted", text: "Qualifiers' first day (UTC)" }), dayInput,
+            btn("Make the Winter Royale", async () => {
+              if (await act(api("/admin/api/tournament-presets/winter-royale-2018", { region: regionSelect.value, firstDay: dayInput.value }), "Winter Royale made")) rerender();
+            }, "primary")));
+      };
+
       // The list and an event's page (#283) both follow new matches, unless something is being edited.
       every(15000, async () => {
         if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
@@ -9405,16 +9514,20 @@ Each starts active; quests the account already has are left as they are.`, {
               }, "ghost"))),
           el("div", { class: "note", style: "margin:8px 0 16px;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)}${event.windows.length > 1 ? ` · ${event.windows.length} times` : ""} · ${event.playerCount} players` }),
           eventWindows(event),
+          eventQualifier(event),
           el("section", { class: "panel", style: "margin-top:16px;" },
             el("div", { class: "panel-head" }, el("h2", { text: "Points & Server Rules" })),
             eventScoring(event),
             eventServersBots(event)),
           eventPayouts(event),
           inGameOf(event.playlist) ? eventImages(event) : null,
+          inGameOf(event.playlist) ? eventDisplay(event) : null,
           el("section", { class: "panel", style: "margin-top:16px;" },
             el("div", { class: "panel-head" },
               el("h2", { text: "Player Leaderboard" }),
               chip(`${event.leaderboard?.length || 0} Ranked`, "sky")),
+            data.rulesets.find((r) => r.id === event.ruleset)?.bestWindow
+              ? el("div", { class: "note", text: "Only each player's best time counts (the Winter Royale qualifiers' rule): their points, matches, wins, eliminations and placement are that time's." }) : null,
             table([
               ["#", (row) => String(row.rank), "num"],
               ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
@@ -9444,6 +9557,7 @@ Each starts active; quests the account already has are left as they are.`, {
             chip(`Playlist ${event.playlistId}`, "sky"),
             ...(inGameOf(event.playlist) ? [chip("In the Events tab", "good")] : []),
             ...(data.currentInGameEvent === event.id ? [chip("Playable in the lobby now", "good")] : []),
+            ...(event.qualifier ? [chip(`Invite only, ${event.qualifier.invited} invited`, "sky")] : []),
             chip(`${event.playerCount} players`, "accent"),
             chip(`${event.leaderboard?.length || 0} ranked`, ""))
         ),
@@ -9500,6 +9614,7 @@ Each starts active; quests the account already has are left as they are.`, {
           el("details", { style: "margin-top:8px;" },
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Servers and bots (optional)" }),
             createServersBots.node)),
+        winterRoyalePanel(),
         el("section", { class: "panel", style: "margin-top:16px;" },
           el("div", { class: "panel-head", style: "display:flex; justify-content:space-between; align-items:center; gap:12px;" },
             el("h2", { text: "The game's Events tab (6.10+)" }),

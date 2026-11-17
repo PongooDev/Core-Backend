@@ -458,7 +458,10 @@ export const activeStorms = "EventFlag.ActiveStorms";
 //
 // 7.00 (CL-4629139, Update v7.00, 6 December 2018), Season 7. Every EventFlag.* in its paks (the same byte scan, all
 // 407,616 uasset, umap, uexp and ini files of its 16 paks, the keyed pakchunk1000 and 1001 with them): 6.31's 36 names less
-// none, and two more: EventFlag.LobbySeason7 (Items/Events/Shared's Season 7 lobby) and EventFlag.WinterBattleBus (1.11's
+// none, and two more: EventFlag.LobbySeason7 (Items/Events/Shared/LobbyBG_Season7, a LobbyBackgroundTakeoverEvent of
+// EventPriority 3 over LobbyBG_Season6's 2: Battle Royale's lobby is Maps/UI/Frontend_Lobby_Winter_BR and Save the World's
+// Frontend_Lobby_Winter2018, the snowy Season 7 lobby of Core-Backend #383's screenshot; 7.10's and 7.20's paks list the same
+// four LobbyBG assets, Season 5's to Season 7's, so it is the only Season 7 lobby there) and EventFlag.WinterBattleBus (1.11's
 // holiday bus flag, back in the paks). Season 7 ends Season 6's events: 7.00 serves LobbySeason7 (LobbySeason6, Battle
 // Royale's Fortnitemares and Lil' Kev challenges, PassiveStorms and Save the World's Fortnitemares and its Mini-Bosses with
 // Candy end with 6.31; they still switch by hand, events/season4flags.js), and Save the World's "Season 7 Warmup":
