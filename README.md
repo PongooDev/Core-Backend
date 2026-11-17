@@ -163,6 +163,29 @@ To run the tests:
 npm test
 ```
 
+### Local https (buying V-Bucks on 7.00 and later)
+
+The same port also answers https: a connection that starts with a TLS handshake gets https, anything else plain http,
+as before. The game's own requests stay on http. Only its built-in browser for buying V-Bucks (and the Founder's and
+starter packs) needs https: from 7.00 the game turns that page's address into `https://127.0.0.1:5595/...`.
+
+On its first start the backend makes its own certificates in `<dataDir>/tls`:
+
+- `root-cert.pem`: a root that can only vouch for `127.0.0.1` and `localhost` (critical name constraints, path length
+  0, about 10 years). Its private key is never saved: it is dropped once the next certificate is signed, so nothing
+  else can ever be issued under it.
+- `backend-cert.pem` and `backend-key.pem`: the backend's own certificate for `127.0.0.1` and `localhost`
+  (TLS server only, about 10 years), signed by that root.
+
+Each install makes its own set; nothing is shared or committed. They are made again, with a new root, when one is
+missing, damaged or within 30 days of expiring. If they can't be made, the backend logs it and serves plain http only.
+The start-up log says which.
+
+The game's browser only accepts a root that Windows trusts. In [Core Launcher](https://github.com/PongooDev/Core-Launcher),
+Settings → Backend → **Trust the local backend's certificate** adds it to your user's trusted roots (Windows asks you
+to confirm), and **Remove** takes it out again. It's off until you turn it on. The launcher gets the root from
+`GET /core/api/tls/root.crt`, which only answers this PC and only holds the public certificate.
+
 ## Play with friends
 
 Friends on other PCs can log in to your backend and join your gameservers.

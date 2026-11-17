@@ -3,6 +3,7 @@ import { describeHost, listen } from "./listen.js";
 import { log } from "./log.js";
 import { startQosPingServer } from "./matchmaking/qos.js";
 import { createServer } from "./server.js";
+import { tlsStatusLine } from "./tls/service.js";
 import { defaultSipPort } from "./vivox/service.js";
 
 let config;
@@ -25,6 +26,8 @@ try {
 }
 
 log("Core", `Listening on port ${port}`);
+// The local https certificate (tls/service.js, Core-Backend #377): made on the first start, kept after.
+log("Core", tlsStatusLine(await server.tls.ready(), port));
 // The answer to the game's QoS region pings (matchmaking/qos.js, Core-Backend #123), where the backend listens.
 const qosPing = config.qosPingPort ? await startQosPingServer(network, config.qosPingPort) : null;
 network.qosPing = { port: qosPing?.port ?? null };

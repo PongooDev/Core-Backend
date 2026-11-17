@@ -44,6 +44,7 @@ import { portalRoutes } from "./services/portal/routes.js";
 import { contentRoutes } from "./services/content/pages.js";
 import { corePresenceRoutes } from "./services/core/presence.js";
 import { coreStatusRoutes } from "./services/core/status.js";
+import { coreTlsRoutes } from "./services/core/tls.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
@@ -75,6 +76,7 @@ import { profileRoutes } from "./services/mcp/profile.js";
 import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
 import { createXmppService } from "./xmpp/service.js";
+import { createLocalTls } from "./tls/service.js";
 import { createAdminAuthStore } from "./admin/auth.js";
 import { coreVivoxRoutes } from "./services/core/vivox.js";
 import { voiceRoutes } from "./services/fortnite/voice.js";
@@ -187,6 +189,8 @@ export function createContext(config) {
       publicRooms: Object.values(generalChatRooms),
       quiet: config.requestLog === false
     }),
+    // The local https certificate (tls/service.js, Core-Backend #377), made when first needed.
+    tls: createLocalTls(config.dataDir),
     dataDir: config.dataDir,
     config
   };
@@ -280,6 +284,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes(context));
   app.use(corePresenceRoutes(context));
+  app.use(coreTlsRoutes(context));
   app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 

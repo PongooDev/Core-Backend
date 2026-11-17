@@ -16,6 +16,7 @@
   },
   "license": "GPL-3.0-only",
   "dependencies": {
+    "@peculiar/x509": "^1.14.3",
     "compression": "^1.8.2",
     "express": "^5.3.0",
     "selfsigned": "^5.5.0"

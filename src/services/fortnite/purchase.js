@@ -291,7 +291,8 @@ ${purchase}
       return page(res, 400, "Sign-in expired", "<h1>Sign-in expired</h1><p class=\"error\">Close this window and open the Store again.</p>");
     }
     const { access_token: token } = tokens.issueAccess(entry.clientId, account, "exchange_code", pageMinutes * 60);
-    const secure = httpsProxied(req) ? "; Secure" : "";
+    // Secure on an https page: an https reverse proxy's, or the backend's own local https (7.00+, Core-Backend #377).
+    const secure = httpsProxied(req) || req.socket?.encrypted ? "; Secure" : "";
     securityHeaders(res, crypto.randomBytes(16).toString("base64"));
     res.set("Set-Cookie", `EPIC_BEARER_TOKEN=${token}; Path=/purchase; Max-Age=${pageMinutes * 60}; HttpOnly; SameSite=Lax${secure}`);
     const search = query.toString();

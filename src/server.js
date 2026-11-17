@@ -6,6 +6,7 @@ import { enableProxy } from "./proxy.js";
 import { isImageHost } from "./services/content/imagehosts.js";
 import { customShowdownImages } from "./tournaments/showdown.js";
 import { enableStomp } from "./stomp/service.js";
+import { enableTls } from "./tls/service.js";
 import { enableXmpp } from "./xmpp/service.js";
 
 export async function createServer(config) {
@@ -16,10 +17,14 @@ export async function createServer(config) {
   await enableProxy(server, (target) => isImageHost(target, context.settings?.get?.() ?? {}, config, customShowdownImages(context.tournaments)));
   enableXmpp(server, context.xmpp);
   enableStomp(server, context.stomp, context.matchmaker);
-  // After enableXmpp, which takes over "connection" to tell XMPP streams from HTTP: this one runs before both.
+  // https on the same port (Core-Backend #377): after enableXmpp, so a TLS connection's decrypted stream is told apart
+  // the same way.
+  if (context.tls) enableTls(server, context.tls);
+  // After enableXmpp and enableTls, which take over "connection" to tell TLS, XMPP and HTTP apart: this one runs first.
   guardConnections(server, context.network);
   server.network = context.network;
   server.vivox = context.vivox;
+  server.tls = context.tls;
   return server;
 }
 
