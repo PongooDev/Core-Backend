@@ -243,6 +243,22 @@ const sidecarBuild = 4629139;
 const sidecarSection = (build, address, port, proxied) => (Number(build) >= sidecarBuild
   ? ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", `Protocol=${proxied ? "https" : "http"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]
   : []);
+// From 7.10 (CL-4667333) every MCP service's base URL is checked as it is built: FBaseServiceMcp::GetBaseUrl (the
+// service's slot 10, 0x4B8BE0, Arxan-dispersed) has its config (0x60D5A0) ask ISslCertificateManager::IsDomainPinned for
+// Domain and compare Protocol with "https" and "wss", and unless the domain is pinned and the protocol one of those it
+// tail-calls FPlatformMisc::RequestExit(false) (0x1868020). The STOMP connection manager (constructed in 0x586920 on
+// "OnlineSubsystemMcp.StompServiceMcp", vtable 0x39C3CE0) is such a service, and 7.10 reads its config when it first
+// connects, after this file is merged: with Protocol=ws and this backend's address the client quit, without a crash
+// report, as Save the World's first profile notification subscription connected STOMP (PongooDev/CoreV2#483: "LogWindows:
+// FPlatformMisc::RequestExit(0)" right after "ChangeGameSubMode is changing mode from [NoMode] to Campaign"). Any domain
+// of Core's fails the pin check, so 7.10 and later get no STOMP section and keep the shipped
+// wss://notifications-service-prod06.ol.epicgames.com:443, which passes it; CoreRedirect's FWebSocketsModule::
+// CreateWebSocket detour sends that Epic host to this backend (ws:// or wss:// as its own address), as it already did for
+// every build that read the config before the hotfix.
+const pinnedServicesBuild = 4667333;
+const stompSection = (build, address, port, proxied) => (Number(build) >= pinnedServicesBuild
+  ? []
+  : ["[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]);
 const defaultNetwork = createNetwork();
 // 5.10's (CL-4225813) and later builds' Vivox voice chat (vivox/service.js gameSection): FVivox::Connect (7.00 0x999130)
 // reads [Vivox] ServerUrl and Domain from the game ini each time it connects, so this file, merged at start-up, points
@@ -255,7 +271,7 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
   const build = getBuild(req);
   const engineNetwork = [
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
-    "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, "",
+    ...stompSection(build, address, port, proxied),
     ...sidecarSection(build, address, port, proxied)
   ].join("\r\n");
   // 7.00's Creative early access notice on the lobby's "Start a server" tile (profiles/creative.js, Core-Backend #379).

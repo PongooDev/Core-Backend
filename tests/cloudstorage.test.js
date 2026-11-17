@@ -537,6 +537,35 @@ test("the system hotfix points the client's XMPP at the address and port it reac
 
 // Core-Backend #238: entering Battle Royale, the client asks for global chat rooms only with UFortOnlineAccount's
 // bIsAthenaGlobalChatEnabled (3.2 0xD4C450), false in the shipped DefaultGame.ini of 2.5 to 3.2. Builds without it ignore it.
+// PongooDev/CoreV2#483: 7.10 (CL-4667333) quits (FPlatformMisc::RequestExit) when an MCP service's Domain isn't pinned or
+// its Protocol isn't https/wss, so from 7.10 the file leaves STOMP at its shipped Epic host for CoreRedirect to send
+// here; 7.00 (CL-4629139) still gets the section.
+test("the system hotfix gives 7.10 and later no STOMP section, 7.00 its own", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const engine = async (userAgent, headers = {}) => {
+      const [file] = await listAs(backend.port, "/fortnite/api/cloudstorage/system", token, userAgent);
+      const download = await send({ host: "127.0.0.1", port: backend.port, path: `/fortnite/api/cloudstorage/system/${file.uniqueFilename}`,
+        headers: { "User-Agent": userAgent, Authorization: `bearer ${token}`, ...headers } });
+      assert.equal(download.status, 200);
+      return download.body.toString("utf8");
+    };
+    const xmpp = `[OnlineSubsystemMcp.XMPP]\r\nServerAddr=127.0.0.1\r\nServerPort=${backend.port}\r\nbUseSSL=false\r\n`;
+    for (const changelist of [4667333, 4727874]) {
+      const ini = await engine(agentOf(changelist === 4667333 ? "7.10" : "7.20", changelist));
+      assert.ok(ini.startsWith(xmpp), ini);
+      assert.equal(ini.includes("StompServiceMcp"), false, ini);
+      const proxied = await engine(agentOf("7.10", changelist), { "X-Forwarded-Proto": "https", "X-Forwarded-Host": "core.example.com" });
+      assert.equal(proxied.includes("StompServiceMcp"), false, proxied);
+    }
+    const ini700 = await engine(agentOf("7.00", 4629139));
+    assert.ok(ini700.includes(`[OnlineSubsystemMcp.StompServiceMcp]\r\nProtocol=ws\r\nDomain=127.0.0.1:${backend.port}\r\n`), ini700);
+  } finally {
+    backend.close();
+  }
+});
+
 test("the system hotfix turns on Battle Royale's global chat", async () => {
   const backend = await startBackend();
   try {
