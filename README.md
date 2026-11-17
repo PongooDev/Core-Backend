@@ -186,6 +186,11 @@ Settings → Backend → **Trust the local backend's certificate** adds it to yo
 to confirm), and **Remove** takes it out again. It's off until you turn it on. The launcher gets the root from
 `GET /core/api/tls/root.crt`, which only answers this PC and only holds the public certificate.
 
+If the purchase still says "PageLoadFail", look at the backend's log. A request that came over https shows as
+`GET https://127.0.0.1:5595/...`, so a `GET https://.../exchange` means the page did load. "An https connection to this
+backend was dropped before it asked for a page" means the game's browser refused the certificate: the launcher's
+Settings → Backend → Local https must say **Trusted**.
+
 ## Play with friends
 
 Friends on other PCs can log in to your backend and join your gameservers.

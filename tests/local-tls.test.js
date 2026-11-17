@@ -12,6 +12,8 @@ import { X509Certificate as PeculiarCertificate } from "@peculiar/x509";
 import {
   buildLeaf, buildRoot, createCertificates, generateKeys, loadCertificates, nameConstraintsOid, rootSubject, thumbprint, tlsFiles, usable
 } from "../src/tls/certificates.js";
+import { recentLogs } from "../src/log.js";
+import { reportRefusal } from "../src/tls/service.js";
 import { get, send, startBackend, userLogin } from "./helpers.js";
 
 // The backend's local https (Core-Backend #377): its own name-constrained root and leaf, https beside http on the one
@@ -195,7 +197,7 @@ test("TLS enforces the root's name constraints: a leaf it signed for any other n
 });
 
 test("one port serves plain http and https: the first byte tells a ClientHello from a request", async () => {
-  const backend = await startBackend();
+  const backend = await startBackend({ requestLog: true });
   try {
     const plain = await get(backend.port, "/core/api/status");
     assert.equal(plain.status, 200);
@@ -213,8 +215,14 @@ test("one port serves plain http and https: the first byte tells a ClientHello f
     assert.equal(peer.subjectAltName, "IP Address:127.0.0.1, DNS:localhost");
     assert.equal(peer.checkIssued(new crypto.X509Certificate(ca)), true);
     assert.ok(await handshake(backend.port, ca, "localhost"));
-    // Without the root it's an unknown issuer, as for any browser that hasn't trusted it.
+    // An https request's log line says it was https.
+    assert.ok(recentLogs().some((line) => line.category === "HTTP" && line.message === `200 GET https://127.0.0.1:${backend.port}/core/api/status`));
+    // Without the root it's an unknown issuer, as for any browser that hasn't trusted it. The client drops the connection
+    // without asking for anything, and the backend's log says what that means and what fixes it.
     await assert.rejects(handshake(backend.port, undefined), (error) => /UNABLE_TO_VERIFY|SELF_SIGNED|unable to get/i.test(`${error.code} ${error.message}`));
+    const refused = () => recentLogs().find((line) => line.category === "Core" && line.message.startsWith("An https connection to this backend was dropped"));
+    for (let i = 0; i < 50 && !refused(); i++) await new Promise((resolve) => setTimeout(resolve, 20));
+    assert.match(refused()?.message ?? "", /doesn't trust this backend's certificate.*Settings → Backend → Local https/);
 
     // Plain http goes on as before after https was used, on the same port.
     assert.equal((await get(backend.port, "/core/api/status")).status, 200);
@@ -315,4 +323,14 @@ test("without a certificate the backend goes on with plain http only", async () 
   } finally {
     backend.close();
   }
+});
+
+// Last: it moves the once-a-minute clock to a fixed time.
+test("a refused https connection is logged at most once a minute", () => {
+  const at = Date.now() + 10 * 60_000;
+  assert.equal(reportRefusal("ERR_SSL_SSL/TLS_ALERT_CERTIFICATE_UNKNOWN", at), true);
+  assert.equal(reportRefusal("ERR_SSL_SSL/TLS_ALERT_CERTIFICATE_UNKNOWN", at + 30_000), false);
+  assert.equal(reportRefusal("closed after the handshake without a request", at + 60_000), true);
+  const lines = recentLogs().filter((line) => line.message.includes("ERR_SSL_SSL/TLS_ALERT_CERTIFICATE_UNKNOWN"));
+  assert.equal(lines.length, 1);
 });

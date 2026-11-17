@@ -30,7 +30,9 @@ export function redactUrl(url) {
 export function requestLog(req, res, next) {
   // The admin panel polls its own API; its reads would drown out the game's requests.
   if (req.method === "GET" && req.originalUrl.startsWith("/admin/api/")) return next();
-  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.get("host") ?? ""}${redactUrl(req.originalUrl)}`));
+  // A request over https (the backend's own local https, Core-Backend #377, or the HTTPS proxy's tunnels) says so.
+  const scheme = req.socket?.encrypted ? "https://" : "";
+  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${scheme}${req.get("host") ?? ""}${redactUrl(req.originalUrl)}`));
   next();
 }
 
