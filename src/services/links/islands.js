@@ -55,6 +55,8 @@ export function createIslandLinkStore(dataDir) {
     }
     if (!state || typeof state !== "object" || !state.links || typeof state.links !== "object") state = { links: {} };
     state.featured = sanitizeFeatured(state.featured) ?? [];
+    if (!state.suggestion || typeof state.suggestion !== "object") state.suggestion = {};
+    state.suggestion.schedule = sanitizeSchedule(state.suggestion.schedule);
     return state;
   };
   const save = () => writeJson(file, load());
@@ -111,9 +113,56 @@ export function createIslandLinkStore(dataDir) {
     return link;
   }
 
-  // The hub's featured codes, in rift order, as the admin panel set them; and the ones that are active links now.
+  // The week's suggested islands: up to four active links picked at random as each period of the schedule starts (the
+  // admin panel's refresh day and hour, UTC: Friday to Friday by default). The first is the suggested island, which the
+  // island code screen lists first; with no featured codes of the admin's, the featured rifts load all of them. An island
+  // switched off or unpublished during the week is replaced, and one published while fewer than four are picked joins.
+  const isActive = (code) => Boolean(load().links[code] && load().links[code].active !== false);
+  function suggested(now = new Date()) {
+    const suggestion = load().suggestion;
+    const { schedule } = suggestion;
+    const start = suggestionPeriodStart(now, schedule);
+    const next = new Date(start.getTime() + 7 * 86_400_000);
+    const active = list().filter((link) => link.active !== false).map((link) => link.mnemonic);
+    const samePeriod = suggestion.periodStart === start.toISOString();
+    let picks = samePeriod && Array.isArray(suggestion.picks) ? suggestion.picks.filter(isActive) : [];
+    const wanted = Math.min(maxFeatured, active.length);
+    if (picks.length < wanted) {
+      // Last week's suggested island leads again only when nothing else is published.
+      const previous = samePeriod ? null : suggestion.picks?.[0];
+      const pool = shuffled(active.filter((code) => !picks.includes(code)));
+      pool.sort((a, b) => Number(a === previous) - Number(b === previous));
+      picks = [...picks, ...pool.slice(0, wanted - picks.length)];
+    }
+    if (!samePeriod || JSON.stringify(picks) !== JSON.stringify(suggestion.picks ?? [])) {
+      Object.assign(suggestion, { periodStart: start.toISOString(), picks });
+      save();
+      if (!samePeriod || picks[0] !== undefined) log("Creative", `Suggested islands until ${next.toISOString()}: ${picks.join(", ") || "none (nothing published)"}`);
+    }
+    return { schedule: { ...schedule }, periodStart: start.toISOString(), nextRefresh: next.toISOString(), picks: [...picks], suggested: picks[0] ?? null };
+  }
+  // {weekday, hour}: when the suggested islands change (UTC). A new schedule starts a new pick at once.
+  function setSuggestionSchedule(schedule) {
+    const suggestion = load().suggestion;
+    suggestion.schedule = sanitizeSchedule(schedule);
+    suggestion.periodStart = null;
+    save();
+    log("Creative", `Suggested islands change every ${weekdays[suggestion.schedule.weekday]} at ${String(suggestion.schedule.hour).padStart(2, "0")}:00 UTC`);
+    return suggested();
+  }
+  // The admin's "Pick again": new suggested islands for the rest of this period.
+  function repickSuggested() {
+    load().suggestion.periodStart = null;
+    return suggested();
+  }
+
+  // The hub's featured codes, in rift order, as the admin panel set them; and the ones that are active links now (the
+  // week's suggested islands when none of the admin's is).
   const featured = () => [...load().featured];
-  const activeFeatured = () => load().featured.filter((code) => load().links[code] && load().links[code].active !== false);
+  function activeFeatured() {
+    const chosen = load().featured.filter(isActive);
+    return chosen.length ? chosen : suggested().picks;
+  }
   function setFeatured(list) {
     load().featured = sanitizeFeatured(list) ?? [];
     save();
@@ -133,7 +182,36 @@ export function createIslandLinkStore(dataDir) {
     return true;
   }
 
-  return { get, list, byAuthor, ofIsland, fileOf, publish, update, remove, publicFile, featured, activeFeatured, setFeatured };
+  return { get, list, byAuthor, ofIsland, fileOf, publish, update, remove, publicFile, featured, activeFeatured, setFeatured, suggested,
+    setSuggestionSchedule, repickSuggested };
+}
+
+// The suggested islands' schedule: the weekday (0 Sunday to 6 Saturday) and hour (UTC) each week's pick starts.
+export const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+export const defaultSuggestionSchedule = { weekday: 5, hour: 0 };
+export function sanitizeSchedule(schedule) {
+  const weekday = Number(schedule?.weekday);
+  const hour = Number(schedule?.hour ?? 0);
+  return {
+    weekday: Number.isInteger(weekday) && weekday >= 0 && weekday <= 6 ? weekday : defaultSuggestionSchedule.weekday,
+    hour: Number.isInteger(hour) && hour >= 0 && hour <= 23 ? hour : defaultSuggestionSchedule.hour
+  };
+}
+// When the period holding `now` began: the last of the schedule's weekday and hour at or before it.
+export function suggestionPeriodStart(now, schedule) {
+  const { weekday, hour } = sanitizeSchedule(schedule);
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), hour));
+  start.setUTCDate(start.getUTCDate() - ((start.getUTCDay() - weekday + 7) % 7));
+  if (start > now) start.setUTCDate(start.getUTCDate() - 7);
+  return start;
+}
+function shuffled(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const other = crypto.randomInt(0, index + 1);
+    [copy[index], copy[other]] = [copy[other], copy[index]];
+  }
+  return copy;
 }
 
 // A link as the links service answers it (the fields 7.10's serializer reads, with the rest of Epic's link answer).
@@ -180,8 +258,12 @@ export function sanitizeFeatured(list) {
 //   BeginPlay: index in range, its mnemonic load 0xF7EF90; else, with bAutoLoadFromRestrictedPlotDefinition, the build's
 //   own featured island, BeginRestrictedPlotLoad 0xF5E7B0). The server asks the links service for the code and loads its
 //   island (0xF82EC0, 0xF7DF50), and the rift shows its title, tagline and creator. So the admin panel's featured codes
-//   that are still published go in, in order; with none, the array is emptied and the rifts keep the build's islands. A
-//   server reads the array as it starts, so a change reaches the servers started after it.
+//   that are still published go in, in order; with none, the week's suggested islands do (#488). The build's own featured
+//   islands are title files Core doesn't have (FeaturedIsland1-4.island): their load fails, and a rift whose load failed
+//   is never interactable (AFortAthenaCreativePortal's state update 0xBE3800 sets bIsCuratedPortal only for a loaded
+//   island, and the rift's Blueprint, BGA_IslandPortal's BlueprintCanInteract, needs it or the player's own rift), so it
+//   had no Enter Code. With nothing published the array is emptied. A server reads the array as it starts, so a change
+//   reaches the servers started after it.
 // - PublishingEnabledForWhitelistedAccounts (+0x5B0): the island menu's Publish Island row shows when it and the player's
 //   AFortPlayerControllerAthena::bIsAllowedToPublish are set (UFortCreativePublishOptions, 0x308BA3B). The gameserver sets
 //   the second for an enabled Support-A-Creator creator (links.js /core/api/creative/publishing).

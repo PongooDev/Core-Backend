@@ -143,7 +143,14 @@ export function linksRoutes({ tokens, settings, profiles, islandLinks, dataDir }
   router.get(favorites, requireAuth(tokens), (req, res) => {
     if (!self(req, res, req.params.accountId) || !accountIdPattern.test(req.params.accountId)) return res.headersSent || res.json({ results: [], hasMore: false });
     const limit = Math.max(1, Math.min(100, Number.parseInt(req.query.limit, 10) || 100));
-    const results = readFavorites(req.params.accountId).map((entry) => ({ link: activeLink(entry.mnemonic), sortDate: entry.sortDate }))
+    // The week's suggested island leads the list (#488: Epic's code screen featured an island; 7.10's screen lists only
+    // what this answer holds, so the suggestion comes as its first entry), then the player's own favorites.
+    const week = islandLinks?.suggested?.();
+    const entries = readFavorites(req.params.accountId);
+    if (week?.suggested) entries.unshift({ mnemonic: week.suggested, sortDate: week.periodStart });
+    const seen = new Set();
+    const results = entries.filter((entry) => !seen.has(entry.mnemonic) && seen.add(entry.mnemonic))
+      .map((entry) => ({ link: activeLink(entry.mnemonic), sortDate: entry.sortDate }))
       .filter((entry) => entry.link).map((entry) => ({ linkData: linkJson(entry.link), sortDate: entry.sortDate }));
     res.json({ results: results.slice(0, limit), hasMore: results.length > limit });
   });

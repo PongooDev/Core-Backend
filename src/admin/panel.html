@@ -9662,13 +9662,13 @@ Each starts active; quests the account already has are left as they are.`, {
       const slots = Array.from({ length: view.maxFeatured }, (_, index) => {
         const current = view.featured[index]?.mnemonic ?? "";
         return el("select", { class: "field", "aria-label": `Featured rift ${index + 1}`, style: "min-width:240px;" },
-          el("option", { value: "", text: "The build's own featured island" }),
+          el("option", { value: "", text: index === 0 ? "None (the week's suggested islands)" : "None" }),
           view.links.map((link) => el("option", { value: link.mnemonic, selected: link.mnemonic === current, text: `${link.mnemonic} · ${link.title}${link.active ? "" : " (off)"}` })));
       });
       const featuredSection = el("section", { class: "panel" },
         el("div", { class: "panel-head" }, el("h2", { text: "Featured rifts" }),
-          view.featured.length ? chip(`${view.featured.length} of ${view.maxFeatured} set`, "sky") : chip("The build's own")),
-        el("p", { class: "note", style: "margin:0;", text: "From 7.10 the Creative hub's four featured rifts each load an island by its code (the hotfix's CuratedLinkCodes, in rift order). Pick a published island for each, in order; an empty slot ends the list, and with none set the rifts keep the build's own featured islands. A gameserver reads the list as it starts, so the change reaches servers started after you save. The featured rifts also show Enter Code, where players load any published island by its code." }),
+          view.featured.length ? chip(`${view.featured.length} of ${view.maxFeatured} set`, "sky") : chip("The week's suggested islands")),
+        el("p", { class: "note", style: "margin:0;", text: "From 7.10 the Creative hub's four featured rifts each load an island by its code (the hotfix's CuratedLinkCodes, in rift order). Pick a published island for each, in order; an empty slot ends the list. With none set, the rifts load the week's suggested islands (below). A rift with no island stays shut and can't be used, so players can only enter a code at a rift that has one. A gameserver reads the list as it starts, so the change reaches servers started after you save." }),
         el("div", { class: "actions", style: "margin-top:12px; flex-wrap:wrap; gap:8px;" },
           slots.map((select, index) => el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" }, el("span", { class: "muted", text: `Rift ${index + 1}` }), select)),
           btn("Save featured rifts", () => {
@@ -9677,8 +9677,33 @@ Each starts active; quests the account already has are left as they are.`, {
               if (!select.value) break;
               codes.push(select.value);
             }
-            rerender(api("/admin/api/creative/featured", { codes }), codes.length ? `Featured: ${codes.join(", ")}` : "The rifts keep the build's own islands");
+            rerender(api("/admin/api/creative/featured", { codes }), codes.length ? `Featured: ${codes.join(", ")}` : "The rifts load the week's suggested islands");
           }, "primary")));
+
+      // The week's suggested islands: the island code screen lists the first one first, and the featured rifts load them
+      // while no featured island is set.
+      const suggestion = view.suggestion;
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const suggestionDay = el("select", { class: "field", "aria-label": "Refresh day" },
+        dayNames.map((name, index) => el("option", { value: String(index), selected: index === suggestion.schedule.weekday, text: `${name} to ${name}` })));
+      const suggestionHour = el("select", { class: "field", "aria-label": "Refresh hour (UTC)" },
+        Array.from({ length: 24 }, (_, hour) => el("option", { value: String(hour), selected: hour === suggestion.schedule.hour, text: `${String(hour).padStart(2, "0")}:00 UTC` })));
+      const suggestionSection = el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Suggested island" }),
+          suggestion.suggested ? chip(suggestion.suggested, "sky") : chip("Nothing published")),
+        el("p", { class: "note", style: "margin:0;", text: "Every week a random published island is suggested: it is the first island listed on the rifts' island code screen (Enter Code), above the player's favorites. Up to three more random islands are picked with it, and the featured rifts load all four while no featured island is set above. Pick the day and hour (UTC) the suggestion changes; a new schedule picks again at once." }),
+        el("div", { style: "margin-top:10px;" },
+          suggestion.islands.length
+            ? el("ol", { style: "margin:0; padding-left:20px;" }, suggestion.islands.map((island, index) => el("li", {},
+                el("code", { class: "mono", style: "font-weight:700;", text: island.mnemonic }), ` ${island.title ?? ""}${index === 0 ? " (suggested)" : ""}`)))
+            : el("div", { class: "empty", text: "No published islands to suggest yet." }),
+          el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: `Picked ${ago(suggestion.periodStart)}; next pick ${new Date(suggestion.nextRefresh).toLocaleString()}.${suggestion.featuredInRifts ? " The featured rifts load these." : ""}` })),
+        el("div", { class: "actions", style: "margin-top:12px; flex-wrap:wrap; gap:8px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" }, el("span", { class: "muted", text: "Refresh schedule" }), suggestionDay),
+          el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" }, el("span", { class: "muted", text: "At" }), suggestionHour),
+          btn("Save schedule", () => rerender(api("/admin/api/creative/suggestion", { weekday: Number(suggestionDay.value), hour: Number(suggestionHour.value) }),
+            `The suggestion changes every ${dayNames[Number(suggestionDay.value)]} at ${String(suggestionHour.value).padStart(2, "0")}:00 UTC`), "primary"),
+          btn("Pick again now", () => rerender(api("/admin/api/creative/suggestion/repick", {}), "New suggested islands picked"), "ghost")));
 
       const accountsList = state.accounts ?? [];
       const publishAccount = el("input", { class: "field", list: "creative-publish-accounts", placeholder: "Player", autocomplete: "off", style: "width:180px;" });
@@ -9746,7 +9771,7 @@ Each starts active; quests the account already has are left as they are.`, {
           el("div", {}, el("h1", { text: "Creative" }),
             el("div", { class: "muted", text: "Published islands, their codes and the hub's featured rifts (7.10 and later). A player's own islands, saves and backups are on their page, Creative tab." })),
           el("div", { class: "actions" }, btn("Refresh", showCreative, "ghost"))),
-        featuredSection, publishSection, linksSection);
+        featuredSection, suggestionSection, publishSection, linksSection);
     }
 
     // A player's Creative islands (the Players page's Creative tab): saves, the in-game backup, the admin's backups.

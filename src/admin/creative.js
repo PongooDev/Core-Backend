@@ -14,7 +14,8 @@ import { createAdminGate } from "./local.js";
 // The admin panel's Creative tab and the Players tab's Creative section (PongooDev/CoreV2#488), Core's own:
 // - Creative tab: the published islands (each a links service link, services/links/islands.js), their titles, on/off and
 //   unpublishing, a player's island published by the admin, and the hub's featured islands (the hotfix's CuratedLinkCodes,
-//   at most four, which servers started afterwards load into the featured rifts).
+//   at most four, which servers started afterwards load into the featured rifts), and the week's suggested islands (the
+//   island code screen's first entry, and the featured rifts' islands while the admin has set none) with their schedule.
 // - A player's islands: each CreativePlot of their creative profile with its save on the DSS (services/dss/dss.js), its
 //   in-game backup (the island menu's Backup Island, the checkpoint) and the admin's backups, which are copies of the save
 //   kept beside it (<plot>.backups/<id>.island). A backup is made from the save, restored over it (the save before is kept
@@ -36,6 +37,11 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     ...linkJson(link), title: link.title, tagline: link.tagline, plotItemId: link.plotItemId, size: link.size ?? null,
     publishedBy: link.publishedBy ?? "player", authorName: nameOf(link.accountId), featuredSlot: islandLinks.featured().indexOf(link.mnemonic)
   });
+  const suggestionView = () => {
+    const week = islandLinks.suggested();
+    return { ...week, islands: week.picks.map((code) => ({ mnemonic: code, title: islandLinks.get(code)?.title ?? null })),
+      featuredInRifts: islandLinks.featured().filter((code) => islandLinks.get(code)?.active !== false).length === 0 };
+  };
   const overview = () => ({
     maxFeatured,
     featured: islandLinks.featured().map((code) => {
@@ -43,6 +49,7 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
       return { mnemonic: code, title: link?.title ?? null, active: Boolean(link && link.active !== false) };
     }),
     links: islandLinks.list().map(linkView),
+    suggestion: suggestionView(),
     publishers: enabledCreators(settings.get()).filter((creator) => creator.accountId)
       .map((creator) => ({ accountId: creator.accountId, code: creator.code, displayName: nameOf(creator.accountId) }))
   });
@@ -60,6 +67,21 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
       if (!islandLinks.get(mnemonic)) return invalid(res, `No island is published as ${mnemonic}`);
     }
     islandLinks.setFeatured(codes);
+    res.json(overview());
+  });
+
+  // {weekday: 0 (Sunday) to 6, hour?: 0 to 23 UTC}: when the suggested islands change (Friday 00:00 UTC to the next by
+  // default). A new schedule picks again at once.
+  router.post("/admin/api/creative/suggestion", (req, res) => {
+    const { weekday, hour = 0 } = req.body ?? {};
+    if (!Number.isInteger(weekday) || weekday < 0 || weekday > 6) return invalid(res, "weekday is 0 (Sunday) to 6 (Saturday)");
+    if (!Number.isInteger(hour) || hour < 0 || hour > 23) return invalid(res, "hour is 0 to 23 (UTC)");
+    islandLinks.setSuggestionSchedule({ weekday, hour });
+    res.json(overview());
+  });
+  // New suggested islands now, for the rest of the period.
+  router.post("/admin/api/creative/suggestion/repick", (req, res) => {
+    islandLinks.repickSuggested();
     res.json(overview());
   });
 

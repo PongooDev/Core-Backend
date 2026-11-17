@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { creativeRuntimeOptions, isMnemonic, linkJson, normalizeMnemonic, publicIslandPath, sanitizeFeatured } from "../src/services/links/islands.js";
+import { creativeRuntimeOptions, isMnemonic, linkJson, normalizeMnemonic, publicIslandPath, sanitizeFeatured, sanitizeSchedule,
+  suggestionPeriodStart } from "../src/services/links/islands.js";
 import { parseIslandPath, parsePublicIslandPath } from "../src/services/dss/dss.js";
 import { approvedCreatorsPage } from "../src/store/creators.js";
 import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
@@ -187,6 +188,75 @@ test("the island menu's backup and restore go through the island's checkpoint; t
     view = (await admin(backend, `/accounts/${player.accountId}/creative/${plotItemId}/reset`, {})).body;
     const reset = view.islands.find((entry) => entry.plotItemId === plotItemId);
     assert.deepEqual([reset.save, reset.backups.length], [null, 3]);
+  } finally {
+    await backend.close();
+  }
+});
+
+test("the suggested islands' period starts on the schedule's day and hour (UTC)", () => {
+  // Friday 00:00 UTC by default: 2026-11-17 is a Tuesday.
+  assert.equal(suggestionPeriodStart(new Date("2026-11-17T12:00:00Z"), undefined).toISOString(), "2026-11-13T00:00:00.000Z");
+  assert.equal(suggestionPeriodStart(new Date("2026-11-13T00:00:00Z"), { weekday: 5 }).toISOString(), "2026-11-13T00:00:00.000Z");
+  assert.equal(suggestionPeriodStart(new Date("2026-11-12T23:59:59Z"), { weekday: 5 }).toISOString(), "2026-11-06T00:00:00.000Z");
+  // Saturday to Saturday at 18:00.
+  assert.equal(suggestionPeriodStart(new Date("2026-11-14T17:00:00Z"), { weekday: 6, hour: 18 }).toISOString(), "2026-11-07T18:00:00.000Z");
+  assert.equal(suggestionPeriodStart(new Date("2026-11-14T18:30:00Z"), { weekday: 6, hour: 18 }).toISOString(), "2026-11-14T18:00:00.000Z");
+  assert.deepEqual(sanitizeSchedule({ weekday: 9, hour: -1 }), { weekday: 5, hour: 0 });
+});
+
+test("the week's suggested island leads the island code screen, and the featured rifts load the suggestions while none is set", async () => {
+  const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(20) } } });
+  try {
+    const first = await savedIsland(backend, "Suggested1", "island one");
+    const second = await savedIsland(backend, "Suggested2", "island two");
+    const codes = [];
+    for (const { player, plotItemId } of [first, second]) {
+      const published = await admin(backend, "/creative/publish", { accountId: player.accountId, plotItemId, title: `Pick ${player.accountId.slice(0, 4)}` });
+      assert.equal(published.status, 200, JSON.stringify(published.body));
+      codes.push(published.body.published.mnemonic);
+    }
+    let overview = (await admin(backend, "/creative")).body;
+    const week = overview.suggestion;
+    assert.deepEqual(week.schedule, { weekday: 5, hour: 0 }, "Friday to Friday by default");
+    assert.deepEqual([...week.picks].sort(), [...codes].sort(), "both published islands are picked");
+    assert.ok(codes.includes(week.suggested));
+    assert.equal(week.featuredInRifts, true);
+    // The same picks for the rest of the week.
+    assert.deepEqual((await admin(backend, "/creative")).body.suggestion.picks, week.picks);
+
+    // The island code screen: the suggestion first, then the player's favorites, once each.
+    const viewer = await userLogin(backend.port, "SuggestionViewer");
+    const favorites = `/fortnite/api/game/v2/creative/favorites/${viewer.accountId}`;
+    let listed = await as(backend.port, viewer.token, "GET", `${favorites}?limit=30`);
+    assert.deepEqual(listed.body.results.map((entry) => entry.linkData.mnemonic), [week.suggested]);
+    const other = codes.find((code) => code !== week.suggested);
+    assert.equal((await as(backend.port, viewer.token, "PUT", `${favorites}/${other}`)).status, 204);
+    assert.equal((await as(backend.port, viewer.token, "PUT", `${favorites}/${week.suggested}`)).status, 204);
+    listed = await as(backend.port, viewer.token, "GET", `${favorites}?limit=30`);
+    assert.deepEqual(listed.body.results.map((entry) => entry.linkData.mnemonic), [week.suggested, other]);
+
+    // No featured codes: the featured rifts load the suggestions; the admin's codes take over once set.
+    const server = await dedicatedServerToken(backend.port);
+    assert.deepEqual((await get(backend.port, "/core/api/creative/featured", server)).body.codes, week.picks);
+    const hotfix = await as(backend.port, viewer.token, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini");
+    for (const code of week.picks) assert.match(hotfix.body, new RegExp(`\\+CuratedLinkCodes=${code}`));
+    await admin(backend, "/creative/featured", { codes: [other] });
+    assert.deepEqual((await get(backend.port, "/core/api/creative/featured", server)).body.codes, [other]);
+    overview = (await admin(backend, "/creative")).body;
+    assert.equal(overview.suggestion.featuredInRifts, false);
+
+    // The schedule: Saturday to Saturday at 18:00 UTC picks again at once.
+    assert.equal((await admin(backend, "/creative/suggestion", { weekday: 7 })).status, 400);
+    overview = (await admin(backend, "/creative/suggestion", { weekday: 6, hour: 18 })).body;
+    assert.deepEqual(overview.suggestion.schedule, { weekday: 6, hour: 18 });
+    assert.equal(new Date(overview.suggestion.periodStart).getUTCDay(), 6);
+    assert.equal(new Date(overview.suggestion.nextRefresh) - new Date(overview.suggestion.periodStart), 7 * dayMs);
+    assert.equal((await admin(backend, "/creative/suggestion/repick", {})).status, 200);
+
+    // An island switched off leaves the picks.
+    await admin(backend, `/creative/links/${week.suggested}`, { active: false });
+    overview = (await admin(backend, "/creative")).body;
+    assert.deepEqual(overview.suggestion.picks, [other]);
   } finally {
     await backend.close();
   }
