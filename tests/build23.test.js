@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -9,6 +10,7 @@ import { inBuild } from "../src/builds/context.js";
 import { battleRoyaleBuilds, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection, updatedLootTables } from "../src/events/contentupdates.js";
 import { rollContents } from "../src/cardpacks/contents.js";
+import { stormZonePool } from "../src/cardpacks/pools.js";
 import { activeEventFlags, configureEvents, fiftyFifty, hasEventEnded, isEventActive, mutantStorms, mutantStorms2018, passiveStorms, winter2017 } from "../src/events/events.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
 import { convertEventLeftovers } from "../src/events/leftovers.js";
@@ -233,15 +235,44 @@ test("every mission gives Seasonal Gold while the Event Store is open, its tier'
 test("2.3's Storm Llama holds an Epic or Legendary Hydraulic weapon or Storm Zone hero", () => inBuild(v23, () => {
   const special = (templateId) => /^Schematic:sid_[a-z_]*hydra/.test(templateId)
     || /^Hero:hid_(commando_009_m|commando_011|constructor_011|constructor_rushbase_f|ninja_010_f|ninja_011|outlander_010_m|outlander_011)_(vr|sr)_t01$/.test(templateId);
+  // The pick is a weighted rarity (75 Epic / 25 Legendary), a weighted kind (50 / 50), then one item of that pool, so
+  // roll every rarity and kind and every item of each pool instead of hoping random rolls reach the rare ones (BASE
+  // Hype is one roll in 64).
+  const random = Math.random;
+  const randomInt = crypto.randomInt;
   const seen = new Set();
+  const expected = new Set();
+  try {
+    for (const [rarityRoll, rarity] of [[0, "vr"], [0.99, "sr"]]) {
+      for (const [kindRoll, kind] of [[0, "schematic"], [0.99, "hero"]]) {
+        const pool = stormZonePool(kind, rarity);
+        assert.ok(pool.length > 0 && pool.every(special), `${kind} ${rarity}`);
+        for (let index = 0; index < pool.length; index++) {
+          // The rarity is the first roll of stormLlama, the kind the last (the Upgrade Llama's own rolls sit between).
+          let calls = 0;
+          Math.random = () => (calls++ === 0 ? rarityRoll : kindRoll);
+          crypto.randomInt = (max) => Math.min(index, max - 1);
+          const contents = rollContents(stormLlama2018);
+          assert.equal(contents[contents.length - 1].templateId, pool[index], `${kind} ${rarity} ${index}`);
+          assert.equal(contents.filter(({ templateId }) => special(templateId)).length, 1, JSON.stringify(contents));
+          expected.add(pool[index]);
+          seen.add(contents[contents.length - 1].templateId);
+        }
+      }
+    }
+  } finally {
+    Math.random = random;
+    crypto.randomInt = randomInt;
+  }
+  assert.deepEqual([...seen].sort(), [...expected].sort());
+  assert.ok(seen.has("Hero:hid_constructor_rushbase_f_sr_t01"), "BASE Hype");
+  assert.deepEqual([...new Set([...seen].map((templateId) => templateId.split(":")[0]))].sort(), ["Hero", "Schematic"]);
+
+  // Unstubbed, a roll always holds at least one such item (the pack's guarantee).
   for (let index = 0; index < 200; index++) {
     const contents = rollContents(stormLlama2018);
-    const found = contents.filter(({ templateId }) => special(templateId));
-    assert.ok(found.length >= 1, JSON.stringify(contents));
-    for (const { templateId } of found) seen.add(templateId.split(":")[0]);
-    if (contents.some(({ templateId }) => templateId === "Hero:hid_constructor_rushbase_f_sr_t01")) seen.add("BASE Hype");
+    assert.ok(contents.some(({ templateId }) => special(templateId)), JSON.stringify(contents));
   }
-  assert.deepEqual([...seen].sort(), ["BASE Hype", "Hero", "Schematic"]);
 }));
 
 // "Purchased upgrade Llamas award Storm Tickets."
