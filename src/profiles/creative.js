@@ -79,6 +79,36 @@ export function creativeAccessGlobals(build, now = new Date()) {
     `CreativeModeLimitedAccessEndTime=${opens.toISOString()}`];
 }
 
+// Early access goes by the party's leader (Core-Backend #375). Update v7.00 gave Battle Pass owners "early access to their
+// own Creative island", and Epic let players without the pass play on an owner's server: a party's Creative match is its
+// leader's, so its other players may follow a leader who may play. 7.00's client asks for a ticket per player, its leader's
+// first (the leader's client starts matchmaking and the others' follow it), each naming the whole party (partyPlayerIds);
+// nothing in a ticket says who leads. So the first Creative ticket of a party is its leader's: when that player may play,
+// the party's other players' tickets that come within `followMs` pass as their guests. A new round starts when the window
+// has passed or the same leader asks again; a party whose first ticket was refused lets nobody in as a guest.
+export function creativePartyHosts({ followMs = 60_000, now = () => Date.now() } = {}) {
+  const rounds = new Map();
+  const keyOf = (party) => [...new Set(party)].sort().join(",");
+  return {
+    // The leader a guest follows (their account id), or null; `entitled` is whether accountId may play themself.
+    ticket(accountId, party, entitled) {
+      const at = now();
+      for (const [key, round] of rounds) if (at - round.at > followMs) rounds.delete(key);
+      if (party.length < 2 || !party.includes(accountId)) return null;
+      const key = keyOf(party);
+      const round = rounds.get(key);
+      // A refused first ticket gives way to a player who may play: should a member's ticket ever come before their
+      // leader's, the leader's still opens the round. (A leader without the pass can't start Creative from 7.00's lobby:
+      // its "Start a server" tile is locked for them, Core-Backend #379.)
+      if (!round || round.leader === accountId || (entitled && !round.entitled)) {
+        rounds.set(key, { leader: accountId, entitled, at });
+        return null;
+      }
+      return round.entitled ? round.leader : null;
+    }
+  };
+}
+
 // Season 7's replay date now ("YYYY-MM-DD"), and how many days are left until 13 December 2018 on it (0 once there).
 export const creativeReplayDay = (now = new Date()) => seasonMoment(now, null, creativeSeason).toISOString().slice(0, 10);
 export const daysUntilIslandsForEveryone = (now = new Date()) =>
@@ -91,7 +121,8 @@ export function earlyAccessMessage(now = new Date()) {
   const days = daysUntilIslandsForEveryone(now);
   return `Creative is in early access for Season 7 Battle Pass owners until 13 December 2018 (Update v7.00), and Season 7's ` +
     `replay is on ${creativeReplayDay(now)}, ${days} day${days === 1 ? "" : "s"} before it. Buy the Season 7 Battle Pass in the ` +
-    "lobby's Battle Pass tab, or wait until the replay reaches 13 December; a host can move it there with the admin panel's " +
+    "lobby's Battle Pass tab, play in a party whose leader has it, or wait until the replay reaches 13 December; a host " +
+    "can move it there with the admin panel's " +
     "Season 7 events page, Season start (day 1), set at least 7 days back";
 }
 

@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { ltmFrontEndPlaylists, ltmIds, ltmOfBucketPlaylist, ltmOn, ltmSchedule, playlistIdOfName } from "../src/events/ltms.js";
 import { botModeCandidates, botModeIds, botsForMode, defaultBotModes, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { isPartyOnlyBucket, parseBucket } from "../src/matchmaking/service.js";
-import { creativeAccessGlobals, creativeEntitled, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
+import { creativeAccessGlobals, creativeEntitled, creativePartyHosts, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { contentPage, creativeAdsFor } from "../src/services/content/pages.js";
@@ -190,6 +190,46 @@ test("a 7.00 player in early access: no islands and no Creative ticket without t
     assert.deepEqual(Object.values(islands.items).map((item) => [item.templateId, item.attributes.islandIndex]).sort(),
       [1, 2, 3, 4].map((index) => [plotTemplateId, index]));
     assert.equal((await ticket(backend.port, owner)).status, 200);
+  } finally {
+    await backend.close();
+  }
+});
+
+// Core-Backend #375: early access goes by the party's leader. Epic let players without the Battle Pass play on an owner's
+// server; a party's Creative match is its leader's, whose ticket comes first.
+test("early access by the party's leader: the first ticket of a party opens a round its other players follow for a minute", () => {
+  let clock = 0;
+  const hosts = creativePartyHosts({ followMs: 60_000, now: () => clock });
+  const party = ["leader", "guest"];
+  assert.equal(hosts.ticket("leader", party, true), null, "the leader plays on their own pass");
+  assert.equal(hosts.ticket("guest", ["guest", "leader"], false), "leader", "the guest follows, whatever the list's order");
+  assert.equal(hosts.ticket("stranger", ["stranger", "leader"], false), null, "another party's player doesn't");
+  assert.equal(hosts.ticket("guest", ["guest"], false), null, "alone, nobody to follow");
+  clock += 61_000;
+  assert.equal(hosts.ticket("guest", party, false), null, "a minute on, the round is over and the guest's ticket opens one");
+  assert.equal(hosts.ticket("leader", party, true), null, "an owner's ticket takes over a refused round");
+  assert.equal(hosts.ticket("guest", party, false), "leader");
+  const without = creativePartyHosts({ now: () => clock });
+  assert.equal(without.ticket("nopass", ["nopass", "other"], false), null);
+  assert.equal(without.ticket("other", ["nopass", "other"], false), null, "a leader without the pass lets nobody in");
+});
+
+test("a 7.00 player without the Battle Pass queues Creative in early access behind their party's leader who has it (#375)", async () => {
+  const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(3) } } });
+  try {
+    const leader = await userLogin(backend.port, "CreativeLeader");
+    await mcp(backend.port, leader, "QueryProfile", "athena");
+    giveBattlePass(backend.dataDir, leader.accountId);
+    const guest = await userLogin(backend.port, "CreativeGuest");
+    const partyTicket = (player) => as(backend.port, player.token, "GET", `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}` +
+      `?partyPlayerIds=${leader.accountId},${guest.accountId}&bucketId=${v700}:0:NAE:playlist_playgroundv2`);
+    const alone = await ticket(backend.port, guest);
+    assert.equal(alone.status, 400, "alone, still early access");
+    assert.match(alone.body.errorMessage, /play in a party whose leader has it/);
+    assert.equal((await partyTicket(leader)).status, 200);
+    const followed = await partyTicket(guest);
+    assert.equal(followed.status, 200, JSON.stringify(followed.body));
+    assert.deepEqual(profileOf(await mcp(backend.port, guest, "QueryProfile", "creative")).items, {}, "a guest gets no islands of their own");
   } finally {
     await backend.close();
   }

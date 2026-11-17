@@ -5,7 +5,7 @@ import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
-import { creativeEntitled, earlyAccessMessage, settleCreativePlots } from "../../profiles/creative.js";
+import { creativeEntitled, creativePartyHosts, earlyAccessMessage, settleCreativePlots } from "../../profiles/creative.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
 import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
@@ -35,6 +35,8 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     return `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
   };
   const list = (value) => String(value ?? "").split(",").filter(Boolean);
+  // Which party's Creative ticket its leader asked for, so its other players may follow them in early access (#375).
+  const creativeParties = creativePartyHosts();
 
   router.get(`${base}/player/:accountId`, requireAuth(tokens), (req, res) => {
     const { accountId } = req.params;
@@ -90,19 +92,27 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
     // 7.00's Creative (PongooDev/CoreV2#471, profiles/creative.js): Update v7.00's early access, Battle Pass owners only
-    // until 13 December 2018 on Season 7's replay, then everyone. Each of a party's players asks for their own ticket, so
-    // each is checked. No response of Epic's for it is known, and 7.00's client shows any refused ticket as "Weird. We
-    // couldn't connect to the match." (it has texts only for its tournament, ban and custom key codes), so the backend
-    // console says who was refused, why and how to get in (Core-Backend #375). A player who may play gets their islands here
-    // at the latest, before their server asks.
+    // until 13 December 2018 on Season 7's replay, then everyone. It goes by the party's leader (#375): Epic let players
+    // without the Battle Pass play on an owner's server, and a party's match is its leader's. Each of a party's players asks
+    // for their own ticket, the leader's first (their client starts matchmaking; the others follow), so a player who may
+    // not play is let in as a guest when their party's leader, who may, has just asked for this party's ticket
+    // (profiles/creative.js creativePartyHosts). No response of Epic's for a refusal is known, and 7.00's client shows any
+    // refused ticket as "Weird. We couldn't connect to the match." (it has texts only for its tournament, ban and custom
+    // key codes), so the backend console says who was refused, why and how to get in (Core-Backend #375). A player who
+    // may play gets their islands here at the latest, before their server asks; a guest gets none, as on Epic's.
     if (ltm?.id === "creative" && profiles) {
       const session = openSession(profiles, accountId);
-      if (!creativeEntitled(session)) {
+      const entitled = creativeEntitled(session);
+      const host = creativeParties.ticket(accountId, partyPlayerIds.length ? partyPlayerIds : [accountId], entitled);
+      const name = (id) => accounts?.get?.(id)?.displayName ?? id;
+      if (!entitled && !host) {
         const message = earlyAccessMessage();
-        log("Matchmaking", `Refused ${accounts?.get?.(accountId)?.displayName ?? accountId}'s Creative ticket: ${message}`);
+        log("Matchmaking", `Refused ${name(accountId)}'s Creative ticket: ${message}`);
         return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", message);
       }
-      if (settleCreativePlots(session)) {
+      if (!entitled) {
+        log("Matchmaking", `${name(accountId)} plays Creative in early access as a guest of their party's leader ${name(host)}, who has the Season 7 Battle Pass`);
+      } else if (settleCreativePlots(session)) {
         session.commit();
         notifyProfiles({ stomp }, session);
       }
