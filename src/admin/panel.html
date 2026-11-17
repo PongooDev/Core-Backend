@@ -2089,7 +2089,7 @@
     const state = {
       view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
       questSearch: "", questState: "", questType: "",
-      inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
+      inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null, multi: false, sel: [] },
       logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [],
       eventsSeason: null, battlePassSeason: null, shopSeason: null,
       activeSeason: (function() { try { return localStorage.getItem("core_admin_active_season") || "1"; } catch { return "1"; } })(),
@@ -4218,11 +4218,52 @@
         post("grant", { templateId, quantity: amount, force: true }, `Gave ${fmt(amount)} × ${templateId} (unknown to the game data)`);
       };
       byId.addEventListener("keydown", (event) => { if (event.key === "Enter") giveById(); });
+      // Several quests at once (CoreV2 #494): with the Quests kind chosen, Pick several turns a click into a tick, Select all
+      // takes every quest the search matches (past the page shown), and one request (grant-quests) gives them all.
+      const multiBar = el("div", { class: "actions", style: "margin-top:10px" });
+      const multiOn = () => c.multi && c.category === "quests";
+      const renderMulti = () => {
+        if (c.category !== "quests") return multiBar.replaceChildren();
+        const pickSeveral = el("input", { type: "checkbox", checked: c.multi, "aria-label": "Pick several quests" });
+        pickSeveral.addEventListener("change", () => { c.multi = pickSeveral.checked; renderResults(); });
+        const count = c.sel.length;
+        multiBar.replaceChildren(el("label", { style: "display:flex; align-items:center; gap:8px; cursor:pointer" }, pickSeveral, el("span", { text: "Pick several quests" })),
+          ...(c.multi ? [
+            btn("Select all matching", async () => {
+              const data = await act(api(`/admin/api/catalog/ids?search=${encodeURIComponent(search.value)}&category=quests`));
+              if (!data) return;
+              c.sel = data.templateIds;
+              renderResults();
+              if (data.total > data.templateIds.length) toast(`Selected the first ${fmt(data.templateIds.length)} of ${fmt(data.total)} quests: narrow the search to reach the rest`, true);
+            }, "ghost small"),
+            btn("Clear", () => { c.sel = []; renderResults(); }, "ghost small", { disabled: !count }),
+            btn(count ? `Give ${fmt(count)} quest${count === 1 ? "" : "s"}` : "Give quests", async () => {
+              if (!c.sel.length) return toast("Pick at least one quest", true);
+              if (c.sel.length > 10 && !await confirmModal(`Give ${fmt(c.sel.length)} quests?
+
+Each starts active; quests the account already has are left as they are.`, {
+                title: "Give Several Quests", confirmText: "Give Quests", confirmKind: "primary"
+              })) return;
+              const done = await act(api(`/admin/api/accounts/${a.id}/grant-quests`, { templateIds: c.sel }));
+              if (!done) return;
+              const { granted, alreadyHeld, notGiven } = done.questGrant;
+              c.sel = [];
+              setAccount(done, `Gave ${fmt(granted)} quest${granted === 1 ? "" : "s"}${alreadyHeld ? `, ${fmt(alreadyHeld)} already held` : ""}${notGiven ? `, ${fmt(notGiven)} not given (their event isn't running)` : ""}`);
+            }, "primary", { disabled: !count })] : []));
+      };
       const renderResults = () => {
-        picked.replaceChildren(...(c.picked ? ["Selected: ", itemName(c.picked)] : ["Pick an item below."]));
+        if (!multiOn()) c.multi = false;
+        renderMulti();
+        picked.replaceChildren(...(multiOn() ? [`${fmt(c.sel.length)} quest${c.sel.length === 1 ? "" : "s"} selected. Click quests to tick them.`]
+          : c.picked ? ["Selected: ", itemName(c.picked)] : ["Pick an item below."]));
         results.replaceChildren(...(c.items.length ? c.items.map((item) => el("button", {
-          type: "button", class: `card ${item.rarity}`, "aria-pressed": String(c.picked?.templateId === item.templateId),
-          onclick: () => { c.picked = item; renderResults(); }
+          type: "button", class: `card ${item.rarity}`,
+          "aria-pressed": String(multiOn() ? c.sel.includes(item.templateId) : c.picked?.templateId === item.templateId),
+          onclick: () => {
+            if (multiOn()) c.sel = c.sel.includes(item.templateId) ? c.sel.filter((id) => id !== item.templateId) : [...c.sel, item.templateId];
+            else c.picked = item;
+            renderResults();
+          }
         }, el("div", { class: "k", text: kindLabel(item.category) }), el("div", { class: "t", text: item.name }),
           el("div", { class: "s mono", text: item.templateId }),
           item.builds ? el("div", { class: "s", style: "margin-top:8px" }, chip(item.builds, "sky")) : null)) : [el("div", { class: "empty", text: "Nothing found." })]));
@@ -4249,6 +4290,7 @@
         el("div", { class: "quick" }, quickGrants.map(([label, templateId, count]) => btn(label, () => post("grant", { templateId, quantity: count }, `Gave ${label}`), "ghost small"))),
         el("h2", { style: "margin:22px 0 10px", text: "Any item" }),
         el("div", { class: "actions" }, search, category, quantity, giveButton),
+        multiBar,
         el("div", { style: "margin-top:10px" }, picked),
         results,
         el("p", { class: "note", text: "Items are given the way the game gives them: llamas arrive unopened, quests start active, skill tree nodes unlock their perks, and quests waiting on an item move on. Every build's items are listed; a chip names the builds that have an item when not all do (a build's client doesn't show items its own data lacks)." }),

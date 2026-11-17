@@ -116,6 +116,8 @@ function backendVersion() {
 // profiles/vault.js) and every login downloads in full (#34). The panel asks before granting more than
 // singleGrantConfirm of them.
 export const singleGrantCap = 500;
+// Most quests one grant-quests request gives.
+export const maxQuestGrant = 5000;
 export const singleGrantConfirm = 10;
 
 const categoryOrder = (key) => categories.findIndex(([category]) => category === key);
@@ -542,6 +544,13 @@ export function adminRoutes(context) {
     res.json({ categories, items: searchCatalog(req.query.search, req.query.category, Math.min(Number(req.query.limit) || 60, 500)), singleGrantCap, singleGrantConfirm });
   });
 
+  // The template ids of a filtered list (?search=, ?category=, the catalog's own filter), for a "select all" past the page the
+  // panel shows. At most maxQuestGrant of them; total is how many match.
+  router.get("/admin/api/catalog/ids", (req, res) => {
+    const all = searchCatalog(req.query.search, req.query.category, Infinity);
+    res.json({ total: all.length, templateIds: all.slice(0, maxQuestGrant).map((entry) => entry.templateId) });
+  });
+
   // Kept for scripts: every template id the panel can give.
   router.get("/admin/api/items", (req, res) => {
     res.json(searchCatalog("", "", Infinity).map((entry) => entry.templateId).sort());
@@ -594,6 +603,12 @@ export function adminRoutes(context) {
     const quantity = Number(req.body?.quantity ?? 1);
     const force = req.body?.force === true;
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1_000_000) return invalid(res, "Quantity must be 1 to 1000000");
+    return giveTemplate(session, res, templateId, quantity, force);
+  }));
+
+  // Gives one template the normal way (the /grant route's work, which the quest grant below runs for each quest): answers
+  // {granted} or, after sending the refusal itself, nothing.
+  function giveTemplate(session, res, templateId, quantity, force) {
     if (!templatePattern.test(templateId)) return malformed(res, templateId);
     const [type, name] = templateId.split(":");
     const unknown = () => invalid(res, `Unknown item ${templateId}: no build's game data has it, so the game may not know it. Give it with force to add it anyway`);
@@ -637,6 +652,30 @@ export function adminRoutes(context) {
       }
       return { granted: grant(session, known.templateId, quantity).length };
     });
+  }
+
+  // Quests to give several at once (Core-Backend, CoreV2 #494): {templateIds: ["Quest:...", ...]}, each given as /grant
+  // gives one (quests start active, one the account holds is left as it is, a quest waiting on another moves on). Every id
+  // is checked first, so one that's wrong gives nothing. GET /admin/api/catalog/ids names the ids of a filtered list.
+  router.post("/admin/api/accounts/:accountId/grant-quests", change(({ req, res, session }) => {
+    const requested = [...new Set((Array.isArray(req.body?.templateIds) ? req.body.templateIds : [])
+      .map((templateId) => (typeof templateId === "string" ? templateId.trim() : "")).filter(Boolean))];
+    if (!requested.length || requested.length > maxQuestGrant) return invalid(res, `Pick 1 to ${maxQuestGrant} quests to give`);
+    const notQuests = requested.filter((templateId) => !templatePattern.test(templateId) || templateId.split(":")[0].toLowerCase() !== "quest");
+    if (notQuests.length) return invalid(res, `${notQuests.slice(0, 5).join(", ")} ${notQuests.length === 1 ? "isn't" : "aren't"} quests (Quest:name)`);
+    const unknown = requested.filter((templateId) => !knownTemplate(templateId));
+    if (unknown.length) return invalid(res, `No build's game data has ${unknown.slice(0, 5).join(", ")}${unknown.length > 5 ? ` and ${unknown.length - 5} more` : ""}`);
+    const held = new Set(Object.values(session.profile("profile0").profile.items).map((item) => item.templateId.toLowerCase()));
+    let granted = 0;
+    let alreadyHeld = 0;
+    let notGiven = 0;
+    for (const templateId of requested) {
+      if (held.has(templateId.toLowerCase())) { alreadyHeld++; continue; }
+      const result = giveTemplate(session, res, templateId, 1, false);
+      if (res.headersSent) return;
+      if (result?.granted) granted++; else notGiven++;
+    }
+    return { questGrant: { requested: requested.length, granted, alreadyHeld, notGiven } };
   }));
 
   // {key, quantity}: sets one of the panel's balances (V-Bucks, skill points…) to exactly quantity.
