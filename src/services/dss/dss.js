@@ -53,7 +53,10 @@ export const dssApp = "creative";
 export const maxIslandBytes = 16 * 1024 * 1024;
 export const lockIdleMs = 15 * 60 * 1000;
 const maxServerMs = 4 * 60 * 60 * 1000 + lockIdleMs;
-const islandPath = /^islands\/personal\/([0-9a-f]{32})\/([A-Za-z0-9-]{1,64})\.island$/i;
+const islandPath = /^islands\/personal\/([0-9a-f]{32})\/([A-Za-z0-9-]{1,64})(\.checkpoint)?\.island$/i;
+// A published island's version (PongooDev/CoreV2#488): islands/public/<owner>/<code>/<version>.island, the game's own
+// format ("islands/public/%s/%s/%s.island", 7.10 CL-4667333 0x3D02448), read by a server loading the code's island.
+const publicIslandPathPattern = /^islands\/public\/([0-9a-f]{32})\/(\d{4}-\d{4}-\d{4})\/(\d{1,9})\.island$/i;
 const operations = new Set(["checkout", "checkin", "restore"]);
 const metaPrefix = "x-epic-meta-";
 const metaKey = /^[A-Za-z0-9_.-]{1,64}$/;
@@ -61,11 +64,24 @@ const maxMeta = 32;
 
 const dssError = (res, status, code, message, vars) => sendError(res, status, `errors.com.epicgames.dss.${code}`, message, vars);
 
-// An island file's path ("islands/personal/<owner>/<plot>.island") as {owner, plotItemId}, or null.
+// An island file's path ("islands/personal/<owner>/<plot>.island") as {owner, plotItemId}, or null. The island's
+// checkpoint, its backup (7.10's "islands/personal/%s/%s.%s" with "checkpoint.island", 0xF76CE0: the island menu's Backup
+// Island and Restore, PongooDev/CoreV2#488), is {owner, plotItemId, checkpoint: true}.
 export function parseIslandPath(filePath) {
   const match = islandPath.exec(String(filePath ?? ""));
-  return match ? { owner: match[1].toLowerCase(), plotItemId: match[2] } : null;
+  if (!match) return null;
+  return { owner: match[1].toLowerCase(), plotItemId: match[2], ...(match[3] ? { checkpoint: true } : {}) };
 }
+
+// A published island's path as {owner, mnemonic, version}, or null.
+export function parsePublicIslandPath(filePath) {
+  const match = publicIslandPathPattern.exec(String(filePath ?? ""));
+  return match ? { owner: match[1].toLowerCase(), mnemonic: match[2], version: Number(match[3]) } : null;
+}
+
+// Where an owner's island (or its checkpoint) is kept: <data>/accounts/<owner>/creative/islands/<plot>[.checkpoint].island.
+export const islandFolder = (dataDir, owner) => path.join(dataDir, "accounts", owner, "creative", "islands");
+export const islandFileOf = (dataDir, island) => path.join(islandFolder(dataDir, island.owner), `${island.plotItemId}${island.checkpoint ? ".checkpoint" : ""}.island`);
 
 // The X-Epic-Meta-<key> headers of a request, {key: value} with the keys lower-cased.
 export function metaOf(req) {
@@ -84,20 +100,38 @@ function writeAtomic(file, data) {
   fs.renameSync(`${file}.tmp`, file);
 }
 
-export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
+// An island file's record beside it (<file>.json: its meta, lock, size, last write), and the version before its last write
+// (<file>.prev). Shared with the admin panel's island tools (admin/creative.js).
+export const islandInfoFile = (dataDir, island) => `${islandFileOf(dataDir, island)}.json`;
+export const islandPreviousFile = (dataDir, island) => `${islandFileOf(dataDir, island)}.prev`;
+export function readIslandInfo(dataDir, island) {
+  try {
+    return JSON.parse(fs.readFileSync(islandInfoFile(dataDir, island), "utf8"));
+  } catch {
+    return {};
+  }
+}
+export const saveIslandInfo = (dataDir, island, info) => writeAtomic(islandInfoFile(dataDir, island), JSON.stringify(info));
+
+// A write of the file: the version it replaces kept as "previous", the meta replaced by `meta`. The caller saves `info`.
+export function storeIsland(dataDir, island, info, data, meta) {
+  const file = islandFileOf(dataDir, island);
+  if (fs.existsSync(file)) {
+    writeAtomic(islandPreviousFile(dataDir, island), fs.readFileSync(file));
+    info.previousMeta = info.meta ?? {};
+  }
+  writeAtomic(file, data);
+  info.meta = meta;
+  info.size = data.length;
+  info.updated = new Date().toISOString();
+}
+
+export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) {
   const router = express.Router();
-  const folder = (owner) => path.join(dataDir, "accounts", owner, "creative", "islands");
-  const fileOf = (island) => path.join(folder(island.owner), `${island.plotItemId}.island`);
-  const infoFile = (island) => `${fileOf(island)}.json`;
-  const previousFile = (island) => `${fileOf(island)}.prev`;
-  const readInfo = (island) => {
-    try {
-      return JSON.parse(fs.readFileSync(infoFile(island), "utf8"));
-    } catch {
-      return {};
-    }
-  };
-  const saveInfo = (island, info) => writeAtomic(infoFile(island), JSON.stringify(info));
+  const fileOf = (island) => islandFileOf(dataDir, island);
+  const previousFile = (island) => islandPreviousFile(dataDir, island);
+  const readInfo = (island) => readIslandInfo(dataDir, island);
+  const saveInfo = (island, info) => saveIslandInfo(dataDir, island, info);
 
   // Whether the island is checked out: a checkout not checked in yet, whatever its age (the game uploads only what it has
   // checked out, and an upload never names its pid).
@@ -131,6 +165,19 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
       dssError(res, 404, "app_not_found", `Sorry, the app ${appName} could not be found`, [appName]);
       return null;
     }
+    // A published island's version: read-only, to any signed-in token (anyone may visit a published island), while its
+    // link is active and the version is the one it serves or an earlier one still on disk.
+    const published = parsePublicIslandPath(filePath);
+    if (published) {
+      const link = islandLinks?.get(published.mnemonic);
+      const file = link && link.accountId === published.owner && link.active !== false && published.version <= link.version
+        ? islandLinks.publicFile(published.owner, published.mnemonic, published.version) : null;
+      if (req.method !== "GET" || !file || !fs.existsSync(file)) {
+        dssError(res, 404, "file_not_found", `Sorry, the file ${appName}/${filePath} could not be found`, [appName, filePath]);
+        return null;
+      }
+      return { published: file, filePath };
+    }
     const island = parseIslandPath(filePath);
     if (!island || !ownsIsland(island)) {
       dssError(res, 404, "file_not_found", `Sorry, the file ${appName}/${filePath} could not be found`, [appName, filePath]);
@@ -148,18 +195,7 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
     res.type("application/octet-stream").send(fs.readFileSync(fileOf(island)));
   };
 
-  // A write of the file: the version it replaces kept as "previous", the meta replaced by the request's.
-  function store(island, info, data, meta) {
-    const file = fileOf(island);
-    if (fs.existsSync(file)) {
-      writeAtomic(previousFile(island), fs.readFileSync(file));
-      info.previousMeta = info.meta ?? {};
-    }
-    writeAtomic(file, data);
-    info.meta = meta;
-    info.size = data.length;
-    info.updated = new Date().toISOString();
-  }
+  const store = (island, info, data, meta) => storeIsland(dataDir, island, info, data, meta);
 
   const raw = express.raw({ type: () => true, limit: maxIslandBytes });
   const base = "/api/dss/v1/:appName/*filePath";
@@ -168,6 +204,16 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
   router.get(base, (req, res) => {
     const target = resolve(req, res);
     if (!target) return;
+    if (target.published) return res.type("application/octet-stream").send(fs.readFileSync(target.published));
+    // 🟡 Core's ?info=true (the gameserver's question at an island's load, PongooDev/CoreV2#488: whether the island has a
+    // checkpoint and when it was made, for the island menu's Restore): the file's size, last write and meta, not its bytes.
+    if (String(req.query.info ?? "") === "true") {
+      if (!fs.existsSync(fileOf(target.island))) return dssError(res, 404, "file_not_found", `Sorry, the file ${dssApp}/${target.filePath} could not be found`, [dssApp, target.filePath]);
+      const info = readInfo(target.island);
+      const updated = info.updated ?? fs.statSync(fileOf(target.island)).mtime.toISOString();
+      return res.json({ appName: dssApp, filePath: target.filePath, size: fs.statSync(fileOf(target.island)).size,
+        updated, updatedUnixMs: Date.parse(updated), meta: info.meta ?? {} });
+    }
     if (!fs.existsSync(fileOf(target.island))) return dssError(res, 404, "file_not_found", `Sorry, the file ${dssApp}/${target.filePath} could not be found`, [dssApp, target.filePath]);
     sendFile(res, target.island, readInfo(target.island));
   });
@@ -179,14 +225,15 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
     const { island, filePath } = target;
     const info = readInfo(island);
     const autolock = String(req.query.autolock ?? "false").toLowerCase() === "true";
-    const held = lockHeld(info.lock);
+    // A checkpoint is the island's backup, written whole by its owner's server: nobody checks it out.
+    const held = lockHeld(info.lock) || Boolean(island.checkpoint);
     if (!autolock && !held) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
-    if (autolock && lockFresh(info.lock)) return dssError(res, 409, "file_checked_out", `${dssApp}/${filePath} is checked out by ${info.lock.pid}`, [dssApp, filePath]);
+    if (autolock && !island.checkpoint && lockFresh(info.lock)) return dssError(res, 409, "file_checked_out", `${dssApp}/${filePath} is checked out by ${info.lock.pid}`, [dssApp, filePath]);
     const data = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
     store(island, info, data, metaOf(req));
     // An autolock upload over a checkout nobody has used for lockIdleMs ends it.
     if (autolock) delete info.lock;
-    else info.lock.at = Date.now();
+    else if (info.lock) info.lock.at = Date.now();
     saveInfo(island, info);
     log("DSS", `${island.owner}'s island ${island.plotItemId} saved (${data.length} bytes${autolock ? ", autolock" : ""})`);
     res.status(204).end();
@@ -198,6 +245,9 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
     const { island, operation, filePath } = target;
     const info = readInfo(island);
     const held = lockHeld(info.lock);
+    if (island.checkpoint && operation !== "restore") {
+      return dssError(res, 400, "operation_not_allowed", `${dssApp}/${filePath} is a checkpoint, written by a restore`, [dssApp, filePath]);
+    }
     if (operation === "checkout") {
       const pid = String(req.query.pid ?? "").slice(0, 128);
       if (!pid) return sendError(res, 400, "errors.com.epicgames.validation.validation_failed", "pid is required");
@@ -222,7 +272,9 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
       return res.status(204).end();
     }
     if (operation === "restore") {
-      if (!held) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
+      // The island menu's Backup Island and Restore (PongooDev/CoreV2#488): the island copied to its checkpoint, which
+      // needs no checkout, and the checkpoint copied back to the island, which needs the server's.
+      if (!held && !island.checkpoint) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
       const from = String(req.query.from ?? "");
       const source = from === "previous" ? { file: previousFile(island), meta: info.previousMeta ?? {} } : (() => {
         const other = parseIslandPath(from);
@@ -230,9 +282,9 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir }) {
       })();
       if (!source || !fs.existsSync(source.file)) return dssError(res, 404, "file_not_found", `Sorry, the file ${dssApp}/${from} could not be found`, [dssApp, from]);
       store(island, info, fs.readFileSync(source.file), { ...source.meta });
-      info.lock.at = Date.now();
+      if (info.lock) info.lock.at = Date.now();
       saveInfo(island, info);
-      log("DSS", `${island.owner}'s island ${island.plotItemId} restored from ${from}`);
+      log("DSS", `${island.owner}'s island ${island.plotItemId}${island.checkpoint ? "'s checkpoint" : ""} restored from ${from}`);
       return res.status(204).end();
     }
     dssError(res, 404, "operation_not_found", `Sorry, ${req.path} isn't a DSS operation`);

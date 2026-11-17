@@ -1990,6 +1990,12 @@
             <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
             <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
           </svg><span>Tournaments</span></a>
+        <a href="#/creative" data-view="creative" title="Creative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 17c3-1 5-1 9 0s6 1 9 0" />
+            <path d="M6 14l3-7 3 4 2-3 4 6" />
+            <path d="M12 3v2M5 5l1.2 1.2M19 5l-1.2 1.2" />
+          </svg><span>Creative</span></a>
 
         <div class="nav-group-title">Season:</div>
         <div class="season-select-wrapper">
@@ -3102,7 +3108,7 @@
       // A view that redraws itself in place for the sidebar's season (matchmaking's LTM dates) sets this; others don't.
       state.onActiveSeason = null;
       const resolvedView = view === "sessions" ? "matchmaking" : view;
-      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
+      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "creative", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -3168,7 +3174,7 @@
       if (state.view === "tournaments") {
         state.tournamentEventId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, creative: showCreative, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     function syncSeasonDropdown() {
       const sel = $("sidebar-season-select");
@@ -3274,10 +3280,11 @@
         ["give", "Give"],
         ["quests", "Quests", a.quests.length],
         ["shields", "Storm shields"],
+        ["creative", "Creative"],
         ["manage", "Manage"]
       ];
       if (!tabs.some(([key]) => key === state.tab)) state.tab = "overview";
-      const body = ({ overview, account: locker, inventory, give, quests, shields, manage: manageTab })[state.tab];
+      const body = ({ overview, account: locker, inventory, give, quests, shields, creative: creativeTab, manage: manageTab })[state.tab];
       holder.replaceChildren(
         el("section", { class: "panel" },
           el("div", { class: "hero-head" },
@@ -9598,6 +9605,175 @@
               }, "ghost small"))]
           ], list, "No reports or feedback submitted yet."))
       );
+    }
+
+    /* ---------- creative ---------- */
+    // Creative's published islands and the hub's featured rifts (admin/creative.js, PongooDev/CoreV2#488).
+    const islandBytes = (size) => (size >= 1048576 ? `${(size / 1048576).toFixed(1)} MB` : size >= 1024 ? `${Math.round(size / 1024)} KB` : `${size ?? 0} B`);
+    const islandTemplateName = (templateId) => ({ "creativeplot:temperate_medium": "Island", "creativeplot:arctic_medium": "Arctic Island",
+      "creativeplot:theblock_season7": "The Block", "creativeplot:arctic_competitive_medium1": "Frosty Fortress" })[String(templateId).toLowerCase()] ?? String(templateId).replace(/^CreativePlot:/i, "");
+    async function showCreative() {
+      const view = await act(api("/admin/api/creative"));
+      if (!view || state.view !== "creative") return;
+      const rerender = (promise, message) => act(promise, message).then((result) => { if (result && state.view === "creative") showCreative(); });
+
+      const slots = Array.from({ length: view.maxFeatured }, (_, index) => {
+        const current = view.featured[index]?.mnemonic ?? "";
+        return el("select", { class: "field", "aria-label": `Featured rift ${index + 1}`, style: "min-width:240px;" },
+          el("option", { value: "", text: "The build's own featured island" }),
+          view.links.map((link) => el("option", { value: link.mnemonic, selected: link.mnemonic === current, text: `${link.mnemonic} · ${link.title}${link.active ? "" : " (off)"}` })));
+      });
+      const featuredSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Featured rifts" }),
+          view.featured.length ? chip(`${view.featured.length} of ${view.maxFeatured} set`, "sky") : chip("The build's own")),
+        el("p", { class: "note", style: "margin:0;", text: "From 7.10 the Creative hub's four featured rifts each load an island by its code (the hotfix's CuratedLinkCodes, in rift order). Pick a published island for each, in order; an empty slot ends the list, and with none set the rifts keep the build's own featured islands. A gameserver reads the list as it starts, so the change reaches servers started after you save. The featured rifts also show Enter Code, where players load any published island by its code." }),
+        el("div", { class: "actions", style: "margin-top:12px; flex-wrap:wrap; gap:8px;" },
+          slots.map((select, index) => el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" }, el("span", { class: "muted", text: `Rift ${index + 1}` }), select)),
+          btn("Save featured rifts", () => {
+            const codes = [];
+            for (const select of slots) {
+              if (!select.value) break;
+              codes.push(select.value);
+            }
+            rerender(api("/admin/api/creative/featured", { codes }), codes.length ? `Featured: ${codes.join(", ")}` : "The rifts keep the build's own islands");
+          }, "primary")));
+
+      const accountsList = state.accounts ?? [];
+      const publishAccount = el("input", { class: "field", list: "creative-publish-accounts", placeholder: "Player", autocomplete: "off", style: "width:180px;" });
+      const publishIsland = el("select", { class: "field", style: "min-width:200px;" }, el("option", { value: "", text: "Pick the player first" }));
+      const publishTitle = el("input", { class: "field", placeholder: "Island title", maxlength: 40, style: "width:200px;" });
+      const publishTagline = el("input", { class: "field", placeholder: "Description (optional)", maxlength: 150, style: "width:260px;" });
+      const loadIslands = async () => {
+        const account = accountsList.find((a) => a.displayName.toLowerCase() === publishAccount.value.trim().toLowerCase() || a.id === publishAccount.value.trim());
+        if (!account) return;
+        const player = await act(api(`/admin/api/accounts/${account.id}/creative`));
+        const saved = (player?.islands ?? []).filter((island) => island.save);
+        publishIsland.replaceChildren(...(saved.length ? saved.map((island) => el("option", { value: island.plotItemId,
+          text: `${islandTemplateName(island.templateId)} ${island.islandIndex ?? ""} (${islandBytes(island.save.size)}, saved ${ago(island.save.updated)})` }))
+          : [el("option", { value: "", text: "No saved islands" })]));
+        publishIsland.dataset.accountId = account.id;
+      };
+      publishAccount.addEventListener("change", loadIslands);
+      const publishSection = el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Publish a player's island" })),
+        el("p", { class: "note", style: "margin:0;", text: "Players with an enabled Support-A-Creator code publish their own islands in game (My Island, Island Tools, Publish Island) and get a code. Here you can publish any player's island from its last save; publishing the same island again makes a new version under the same code." }),
+        el("div", { class: "actions", style: "margin-top:12px; flex-wrap:wrap; gap:8px;" },
+          publishAccount, publishIsland, publishTitle, publishTagline,
+          btn("Publish", () => {
+            if (!publishIsland.dataset.accountId || !publishIsland.value) return toast("Pick a player and one of their saved islands", true);
+            rerender(api("/admin/api/creative/publish", { accountId: publishIsland.dataset.accountId, plotItemId: publishIsland.value, title: publishTitle.value, tagline: publishTagline.value }),
+              (result) => `Published as ${result.published.mnemonic}`);
+          }, "primary"),
+          el("datalist", { id: "creative-publish-accounts" }, accountsList.map((account) => el("option", { value: account.displayName })))),
+        view.publishers.length
+          ? el("p", { class: "note", style: "margin:10px 0 0;", text: `Can publish in game: ${view.publishers.map((p) => `${p.displayName ?? p.accountId} (${p.code})`).join(", ")}.` })
+          : el("p", { class: "note", style: "margin:10px 0 0;", text: "Nobody can publish in game yet: give players a Support-A-Creator code (Shop page)." }));
+
+      const linkRow = (link) => {
+        const title = el("input", { class: "field", value: link.title, maxlength: 40, style: "width:180px;" });
+        return {
+          code: el("code", { class: "mono", style: "font-weight:700;", text: link.mnemonic }),
+          title: el("div", { class: "actions", style: "gap:6px; flex-wrap:nowrap;" }, title,
+            btn("Save", () => rerender(api(`/admin/api/creative/links/${link.mnemonic}`, { title: title.value }), "Title saved"), "ghost small")),
+          author: el("div", {}, el("a", { href: `#/players/${link.accountId}/creative`, text: link.authorName ?? link.accountId }),
+            el("div", { class: "muted", style: "font-size:11px;", text: `creator ${link.creatorName}` })),
+          version: el("div", {}, el("div", { text: `v${link.version} · ${islandBytes(link.size)}` }),
+            el("div", { class: "muted", style: "font-size:11px;", text: `${link.publishedBy === "admin" ? "by the admin" : "in game"}, ${ago(link.published)}` })),
+          state: el("div", { class: "actions", style: "gap:8px; flex-wrap:nowrap;" },
+            toggleSwitch(link.active, (checked) => rerender(api(`/admin/api/creative/links/${link.mnemonic}`, { active: checked }), checked ? `${link.mnemonic} is on` : `${link.mnemonic} is off`)),
+            link.featuredSlot >= 0 ? chip(`Rift ${link.featuredSlot + 1}`, "yellow") : null),
+          actions: el("div", { class: "actions", style: "justify-content:flex-end; flex-wrap:nowrap;" },
+            el("a", { class: "btn ghost small", href: `/admin/api/creative/links/${link.mnemonic}/file`, download: `${link.mnemonic}.island` }, el("span", { text: "Download" })),
+            btn("Unpublish", async () => {
+              if (await confirmModal(`Unpublish ${link.mnemonic} ("${link.title}")? Its code stops working and its published copies are deleted. The player's own island is not touched.`,
+                { title: "Unpublish Island", confirmText: "Unpublish", confirmKind: "danger" })) rerender(api(`/admin/api/creative/links/${link.mnemonic}`, undefined, "DELETE"), `${link.mnemonic} unpublished`);
+            }, "ghost small"))
+        };
+      };
+      const rows = view.links.map(linkRow);
+      const linksSection = el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" }, el("h2", { text: `Published islands (${view.links.length})` })),
+        rows.length
+          ? el("div", { class: "table-wrap" }, el("table", {},
+              el("thead", {}, el("tr", {}, ["Code", "Title", "Author", "Version", "Status", ""].map((text) => el("th", { text })))),
+              el("tbody", {}, rows.map((row) => el("tr", {}, [row.code, row.title, row.author, row.version, row.state, row.actions].map((cell) => el("td", {}, cell)))))))
+          : el("div", { class: "empty", text: "No published islands yet." }));
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {}, el("h1", { text: "Creative" }),
+            el("div", { class: "muted", text: "Published islands, their codes and the hub's featured rifts (7.10 and later). A player's own islands, saves and backups are on their page, Creative tab." })),
+          el("div", { class: "actions" }, btn("Refresh", showCreative, "ghost"))),
+        featuredSection, publishSection, linksSection);
+    }
+
+    // A player's Creative islands (the Players page's Creative tab): saves, the in-game backup, the admin's backups.
+    function creativeTab(a) {
+      const holder = el("div", {}, el("div", { class: "empty", text: "Loading islands…" }));
+      const render = (player) => {
+        if (!player || state.account?.id !== a.id) return;
+        if (!player.islands.length) {
+          holder.replaceChildren(el("div", { class: "empty", text: "No Creative islands: an account gets them on 7.00 and later once it may play Creative." }));
+          return;
+        }
+        const run = (path, body, message, method) => act(api(`/admin/api/accounts/${a.id}/creative/${path}`, body, method), message).then(render);
+        const fileLink = (island, which, label) => el("a", { class: "btn ghost small", href: `/admin/api/accounts/${a.id}/creative/${island.plotItemId}/file/${which}`, download: `${island.plotItemId}-${which}.island` }, el("span", { text: label }));
+        const restore = async (island, from, what) => {
+          if (await confirmModal(`Restore ${islandTemplateName(island.templateId)} ${island.islandIndex ?? ""} from ${what}? Its save now is kept as "previous", so you can undo this with Restore previous.`,
+            { title: "Restore Island", confirmText: "Restore" })) run(`${island.plotItemId}/restore`, { from }, `Restored from ${what}`);
+        };
+        const islandCard = (island) => {
+          const upload = el("input", { type: "file", accept: ".island", style: "display:none;", onchange: async () => {
+            const file = upload.files?.[0];
+            if (!file) return;
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            let binary = "";
+            for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+            run(`${island.plotItemId}/upload`, { data: btoa(binary), note: file.name.slice(0, 80) }, `${file.name} kept as a backup`);
+          } });
+          const note = el("input", { class: "field", placeholder: "Backup note (optional)", maxlength: 80, style: "width:200px;" });
+          return el("section", { class: "panel", style: "margin-top:12px;" },
+            el("div", { class: "panel-head", style: "display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;" },
+              el("div", {}, el("h3", { style: "margin:0;", text: `${islandTemplateName(island.templateId)} ${island.islandIndex ?? ""}${island.islandName ? ` · ${island.islandName}` : ""}` }),
+                el("code", { class: "muted", style: "font-size:11px;", text: island.plotItemId })),
+              el("div", { class: "chips" },
+                island.inUse ? chip("Loaded on a server", "yellow") : island.checkedOut ? chip("Checked out (idle)") : null,
+                island.published ? chip(`Published ${island.published.mnemonic}${island.published.active ? "" : " (off)"}`, "sky") : null)),
+            el("div", { class: "grid cols-2", style: "margin-top:8px;" },
+              el("div", {},
+                el("div", {}, el("strong", { text: "Save: " }), island.save ? `${islandBytes(island.save.size)}, ${ago(island.save.updated)}` : el("span", { class: "muted", text: "never saved (the island's template)" })),
+                el("div", {}, el("strong", { text: "In-game backup: " }), island.checkpoint ? `${islandBytes(island.checkpoint.size)}, ${ago(island.checkpoint.updated)}` : el("span", { class: "muted", text: "none" }))),
+              el("div", { class: "actions", style: "flex-wrap:wrap; gap:6px; justify-content:flex-end;" },
+                island.save ? fileLink(island, "save", "Download save") : null,
+                island.checkpoint ? fileLink(island, "checkpoint", "Download in-game backup") : null,
+                island.checkpoint ? btn("Restore in-game backup", () => restore(island, "checkpoint", "the in-game backup"), "ghost small") : null,
+                island.hasPrevious ? btn("Restore previous", () => restore(island, "previous", "the version before its last save"), "ghost small") : null,
+                island.save ? btn("Reset island", async () => {
+                  if (await confirmModal("Reset this island to its template? Its save is backed up first.", { title: "Reset Island", confirmText: "Reset", confirmKind: "danger" })) run(`${island.plotItemId}/reset`, {}, "Island reset (its save is in the backups)");
+                }, "ghost small") : null)),
+            el("h4", { style: "margin:14px 0 6px;", text: `Backups (${island.backups.length})` }),
+            el("div", { class: "actions", style: "gap:6px; flex-wrap:wrap;" }, note,
+              btn("Back up the save", () => (island.save ? run(`${island.plotItemId}/backups`, { note: note.value }, "Backed up") : toast("The island has never been saved", true)), "primary small"),
+              btn("Upload a backup", () => upload.click(), "ghost small"), upload),
+            island.backups.length ? el("div", { class: "table-wrap", style: "margin-top:8px;" }, el("table", {},
+              el("thead", {}, el("tr", {}, ["Made", "Note", "Size", ""].map((text) => el("th", { text })))),
+              el("tbody", {}, island.backups.map((backup) => el("tr", {},
+                el("td", { text: backup.created ? `${new Date(backup.created).toLocaleString()} (${ago(backup.created)})` : backup.id }),
+                el("td", { text: backup.note || (backup.from === "upload" ? "uploaded" : "—") }),
+                el("td", { text: islandBytes(backup.size) }),
+                el("td", {}, el("div", { class: "actions", style: "justify-content:flex-end; flex-wrap:nowrap; gap:6px;" },
+                  fileLink(island, backup.id, "Download"),
+                  btn("Restore", () => restore(island, backup.id, "this backup"), "ghost small"),
+                  btn("Delete", async () => {
+                    if (await confirmModal("Delete this backup? It can't be brought back.", { title: "Delete Backup", confirmText: "Delete", confirmKind: "danger" })) run(`${island.plotItemId}/backups/${backup.id}`, undefined, "Backup deleted", "DELETE");
+                  }, "ghost small")))))))) : null);
+        };
+        holder.replaceChildren(
+          el("p", { class: "note", style: "margin:0;", text: `${player.canPublish ? "This player has a Support-A-Creator code, so they can publish islands in game." : "No Support-A-Creator code: this player can't publish in game (you can from the Creative page)."} A restore is refused while a server has the island loaded; it takes effect the next time the island loads.` }),
+          player.islands.map(islandCard));
+      };
+      act(api(`/admin/api/accounts/${a.id}/creative`)).then(render);
+      return holder;
     }
 
     /* ---------- challenges ---------- */

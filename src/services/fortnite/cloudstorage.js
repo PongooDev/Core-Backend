@@ -18,6 +18,7 @@ import { creativeAccessGlobals } from "../../profiles/creative.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { giftingRuntimeOptions } from "../../store/gifting.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
+import { creativeRuntimeOptions } from "../links/islands.js";
 import { createNetwork, httpsProxied, sentToHost } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
 
@@ -226,10 +227,13 @@ const creatorsUrl = (req, network) => {
   if (proxied) return `https://${proxied.host}/affiliate/creators`;
   return `${req.socket?.encrypted ? "https" : "http"}://${sentToHost(req) ?? network.directHost(req)}/affiliate/creators`;
 };
-const runtimeOptionsFiles = (changelist, settingsValue, url = null) => (Number(changelist) >= replaysBuild ? {
+// 7.10's (CL-4667333) and later Creative island switches and the hub's featured islands (services/links/islands.js,
+// PongooDev/CoreV2#488).
+const runtimeOptionsFiles = (changelist, settingsValue, url = null, islandLinks = null) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
     "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue, { creatorsUrl: url }),
-    ...showdownRuntimeOptions(changelist, settingsValue), ...giftingRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
+    ...showdownRuntimeOptions(changelist, settingsValue), ...giftingRuntimeOptions(changelist, settingsValue),
+    ...creativeRuntimeOptions(changelist, islandLinks), ""].join("\r\n"), "utf8")
 } : {});
 // 7.00's (CL-4629139) and later Creative servers keep their islands in the DSS through the sidecar service
 // (services/dss/dss.js, PongooDev/CoreV2#471): USidecarSys's base URL is the "MCP" online subsystem's
@@ -274,7 +278,7 @@ const defaultNetwork = createNetwork();
 // reads [Vivox] ServerUrl and Domain from the game ini each time it connects, so this file, merged at start-up, points
 // the game's own Vivox at Core's emulator. Nothing for older builds (their URL is in the exe) or while the admin panel's
 // Voice chat (Vivox) switch is off, which leaves the file as it was.
-function systemFiles(req, network = defaultNetwork, settings = null, vivox = null) {
+function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
@@ -297,7 +301,7 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
   const qos = qosEngineLines(build, settings?.get?.()?.regionPingServers);
   const engine = engineNetwork + stormDestructionEngineSection(build) + (qos.length ? [...qos, ""].join("\r\n") : "");
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
-    ...runtimeOptionsFiles(build, settings?.get?.(), creatorsUrl(req, network)) };
+    ...runtimeOptionsFiles(build, settings?.get?.(), creatorsUrl(req, network), islandLinks) };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,
@@ -310,15 +314,15 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens, network, settings, vivox }) {
+export function cloudStorageRoutes({ tokens, network, settings, vivox, islandLinks }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req, network, settings, vivox)).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network, settings, vivox, islandLinks)).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req, network, settings, vivox)[req.params.filename];
+    const data = systemFiles(req, network, settings, vivox, islandLinks)[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });

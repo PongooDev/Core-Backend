@@ -181,19 +181,31 @@ export function affiliateCheck(slug, settingsValue = settingsProvider()) {
 const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 // The page "View Approved Creators" opens in the player's browser: the enabled codes, as Epic's FortniteCreators page
-// listed its creators.
-export function approvedCreatorsPage(settingsValue = settingsProvider()) {
-  const codes = creatorNames(settingsValue).slice().sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+// listed its creators. Below them, each creator's published Creative islands with their names and island codes
+// (PongooDev/CoreV2#488): `islandsOf(accountId)` gives a creator's active published islands ({title, mnemonic}).
+export function approvedCreatorsPage(settingsValue = settingsProvider(), islandsOf = () => []) {
+  const creators = enabledCreators(settingsValue).slice().sort((a, b) => a.code.localeCompare(b.code, "en", { sensitivity: "base" }));
+  const codes = creators.map((creator) => creator.code);
   const items = codes.length ? codes.map((code) => `<li>${escapeHtml(code)}</li>`).join("") : "<li class=\"none\">No creators yet.</li>";
+  const published = creators.map((creator) => ({ code: creator.code, islands: creator.accountId ? islandsOf(creator.accountId) : [] }))
+    .filter((entry) => entry.islands.length);
+  const islandItems = published.length
+    ? published.map((entry) => `<li><span class="creator">${escapeHtml(entry.code)}</span><ul class="islands">${entry.islands.map((island) =>
+      `<li><span class="title">${escapeHtml(island.title)}</span><span class="code">${escapeHtml(island.mnemonic)}</span></li>`).join("")}</ul></li>`).join("")
+    : "<li class=\"none\">No published islands yet.</li>";
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">`
     + `<title>Approved Creators</title><style>body{font-family:system-ui,sans-serif;background:#10141c;color:#e8ecf3;margin:0;padding:32px 16px}`
     + `main{max-width:560px;margin:0 auto}h1{font-size:24px;margin:0 0 8px}p{color:#9aa4b5;margin:0 0 20px}`
     + `ul{list-style:none;padding:0;margin:0}li{background:#1a2030;border-radius:8px;padding:12px 16px;margin-bottom:8px;font-weight:600}`
-    + `li.none{font-weight:400;color:#9aa4b5}</style></head><body><main><h1>Support-A-Creator</h1>`
-    + `<p>Enter one of these creator codes with Support a Creator in the item shop.</p><ul>${items}</ul></main></body></html>`;
+    + `li.none{font-weight:400;color:#9aa4b5}h2{font-size:20px;margin:32px 0 8px}ul.islands{margin:10px 0 0}`
+    + `ul.islands li{background:#232b3e;margin:6px 0 0;display:flex;justify-content:space-between;gap:12px;font-weight:400}`
+    + `.code{font-family:ui-monospace,Consolas,monospace;color:#f5d742;white-space:nowrap}.title{overflow-wrap:anywhere}</style></head><body><main><h1>Support-A-Creator</h1>`
+    + `<p>Enter one of these creator codes with Support a Creator in the item shop.</p><ul>${items}</ul>`
+    + `<h2>Creative islands</h2><p>Islands these creators have published. Enter an island code at a featured rift in Creative to visit one.</p>`
+    + `<ul>${islandItems}</ul></main></body></html>`;
 }
 
-export function affiliateRoutes() {
+export function affiliateRoutes({ islandLinks } = {}) {
   const router = express.Router();
   router.get("/affiliate/api/public/affiliates/slug/:slug", (req, res) => {
     const found = affiliateCheck(req.params.slug);
@@ -204,7 +216,9 @@ export function affiliateRoutes() {
   });
   router.get("/affiliate/creators", (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
-    res.type("html").send(approvedCreatorsPage());
+    const islandsOf = (accountId) => (islandLinks?.byAuthor(accountId) ?? []).filter((link) => link.active !== false)
+      .map((link) => ({ title: link.title, mnemonic: link.mnemonic }));
+    res.type("html").send(approvedCreatorsPage(undefined, islandsOf));
   });
   return router;
 }

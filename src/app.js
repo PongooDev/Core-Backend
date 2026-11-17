@@ -50,6 +50,8 @@ import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { linksRoutes } from "./services/links/links.js";
+import { createIslandLinkStore } from "./services/links/islands.js";
+import { creativeAdminRoutes } from "./admin/creative.js";
 import { dssRoutes } from "./services/dss/dss.js";
 import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
@@ -152,6 +154,8 @@ export function createContext(config) {
     purchaseCodes: createPurchaseCodeStore(config.dataDir),
     // Support-A-Creator's payouts (Core-Backend #349).
     creatorPayouts: createCreatorPayoutStore(config.dataDir),
+    // Published Creative islands and their codes (services/links/islands.js, PongooDev/CoreV2#488).
+    islandLinks: createIslandLinkStore(config.dataDir),
     // The admin panel's tournament events and their points (Core-Backend #263).
     tournaments,
     stats,
@@ -242,7 +246,9 @@ export function createApp(config, context = createContext(config)) {
   if (context.vivox) app.use(vivoxWebRoutes(context));
   // The admin panel's news image upload (#215) reads its larger body itself, after the admin gate (admin/routes.js).
   const json = express.json();
-  app.use((req, res, next) => (req.path === "/admin/api/news/image" ? next() : json(req, res, next)));
+  // So does the Creative island upload (admin/creative.js, PongooDev/CoreV2#488).
+  const ownBody = (url) => url === "/admin/api/news/image" || /^\/admin\/api\/accounts\/[^/]+\/creative\/[^/]+\/upload$/.test(url);
+  app.use((req, res, next) => (ownBody(req.path) ? next() : json(req, res, next)));
   app.use(express.urlencoded({ extended: false }));
 
   app.use(portalRoutes(context));
@@ -276,7 +282,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(feedbackRoutes(context));
   app.use(battleRoyaleRoutes(context));
   app.use(eventRoutes(context));
-  app.use(affiliateRoutes());
+  app.use(affiliateRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(privacyRoutes(context));
@@ -286,6 +292,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(corePresenceRoutes(context));
   app.use(coreTlsRoutes(context));
   app.use(networkAdminRoutes(context));
+  // The admin panel's Creative tab and its players' islands (admin/creative.js, PongooDev/CoreV2#488).
+  app.use(creativeAdminRoutes(context));
   app.use(adminRoutes(context));
 
   // The game asks Epic's launcher bucket for its launcher, Fortnite and default app icons
