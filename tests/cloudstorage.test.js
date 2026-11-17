@@ -539,8 +539,10 @@ test("the system hotfix points the client's XMPP at the address and port it reac
 // bIsAthenaGlobalChatEnabled (3.2 0xD4C450), false in the shipped DefaultGame.ini of 2.5 to 3.2. Builds without it ignore it.
 // PongooDev/CoreV2#483: 7.10 (CL-4667333) quits (FPlatformMisc::RequestExit) when an MCP service's Domain isn't pinned or
 // its Protocol isn't https/wss, so from 7.10 the file leaves STOMP at its shipped Epic host for CoreRedirect to send
-// here, and the sidecar service an Epic host for CoreRedirect to send here; 7.00 (CL-4629139) still gets both sections.
-test("the system hotfix gives 7.10 and later no STOMP section and an Epic sidecar host, 7.00 its own", async () => {
+// here; 7.00 (CL-4629139) still gets its STOMP section. From 7.00 the sidecar service (Creative island saves) gets an Epic
+// host for CoreRedirect to send here: 7.00 turned this backend's own address into https://<address>:<port>.ol.epicgames.com
+// (PongooDev/CoreV2#485), and 7.10 quits on it.
+test("the system hotfix gives 7.10 and later no STOMP section, 7.00 its own, and 7.00 and later an Epic sidecar host", async () => {
   const backend = await startBackend();
   try {
     const token = await clientToken(backend.port);
@@ -565,7 +567,9 @@ test("the system hotfix gives 7.10 and later no STOMP section and an Epic sideca
     }
     const ini700 = await engine(agentOf("7.00", 4629139));
     assert.ok(ini700.includes(`[OnlineSubsystemMcp.StompServiceMcp]\r\nProtocol=ws\r\nDomain=127.0.0.1:${backend.port}\r\n`), ini700);
-    assert.ok(ini700.includes(`[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=http\r\nDomain=127.0.0.1:${backend.port}\r\n`), ini700);
+    assert.ok(ini700.includes("[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=https\r\nDomain=mcpsidecar-public-service-prod.ol.epicgames.com\r\n"), ini700);
+    const ini631 = await engine(agentOf("6.31", 4573279));
+    assert.equal(ini631.includes("OnlineSidecarServiceMcp"), false, ini631);
   } finally {
     backend.close();
   }

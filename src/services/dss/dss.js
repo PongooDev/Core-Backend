@@ -18,8 +18,8 @@ import { plotItem } from "../../profiles/creative.js";
 // servers a local sidecar process stood in front of the DSS). It sends through the MCP request queue for client
 // "DedicatedServer" (0xA9A50; 0x6220D0 "Queuing Mcp request for client=%s url=%s"), so with the DedicatedServer client's
 // token, and fails locally ("Unable to find service permissions for server.") where the server has no such permissions.
-// Core has no sidecar: this backend answers the routes at its root (services/fortnite/cloudstorage.js points the sidecar
-// service here; a server going through Core's HTTP proxy reaches them at 127.0.0.1:8000 too).
+// Core has no sidecar: this backend answers the routes at its root (services/fortnite/cloudstorage.js gives the sidecar
+// service an Epic host, mcpsidecar-public-service-prod.ol.epicgames.com, which CoreRedirect sends here; PongooDev/CoreV2#485).
 //
 // What the game sends (7.00's exe; the server's island save, UFortLevelSaveComponent 0xF5ADB0, with app_name "creative",
 // 0xDF960, and file_path islands/personal/<owner account>/<plot item id>.island, 0xF476E0 and 0xF475F0):

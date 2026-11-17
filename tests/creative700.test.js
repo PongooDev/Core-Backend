@@ -86,7 +86,7 @@ test("7.00's lobby lists Creative as shipped (Playlist_PlaygroundV2, New, no lim
   assert.equal(playlistIdOfName("playlist_playgroundv2", v631), 35);
 });
 
-test("the lobby hotfix: 7.00's Creative line and the sidecar service pointed at the backend; 6.31's files as before", async () => {
+test("the lobby hotfix: 7.00's Creative line and the sidecar service on an Epic host for CoreRedirect (CoreV2 #485); 6.31's files as before", async () => {
   const backend = await startBackend();
   try {
     const token = await clientToken(backend.port);
@@ -97,7 +97,7 @@ test("the lobby hotfix: 7.00's Creative line and the sidecar service pointed at 
     assert.ok(game700.includes("PlaylistName=Playlist_Playground, PlaylistAccess=(bEnabled=true, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, " +
       "AdvertiseType=Updated, bDisplayAsLimitedTime=true, DisplayPriority=15)"), "Playground as before");
     const engine700 = await file(agent700, "DefaultEngine.ini");
-    assert.ok(engine700.includes(`[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=http\r\nDomain=127.0.0.1:${backend.port}\r\n`), engine700);
+    assert.ok(engine700.includes("[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=https\r\nDomain=mcpsidecar-public-service-prod.ol.epicgames.com\r\n"), engine700);
     assert.equal((await file(agent631, "DefaultGame.ini")).includes("Playlist_PlaygroundV2"), false);
     assert.equal((await file(agent631, "DefaultEngine.ini")).includes("OnlineSidecarServiceMcp"), false);
     assert.equal((await file(agent631, "DefaultGame.ini")).includes("CreativeModeLimitedAccess"), false, "6.31 gets no early access globals");
