@@ -8,7 +8,7 @@ import { usesCommonProfiles, viewProfile } from "../../profiles/common.js";
 import { ownsSaveTheWorld } from "../../profiles/founders.js";
 import { findItem, isMtxCurrency, mtxPlatform } from "../../profiles/items.js";
 import { questIdOf } from "../../profiles/quests.js";
-import { inProfileSeason, lastTier, profileSeason } from "../../profiles/seasons.js";
+import { inProfileSeason, isBattleStars, lastTier, profileSeason } from "../../profiles/seasons.js";
 import { openSession } from "../../profiles/session.js";
 import { maxLevel, xpForLevel } from "../../profiles/xp.js";
 import { cosmeticImageUrl, showItemImages } from "./images.js";
@@ -62,9 +62,11 @@ function progressOf(item, objectives) {
   };
 }
 
-const rewardTotal = (quest, templateId) => (quest?.rewards ?? [])
-  .filter((reward) => reward.templateId.toLowerCase() === templateId).reduce((sum, reward) => sum + reward.quantity, 0);
-const rewardsOf = (quest) => ({ xp: rewardTotal(quest, "accountresource:athenaseasonalxp"), stars: rewardTotal(quest, "accountresource:athenaseasonalbp") });
+const rewardTotal = (quest, matches) => (quest?.rewards ?? [])
+  .filter((reward) => matches(reward.templateId)).reduce((sum, reward) => sum + reward.quantity, 0);
+// Battle Stars are AthenaBattleStar from 7.00 (profiles/seasons.js isBattleStars).
+const rewardsOf = (quest) => ({ xp: rewardTotal(quest, (templateId) => templateId.toLowerCase() === "accountresource:athenaseasonalxp"),
+  stars: rewardTotal(quest, isBattleStars) });
 
 // The athena profile's challenges: the daily ones, the pass's weekly bundles with their quests, and any other.
 function athenaChallenges(athena) {

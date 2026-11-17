@@ -2,6 +2,7 @@ import { currentBuild, inBuild, isOnTheServer } from "../builds/context.js";
 import { certBuild } from "../builds/detect.js";
 import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
+import { getItem } from "../gamedata/items.js";
 import { buildGameData, dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { findItem } from "./items.js";
@@ -236,7 +237,7 @@ function challengeRoot(items, item, seen = new Set()) {
 }
 
 // The season an athena item's challenge belongs to, or null for one no season's pass gives (or more than one's).
-function itemSeason(profile, item) {
+export function itemSeason(profile, item) {
   if (!item || !challengeKinds[typeOfTemplate(item.templateId)]) return null;
   const root = challengeRoot(profile.items, item);
   const kind = challengeKinds[typeOfTemplate(root?.templateId)];
@@ -387,6 +388,20 @@ export function givenVariantTokens(profile) {
     .map(({ templateId }) => templateId).filter((templateId) => typeOfTemplate(templateId) === "cosmeticvarianttoken");
 }
 
+// Battle Stars, what the Battle Pass's tiers are earned with (a FortPersistentResourceItemDefinition, "Battle Stars"):
+// AccountResource:AthenaSeasonalBP from 1.11 (CL-3807424) to 6.31 (CL-4573279), AccountResource:AthenaBattleStar from 7.00
+// (CL-4629139). 7.00's to 7.20's item data define only AthenaBattleStar, and 7.00's client knows the stars by that id alone
+// (its static "AccountResource:athenabattlestar", 0x3AEC8F0, which its quest rewards, store and challenge entries compare
+// with; no "athenaseasonalbp" is left in its exe). Season 7's level rewards (AthenaSeason7's SeasonXpScheduleFree: 2 stars a
+// level, 5 every fifth, 10 every tenth) and its challenges give it. Core-Backend #381: only AthenaSeasonalBP was known, so a
+// Season 7 level's stars were granted as a profile0 item and listed in the GB_BattlePass box, "4 items have been unlocked!"
+// over four Battle Stars cards, while the pass got none; the challenges' stars went nowhere (settleUnpaidBattleStars,
+// profiles/athena.js, pays them).
+const battleStarIds = ["accountresource:athenaseasonalbp", "accountresource:athenabattlestar"];
+export const isBattleStars = (templateId) => battleStarIds.includes(String(templateId).toLowerCase());
+// The Battle Stars of the request's build: the one its item data defines.
+export const battleStarTemplateId = () => (getItem("AccountResource:athenabattlestar") ? "AccountResource:athenabattlestar" : "AccountResource:athenaseasonalbp");
+
 // A season reward: Battle Stars to the Battle Pass, season XP to the level, the boosts to their stats, banners to profile0
 // (where the banner editor finds them), V-Bucks to profile0, the Battle Pass challenges' trigger quest to athena and
 // cosmetics to the locker. Returns what went to the locker or profile0, as loot.
@@ -394,7 +409,7 @@ function giveReward(session, { templateId, quantity }, athena) {
   const id = templateId.toLowerCase();
   const tracker = session.profile("athena");
   const { attributes } = tracker.profile.stats;
-  if (id === "accountresource:athenaseasonalbp") return addBookXp(session, quantity, athena), [];
+  if (isBattleStars(id)) return addBookXp(session, quantity, athena), [];
   if (id === "accountresource:athenaseasonalxp") return athena.addSeasonXp(session, quantity), [];
   if (id === "token:athenaseasonxpboost") return tracker.setStat("season_match_boost", (attributes.season_match_boost ?? 0) + quantity), [];
   if (id === "token:athenaseasonfriendxpboost") {
@@ -530,7 +545,9 @@ export function settleSeasonPromise(session, athena) {
   profile.coreSeasonPromises = [...(profile.coreSeasonPromises ?? []), key];
   const stars = season.bookLevels.filter(({ level }) => level >= 1 && level < 1 + tiers).reduce((sum, { xpToNextLevel }) => sum + xpToNextLevel, 0);
   log("Battle Royale", `${session.accountId} starts Season ${key} with ${tiers} free tiers (${stars} Battle Stars) for the Season ${previous} Battle Pass`);
-  giveGiftBox(session, promiseGiftBox, [{ profileId: "athena", itemId: "AccountResource:athenaseasonalbp", templateId: "AccountResource:athenaseasonalbp", quantity: stars }]);
+  // The box lists the build's own Battle Stars: 7.00 has no AthenaSeasonalBP to show (isBattleStars above).
+  const starId = battleStarTemplateId();
+  giveGiftBox(session, promiseGiftBox, [{ profileId: "athena", itemId: starId, templateId: starId, quantity: stars }]);
   addBookXp(session, stars, athena);
 }
 

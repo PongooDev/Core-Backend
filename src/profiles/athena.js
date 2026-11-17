@@ -16,7 +16,7 @@ import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
-import { giveGiftBox, heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
+import { battlePassGiftBox, giveGiftBox, giftBoxProfile, heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { forgetOrigin } from "./origins.js";
 import { grant } from "./progress.js";
@@ -24,8 +24,8 @@ import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefa
   itemsMissingVariants, missingVariantTokens, ownsTokenStyle, takeBackVariantToken } from "./variants.js";
 import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, originalOwnerStyles, originalOwnerTokens,
   scheduleCleanedUp, settleChallengeSchedules, settleCompletedSchedules, settleOriginalOwnerStyles, settleStyleSchedules } from "./challenges.js";
-import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise,
-  settleSeasonRewards, switchSeason } from "./seasons.js";
+import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, isBattleStars, itemSeason, namesAthenaBuild, profileSeason, seasonNeedsSwitch,
+  seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -1011,17 +1011,16 @@ export function claimAthenaQuest(session, itemId) {
   if (item.attributes.quest_state !== "Completed") {
     throw new McpError("errors.com.epicgames.fortnite.quest_not_completed", `Challenge ${itemId} is ${item.attributes.quest_state}`);
   }
+  // The Season 7 challenges collected before #381 are paid first, so this one isn't counted among them.
+  settleUnpaidBattleStars(session);
   tracker.setItemAttribute(itemId, "quest_state", "Claimed");
   tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
   log("Battle Royale", `${session.accountId} collected ${questIdOf(item)}`);
   for (const { templateId, quantity } of quest.rewards ?? []) {
     if (templateId.toLowerCase() === "accountresource:athenaseasonalxp") addSeasonXp(session, quantity);
-    // Battle Stars (1.11's challenges give 5 or 10), to the Battle Pass (profiles/seasons.js); from Season 4 a challenge's
-    // stars past the last tier are season XP (overflowStarXp).
-    else if (templateId.toLowerCase() === "accountresource:athenaseasonalbp") {
-      if (overflowStarXp(tracker.profile)) addSeasonXp(session, quantity * overflowStarXp(tracker.profile));
-      else addBookXp(session, quantity, seasonFunctions);
-    } else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
+    // Battle Stars (1.11's challenges give 5 or 10; AthenaBattleStar from 7.00, profiles/seasons.js isBattleStars).
+    else if (isBattleStars(templateId)) giveChallengeStars(session, quantity);
+    else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
     // 4.0's (CL-4039451) challenge rewards: Carbide's and Omega's styles (CosmeticVariantToken, profiles/variants.js), the
     // cumulative challenges' loading screens (and any cosmetic) to the locker, and the weekly challenge token
     // (Token:AthenaBattlePass_S4_WeeklyChallenge_Token, "S4 Weekly Challege Token", a week's CompleteAll reward), which the
@@ -1075,6 +1074,60 @@ const overflowStarXpSeason = 4;
 const xpPerOverflowStar = 100;
 const overflowStarXp = (profile) => ((athenaSeason()?.seasonNumber ?? 0) >= overflowStarXpSeason && athenaSeason().numBookLevels > 0
   && (profile.stats.attributes.book_level ?? 1) >= athenaSeason().numBookLevels ? xpPerOverflowStar : 0);
+
+// A challenge's Battle Stars: to the Battle Pass (profiles/seasons.js), or past its last tier season XP (overflowStarXp).
+function giveChallengeStars(session, quantity) {
+  const { profile } = session.profile("athena");
+  if (overflowStarXp(profile)) addSeasonXp(session, quantity * overflowStarXp(profile));
+  else addBookXp(session, quantity, seasonFunctions);
+}
+
+// Core-Backend #381: Season 7's Battle Stars (AccountResource:AthenaBattleStar, profiles/seasons.js isBattleStars) went
+// astray before Core knew them. A season level's stars were granted to profile0 as an item, which Epic's profile never
+// held, and listed in the GB_BattlePass box as cards; a challenge's were never given. They are paid once, the first time
+// the profile is in Season 7 on a Season 7 build: the stars that item holds go to the pass as a level's do (the item goes,
+// and its cards with it from a box not yet opened), and each of Season 7's challenges the profile holds Claimed pays its
+// stars as a challenge does. The tiers they reach give their rewards in a GB_BattlePass box, as a match's do. Only the
+// challenges of Season 7's own schedules count (itemSeason): 7.00's data gives the earlier seasons' quests it still holds
+// (the dailies, Season 4's to 6's hidden cumulative quests) AthenaBattleStar too, and a daily collected on 6.31 the same
+// day was paid then, so a Season 7 daily collected before the fix stays unpaid (🟡 a day's 5 stars at most each). A
+// bundle cleaned up since (profiles/challenges.js) is no longer held, nor are its stars paid. coreMigrations notes it
+// (Core's, never sent), and a claim runs it first (claimAthenaQuest), so a challenge collected since is never paid twice.
+const unpaidStarSeason = 7;
+const unpaidStarMigration = "season7BattleStars";
+const strayBattleStars = "AccountResource:athenabattlestar";
+function settleUnpaidBattleStars(session) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  if (migrated(profile, unpaidStarMigration) || athenaSeason()?.seasonNumber !== unpaidStarSeason || profileSeason(profile) !== unpaidStarSeason) return;
+  profile.coreMigrations = [...(profile.coreMigrations ?? []), unpaidStarMigration];
+  let levelStars = 0;
+  if (session.hasProfile(giftBoxProfile)) {
+    const account = session.profile(giftBoxProfile);
+    const stray = Object.entries(account.profile.items).filter(([, item]) => sameId(item.templateId, strayBattleStars));
+    const strayIds = new Set(stray.map(([itemId]) => itemId));
+    for (const [itemId, item] of stray) {
+      levelStars += item.quantity ?? 0;
+      account.removeItem(itemId);
+    }
+    for (const [boxId, box] of strayIds.size ? heldGiftBoxes(account.profile) : []) {
+      if (!sameId(box.templateId, battlePassGiftBox)) continue;
+      const lootList = (box.attributes.lootList ?? []).filter((loot) => !strayIds.has(loot.itemGuid));
+      if (lootList.length === (box.attributes.lootList ?? []).length) continue;
+      if (lootList.length) account.setItemAttribute(boxId, "lootList", lootList);
+      else account.removeItem(boxId);
+    }
+  }
+  const challengeStars = Object.values(profile.items)
+    .filter((item) => item.attributes?.quest_state === "Claimed" && itemSeason(profile, item) === unpaidStarSeason)
+    .map((item) => (athenaQuestOf(item)?.rewards ?? []).filter(({ templateId }) => isBattleStars(templateId)).reduce((sum, { quantity }) => sum + quantity, 0))
+    .filter((stars) => stars > 0);
+  if (!levelStars && !challengeStars.length) return;
+  if (levelStars > 0) addBookXp(session, levelStars, seasonFunctions);
+  for (const stars of challengeStars) giveChallengeStars(session, stars);
+  log("Battle Royale", `${session.accountId}: Season 7's unpaid Battle Stars paid (#381): ${levelStars} from season levels,`
+    + ` ${challengeStars.reduce((sum, stars) => sum + stars, 0)} from ${challengeStars.length} challenges`);
+}
 
 // A token an athena challenge gives (4.0's weekly challenge token): held in the athena profile, its count in one item, and
 // counted by the challenges that wait for it (Acquire).
@@ -1420,5 +1473,6 @@ export function athenaQuestLogin(session) {
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
   settleHiddenBanners(session);
+  settleUnpaidBattleStars(session);
   settleSeasonPromise(session, seasonFunctions);
 }
