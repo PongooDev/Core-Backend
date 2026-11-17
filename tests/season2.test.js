@@ -21,11 +21,16 @@ const v110 = "3790078";
 // 4.5 and 6.31, for their own ERewardSource numbers (Core-Backend #373).
 const v45 = "4166199";
 const v631 = "4573279";
+// 5.10 and 7.00, for the GB_VictoryRoyale box (Core-Backend #373): 5.21 is the first build with it.
+const v510 = "4240749";
+const v700 = "4629139";
 const agents = {
   [v111]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3807424",
   [v110]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3790078",
   [v45]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.5-CL-4166199",
-  [v631]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.31-CL-4573279"
+  [v631]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.31-CL-4573279",
+  [v510]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-5.10-CL-4240749",
+  [v700]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-7.00-CL-4629139"
 };
 
 function as(build, port, method, urlPath, token, body) {
@@ -481,13 +486,15 @@ test("each build's end-of-match screen gets its own ERewardSource numbers", () =
     SeasonLevelUp: 7, BookLevelUp: 8 });
   const from50 = { Invalid: 0, MinutesPlayed: 1, FirstKill: 2, TeamKills: 3, FirstRevive: 4, AdditionalRevives: 5, Placement: 6, Medals: 7,
     FirstWin: 8, SeasonLevelUp: 9, BookLevelUp: 10 };
-  for (const build of ["4204761", "4214610", "4402180", v631]) assert.deepEqual(sourcesIn(build), from50, build);
+  for (const build of ["4204761", "4214610", "4402180", v631, v700]) assert.deepEqual(sourcesIn(build), from50, build);
   for (const build of ["3724489", "3775276"]) assert.deepEqual(sourcesIn(build), sourcesIn(v110), build);
   for (const build of ["3825894", "3889387", "3901517", "4019403", "4039451", v45]) assert.deepEqual(sourcesIn(build), sourcesIn(v111), build);
 
-  // A first solo win reported by 4.5's and 6.31's servers: the umbrella group, then Survival Time, Kills and Placement.
+  // A first solo win reported by 4.5's, 5.10's, 6.31's and 7.00's servers: the umbrella group, then Survival Time, Kills
+  // and Placement.
   const dedicated = await dedicatedServerToken(backend.port);
-  for (const [build, numbers] of [[v45, [6, 1, 3, 4]], [v631, [8, 1, 3, 6]]]) {
+  const victoryBoxes = (profile) => Object.values(profile.items).filter((item) => item.templateId.toLowerCase() === "giftbox:gb_victoryroyale");
+  for (const [build, numbers, box] of [[v45, [6, 1, 3, 4], false], [v510, [8, 1, 3, 6], false], [v631, [8, 1, 3, 6], true], [v700, [8, 1, 3, 6], true]]) {
     const winner = await userLogin(backend.port, `winner${build}`);
     await profileOf(backend.port, winner, "athena", build);
     const answer = await as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
@@ -496,6 +503,19 @@ test("each build's end-of-match screen gets its own ERewardSource numbers", () =
     const [result] = answer.body.results;
     assert.deepEqual(result.rewards.map(({ rewardSource }) => rewardSource), numbers, build);
     assert.ok(result.rewards[0].items.length > 0, build);
+    // From 5.21 the umbrellas also come in a GB_VictoryRoyale box, the lobby's "You earned a Victory Royale!" screen: one
+    // box, listing what the end-of-match screen's FirstWin group lists. 4.5 and 5.10 have no such box.
+    const boxes = victoryBoxes(await profileOf(backend.port, winner, "common_core", build));
+    assert.equal(boxes.length, box ? 1 : 0, build);
+    if (box) {
+      assert.deepEqual(boxes[0].attributes.lootList.map(({ itemType }) => itemType).sort(), result.rewards[0].items.map(({ itemType }) => itemType).sort(), build);
+      assert.ok(boxes[0].attributes.lootList.some(({ itemType }) => /umbrella_season_0[67]$/.test(itemType)), build);
+    }
+    // A second win gives nothing new: no group of items and no box.
+    const again = await as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId: 2, matchId: `sources-${build}-again`, countWins: true, results: [{ accountId: winner.accountId, place: 1, kills: 0, secondsAlive: 60 }] });
+    assert.deepEqual(again.body.results[0].rewards.filter(({ items }) => items), [], build);
+    assert.equal(victoryBoxes(await profileOf(backend.port, winner, "common_core", build)).length, box ? 1 : 0, build);
   }
 }));
 

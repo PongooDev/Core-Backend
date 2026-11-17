@@ -516,3 +516,51 @@ test("the admin panel's Season 5 Battle Pass reset takes Drift's challenges out 
     assert.deepEqual(s5Items(profile), [], "and nothing gives them back in Season 6");
   });
 }));
+
+// Core-Backend #382: Season 7 (7.00, CL-4629139) keeps Calamity's and Dire's challenges as Season 6 kept Drift's and
+// Ragnarok's. 7.00's Season6_ProgressiveA/B_Schedule are CategoryID "Past BattlePass" ("Style Challenges", SortPriority 6:
+// the challenges tab's own section, below the Battle Pass and weekly ones), CleanUpOnBundleCompletion, and AthenaSeason6's
+// TokensToRemoveAtSeasonEnd names only its free and paid schedules, so 7.00's data keeps them past Season 6
+// (keptPastSeason 6). A Season 6 pass owner who hadn't unlocked every style goes on with them in Season 7, as they stood.
+const v631r = "4573279";
+const v700r = "4629139";
+const s6Progressive = (profile) => Object.values(profile.items).map((item) => item.templateId.toLowerCase())
+  .filter((id) => /season6_progressive|s6_progressive/.test(id)).sort();
+const s6XpQuests = (profile, letter) => [1, 2, 3, 4, 5].map((stage) => {
+  const quest = itemOf(profile, `Quest:quest_br_s6_gain_seasonxp_progressive${letter}_0${stage}`);
+  if (!quest) return null;
+  const [count] = Object.entries(quest.attributes).filter(([key]) => key.startsWith("completion_")).map(([, value]) => value);
+  return [quest.attributes.quest_state, count];
+});
+
+test("a Season 6 pass owner's unfinished Calamity and Dire challenges are still theirs on 7.00, and Season 7's XP counts on (#382)", () => withAccount((login) => {
+  const before = login(v631r, (session, profile) => {
+    buyBattlePass(session, seasonRewardFunctions());
+    buyTiers(session, 99, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    addSeasonXp(session, 30000);
+    return { items: s6Progressive(profile), a: s6XpQuests(profile, "a"), b: s6XpQuests(profile, "b") };
+  });
+  assert.deepEqual(before.items.filter((id) => id.startsWith("challengebundleschedule:")),
+    ["challengebundleschedule:season6_progressivea_schedule", "challengebundleschedule:season6_progressiveb_schedule"]);
+  inBuild(v700r, () => {
+    const schedules = athenaChallengeSchedules();
+    assert.equal(schedules.season6_progressivea_schedule.keptPastSeason, 6);
+    assert.equal(schedules.season6_progressiveb_schedule.keptPastSeason, 6);
+  });
+  login(v700r, (session, profile) => {
+    assert.equal(profile.stats.attributes.season_num, 7);
+    // Calamity's and Dire's schedules, bundles and challenges are the profile's, progress and all; Season 6's weeks wait.
+    assert.deepEqual(s6Progressive(profile), before.items);
+    assert.deepEqual(s6XpQuests(profile, "a"), before.a);
+    assert.deepEqual(s6XpQuests(profile, "b"), before.b);
+    const aside = Object.values(profile.coreSeasonItems[6]).map((item) => item.templateId.toLowerCase());
+    assert.ok(aside.includes("challengebundleschedule:season6_free_schedule") && aside.includes("challengebundleschedule:season6_paid_schedule"));
+    assert.ok(!aside.some((id) => /progressive/.test(id)), "none of Calamity's or Dire's is aside");
+    // Season 7's XP counts on in the open ones.
+    const open = before.a.findIndex((entry) => entry?.[0] === "Active");
+    addSeasonXp(session, 5000);
+    assert.ok(open >= 0);
+    assert.ok(s6XpQuests(profile, "a")[open][1] > before.a[open][1]);
+  });
+}));

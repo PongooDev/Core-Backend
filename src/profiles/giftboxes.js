@@ -42,6 +42,17 @@ export const showsGiftBoxes = () => Number(currentBuild()) >= firstGiftBoxBuild;
 // The box a purchase of the Battle Pass itself (not tiers alone) comes in, on the request's build.
 export const battlePassPurchaseGiftBox = () => (Number(currentBuild()) >= firstPurchasedGiftBoxBuild ? battlePassPurchasedGiftBox : battlePassGiftBox);
 
+// The box a first win's victory umbrellas come in (Core-Backend #373), the lobby's "CONGRATULATIONS! You earned a Victory
+// Royale!" screen over the umbrella: GiftBox:GB_VictoryRoyale (Items/GiftBoxes/GenericGiftboxes; 7.00's, CL-4629139:
+// GiftBoxHeaderSubWidget ItemReceivedGenericRewardHeader, HeaderAssetString Header.Congratulations, BodyAssetString
+// Reward.VictoryRoyale, RestrictToSubgame Athena). The season's own SeasonFirstWinRewards names no box (AthenaSeason7's
+// GiftBoxToUse is None), so the box was the service's choice. 5.21 (CL-4288479) is the first build Core has whose files
+// hold it (its, 5.30's to 7.20's object dumps list FortGiftBoxItemDefinition GB_VictoryRoyale; 5.10's, CL-4240749, and
+// earlier don't), so earlier builds get no box and keep the end-of-match screen's FirstWin items alone.
+const firstVictoryRoyaleGiftBoxBuild = 4288479;
+export const victoryRoyaleGiftBox = "GiftBox:gb_victoryroyale";
+export const showsVictoryRoyaleGiftBox = () => Number(currentBuild()) >= firstVictoryRoyaleGiftBoxBuild;
+
 // The boxes of a season's Battle Pass, which its admin reset takes back unopened (battlepass/reset.js).
 export const isBattlePassGiftBox = (templateId) => [battlePassGiftBox, battlePassPurchasedGiftBox]
   .some((id) => id.toLowerCase() === String(templateId).toLowerCase());

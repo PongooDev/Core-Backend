@@ -16,7 +16,7 @@ import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
-import { battlePassGiftBox, giveGiftBox, giftBoxProfile, heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
+import { battlePassGiftBox, giveGiftBox, giftBoxProfile, heldGiftBoxes, moveAthenaGiftBoxes, showsVictoryRoyaleGiftBox, victoryRoyaleGiftBox } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { forgetOrigin } from "./origins.js";
 import { grant } from "./progress.js";
@@ -644,9 +644,14 @@ export function removeFullLocker(session) {
 }
 
 // A win in solo, duo or squad (1.8's on, reported by the gameserver), run in the match's build: the victory umbrellas a
-// win in its season gives, those the player lacks.
-export const awardVictory = (session) => victoryUmbrellasOf(session.accountId, session.settings, seasonNumber())
-  .map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
+// win in its season gives, those the player lacks. From 5.21 they also come in a GB_VictoryRoyale box (profiles/giftboxes.js,
+// Core-Backend #373), the lobby's "You earned a Victory Royale!" screen the player sees on coming back from the match.
+export function awardVictory(session) {
+  const granted = victoryUmbrellasOf(session.accountId, session.settings, seasonNumber())
+    .map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
+  if (granted.length && showsVictoryRoyaleGiftBox()) giveGiftBox(session, victoryRoyaleGiftBox, granted);
+  return granted;
+}
 
 // The glider 1.7.2's winners answer gives a player (services/fortnite/battleroyale.js, Core-Backend #84): "umbrella" for
 // a win in solo, duo or squad, "founder_umbrella" for one by an account that owns Save the World, "founder_glider" for
