@@ -27,12 +27,18 @@ explained in the message. Rules: AGENTS.md sections 1, 2 and 8.
 
 **Testing**
 11. Did the touched test files pass, and one full `npm.cmd test` (a single flaky file rerun alone is fine)?
-12. Did nothing use port 5595 or the main checkout's `data` folder?
+12. Did no test or test backend use port 5595 or the main checkout's `data` folder?
 13. Does the message say what was verified (tests, a test backend, a real client) and what not?
 
 **Message**
 14. Subject `<area or build> (#<issue>): <change>`; body: cause, evidence, change, builds affected, verification.
 15. Trailer: Freebuff/Codebuff end with `Agent: Freebuff` and no Claude Co-Authored-By line; Claude uses its own.
 
-After the commit: rebase on `origin/main`, push, comment on the issue naming the commit, note the 5595 restart in
-`HANDOFF.md`, and record anything unfinished there.
+**The hook.** `tools/githooks/pre-commit` runs on `git commit` (`git config core.hooksPath tools/githooks` turns it on
+in a clone that lacks it). It blocks keys, secrets, files over 5 MB, `node_modules` and other build output, binaries,
+game files and agent-local files, and syntax-checks staged `.js`/`.mjs`. Never commit with `--no-verify`; fix what it
+reports and commit again.
+
+After the commit: rebase on `origin/main`, push, comment on the issue naming the commit, restart the owner's 5595
+backend on the new main (`restart_backend`, or the `restart-live-backend` skill), and record anything unfinished in
+`H:\CoreWork\HANDOFF.md`.

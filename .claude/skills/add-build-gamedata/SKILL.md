@@ -32,8 +32,10 @@ appearing in output, stop and write it in `H:\CoreWork\HANDOFF.md` for the owner
 8. `node --test tests/build<ver>.test.js tests/build<previous>.test.js`, then `npm.cmd test` once.
 9. README status table and `.github/ISSUE_TEMPLATE/bug_report.yml` build dropdown, if the bring-up's promotion step
    hasn't done them.
-10. Run `pre-commit-review`, commit only your paths, rebase on `origin/main`, push. Note in `HANDOFF.md` that 5595
-    needs a restart.
+10. Run `pre-commit-review`, commit only your paths (the pre-commit hook runs; never `--no-verify`; the per-build
+    `upgrades.json` is exempt from its 5 MB limit), rebase on `origin/main`, push.
+11. Restart the owner's 5595 backend on the new main: `restart_backend` (core MCP), else the `restart-live-backend`
+    skill.
 
-Done when: the new build's test file passes, the full suite passes once, and the report lists which patch-note
-features are served, which aren't, and what was only checked statically.
+Done when: the new build's test file passes, the full suite passes once, 5595 runs the new main, and the report lists
+which patch-note features are served, which aren't, and what was only checked statically.

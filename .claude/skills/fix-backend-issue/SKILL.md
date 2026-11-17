@@ -15,8 +15,8 @@ Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 4. If it's the build's own behaviour or needs a client change: comment why, close as not planned. Stop.
 5. Worktree from a fresh `origin/main`:
    ```
-   git -C C:\Users\tkenn\Documents\GitHub\Core-Backend fetch origin
-   git -C C:\Users\tkenn\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend fetch origin
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
    cd H:\CoreWork\be-<n>
    npm.cmd ci
    ```
@@ -30,11 +30,14 @@ Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 10. Run the `pre-commit-review` skill.
 11. Stage only your paths (never `git add -A`) and commit: cause, evidence, change, builds affected, what was
     verified. Freebuff/Codebuff commits end with `Agent: Freebuff` (no Claude Co-Authored-By line); Claude uses its
-    own Co-Authored-By line.
+    own Co-Authored-By line. The pre-commit hook (`tools/githooks/pre-commit`) runs: never `--no-verify`; fix what
+    it flags.
 12. `git fetch origin`, `git rebase origin/main`, rerun the touched tests if needed, `git push origin HEAD:main`.
 13. `gh issue close <n> -R PongooDev/Core-Backend --comment "Fixed in <commit>: <cause, change, verified how>"`.
-14. Write in `H:\CoreWork\HANDOFF.md` that the 5595 backend needs a restart (never restart it yourself).
+14. Restart the owner's 5595 backend on the new main: `restart_backend` (core MCP), else the `restart-live-backend`
+    skill. Check for `Listening on port 5595`.
 15. Clean up: if `node_modules` is a junction, remove it with `cmd /c rmdir node_modules` (never `/s`); then
-    `git worktree remove H:\CoreWork\be-<n>`, `git branch -D fix-<n>`; no process of yours left running.
+    `git worktree remove H:\CoreWork\be-<n>`, `git branch -D fix-<n>`; no process of yours left running other than
+    the restarted 5595 backend. Write anything unfinished in `H:\CoreWork\HANDOFF.md`.
 
 Done when: AGENTS.md section 6 is all ticked.

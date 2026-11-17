@@ -38,13 +38,14 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 ```
 
 Start it from your worktree so it runs your commit, wait for `Listening on port 5711`, and stop it when done. Never
-use port 5595, never the main checkout's `data` folder, and never stop a backend you didn't start.
+use port 5595 or the main checkout's `data` folder for tests, and never stop a backend you didn't start. (The owner's
+5595 backend is restarted after changes on main, by `restarting-the-live-backend.md` only.)
 
 ## node_modules in a worktree
 
 `npm.cmd ci` in the worktree, or a junction to the main checkout's folder:
 
 ```
-cmd /c mklink /J node_modules C:\Users\tkenn\Documents\GitHub\Core-Backend\node_modules
+cmd /c mklink /J node_modules $env:USERPROFILE\Documents\GitHub\Core-Backend\node_modules
 cmd /c rmdir node_modules        # remove it before `git worktree remove`; never rmdir /s through a junction
 ```

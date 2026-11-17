@@ -6,19 +6,23 @@ admin panel. It answers every Fortnite build Core supports (1.1 onwards), each b
 for any coding agent working here (Freebuff, Codebuff, Claude Code or another). Read all of it before the first
 change, and open the linked `docs/agents/*.md` files when a task touches their topic.
 
+Paths: `%USERPROFILE%` is the owner's Windows user folder. In PowerShell write it as `$env:USERPROFILE`, as the
+command examples do.
+
 ## 0. Start of every session
 
 1. Read `H:\CoreWork\HANDOFF.md` (local, shared by every agent, not committed). Don't redo or undo work listed in it.
 2. Run the core MCP's `project_status` tool (if available): build in development, supported range, installed
    builds, SDKs, IDA ports. Without it: the README status table and Core-Launcher's `KnownBuilds.cs`.
-3. Work in your own git worktree under `H:\CoreWork` (section 5). Never edit the main checkout at
-   `C:\Users\tkenn\Documents\GitHub\Core-Backend` directly: the owner's live backend runs from it.
+3. Work in your own git worktree under `H:\CoreWork` (section 5). Never edit files in the main checkout at
+   `%USERPROFILE%\Documents\GitHub\Core-Backend`: the owner's live backend runs from it. The only things done there
+   are `git pull --ff-only` and the 5595 restart (section 2).
 4. If you can't finish in this session, update `H:\CoreWork\HANDOFF.md`: what is in progress, the branch or
    worktree, what was verified, what's next.
 
 Per-build facts (paths, IDA ports, CLs, past findings) are in the read-only knowledge base
-`C:\Users\tkenn\.claude\projects\C--Users-tkenn-Documents-GitHub-CoreV2\memory\MEMORY.md` and the files it links.
-Read it; **never edit it**.
+`%USERPROFILE%\.claude\projects\<the CoreV2 project folder>\memory\MEMORY.md` and the files it links. The folder name
+is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never edit it**.
 
 ## 1. Project rules
 
@@ -37,15 +41,24 @@ Read it; **never edit it**.
 
 ## 2. Operating rules on the owner's PC
 
-- **Never** touch the backend on **port 5595**: it is the owner's live backend. Don't stop, restart or test against
-  it. When a change needs it restarted, write that in `H:\CoreWork\HANDOFF.md` and the report.
+- **Port 5595 is the owner's live backend.** Never run tests or test servers against it. **After every backend
+  change lands on main, restart it**, at any time, even while the owner is in a game (the owner's rule). Use the core
+  MCP's `restart_backend` (if available); otherwise follow `docs/agents/restarting-the-live-backend.md` exactly: pull
+  the main checkout, stop the 5595 listener only if it is `node.exe` running Core-Backend's `src\main.js`, start it
+  again hidden, and wait for `Listening on port 5595`. If anything else holds 5595, stop and report.
 - Test backends: your own port (not 5595), your own data folder under `H:\CoreWork`, `--local-only`, and
   `--qos-ping-port 0 --vivox-sip-port 0` so they don't collide with the live one.
+- **Pre-commit hooks:** `tools/githooks/pre-commit` runs on every commit (enabled per clone with
+  `git config core.hooksPath tools/githooks`; this checkout has it on). It blocks pak AES keys, private keys, files
+  over 5 MB (the per-build `gamedata/<CL>/upgrades.json` excepted), build output and dependency folders
+  (`node_modules`), binaries, game files and agent-local files, and syntax-checks the staged `.js`/`.mjs` files.
+  **Never** bypass it (`--no-verify`); fix what it flags.
 - **Never** launch a Fortnite client and **never** run a full match. Headless gameserver boots follow CoreV2's
   `docs/agents/headless-server-testing.md` (one at a time, test port, only while no `FortniteClient` you didn't
   start is running).
 - **Never** modify, copy, hard-link or overlay anything in `F:\Builds` or `D:\Fortnite Builds`.
-- **Never** kill a process you didn't start. Stop everything you started before you finish.
+- **Never** kill a process you didn't start, except the 5595 Core-Backend restart above. Stop everything you started
+  before you finish.
 - **Never** print, copy or commit a pak AES key. (`src/store/keychain.json` is LawinServer's published cosmetic
   keychain, which the owner chose to ship; it is the only exception, and even there report counts, not keys.)
 - Run any Python that reads downloaded or untrusted files with `python -I`.
@@ -87,7 +100,7 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 ```
 
 - Node 22 or newer. A new worktree needs `node_modules`: run `npm.cmd ci` in it, or junction the main checkout's
-  (`cmd /c mklink /J node_modules C:\Users\tkenn\Documents\GitHub\Core-Backend\node_modules`). Remove a junction
+  (`cmd /c mklink /J node_modules $env:USERPROFILE\Documents\GitHub\Core-Backend\node_modules`). Remove a junction
   with `cmd /c rmdir node_modules` (no `/s`: a recursive delete goes through the junction into the main checkout).
 - If one unrelated file fails in the full run, rerun just that file. `stacking`, `cloudstorage` and `quests` tests
   are flaky under load.
@@ -102,8 +115,8 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 3. If it's the build's own behaviour or needs a client change, comment why and close as not planned.
 4. Worktree from a fresh `origin/main`:
    ```
-   git -C C:\Users\tkenn\Documents\GitHub\Core-Backend fetch origin
-   git -C C:\Users\tkenn\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend fetch origin
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
    ```
 5. Find what the reporter's build sends and expects: its exe (IDA, read-only), its SDK, its paks (FModel). Check the
    reporter's build specifically, and every other build the code path serves.
@@ -113,7 +126,8 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 9. Commit only your paths, with the message rules below. `git fetch origin`, `git rebase origin/main`, rerun the
    touched tests if the rebase brought changes, `git push origin HEAD:main`.
 10. Comment on the issue with the commit and what was verified; close it if fixed.
-11. Note in `HANDOFF.md` that the 5595 backend needs a restart to pick the change up (you don't restart it).
+11. Restart the owner's 5595 backend so it runs the change: `restart_backend` (core MCP), else
+    `docs/agents/restarting-the-live-backend.md`. Check its log says `Listening on port 5595`.
 12. Remove your worktree (junction first) and branch.
 
 ## 6. Definition of done
@@ -124,7 +138,8 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 - [ ] The touched test files pass, and one full `npm.cmd test` passed (or an unrelated flaky file passed on rerun).
 - [ ] No test or run used port 5595 or the real `data` folder.
 - [ ] The commit message and issue comment say what was verified (tests, a test backend, a real client) and what not.
-- [ ] Rebased, pushed, issue commented, worktree removed, nothing of yours still running.
+- [ ] Rebased, pushed, issue commented, the 5595 backend restarted on the new main and listening again, worktree
+      removed, nothing of yours (other than the restarted 5595 backend) still running.
 
 ## 7. Commits, issues and hand-off
 
@@ -136,6 +151,15 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 - Close an issue only with a comment that names the fixing commit. Never "should work now", never without a commit.
   Reopen when the reporter says it still happens.
 - Unfinished work goes in `H:\CoreWork\HANDOFF.md`, not a pushed WIP branch.
+
+**Pull requests: review, fix, merge.** Agents review every open PR, make it right and merge it themselves (the
+owner's rule). Check it out in a worktree (`gh pr checkout`), review it against sections 1 and 6 (each build's own
+data, older builds unchanged, Epic's names and shapes, evidence comments, tests), rework what is wrong (push to the
+PR branch when maintainers can edit it; otherwise merge first and fix on main right after, in the same session), run
+the touched tests and one full `npm.cmd test`, merge with `gh pr merge <n> --merge` (the repo's usual merge commit),
+comment on the PR with what was changed and why, then restart the 5595 backend. Reject a PR only when it adds
+something the project has ruled out (client-only changes without the owner's OK, features beyond the project's
+scope), with a comment. Steps: the `review-and-merge-pr` skill.
 
 ## 8. Mistakes made here before (don't repeat them)
 
@@ -152,8 +176,9 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
    against the reporter's build before closing, and close with the commit named.
 5. **`git add -A` with another agent working.** f5d6c05 pushed another agent's half-done files. **Do** use your own
    worktree and stage only your paths.
-6. **Tested old code.** A fix "didn't work" because the test ran against a backend still on an older commit. **Do**
-   start your test backend from your worktree at your commit, and check its first log line.
+6. **Tested old code.** A fix "didn't work" because the owner's test ran against a 5595 backend still on an older
+   commit (restarting the launcher doesn't help: it reuses a backend already on 5595). **Do** restart 5595 after every
+   change on main, start test backends from your worktree at your commit, and check each one's first log line.
 7. **Hotfix ini text cut at `//`.** The hotfix's ini goes through a parser where an unquoted `//` starts a comment,
    so URLs were cut to `http:` (#349, #355; fbb2301, b449754). **Do** quote URL values: `Key="http://..."`.
 8. **Config in the wrong place.** From 6.20 the client reads no loose `.ini` except `GameUserSettings.ini`, and the
@@ -163,7 +188,8 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 
 ## 9. Tools: MCP servers
 
-- **core MCP** (if available): `project_status`, `backend_tests` (files). Prefer them over hand-typed commands.
+- **core MCP** (if available): `project_status`, `backend_tests` (files), `restart_backend` (the 5595 restart).
+  Prefer them over hand-typed commands; the docs' commands are the fallback.
 - **IDA MCPs** `ida-13337` to `ida-13341`: run `project_status` first to learn which port holds which build.
   **Read-only:** decompile, disasm, xrefs, find, lookups, `py_eval` only for reading. **Never** patch, rename,
   define or `idb_save`.
@@ -182,8 +208,10 @@ at a time. Check with `project_status`, the README table, `src/builds/detect.js`
 | [docs/agents/versions-and-calendar.md](docs/agents/versions-and-calendar.md) | build versions, seasons, events, LTMs, calendar, hotfix ini |
 | [docs/agents/mcp-commands.md](docs/agents/mcp-commands.md) | MCP commands and profiles |
 | [docs/agents/testing.md](docs/agents/testing.md) | test conventions, test backends, flaky files |
+| [docs/agents/restarting-the-live-backend.md](docs/agents/restarting-the-live-backend.md) | after every backend change on main (the 5595 restart) |
 
-Skills in `.claude/skills/`: `fix-backend-issue`, `add-build-gamedata`, `pre-commit-review`.
+Skills in `.claude/skills/`: `fix-backend-issue`, `review-and-merge-pr`, `add-build-gamedata`,
+`restart-live-backend`, `pre-commit-review`.
 
 Related repos: [CoreV2](https://github.com/PongooDev/CoreV2) (gameserver; its `AGENTS.md` has the RE workflow and
 the headless boot rules), [Core-Launcher](https://github.com/PongooDev/Core-Launcher),
