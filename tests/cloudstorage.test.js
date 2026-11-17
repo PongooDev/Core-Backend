@@ -539,8 +539,8 @@ test("the system hotfix points the client's XMPP at the address and port it reac
 // bIsAthenaGlobalChatEnabled (3.2 0xD4C450), false in the shipped DefaultGame.ini of 2.5 to 3.2. Builds without it ignore it.
 // PongooDev/CoreV2#483: 7.10 (CL-4667333) quits (FPlatformMisc::RequestExit) when an MCP service's Domain isn't pinned or
 // its Protocol isn't https/wss, so from 7.10 the file leaves STOMP at its shipped Epic host for CoreRedirect to send
-// here; 7.00 (CL-4629139) still gets the section.
-test("the system hotfix gives 7.10 and later no STOMP section, 7.00 its own", async () => {
+// here, and the sidecar service an Epic host for CoreRedirect to send here; 7.00 (CL-4629139) still gets both sections.
+test("the system hotfix gives 7.10 and later no STOMP section and an Epic sidecar host, 7.00 its own", async () => {
   const backend = await startBackend();
   try {
     const token = await clientToken(backend.port);
@@ -558,9 +558,14 @@ test("the system hotfix gives 7.10 and later no STOMP section, 7.00 its own", as
       assert.equal(ini.includes("StompServiceMcp"), false, ini);
       const proxied = await engine(agentOf("7.10", changelist), { "X-Forwarded-Proto": "https", "X-Forwarded-Host": "core.example.com" });
       assert.equal(proxied.includes("StompServiceMcp"), false, proxied);
+      // The sidecar service goes through the same check (island saves): https and an Epic host under .ol.epicgames.com.
+      const sidecar = "[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=https\r\nDomain=mcpsidecar-public-service-prod.ol.epicgames.com\r\n";
+      assert.ok(ini.includes(sidecar), ini);
+      assert.ok(proxied.includes(sidecar), proxied);
     }
     const ini700 = await engine(agentOf("7.00", 4629139));
     assert.ok(ini700.includes(`[OnlineSubsystemMcp.StompServiceMcp]\r\nProtocol=ws\r\nDomain=127.0.0.1:${backend.port}\r\n`), ini700);
+    assert.ok(ini700.includes(`[OnlineSubsystemMcp.OnlineSidecarServiceMcp]\r\nProtocol=http\r\nDomain=127.0.0.1:${backend.port}\r\n`), ini700);
   } finally {
     backend.close();
   }

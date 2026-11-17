@@ -240,9 +240,19 @@ const runtimeOptionsFiles = (changelist, settingsValue, url = null) => (Number(c
 // absolute-form http://127.0.0.1:8000/... to this backend); 🟡 that the OSS takes the section from a hotfix, as STOMP's, isn't
 // seen in a running server. Clients have no use for the sidecar. No earlier build gets the section.
 const sidecarBuild = 4629139;
-const sidecarSection = (build, address, port, proxied) => (Number(build) >= sidecarBuild
-  ? ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", `Protocol=${proxied ? "https" : "http"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]
-  : []);
+// 7.10's (CL-4667333) and later servers get an Epic host instead (PongooDev/CoreV2#483's check, below): USidecarSys's
+// island upload and checkin (7.10 0x2E60800) take the base URL from this service's GetBaseUrl (its vtable 0x39B2B38,
+// slot 10 = 0x4B8BE0), which quits the server unless Protocol is https and the domain pinned. Neither this backend's
+// address nor the shipped http://127.0.0.1:8000 is, so the first island save would have quit a 7.10+ Creative server.
+// The build pins every host under .ol.epicgames.com (built in: no ini has [SSL] PinnedPublicKeys), and CoreRedirect sends
+// the requests to this backend's /api/dss/v1 routes, behind a proxy or not. The gameserver merges the same section at
+// start-up (CoreV2 Server/Boot.cpp CombineServerConfig) for a service that reads its config before this file arrives.
+const sidecarEpicHost = "mcpsidecar-public-service-prod.ol.epicgames.com";
+const sidecarSection = (build, address, port, proxied) => {
+  if (!(Number(build) >= sidecarBuild)) return [];
+  if (Number(build) >= pinnedServicesBuild) return ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", "Protocol=https", `Domain=${sidecarEpicHost}`, ""];
+  return ["[OnlineSubsystemMcp.OnlineSidecarServiceMcp]", `Protocol=${proxied ? "https" : "http"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""];
+};
 // From 7.10 (CL-4667333) every MCP service's base URL is checked as it is built: FBaseServiceMcp::GetBaseUrl (the
 // service's slot 10, 0x4B8BE0, Arxan-dispersed) has its config (0x60D5A0) ask ISslCertificateManager::IsDomainPinned for
 // Domain and compare Protocol with "https" and "wss", and unless the domain is pinned and the protocol one of those it
