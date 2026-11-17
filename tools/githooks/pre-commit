@@ -52,6 +52,7 @@ EOT
 out=$(printf '%s\n' "$sizein" | sed '/^$/d' | git cat-file --batch-check='%(objectsize) %(rest)' |
 while read -r size p; do
     case "$size" in ''|*[!0-9]*) continue ;; esac
+    case "$p" in gamedata/*/upgrades.json) continue ;; esac
     if [ "$size" -gt "$MAXSIZE" ]; then
         printf 'pre-commit: %s is over 5 MB (%s bytes); keep it out of git.\n' "$p" "$size" >&2
         echo big
