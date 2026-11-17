@@ -12,6 +12,11 @@ and follow `testing.md`.
 `restart_backend` (if available) does exactly the steps below. Use it, then check its result says the backend is
 listening on 5595 again.
 
+- `restart_backend` with `dry_run=true` shows what it would stop and start without touching anything: use it first
+  when you aren't sure what holds 5595.
+- It runs in a worker: a call waits up to about 100 s; if it isn't done it returns a `job_id`, and you call
+  `restart_backend` again with just that `job_id` until it reports the result. Don't start a second restart meanwhile.
+
 ## Fallback: by hand (PowerShell)
 
 Run these steps in order. Stop at the first one that fails and report it; never improvise around a failed check.

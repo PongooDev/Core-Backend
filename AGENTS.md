@@ -90,8 +90,9 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
 
 ## 4. Run and test commands
 
-Prefer the core MCP's tools (if available): `backend_tests` (files) and `project_status`. Fallback commands, from
-the worktree, in PowerShell (`npm.cmd`, because `npm.ps1` may be blocked):
+Prefer the core MCP's tools (if available): `backend_tests` (files) and `project_status`. `backend_tests` runs in a
+worker: a call waits up to about 100 s, then returns a `job_id`; call it again with just `job_id` until it reports
+the result. Fallback commands, from the worktree, in PowerShell (`npm.cmd`, because `npm.ps1` may be blocked):
 
 ```
 node --test tests/<file>.test.js tests/<other>.test.js      # while iterating: only the touched files
@@ -188,8 +189,13 @@ scope), with a comment. Steps: the `review-and-merge-pr` skill.
 
 ## 9. Tools: MCP servers
 
-- **core MCP** (if available): `project_status`, `backend_tests` (files), `restart_backend` (the 5595 restart).
-  Prefer them over hand-typed commands; the docs' commands are the fallback.
+The servers are configured in `%USERPROFILE%\.agents\mcp.json`: `core`, `ida-13337` to `ida-13341`, and `fmodel`.
+
+- **core MCP** (if available): `project_status`, `backend_tests` (files), `restart_backend` (the 5595 restart;
+  `dry_run=true` shows what it would stop and start without touching anything). Prefer them over hand-typed
+  commands; the docs' commands are the fallback. `backend_tests` and `restart_backend` return a `job_id` when they
+  outlast a call (about 100 s): call the same tool again with just `job_id` until it reports the result. Jobs survive
+  a restart of the MCP server.
 - **IDA MCPs** `ida-13337` to `ida-13341`: run `project_status` first to learn which port holds which build.
   **Read-only:** decompile, disasm, xrefs, find, lookups, `py_eval` only for reading. **Never** patch, rename,
   define or `idb_save`.

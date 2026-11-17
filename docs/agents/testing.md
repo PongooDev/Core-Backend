@@ -2,7 +2,9 @@
 
 ## Commands
 
-Prefer the core MCP's `backend_tests` (files) if available. Fallback, from your worktree, in PowerShell:
+Prefer the core MCP's `backend_tests` (files) if available. A full run outlasts one call: the call waits up to about
+100 s, then returns a `job_id`; call `backend_tests` again with just that `job_id` until it reports the result.
+Fallback, from your worktree, in PowerShell:
 
 ```
 node --test tests/build720.test.js tests/athena.test.js     # while iterating: only the files you touched or that cover your change

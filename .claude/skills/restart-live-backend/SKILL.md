@@ -7,7 +7,9 @@ description: Use after every Core-Backend change lands on main (a fix, a merged 
 
 Depth: `docs/agents/restarting-the-live-backend.md` (the exact commands).
 
-1. Preferred: the core MCP's `restart_backend` (if available). Check its result says `Listening on port 5595`. Done.
+1. Preferred: the core MCP's `restart_backend` (if available). `dry_run=true` first shows what it would stop and
+   start without touching anything. If a call returns a `job_id`, call `restart_backend` again with just that
+   `job_id` until it reports the result. Check it says `Listening on port 5595`. Done.
 2. Fallback, PowerShell, in order; stop at the first failure and report it:
    1. `git -C $env:USERPROFILE\Documents\GitHub\Core-Backend pull --ff-only`. If it fails, stop: never reset, stash
       or edit the main checkout.

@@ -25,7 +25,8 @@ Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 7. Change the code; put the source of each fact in a comment (build, CL, address, asset, patch notes; `🟡` for
    Core's own choices).
 8. Add tests: the reporter's build gets the new behaviour; a neighbouring build is unchanged.
-9. Run the touched tests: `backend_tests` (files), else `node --test tests/<file>.test.js ...`. Then `npm.cmd test`
+9. Run the touched tests: `backend_tests` (files; poll its `job_id` until done), else
+   `node --test tests/<file>.test.js ...`. Then `npm.cmd test`
    once. Rerun a single flaky file instead of the suite.
 10. Run the `pre-commit-review` skill.
 11. Stage only your paths (never `git add -A`) and commit: cause, evidence, change, builds affected, what was
