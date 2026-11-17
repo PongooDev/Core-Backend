@@ -77,7 +77,7 @@ export const eventCards = [
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." },
   // 7.00's (events/events.js): Save the World's Season 7 Warmup.
-  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.10", ranges: [[4629139, 4667333]],
+  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.20", ranges: [[4629139, 4727874]],
     about: "Save the World's start of Season 7: Mutant Storm alerts with Snowflake Tickets (10 a day), Mini-Boss alerts back to normal (no tickets), the Frostbite in the Weekly Store; the Season 7 lobby.",
     flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] },
   // The Block (events/block.js): the map's, so `always`: served with the seasonal events off or another event mode, and
@@ -93,9 +93,17 @@ export const eventCards = [
     key: "challenges", endStep: "extended", startLabel: "Challenges start", endLabel: "Extension ends",
     about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
     flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
-  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10", ranges: [[4667333, 4667333]],
-    about: "Save the World's Frostnite: the quest map's Frostnite page. Its missions (the Endless mode, BP_ZT_Endless_Winter) aren't on the world map yet.",
-    flags: ["EventFlag.Frostnite"] }
+  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.20", ranges: [[4667333, 4727874]],
+    about: "Save the World's Frostnite: the quest map's Frostnite page. Its missions (the Endless mode, BP_ZT_Endless_Winter) and its weekly challenges (7.20's New Wave Holiday and Cold Chaos) aren't on the world map yet.",
+    flags: ["EventFlag.Frostnite"] },
+  // 7.20's (events/block.js, events/icestorm.js): the Block's two builds, and the Ice Storm Challenges on their dates.
+  { id: "block720", kind: "dated", dated: "block720", seasons: [7], name: "The Block's community builds", builds: "7.20", ranges: [[4727874, 4727874]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Looming Llama goes up", endLabel: "Omega Pyramid goes up",
+    about: "7.20's two community-built islands on the Block, each a level in its paks: Looming Llama (Stormhawk; 7.20 shipped with it on 15 January, so it is up from the replay's first day) and Omega Pyramid (Directingpete, Content Update v7.20, 22 January, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  { id: "iceStorm", kind: "dated", dated: "iceStorm", seasons: [7], name: "The Ice Storm Challenges", builds: "7.20", ranges: [[4727874, 4727874]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "The Ice Storm Challenges: three at the start, two more each day for five days (destroy the Ice Legion), the Blue Metallic wrap for six and the Winter's Thorn glider for all (from the Ice Storm, 19 January 2019, 11 AM PST, to 28 January). Its modes, the Ice Storm's Solo, Duos and Squads, are the Battle Royale game modes' (Original dates). 🟡 The end is the wiki's last day.",
+    flags: ["EventFlag.LTM_WinterDeimos", "CalendarEvent_Season7_WinterDeimos"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 

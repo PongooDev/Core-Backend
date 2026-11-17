@@ -19,6 +19,7 @@ import { birthdayActiveUntil, birthdayChallengeStates } from "../../events/birth
 import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { fourteenDaysStates } from "../../events/fourteendays.js";
+import { iceStormStates } from "../../events/icestorm.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
 import { distantFogStates } from "../../events/distantfog.js";
@@ -108,9 +109,11 @@ export function calendarRoutes({ tokens, settings }) {
     // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
     // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
     // Butterfly (events/butterfly.js), the Birthday Challenges on the admin's times (events/birthday2018.js), Season 7's The
-    // Block (events/block.js) and 7.10's 14 Days of Fortnite (events/fourteendays.js) as one schedule.
+    // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and 7.20's Ice Storm Challenges
+    // (events/icestorm.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
-      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now));
+      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
+      iceStormStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

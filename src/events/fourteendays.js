@@ -1,7 +1,8 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows, fourteenDaysCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, ltm14DaysOfFortnite, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, ltm14DaysOfFortnite, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { iceStormDay } from "./icestorm.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // The 14 Days of Fortnite (7.10, CL-4667333; events/events.js). Update v7.10 (18 December 2018): "Explore new Challenges,
@@ -20,13 +21,16 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // replay, or the admin's own times, or off; the switch serves the flag always or never, events/season4flags.js).
 export const fourteenDaysEvent = datedEvent("fourteenDays");
 const dayMs = 24 * 60 * 60 * 1000;
+// The build its dates serve it on: 7.10's. 7.20's paks keep the schedule, but Update v7.20 says "The 14 Days of Fortnite
+// event has ended", so 7.20 serves it by the admin's switch only.
+const datedBuild = 4667333;
 
 // The flags' calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
 // that holds now on: on 7.10 with the seasonal events on, in the Automatic mode. A flag the admin switched on is served
 // always (season4Overrides) and one switched off never, so neither is scheduled here.
 export function fourteenDaysStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(fourteenDaysEvent.flag);
-  if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  if (!entry || Number(changelist) !== datedBuild || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
   const nowMs = now.getTime();
   const windows = datedWindows(fourteenDaysEvent, datedSettings(config).fourteenDays, nowMs, seasonMoment(now, null, 7).getTime());
@@ -58,8 +62,9 @@ export function fourteenDaysDay(now = new Date(), changelist = currentBuild(), c
   return Number.isFinite(days) && days >= 0 ? days : null;
 }
 
-// The days an event schedule's challenges have had, by its event flag (only the 14 Days of Fortnite counts days).
-export const eventDaysOf = (eventName, now = new Date()) =>
-  (String(eventName ?? "").toLowerCase() === ltm14DaysOfFortnite.toLowerCase() ? fourteenDaysDay(now) : null);
+// The days an event schedule's challenges have had, by its event flag: the 14 Days of Fortnite's and 7.20's Ice Storm
+// Challenges' (events/icestorm.js) count days; no other event's does.
+const eventDays = { [ltm14DaysOfFortnite.toLowerCase()]: fourteenDaysDay, [ltmWinterDeimos.toLowerCase()]: iceStormDay };
+export const eventDaysOf = (eventName, now = new Date()) => eventDays[String(eventName ?? "").toLowerCase()]?.(now) ?? null;
 
 export { fourteenDaysCalendarEvent };

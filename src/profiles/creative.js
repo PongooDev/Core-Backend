@@ -108,10 +108,20 @@ export const plotsOf = (profile) => Object.entries(profile.items).filter(([, ite
 const arcticPlotTemplateId = "CreativePlot:arctic_medium";
 const blockPlotTemplateId = "CreativePlot:theblock_season7";
 const plotSetsBuild = 4667333;
+// 7.20's (CL-4727874) Frosty Fortress: Update v7.20's "A brand new arctic island debuts in Creative ... A new selectable
+// arctic island with structures already placed on it. This island is ready for games to be played right away!" 7.20's
+// paks add Arctic_Competitive_Medium1 ("Frosty Fortress {islandIndex}", BasePlayset
+// PID_Playset_60x60_Composed_Arctic_Competitive, 65 x 65). So a 7.20 request gives an entitled account one beside the
+// others (🟡 how many Epic gave isn't in the notes: one, as the definition's own number says), and an earlier client isn't
+// sent it.
+const frostyFortressPlotTemplateId = "CreativePlot:arctic_competitive_medium1";
+const frostyFortressBuild = 4727874;
 const plotSets = (build = currentBuild()) => [{ templateId: plotTemplateId, count: plotCount },
-  ...(Number(build) >= plotSetsBuild ? [{ templateId: arcticPlotTemplateId, count: 4 }, { templateId: blockPlotTemplateId, count: 2 }] : [])];
+  ...(Number(build) >= plotSetsBuild ? [{ templateId: arcticPlotTemplateId, count: 4 }, { templateId: blockPlotTemplateId, count: 2 }] : []),
+  ...(Number(build) >= frostyFortressBuild ? [{ templateId: frostyFortressPlotTemplateId, count: 1 }] : [])];
 
-// The account's islands, once it is entitled, on 7.00 and later: four, and from 7.10 four Arctic islands and two Blocks.
+// The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, and
+// from 7.20 a Frosty Fortress.
 // Returns how many were given.
 export function settleCreativePlots(session, now = new Date()) {
   if (!hasCreative() || !creativeEntitled(session, now)) return 0;

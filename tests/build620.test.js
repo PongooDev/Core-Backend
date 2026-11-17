@@ -287,9 +287,9 @@ test("6.20's event flags:Fortnitemares (its quest map's Part 1, the Mini-Bosses,
   assert.equal(inBuild(v620, () => hasEventEnded(fortnitemares)), false);
   assert.equal(inBuild(v18, () => isEventActive(fortnitemares)), true, "1.8's own run");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4667333], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4727874], flag);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4667333], "and on to 7.10 (tests/build631.test.js, tests/build710.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4727874], "and on to 7.20 (tests/build631.test.js, tests/build720.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610), "BR_Winter_CandyCaneGuns is gone from 6.20's paks");
   // The admin's switches: Part 2's quest map on, the lobby off.
   withConfig({ mode: "auto", season4Flags: { overrides: { "EventFlag.FortnitemaresPhase2": "on", "EventFlag.LobbySeason6Halloween": "off" } } }, () => {
@@ -346,8 +346,8 @@ test("6.20's modes: Fortnitemares on by default by its dates, two more Disco Dom
     assert.equal(inOriginalWindow("fortnitemares2018Squads", v620, at("2018-11-04T18:00:00Z"), dated), false);
     assert.equal(inOriginalWindow("discoDomination602", v620, at("2018-10-25T12:00:00Z"), dated), false, "Disco Domination's dates end on 24 October");
   });
-  // Fortnitemares' tournament playlists are in-game ones, as the Showdown ones.
-  assert.deepEqual(tournamentPlaylists.slice(-6, -3).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
+  // Fortnitemares' tournament playlists are in-game ones, as the Showdown ones (before 6.30's three and 7.20's three).
+  assert.deepEqual(tournamentPlaylists.slice(-9, -6).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
     [["fortnitemaresShowSolo", 59071, true], ["fortnitemaresShowDuos", 59072, true], ["fortnitemaresShowSquads", 59073, true]]);
   assert.equal(hasShowdown(v620), true);
   const dir = tempDir();

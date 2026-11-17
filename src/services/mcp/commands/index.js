@@ -79,6 +79,14 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 //   its own commands (Alterations.js). Which slot it filled and what it used up was the service's.
 // - SetCreativePlotIslandName {plotItemId, islandName} (7.00's, CL-4629139, UFortMcpProfileCreative): only its FName's
 //   initialiser (0x138EC0) references the FName (0x56F88B0); no wrapper in 7.00.
+// - RefundItem {targetItemId} (7.20's, CL-4727874, UFortMcpProfileCampaign; Update v7.20's Item Reset: "Eligible items
+//   (e.g., heroes and schematics that have been updated) can be reset back to level 1 from the inspect screen"): sent by
+//   UFortMcpContext::RefundItem (0x16E05D0, Blueprint callable, through 0x12A5FB0) only for an item whose
+//   IsRefundable (vslot 0x4A0) says so: the item's MCP attribute refundable (UFortHero's Refundable, 0x1D8; the
+//   heroes' and schematics' MCP templates write it, and refund_legacy_item, false: 0x110C050, 0x119F1D0). Which items
+//   Epic tagged "eligible for a reset" (those whose definitions it rebalanced: v7.10's Damage Resistance to Armor perks,
+//   the Six Feet Under shovel) and what each refunded was its service's; Core sets no item refundable, so the inspect
+//   screen offers no reset.
 // Each is told "Unknown command" (errors.com.epicgames.fortnite.operation_not_found, HTTP 400) and logged with the
 // build's unknown requests, as before.
 export const clientCommands = {

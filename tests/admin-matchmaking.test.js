@@ -51,7 +51,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       // 7.10's 14 Days of Fortnite modes, on by default.
       teamsOf33: true, unvaultedSquads710: true, siphonSolo710: true, teamTerror710: true, barebonesSquads: true, slideSolo: true, holidayDisco: true,
       sniperShootoutDuos710: true, solidGoldSquads710: true, scoreRoyaleDuos710: true, foodFight16: true, groundGameSquads: true, sneakySilencersSolo710: true,
-      closeEncounters50s: true, wildWestSquads710: true, steadyStormSolo710: true, highExplosives50s: true, highExplosivesSquads710: true, oneShotSquads: true });
+      closeEncounters50s: true, wildWestSquads710: true, steadyStormSolo710: true, highExplosives50s: true, highExplosivesSquads710: true, oneShotSquads: true,
+      // 7.20's One Shot, Ice Storm and Sniper Shootout, on by default.
+      oneShotSquads720: true, iceStormSolo: true, iceStormDuos: true, iceStormSquads: true, sniperShootoutSolo720: true, sniperShootoutDuos720: true,
+      sniperShootoutSquads720: true });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
@@ -65,9 +68,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // its three tournament playlists the Tournaments tab's too), and 6.22's Team Terror, and 6.30's six (Food Fight's two, Wild
     // West's three and Disco Domination (32 v 32, Alt) back; its three tournament playlists the Tournaments tab's too), and
     // 6.31's Team Rumble, and 7.00's eighteen (50v50, Close Encounters' three, High Explosives' two, Unvaulted's, Siphon's,
-    // Sniper Shootout's and Soaring's three each), and 7.10's nineteen (the 14 Days of Fortnite's). 7.00's Creative is a game
-    // mode always on, with no switch (#375).
-    assert.equal(ov.playlists.length, 143);
+    // Sniper Shootout's and Soaring's three each), and 7.10's nineteen (the 14 Days of Fortnite's), and 7.20's seven (One
+    // Shot, the Ice Storm's three and Sniper Shootout's three; its three tournament playlists the Tournaments tab's). 7.00's
+    // Creative is a game mode always on, with no switch (#375).
+    assert.equal(ov.playlists.length, 150);
     assert.equal(ov.playlists.some((p) => p.id === "creative"), false);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
@@ -90,7 +94,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "soaringSeason7Solo", "soaringSeason7Duos", "soaringSeason7Squads",
       "teamsOf33", "unvaultedSquads710", "siphonSolo710", "teamTerror710", "barebonesSquads", "slideSolo", "holidayDisco", "sniperShootoutDuos710",
       "solidGoldSquads710", "scoreRoyaleDuos710", "foodFight16", "groundGameSquads", "sneakySilencersSolo710", "closeEncounters50s", "wildWestSquads710",
-      "steadyStormSolo710", "highExplosives50s", "highExplosivesSquads710", "oneShotSquads"]);
+      "steadyStormSolo710", "highExplosives50s", "highExplosivesSquads710", "oneShotSquads",
+      "oneShotSquads720", "iceStormSolo", "iceStormDuos", "iceStormSquads", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -239,7 +244,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       // 7.10's 14 Days of Fortnite modes, on by default.
       teamsOf33: true, unvaultedSquads710: true, siphonSolo710: true, teamTerror710: true, barebonesSquads: true, slideSolo: true, holidayDisco: true,
       sniperShootoutDuos710: true, solidGoldSquads710: true, scoreRoyaleDuos710: true, foodFight16: true, groundGameSquads: true, sneakySilencersSolo710: true,
-      closeEncounters50s: true, wildWestSquads710: true, steadyStormSolo710: true, highExplosives50s: true, highExplosivesSquads710: true, oneShotSquads: true });
+      closeEncounters50s: true, wildWestSquads710: true, steadyStormSolo710: true, highExplosives50s: true, highExplosivesSquads710: true, oneShotSquads: true,
+      // 7.20's One Shot, Ice Storm and Sniper Shootout, on by default.
+      oneShotSquads720: true, iceStormSolo: true, iceStormDuos: true, iceStormSquads: true, sniperShootoutSolo720: true, sniperShootoutDuos720: true,
+      sniperShootoutSquads720: true });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

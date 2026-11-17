@@ -250,6 +250,18 @@ const playlistTeamsFrom710 = {
   2302: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 }
 };
 const playlistTeams710Build = 4667333;
+// 7.20's (CL-4727874) Ice Storm playlists, by their assets: Playlist_Deimos_Solo_Winter, _Duo_Winter and _Squad_Winter
+// (282 to 284) and the in-game tournaments' _WinterShow (58288 to 58290): 100 teams of 1, 2 and 4, as 6.20's Fortnitemares
+// ones. Its One Shot (252) and Sniper Shootout (39 to 41) have the teams above.
+const playlistTeamsFrom720 = {
+  282: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  283: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  284: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  58288: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  58289: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  58290: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams720Build = 4727874;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -455,6 +467,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams720Build && playlistTeamsFrom720[playlistId]) return playlistTeamsFrom720[playlistId];
   if (Number(build) >= playlistTeams710Build && playlistTeamsFrom710[playlistId]) return playlistTeamsFrom710[playlistId];
   if (Number(build) >= playlistTeams700Build && playlistTeamsFrom700[playlistId]) return playlistTeamsFrom700[playlistId];
   if (Number(build) >= playlistTeams631Build && playlistTeamsFrom631[playlistId]) return playlistTeamsFrom631[playlistId];

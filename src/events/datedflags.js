@@ -1,9 +1,11 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
-  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
+// 7.20's Ice Storm Challenges bundle's (QuestBundle_WinterDeimos).
+export const iceStormCalendarEvent = "CalendarEvent_Season7_WinterDeimos";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -31,7 +33,7 @@ export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
 export const season6FirstDay = Date.parse("2018-09-27T00:00:00.000Z");
 export const season6EndDay = Date.parse("2018-12-06T00:00:00.000Z");
 // Season 7's replay: its 84 days, 6 December 2018 to 27 February 2019 (store/itemshop-season7.json). Its dated map events
-// are The Block's (events/block.js); its Polar Peak thaw, Ice Storm and Prisoner are later updates'.
+// are The Block's (events/block.js); its Polar Peak thaw and Prisoner are later updates', its Ice Storm 7.20's.
 export const season7FirstDay = Date.parse("2018-12-06T00:00:00.000Z");
 export const season7EndDay = Date.parse("2019-02-28T00:00:00.000Z");
 const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay] };
@@ -104,11 +106,21 @@ const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
 // 7.10: its four community builds on the Fortnite Wiki's days (🟡 no hours: 00:00 UTC), DM Arena on to the season's end
 // (7.20's Looming Llama of 15 January isn't in 7.10's paks). 7.10 shipped with Grimy Greens up (Update v7.10, 18 December),
 // so on the replay it is up from the lap's first day, as 5.21's rift is formed from its lap's start (events/block.js has
-// why 7.10's blank Block can't be served instead).
+// why 7.10's blank Block can't be served instead). 7.20: its two, Looming Llama (Stormhawk; 7.20 shipped with it, 15
+// January, so from the lap's first day) and Omega Pyramid (Directingpete, Content Update v7.20, 22 January), on to the
+// season's end (🟡 the wiki's days, 00:00 UTC; Update v7.30's Firebase Omega isn't in 7.20's paks).
 const blockLandsAt = Date.parse("2018-12-07T01:30:00.000Z");
 const at7 = (date) => Date.parse(`${date}T00:00:00.000Z`);
 const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23", "Risky Runways, by AKE"],
   ["2018-12-30", "Mysterious Markets, by Bludriv"], ["2019-01-08", "DM Arena, by KojackNumber2"]];
+const blockBuilds720 = [["2018-12-06", "Looming Llama, by Stormhawk"], ["2019-01-22", "Omega Pyramid, by Directingpete"]];
+const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
+  index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
+// The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
+// 28th 2019", from the Ice Storm itself (19 January, 11:00 AM PST: "To mark the event, all players were granted the Ice
+// Storm Challenges"; 🟡 the end is Core's, the last day's end).
+const iceStormChallengesAt = Date.parse("2019-01-19T19:00:00.000Z");
+const iceStormChallengesEnd = Date.parse("2019-01-29T00:00:00.000Z");
 const blockModes = ["dates", "custom"];
 
 export const datedEvents = [
@@ -198,8 +210,14 @@ export const datedEvents = [
     step("block", "The Block has landed on Risky Reels (blank, with its signs)", [blockLanded], blockLandsAt, null)
   ] },
   { id: "block710", name: "The Block's community builds (7.10)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 4, modes: blockModes,
-    steps: blockBuilds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
-      index + 1 < blockBuilds.length ? at7(blockBuilds[index + 1][0]) : null)) }
+    steps: blockSteps(blockBuilds) },
+  { id: "block720", name: "The Block's community builds (7.20)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds720) },
+  // The Ice Storm Challenges (7.20, events/icestorm.js): one step, the challenges' flag and the bundle's calendar event.
+  { id: "iceStorm", name: "the Ice Storm Challenges (7.20)", season: 7, flag: ltmWinterDeimos, anchor: "challenges", parts: 1,
+    challenges: "Schedule_WinterDeimos", steps: [
+      step("challenges", "The Ice Storm Challenges: more each day", [ltmWinterDeimos, iceStormCalendarEvent], iceStormChallengesAt, iceStormChallengesEnd)
+    ] }
 ];
 export const datedEvent = (id) => datedEvents.find((event) => event.id === id);
 export const datedModes = ["dates", "custom", "off"];

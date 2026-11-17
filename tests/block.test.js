@@ -112,7 +112,7 @@ test("the Events page's two cards: always on, Start now lands the Block now, a c
   assert.equal(cards.find(({ id }) => id === "season7Warmup2018").state.tone, "off");
 });
 
-test("a 7.00 and a 7.10 gameserver's calendar timeline carries the Block's names", async () => {
+test("a 7.00, a 7.10 and a 7.20 gameserver's calendar timeline carries the Block's names", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "TheBlock");
@@ -120,11 +120,12 @@ test("a 7.00 and a 7.10 gameserver's calendar timeline carries the Block's names
       headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-${version}-CL-${cl}`, Authorization: `bearer ${token}` } }))
       .body.channels["client-events"].states[0];
     const names = (state) => state.activeEvents.map(({ eventType }) => eventType).filter((eventType) => /^(R[01]|slab\d)$/.test(eventType));
-    // On a replay that starts today: Risky Reels on 7.00, Grimy Greens on 7.10, none on 6.31.
+    // On a replay that starts today: Risky Reels on 7.00, Grimy Greens on 7.10, Looming Llama on 7.20, none on 6.31.
     const reels = await timeline(v700, "7.00");
     assert.deepEqual(names(reels), ["R0"]);
     assert.ok(reels.state.activeEventFlags.includes("R0"));
     assert.deepEqual(names(await timeline(v710, "7.10")), ["slab1"]);
+    assert.deepEqual(names(await timeline("4727874", "7.20")), ["slab1"]);
     assert.deepEqual(names(await timeline(v631, "6.31")), []);
 
     // Start now on 7.00's card lands the Block; no card takes "off".
@@ -135,7 +136,7 @@ test("a 7.00 and a 7.10 gameserver's calendar timeline carries the Block's names
 
     const overview = (await get(backend.port, "/admin/api/events/overview")).body;
     assert.deepEqual(overview.datedFlags.events.filter(({ id }) => id.startsWith("block")).map(({ id, mode }) => [id, mode]),
-      [["block700", "custom"], ["block710", "dates"]]);
+      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"]]);
   } finally {
     await backend.close();
   }

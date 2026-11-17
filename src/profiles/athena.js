@@ -4,6 +4,7 @@ import { McpError } from "../errors.js";
 import { activeEventFlags } from "../events/events.js";
 import { highStakesFlagsNow } from "../events/highstakes.js";
 import { fourteenDaysFlagsNow } from "../events/fourteendays.js";
+import { iceStormFlagsNow } from "../events/icestorm.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
@@ -1389,12 +1390,13 @@ function settleSeasonGrants(session) {
 // (events/events.js birthday2018); nothing else grants it (Epic's servers did). Once given it stays. 5.40's
 // Schedule_LTM_Heist (the High Stakes Challenges, EventFlag.LTM_Heist) the same while its dates serve the flag
 // (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316);
-// 7.10's Schedule_14DaysOfFortnite (EventFlag.LTM_14DaysOfFortnite) while its dates serve it (events/fourteendays.js).
+// 7.10's Schedule_14DaysOfFortnite (EventFlag.LTM_14DaysOfFortnite) while its dates serve it (events/fourteendays.js), and
+// 7.20's Schedule_WinterDeimos (EventFlag.LTM_WinterDeimos, the Ice Storm Challenges) while its dates do (events/icestorm.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

@@ -401,7 +401,7 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   Ghost Town zones BP_ZT_GhostTown_A and _B, the Stabilize the Rift landmark and its generator, and four primary missions'
   tags 6.30's paks lacked); the other thirteen are 6.30's, byte for byte.
   7.00's (CL-4629139, Update v7.00, Season 7) is `4.22.0-4629139+++Fortnite+Release-7.00` (no `Build.version`; the
-  build folder is `7.00-CL-4629139.00-Cl-4629139\Fortnite`) with 6.31's full data (Cert's files with `gamedata/4573279`
+  build folder is `7.00-CL-4629139\7.00-Cl-4629139\Fortnite`) with 6.31's full data (Cert's files with `gamedata/4573279`
   applied) as the fifth argument, and the main key FModel's settings hold for its build folder. A full install: 16 paks
   (407,616 files read for the flag scan), pakchunk0 and its s1 to s6, pakchunk1 and pakchunk1_s1, the language paks 2, 5, 7,
   8 and 9, and the keyed pakchunk1000 and 1001 (the backend's keychain has both keys). Its DefaultGameData still names no
@@ -450,6 +450,27 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   BP_ZT_Endless_Winter, MissionGen_Endless and its challenge variants, their primary missions; BP_ZT_Celebrate and
   MissionGen_CelebrateNewYear2018); the other eight are 7.00's, byte for byte. 7.10's Creative plots (Arctic_Medium,
   TheBlock_Season7) are FortCreativeRealEstatePlotItemDefinitions, still skipped.
+  7.20's (CL-4727874, Update v7.20, Season 7) is `4.22.0-4727874+++Fortnite+Release-7.20` (no `Build.version`; the build
+  folder is `7.20-CL-4727874\7.20-CL-4727874\Fortnite`) with 7.10's full data as the fifth argument, and the main key
+  FModel's settings hold for its build folder. Its install has 14 paks (268,532 files) besides Core-Launcher's: pakchunk0
+  and its s1 to s7 and the keyed pakchunk1000 to 1005, all read on the backend's keychain but pakchunk1001 and 1003, whose
+  keys it hasn't; no pakchunk1 and no language paks. 79 of its 80 primary missions' tags come from the fifth argument (their FortMissionInfo
+  isn't in these paks). One extractor change: 7.20 makes the daily challenges `UAthenaDailyQuestDefinition`, a
+  FortQuestItemDefinition whose constructor sets what their assets set before (QuestType AthenaDailyQuest, 500 Season XP
+  and 5 Battle Stars, the hidden Token:athena_dailychallenge_token; 7.20's exe), so the assets carry none of it: they are
+  read as quests, and what an asset leaves out is the constructor's. Without it 7.20 had no dailies. Its Battle Pass
+  quests no longer name a quest category or a weight (both gone from the assets). Against 7.10 twelve files change:
+  `athena.json` (39 cosmetics, the TBD Nautilus glider gone: Malcore, The Ice Queen, Jaeger, Fyra, Tech Ops, Volley Girl,
+  Snowstrike, Verge, Cobalt, Cabbie, the Deep Sea Destroyer and Dominator, their gear, the Blue Metallic and Hot & Cold wraps;
+  25 display assets; Schedule_WinterDeimos, the Ice Storm Challenges (EventName EventFlag.LTM_WinterDeimos, CategoryID
+  FNWD), and its bundle, whose later quests come DaysFromEventStart; Season 7's weeks 7 to 10 with their own challenges; the
+  Battle Pass dailies, Athena_BattlePass_*, gone from the paks; the loot tables), `banners.json`, `items.json`,
+  `characters.json`, `cardpacks.json`, `fabricator.json`, `alterations.json` and `upgrades.json` (the Scoped Revolver,
+  the Sneaky Snowman, the medieval sword SID_Edged_Sword_Medieval, three new hero sets HID_*_023 and the new outfits'
+  heroes, Frostnite's banner card packs, Creative's Farmstead prefabs and Elimination Zone; the medieval sniper rifle and
+  the snowball launcher gone), `homebasenodes.json`, `quests.json`, `objectivestats.json` and `world.json` (the Endgame
+  and Endless Endgame zones up to Power Level 128); the other eight are 7.10's, byte for byte. Its Frosty Fortress
+  (Arctic_Competitive_Medium1) is a FortCreativeRealEstatePlotItemDefinition, still skipped.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

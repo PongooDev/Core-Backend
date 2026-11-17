@@ -1,10 +1,12 @@
 import { activeBuild, buildGameData, dataBuilds } from "./read.js";
 
 // Creative's island templates a build's paks have (profiles/creative.js; the extractor writes no CreativePlot items):
-// 7.00's (CL-4629139) Temperate_Medium, and from 7.10 (CL-4667333) Arctic_Medium and TheBlock_Season7, so a 7.00 client
-// isn't sent the islands an account was given on 7.10.
+// 7.00's (CL-4629139) Temperate_Medium, from 7.10 (CL-4667333) Arctic_Medium and TheBlock_Season7, and from 7.20
+// (CL-4727874) Arctic_Competitive_Medium1 (Frosty Fortress), so an earlier client isn't sent the islands an account was
+// given on a later build.
 const creativePlotTemplates = (build) => [...(Number(build) >= 4629139 ? ["CreativePlot:temperate_medium"] : []),
-  ...(Number(build) >= 4667333 ? ["CreativePlot:arctic_medium", "CreativePlot:theblock_season7"] : [])];
+  ...(Number(build) >= 4667333 ? ["CreativePlot:arctic_medium", "CreativePlot:theblock_season7"] : []),
+  ...(Number(build) >= 4727874 ? ["CreativePlot:arctic_competitive_medium1"] : [])];
 
 // The template ids a build's data has: items, quests, skill tree nodes, banners and Battle Royale's cosmetics, lower-cased.
 function templateIds(build) {

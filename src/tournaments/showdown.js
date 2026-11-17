@@ -405,9 +405,10 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     const until = `${endTime === noEnd ? "until it is ended" : `to ${day(endTime)} UTC`}${windows.length > 1 ? `, ${windows.length} sessions` : ""}`;
     // 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow, _SquadShow) are named the Showdown ones' way.
     // 6.30 and 6.31's Pop-Up Cup playlists are Playlist_ShowdownAlt_Solo, _Duos and _Squads (events/ltms.js): their
-    // mode is the suffix too, not the whole playlist name (Core-Backend #357).
+    // mode is the suffix too, not the whole playlist name (Core-Backend #357). 7.20's Ice Storm ones are
+    // Playlist_Deimos_Solo_WinterShow, _Duo_ and _Squad_.
     const mode = ltm.playlistName.replace(/^Playlist_Showdown(?:Alt)?_/, "")
-      .replace(/^Playlist_Deimos_(Solo|Duo|Squad)Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
+      .replace(/^Playlist_Deimos_(Solo|Duo|Squad)_?(?:Winter)?Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
     return {
       tournament_display_id: tournamentIdOf(event),
       title_line_1: event.name,
@@ -474,7 +475,7 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
   if (named && windowId && runningWindowOf(event, now)?.id !== windowId) return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
   const ltm = showdownPlaylistOf(event);
   const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4,
-    scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4 }[ltm.id];
+    scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4, iceStormShowSolo: 1, iceStormShowDuos: 2, iceStormShowSquads: 4 }[ltm.id];
   if (partySize !== teamSize) return refuse("wrong_number_of_event_players", "You need to be in a full party for this tournament.");
   return { event };
 }

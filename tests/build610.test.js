@@ -194,11 +194,11 @@ test("6.10's event flags are 6.02's: LobbySeason6, the ticketless storms and Cra
   }
   // Every range that ran to 6.10 runs to 6.21 now (tests/build620.test.js, tests/build621.test.js), but BR.CandyCaneGuns',
   // whose item 6.20 drops.
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4667333], "and on to 7.10 (tests/build631.test.js, tests/build710.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4727874], "and on to 7.20 (tests/build631.test.js, tests/build720.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610));
   for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : 4667333, flag);
+    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : 4727874, flag);
   }
   for (const flag of ["EventFlag.BR_S5_Cube_TurnOn", "EventFlag.LTM_Heist", "EventFlag.RoadTrip2018", "EventFlag.Horde"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
@@ -455,7 +455,9 @@ test("the tournament playlists: 4.2's Solo Showdown and 6.10's three, the in-gam
     [["soloShowdown", 51, false], ["showdownSolo", 58071, true], ["showdownDuos", 58072, true], ["showdownSquads", 58073, true],
       // 6.20's Fortnitemares ones (tests/build620.test.js) and 6.30's Scavenger Pop-Up Cup ones (tests/build630.test.js).
       ["fortnitemaresShowSolo", 59071, true], ["fortnitemaresShowDuos", 59072, true], ["fortnitemaresShowSquads", 59073, true],
-      ["scavengerSolo", 58074, true], ["scavengerDuos", 58075, true], ["scavengerSquads", 58076, true]]);
+      ["scavengerSolo", 58074, true], ["scavengerDuos", 58075, true], ["scavengerSquads", 58076, true],
+      // 7.20's Ice Storm ones (tests/build720.test.js).
+      ["iceStormShowSolo", 58288, true], ["iceStormShowDuos", 58289, true], ["iceStormShowSquads", 58290, true]]);
   const dir = tempDir();
   try {
     const store = createTournamentStore(dir);
@@ -831,7 +833,8 @@ test("a 6.10 client's Events tab end to end: the empty list, an admin's event li
       assert.deepEqual(made.body.playlists.map(({ id, inGame }) => [id, inGame]),
         [["soloShowdown", false], ["showdownSolo", true], ["showdownDuos", true], ["showdownSquads", true],
           ["fortnitemaresShowSolo", true], ["fortnitemaresShowDuos", true], ["fortnitemaresShowSquads", true],
-          ["scavengerSolo", true], ["scavengerDuos", true], ["scavengerSquads", true]]);
+          ["scavengerSolo", true], ["scavengerDuos", true], ["scavengerSquads", true],
+          ["iceStormShowSolo", true], ["iceStormShowDuos", true], ["iceStormShowSquads", true]]);
       const listed = (await list()).body;
       assert.deepEqual(listed.eventTournaments.map(({ tournamentId, displayDataId }) => [tournamentId, displayDataId]), [[eventId, eventId]]);
       assert.equal(listed.eventTournaments[0].eventWindows[0].eventData.playlistId, "Playlist_Showdown_Solo");

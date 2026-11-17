@@ -164,7 +164,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     var assetName = gamePath.Split('/').Last();
     if (!provider.TryLoadPackage(file, out var package)) continue;
     var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
-    if (export is null || export.ExportType == "FortQuestItemDefinition") continue;
+    if (export is null || export.ExportType is "FortQuestItemDefinition" or "AthenaDailyQuestDefinition") continue;
     var profile = ItemClasses.ProfileType(export.ExportType, changelist);
     if (profile is null)
     {
@@ -1314,7 +1314,20 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
     if (export is null) continue;
     var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"] ?? new JsonObject();
-    if (export.ExportType == "FortQuestItemDefinition")
+    // 7.20 (CL 4727874) makes the daily challenges (Athena/Items/Quests/DailyQuests) UAthenaDailyQuestDefinition, a
+    // UFortQuestItemDefinition whose constructor sets what their assets set before: QuestType AthenaDailyQuest, Rewards
+    // AccountResource:athenaseasonalxp x 500 and AccountResource:athenabattlestar x 5, HiddenRewards
+    // Token:athena_dailychallenge_token x 1 (7.20's exe, the class's InternalConstructor). An asset keeps only what it
+    // changes from those, so a property it leaves out takes the constructor's.
+    if (export.ExportType == "AthenaDailyQuestDefinition" && properties is JsonObject daily)
+    {
+        daily["QuestType"] ??= "EFortQuestType::AthenaDailyQuest";
+        daily["Rewards"] ??= new JsonArray(
+            new JsonObject { ["ItemPrimaryAssetId"] = new JsonObject { ["PrimaryAssetType"] = new JsonObject { ["Name"] = "AccountResource" }, ["PrimaryAssetName"] = "athenaseasonalxp" }, ["Quantity"] = 500 },
+            new JsonObject { ["ItemPrimaryAssetId"] = new JsonObject { ["PrimaryAssetType"] = new JsonObject { ["Name"] = "AccountResource" }, ["PrimaryAssetName"] = "athenabattlestar" }, ["Quantity"] = 5 });
+        daily["HiddenRewards"] ??= new JsonArray(new JsonObject { ["TemplateId"] = "Token:athena_dailychallenge_token", ["Quantity"] = 1 });
+    }
+    if (export.ExportType is "FortQuestItemDefinition" or "AthenaDailyQuestDefinition")
     {
         var quest = (SortedDictionary<string, object>)Quest(properties, assetTypes);
         if (properties["Category"]?["RowName"]?.GetValue<string>() is { } category and not "None") quest["category"] = category;

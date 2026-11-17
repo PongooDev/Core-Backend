@@ -199,7 +199,7 @@ test("6.02's event flags are 6.01's: LobbySeason6, the ticketless storms and Cra
   }
   // Every range that ran to 6.02 runs to 6.21 now (tests/build610.test.js, tests/build620.test.js, tests/build621.test.js),
   // but BR.CandyCaneGuns'.
-  const v610 = "4667333"; // 7.10 now (tests/build710.test.js); EventFlag.Fortnitemares stops at 7.00
+  const v610 = "4727874"; // 7.20 now (tests/build720.test.js); EventFlag.Fortnitemares stops at 7.00
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], 4480234);
   assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v610)]);
   assert.equal(season4Flag("EventFlag.BirthdayBattleBus").builds[1], Number(v600), "gone since 6.01");

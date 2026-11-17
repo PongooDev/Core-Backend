@@ -18,10 +18,12 @@ import { newsImageValue } from "../services/content/images.js";
 // 59073: the Showdown playlists with the Cube Monsters) are in-game ones too, and so are 6.30's Scavenger Pop-Up Cup ones
 // (Playlist_ShowdownAlt_Solo, _Duos and _Squads, 58074 to 58076), 6.31's Alchemist Pop-Up Cup on the same playlists, and
 // 7.00's Explorer Pop-Up Cup (Update v7.00: "Material cap set to 700/500/300 ... Players receive 100/50/50 Wood/Stone/Metal
-// on elimination") on them too, its paks' Showdown and ShowdownAlt playlists being 6.31's. A later build's tournament
-// playlist goes here.
+// on elimination") on them too, its paks' Showdown and ShowdownAlt playlists being 6.31's. 7.20's Ice Storm ones
+// (Playlist_Deimos_Solo_WinterShow, _Duo_ and _Squad_, 58288 to 58290: the Showdown playlists with the Ice Legion) are
+// in-game ones too. A later build's tournament playlist goes here.
 export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads",
-  "fortnitemaresShowSolo", "fortnitemaresShowDuos", "fortnitemaresShowSquads", "scavengerSolo", "scavengerDuos", "scavengerSquads"].map((id) => {
+  "fortnitemaresShowSolo", "fortnitemaresShowDuos", "fortnitemaresShowSquads", "scavengerSolo", "scavengerDuos", "scavengerSquads",
+  "iceStormShowSolo", "iceStormShowDuos", "iceStormShowSquads"].map((id) => {
   const ltm = ltms.find((entry) => entry.id === id);
   return { id, name: ltm.name, playlistId: ltm.playlistId, builds: ltm.builds, inGame: ltm.tournament === true };
 });

@@ -293,7 +293,8 @@ export function previewPlan(draft, now = new Date(), settingsValue = settingsPro
 // the rest of every week held (topUpBundle, at the purchase's settle and every login).
 // 7.10's (CL-4667333) event bundle quests that come DaysFromEventStart (QuestBundle_14DaysOfFortnite's thirteen after its
 // first: the extractor's unlockType and unlockValue) are given once their schedule's event has run that many days
-// (events/fourteendays.js eventDaysOf), at the first quest login after, and stay given. No other build's data has one.
+// (events/fourteendays.js eventDaysOf), at the first quest login after, and stay given; 7.20's QuestBundle_WinterDeimos (the
+// Ice Storm Challenges: two more each day for five days) the same. No other build's data has one.
 const dayUnlocked = ({ unlockType, unlockValue }, eventName, now) => unlockType === "DaysFromEventStart"
   && (eventDaysOf(eventName, now) ?? -1) >= unlockValue;
 const givesQuest = (tracker, entry, eventName = null, now = new Date()) => (entry.grantWithBundle || dayUnlocked(entry, eventName, now))

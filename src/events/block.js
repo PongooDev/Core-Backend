@@ -26,8 +26,11 @@ import { currentEventsConfig } from "./events.js";
 //   SLAB_4 _Risky_FFA (DM Arena), in the order the Fortnite Wiki dates them. Disabled turns SLAB_BLANK on
 //   (Athena/Maps/Block/POI_Block_Blank: the slab and its signs) and watches nothing. With no slab event and the switch off,
 //   no plot: the empty crater again. 7.10's paks no longer have Risky Reels.
+// - 7.20 (CL-4727874) the same way with two: SLAB_1 streams Athena/Maps/Block/7_20's Block_25x25_LoomingLlama, SLAB_2
+//   Block_25x25_OmegaPyramid (Athena_POI_Foundations' plots), BP_SlabScripting watching slab1 and slab2. 7.20's paks no
+//   longer have 7.10's four.
 // So this serves each build its own names by Epic's dates on Season 7's replay (events/datedflags.js block700 and
-// block710; the admin panel's two cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
+// block710 and block720; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
 // match's playlist before it takes the hotfix (7.00's: the playlist's data at frame 393, the hotfix at 506, the calendar
 // at 526), so a Default.Slab.Disabled row would come after BP_SlabScripting had read it; and 7.10 shipped with Grimy Greens
 // up, so its dates start with it. The calendar comes after both builds' watchers are made, and a match keeps what it
@@ -35,10 +38,12 @@ import { currentEventsConfig } from "./events.js";
 // switch and the event mode say, and never off.
 export const block700Build = 4629139;
 export const block710Build = 4667333;
-const blockEvents = { [block700Build]: "block700", [block710Build]: "block710" };
+export const block720Build = 4727874;
+const blockEvents = { [block700Build]: "block700", [block710Build]: "block710", [block720Build]: "block720" };
 
 export const block700Event = datedEvent("block700");
 export const block710Event = datedEvent("block710");
+export const block720Event = datedEvent("block720");
 // The build's own (null: a build without BP_SlabScripting's calendar names).
 export const blockEventOf = (changelist = currentBuild()) => datedEvent(blockEvents[Number(changelist)]) ?? null;
 

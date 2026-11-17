@@ -149,6 +149,12 @@ const closeEncounters50sTile = `${cdn}/playlistinformation/BR_LTM_CloseEncounter
 const foodFight16Tile = `${cdn}/playlistinformation/BR_LTM_FoodFight16-1024x512-309538a1b961b5ab0c22417ab34170cc302bbab8.jpg`;
 const holidayDiscoTile = `${cdn}/playlistinformation/BR_LTM_HolidayDisco-1024x512-684bd4b41613e59d895a477389515a8b4878da6a.jpg`;
 const wildWest14DaysTile = `${cdn}/playlistinformation/BR_LTM_WildWest-1024x512-42779242a5a73d654332d9d0afe0983f9d8401d0.jpg`;
+// 7.20's (CL-4727874) Ice Storm tiles, BR07_ModeTile_WinterDeimos_*, from the same later page (each on Epic's CDN, checked
+// 2026-11-17: 200, image/jpeg, the hash in each name the file's SHA-1): Solo (200,506 bytes), Duos (266,521) and Squads
+// (325,013). Its One Shot and Sniper Shootout have their tiles above.
+const iceStormSoloTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Solo-1024x512-5c759fe60ec85988f35c729b5fb6a7993d8dbb58.jpg`;
+const iceStormDuosTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Duos_-1024x512-84315aac8d1fcfb840deba46c4dafda8e9005b2a.jpg`;
+const iceStormSquadsTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Squads-1024x512-cf4323aa9c2cfd027484cf4da14544128e3d4c7e.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -224,7 +230,10 @@ export const epicPlaylistImages = {
   Playlist_Low_Squads: oneShotTile,
   Playlist_50v50HE: highExplosives50sTile,
   Playlist_Close_50: closeEncounters50sTile,
-  Playlist_Barrier_16: foodFight16Tile
+  Playlist_Barrier_16: foodFight16Tile,
+  Playlist_Deimos_Solo_Winter: iceStormSoloTile,
+  Playlist_Deimos_Duo_Winter: iceStormDuosTile,
+  Playlist_Deimos_Squad_Winter: iceStormSquadsTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads

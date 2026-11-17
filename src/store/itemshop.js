@@ -153,7 +153,12 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Snowfoot, Maven, Ark, Paradox, Lace and Cloaked Shadow, their harvesting tools and gliders, the Gingerbread set's Cookie
 // Cutter and Gingersled, the Candy Cane wrap and the emotes Crackdown, Unwrapped, Clean Groove, Shaolin Sit-up, Mind Blown,
 // Lazy Shuffle and Cheer Up; the outfits sold with a back bling come with it (bundledBackBlings). Only 7.10's data has
-// them, so 7.00's days are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
+// them, so 7.00's days are as they were. 7.20 (CL-4727874) adds the 25 of its cosmetics the shop sold, 53 times on 20
+// of the season's days from 16 January 2019 on, the same way: Verge, Jaeger and Fyra, The Ice Queen, Tech Ops, Volley Girl,
+// Malcore, Cabbie, Snowstrike and the Deep Sea Destroyer and Dominator, their harvesting tools and gliders, the Hot & Cold
+// wrap and the emotes Flux, IDK, Whirlwind and Slick. The Krakenaxe (pickaxe_id_131_nautilus, sold 22 and 23 February) is
+// left out: 7.10's data has it too, as TBD, and would show it so. Only 7.20's data has the others, so 7.10's days are as
+// they were. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -633,7 +638,19 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_312_athena_commando_f_funkops": "AthenaBackpack:bid_195_funkopsfemale",
   "AthenaCharacter:cid_314_athena_commando_m_krampus": "AthenaBackpack:bid_194_krampus",
   "AthenaCharacter:cid_315_athena_commando_m_teriyakifish": "AthenaBackpack:bid_193_teriyakifishmale",
-  "AthenaCharacter:cid_317_athena_commando_m_winterghoul": "AthenaBackpack:bid_191_winterghoulmale"
+  "AthenaCharacter:cid_317_athena_commando_m_winterghoul": "AthenaBackpack:bid_191_winterghoulmale",
+  // 7.20's (CL-4727874) the same way: Malcore's Malcore Wings, the Deep Sea Destroyer's Rebreather and Dominator's Octotank,
+  // Jaeger's Emblazoned Buckler and Fyra's Runic Shield, Tech Ops' Capacitor, The Ice Queen's Ice Spikes, Snowstrike's
+  // Snowbrand and Volley Girl's Used Racket. Verge and Cabbie have none.
+  "AthenaCharacter:cid_318_athena_commando_m_demon": "AthenaBackpack:bid_179_demonmale",
+  "AthenaCharacter:cid_320_athena_commando_m_nautilus": "AthenaBackpack:bid_176_nautilusmale",
+  "AthenaCharacter:cid_319_athena_commando_f_nautilus": "AthenaBackpack:bid_177_nautilusfemale",
+  "AthenaCharacter:cid_323_athena_commando_m_barbarian": "AthenaBackpack:bid_196_barbarianmale",
+  "AthenaCharacter:cid_324_athena_commando_f_barbarian": "AthenaBackpack:bid_197_barbarianfemale",
+  "AthenaCharacter:cid_322_athena_commando_m_techops": "AthenaBackpack:bid_198_techops",
+  "AthenaCharacter:cid_330_athena_commando_f_icequeen": "AthenaBackpack:bid_199_icequeen",
+  "AthenaCharacter:cid_329_athena_commando_f_snowninja": "AthenaBackpack:bid_200_snowninjafemale",
+  "AthenaCharacter:cid_328_athena_commando_f_tennis": "AthenaBackpack:bid_204_tennisfemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell
