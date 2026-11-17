@@ -107,6 +107,15 @@ export function linksRoutes({ tokens, settings, profiles, islandLinks, dataDir }
     res.json({ accountId: req.params.accountId, allowed: Boolean(publisher), creatorName: publisher?.code ?? null });
   });
 
+  // 🟡 Core's own: the featured codes in rift order (the hotfix's CuratedLinkCodes), which Core's gameserver asks for as
+  // it starts. A 7.10 server reads the array as the hub's island spaces begin play (UFortLevelSaveComponent's BeginPlay,
+  // 0xF5E610), which on Core's servers is before their hotfix arrives (a headless 7.10 Creative server: the featured
+  // spaces' "Attempting to load playset plot for restricted plot" a second before it asked for
+  // DefaultRuntimeOptions.ini), so the gameserver sets the array itself (PongooDev/CoreV2#488).
+  router.get("/core/api/creative/featured", requireAuth(tokens), (req, res) => {
+    res.json({ codes: islandLinks?.activeFeatured?.() ?? [] });
+  });
+
   // 7.10's (CL-4667333) island favorites, the featured rift's island code screen's (UFortCreativeIslandLinkScreen: "Get
   // Favorites failed: %s"). Its shipped DefaultGame.ini adds FortMcpUtils' IslandFavoritesUrl="/api/game/v2/creative/favorites"
   // (7.00's has none), on the fortnite service; its exe (IDA 13338) sends:

@@ -116,6 +116,7 @@ test("a creator's server publishes their island; its code, its file, its author'
     const hotfix = await as(backend.port, player.token, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini");
     assert.match(hotfix.body, new RegExp(`\\+CuratedLinkCodes=${code}`));
     assert.match(hotfix.body, /PublishingEnabledForWhitelistedAccounts=true/);
+    assert.deepEqual((await get(backend.port, "/core/api/creative/featured", server)).body, { codes: [code] });
     const hotfix700 = await as(backend.port, player.token, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", { agent: agentOf(v700, "7.00") });
     assert.doesNotMatch(hotfix700.body, /CuratedLinkCodes|PublishingEnabled/);
 
