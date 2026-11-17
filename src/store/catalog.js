@@ -7,6 +7,7 @@ import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { roadTrip2018, roadTripLlama, roadTripTickets } from "../events/roadtrip2018.js";
 import { birthday2018, birthdayLlama, birthdayLlamaPrice } from "../events/birthday2018.js";
+import { frostnite2018, winterLlama2018 } from "../events/frostnite2018.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
 import { intoTheStormLlama } from "../events/storm2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
@@ -128,6 +129,11 @@ const voucherOffers = perBuild(() => itemIds()
 //
 // The Birthday Llama (CardPack_Event_2018_Anniversary) is bought with Road Trip Tickets too while the Birthday runs (5.10,
 // events/birthday2018.js): "Birthday Llama ... Cost: 1,000 Road Trip tickets."
+//
+// The Winter Llama (CardPack_Event_2018_Winter, "Guarantees at least one Epic or better limited time Medieval weapon or
+// Holiday Hero!") is bought with Snowflake Tickets again while Frostnite runs (7.10, events/frostnite2018.js): "The longer
+// you survive the more Snowflake Tickets you will earn! Tickets can be spent on the new Winter Llama." The notes give no
+// price: the Holiday Survival Llama's 1,000 (🟡), the admin panel's snowflakePerLlama as that one's.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -153,7 +159,9 @@ const eventOffers = [
   { offerId: "core_event_roadtrip_llama", templateId: roadTripLlama, title: "Road Trip Llama",
     currencyType: "GameItem", currencySubType: roadTripTickets, price: 500, always: true, event: roadTrip2018 },
   { offerId: "core_event_birthday_llama", templateId: birthdayLlama, title: "Birthday Llama",
-    currencyType: "GameItem", currencySubType: roadTripTickets, price: birthdayLlamaPrice, always: true, event: birthday2018 }
+    currencyType: "GameItem", currencySubType: roadTripTickets, price: birthdayLlamaPrice, always: true, event: birthday2018 },
+  { offerId: "core_event_winter2018_llama", templateId: winterLlama2018, title: "Winter Llama",
+    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: frostnite2018 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama, but not one a later
@@ -168,7 +176,7 @@ const allOffers = () => {
     ...mtxOffers.filter(inThisBuild),
     ...eventOffers.filter(onSale).map((offer) => {
       if (offer.offerId === "core_event_fortnitemares_llama" || offer.offerId === "core_event_fortnitemares2018_llama") return { ...offer, price: customCandy };
-      if (offer.offerId === "core_event_winter_llama") return { ...offer, price: customSnowflake };
+      if (offer.offerId === "core_event_winter_llama" || offer.offerId === "core_event_winter2018_llama") return { ...offer, price: customSnowflake };
       return offer;
     }),
     ...voucherOffers()

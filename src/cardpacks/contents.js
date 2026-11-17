@@ -119,6 +119,17 @@ function zoneReward(group, templateId, info) {
     const tier = Math.min(Math.max(zoneLevel(templateId, info), 1), 3);
     return [...Object.values(xp).flatMap((id) => resource(id, xpByLevel[tier * 2])), ...one("schematic", null, ["r", "vr", "sr"][tier - 1])];
   }
+  // "Frostnite Rewards" (ZCP_Endless_T01-T08, a Frostnite mission's: world/frostnite.js), "Event Tickets, Gold, and an
+  // assortment of Rare items, based on how long you survive!" How long the team survived comes with the wave badges
+  // (events/frostnite2018.js: their Snowflake Tickets, profiles/badges.js); the pack is the zone's, by its tier (1 at 15
+  // power to 7 at 100, 8 at 7.20's 128). Its contents are Core's (🟡: Epic's servers rolled them): 50 Snowflake Tickets
+  // and 50 Gold a tier, hero, survivor and schematic XP as a zone reward pack of the tier's level (capped at 6), and one
+  // schematic, Rare to tier 3, Epic to tier 5, Legendary above.
+  if (group === "zcp_endless") {
+    const tier = Math.min(Math.max(Number(/_t(\d\d)$/.exec(templateId.toLowerCase())?.[1] ?? info.lootTier ?? 1) || 1, 1), 8);
+    return [...resource("AccountResource:eventcurrency_snowballs", 50 * tier), ...resource("AccountResource:eventcurrency_scaling", 50 * tier),
+      ...Object.values(xp).flatMap((id) => resource(id, xpByLevel[Math.min(tier, 6)])), ...one("schematic", null, tier <= 3 ? "r" : tier <= 5 ? "vr" : "sr")];
+  }
   return [];
 }
 
@@ -265,6 +276,20 @@ function vindertechPack(group) {
 
 const vindertechChoice = (group) => /^cardpack_choice_event_vindertech_(vr|sr)$/.exec(group)?.[1];
 
+// The Winter Llama (CardPack_Event_2018_Winter, 7.10: "Guarantees at least one Epic or better limited time Medieval weapon
+// or Holiday Hero!"), sold for Snowflake Tickets while Frostnite runs (store/catalog.js, events/frostnite2018.js). Update
+// v7.10 names what it holds: "Jolly Headhunter Soldier available in the Winter Llama", "Sgt. Winter Soldier available in
+// the Winter Llama" (HID_Commando_023 and _024) and "Added the Medieval weapons set, available in Winter Llamas: Hemlock
+// Assault Rifle, Basilisk Pistol, Stalwart Squire Shotgun, Wicked Wind Axe" (SID_Assault_Medieval_SMG, _Pistol_Medieval,
+// _Shotgun_Medieval, _Edged_Axe_Medieval). An Upgrade Llama's items and one of those six, Epic or (a quarter of the time)
+// Legendary; the odds are Core's (🟡), as the Storm Llama's.
+const winterLlama2018Items = (rarity) => [`Schematic:sid_assault_medieval_smg_${rarity}_ore_t01`, `Schematic:sid_pistol_medieval_${rarity}_ore_t01`,
+  `Schematic:sid_shotgun_medieval_${rarity}_ore_t01`, `Schematic:sid_edged_axe_medieval_${rarity}_ore_t01`, `Hero:hid_commando_023_${rarity}_t01`,
+  `Hero:hid_commando_024_${rarity}_t01`].filter(hasItem);
+function winterLlama2018() {
+  return [...llama(llamas.cardpack_bronze), ...pickOne(winterLlama2018Items(weighted([["vr", 75], ["sr", 25]])))];
+}
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -293,6 +318,7 @@ export function rollContents(templateId) {
   if (group === "cardpack_event_2017_halloween") return fortnitemaresLlama();
   if (group === "cardpack_event_2017_vindertech") return vindertechLlama();
   if (group === "cardpack_event_2017_firststorm") return stormLlama();
+  if (group === "cardpack_event_2018_winter") return winterLlama2018();
   const vindertechWeapon = vindertechPack(group);
   if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);

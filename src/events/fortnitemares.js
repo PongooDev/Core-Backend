@@ -7,6 +7,7 @@ import { blockbusterEventQuests } from "./blockbuster2018.js";
 import { roadTripEventQuests } from "./roadtrip2018.js";
 import { birthdayEventQuests } from "./birthday2018.js";
 import { cramSessionEventQuests } from "./cramsession2018.js";
+import { frostniteEventQuests } from "./frostnite2018.js";
 import { stormEventQuests } from "./storm2018.js";
 import { winterBookPages, winterEventQuests } from "./winter2017.js";
 
@@ -37,11 +38,11 @@ export const candy = "AccountResource:eventcurrency_candy";
 // The requesting build's event quests, when the event runs there (and the Mutant Storms' and their 2.3 return's,
 // events/mutantstorms.js, Survive the Holidays', events/winter2017.js, Spring It On!'s, events/spring2018.js, and Into the
 // Storm's, events/storm2018.js, Blockbuster's, events/blockbuster2018.js, Road Trip's, events/roadtrip2018.js, the
-// Birthday's, events/birthday2018.js, and Cram Session's, events/cramsession2018.js).
+// Birthday's, events/birthday2018.js, Cram Session's, events/cramsession2018.js, and Frostnite's, events/frostnite2018.js).
 export function eventQuests() {
   return [...(isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : []), ...mutantStormsEventQuests(),
     ...winterEventQuests(), ...mutantStorms2018EventQuests(), ...springEventQuests(), ...stormEventQuests(),
-    ...blockbusterEventQuests(), ...roadTripEventQuests(), ...birthdayEventQuests(), ...cramSessionEventQuests()];
+    ...blockbusterEventQuests(), ...roadTripEventQuests(), ...birthdayEventQuests(), ...cramSessionEventQuests(), ...frostniteEventQuests()];
 }
 
 // The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its

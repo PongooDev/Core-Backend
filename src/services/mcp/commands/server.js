@@ -5,6 +5,7 @@ import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { addDifficultyIncreaseRewards } from "../../../profiles/difficultyincrease.js";
 import { advanceAthenaObjectives } from "../../../profiles/athena.js";
+import { clearEndedFrostniteRun, noteFrostniteRunEnded } from "../../../events/frostnite2018.js";
 import { modifyPlotPermissions, setLastUsedPlot } from "../../../profiles/creative.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { grantItemCacheRewards } from "../../../profiles/itemcaches.js";
@@ -14,6 +15,7 @@ import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
 import { atDifficulty, findMission, missionLootLevel, missionPackSource, missionRewardQuantity } from "../../../world/theaters.js";
+import { isFrostnite } from "../../../world/frostnite.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { customKeyOf, rewardlessMatch } from "../../../matchmaking/sessions.js";
 
@@ -140,6 +142,11 @@ function netIdString(netId) {
 
 const accepted = () => {};
 
+function lockWorldProfiles({ req, session }) {
+  const cleared = clearEndedFrostniteRun(session);
+  if (cleared) log("MCP", `${req.params.command}: ${req.params.accountId}'s Frostnite backpack emptied after their last run (${cleared} items)`);
+}
+
 // For the part of a batch that mustn't undo the rest: a refusal is logged instead.
 function keepGoing(command, run) {
   try {
@@ -158,6 +165,8 @@ function endPrimaryMission(command, session, accountId, body, context) {
   advance(session, updates, held);
   grantBadgeRewards(session, earnedBadgeData);
   grantItemCacheRewards(session, earnedItemCaches);
+  // A Frostnite run's end, won or lost: the next run starts with an empty backpack (events/frostnite2018.js).
+  if (isFrostnite(playedMission(context.sessions, matchmakingSessionId)?.theaterId)) noteFrostniteRunEnded(session);
   if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
     revertHeldProgress(session, held);
     return;
@@ -210,12 +219,14 @@ function saveWorld(session, accountId, entry) {
 }
 
 export const serverCommands = {
-  QueryProfile: accepted,
+  // The gameserver reads and locks a player's world profiles when it registers them (profiles/locks.js); a Frostnite run
+  // that ended leaves its backpack (theater1) to be emptied at the first of the two (events/frostnite2018.js).
+  QueryProfile: lockWorldProfiles,
 
-  // The server holds a player's world profiles while they are in its zone; Core keeps no locks.
-  LockProfiles: accepted,
+  // The server holds a player's world profiles while they are in its zone.
+  LockProfiles: lockWorldProfiles,
   UnlockProfiles: accepted,
-  LockProfileForWrite: accepted,
+  LockProfileForWrite: lockWorldProfiles,
   UnlockProfileForWrite: accepted,
   // 7.00's (CL-4629139) Creative servers' UFortMcpProfileCreative commands (PongooDev/CoreV2#471, profiles/creative.js):
   // SetLastUsedCreativePlot {plotItemId} (sent from sub_C65E80 through its wrapper 0x15B6A40), the island a player last

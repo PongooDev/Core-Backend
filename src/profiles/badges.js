@@ -1,3 +1,4 @@
+import { frostniteWaveTickets } from "../events/frostnite2018.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grant } from "./progress.js";
@@ -10,7 +11,8 @@ import { grant } from "./progress.js";
 // an item (its reactive quest). Every badge earned gives its rewards once. The packs are "Mission" packs, which the
 // after-mission rewards screen opens with the zone's other rewards (OpenCardPackBatch).
 // Core 🟡: the server's count is capped at maxBadgeCount per badge, and an item reward with no quantity (the quest's
-// is 0) gives one.
+// is 0) gives one. Frostnite's wave badges (EndlessMode_Badge_Wave_*) carry neither; they give Snowflake Tickets
+// (events/frostnite2018.js).
 export const maxBadgeCount = 100;
 
 export function grantBadgeRewards(session, earnedBadgeData) {
@@ -25,6 +27,8 @@ export function grantBadgeRewards(session, earnedBadgeData) {
     for (const reward of badge.itemRewards ?? []) {
       granted.push(...grant(session, reward.templateId, Math.max(reward.quantity, 1) * times));
     }
+    // Frostnite's wave badges (7.10): Snowflake Tickets for each wave the team survived (events/frostnite2018.js).
+    for (const reward of frostniteWaveTickets(templateId, times)) granted.push(...grant(session, reward.templateId, reward.quantity));
   }
   if (granted.length) {
     const totals = new Map();

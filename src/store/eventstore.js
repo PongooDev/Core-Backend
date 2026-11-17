@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, cramSession2018, fortnitemares2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, fortnitemares2018, frostnite2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { cramSession2018End, cramSessionEventItems } from "../events/cramsession2018.js";
+import { frostnite2018StoreEnd, frostniteEventItems } from "../events/frostnite2018.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, seasonMoment, weeklyStoreEnd } from "./itemshop.js";
 
@@ -377,6 +378,7 @@ function storeEventNow() {
   if (isEventActive(roadTrip2018)) return roadTrip2018;
   if (isEventActive(cramSession2018)) return cramSession2018;
   if (isEventActive(fortnitemares2018)) return fortnitemares2018;
+  if (isEventActive(frostnite2018)) return frostnite2018;
   return null;
 }
 const storms2018 = () => storeEventNow() === mutantStorms2018;
@@ -507,27 +509,33 @@ export const fortnitemares2018StoreEnd = "2018-12-06T00:00:00.000Z";
 const fortnitemaresItems = (now) => fortnitemares2018EventItems.filter(({ templateId, fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))
   && !weeklyFeatured(now).some((item) => item.templateId === templateId)).map(({ fromBuild, ...item }) => item);
 const fortnitemaresNow = () => storeEventNow() === fortnitemares2018;
+// 7.10's Frostnite (events/frostnite2018.js) sells Cloaked Shadow, counted by trackers of its own (Winter2018.*), its
+// items counting down to Season 7's end on the replay (frostnite2018StoreEnd).
+const frostniteItems = (now) => frostniteEventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
+const frostniteNow = () => storeEventNow() === frostnite2018;
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
 const noEventNow = () => storeEventNow() === null;
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = (now = new Date()) => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems(now)
   : roadTripNow() ? roadTripEventItems(now) : cramSessionNow() ? cramSessionItems(now) : fortnitemaresNow() ? fortnitemaresItems(now)
-    : persistentOnlyNow() ? [] : eventItems);
+    : frostniteNow() ? frostniteItems(now) : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
     : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : cramSessionNow() ? "CramSession2018.STWSpecialEventStoreFront"
-      : fortnitemaresNow() ? "Fortnitemares2018.STWSpecialEventStoreFront" : eventStoreInstance);
+      : fortnitemaresNow() ? "Fortnitemares2018.STWSpecialEventStoreFront" : frostniteNow() ? "Winter2018.STWSpecialEventStoreFront"
+        : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront"
     : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : cramSessionNow() ? "CramSession2018.STWRotationalEventStorefront"
-      : fortnitemaresNow() ? "Fortnitemares2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+      : fortnitemaresNow() ? "Fortnitemares2018.STWRotationalEventStorefront" : frostniteNow() ? "Winter2018.STWRotationalEventStorefront"
+        : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
 // On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster, 5.0's Road Trip or 6.00's Cram Session) and its data has
 // Seasonal Gold; on 5.0 and later always (the persistent weekly store).
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
   || isEventActive(blockbuster2018) || isEventActive(roadTrip2018) || isEventActive(cramSession2018) || isEventActive(fortnitemares2018)
-  || Number(currentBuild()) >= persistentWeeklyBuild)
+  || isEventActive(frostnite2018) || Number(currentBuild()) >= persistentWeeklyBuild)
   && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
@@ -541,7 +549,7 @@ export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
   const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End
     : roadTripNow() ? roadTrip2018End : cramSessionNow() ? cramSession2018End : fortnitemaresNow() ? fortnitemares2018StoreEnd
-      : persistentOnlyNow() ? null : winter2017End;
+      : frostniteNow() ? frostnite2018StoreEnd : persistentOnlyNow() ? null : winter2017End;
   if (!end) return { stwEventStoreEnd: weeklyStoreEnd(now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }

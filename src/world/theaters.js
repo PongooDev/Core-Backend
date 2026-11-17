@@ -15,6 +15,7 @@ import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
 import { hordeTheater, hordeWeeklyTheater, isHorde, isHordeTierGroup } from "./horde.js";
 import { drawCannyValleyAct1, drawCannyValleyAct2 } from "./cannyvalley.js";
+import { frostniteReward, frostniteTheater, isFrostnite } from "./frostnite.js";
 import { placeLandmarks } from "./landmarks.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
@@ -169,6 +170,9 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
   const survival = isSurvival(theaterId) && survivalReward(tierGroupName);
   if (survival) items.push(survival);
+  // A Frostnite mission's (7.10, world/frostnite.js): its zone's Frostnite Rewards pack.
+  const frostnite = isFrostnite(theaterId) && frostniteReward(tierGroupName);
+  if (frostnite) items.push(frostnite);
   // A Challenge the Horde mission's (5.0, world/horde.js): its zone's Horde Points and perk pack (events/roadtrip2018.js).
   if (isHordeTierGroup(tierGroupName)) items.push(...hordeMissionRewards(rowName));
   const gold = seasonalGoldPack(soloTierGroup ?? tierGroupName);
@@ -768,6 +772,9 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"]
     : isSurvival(data.uniqueId) ? ["Survival3DayCategory", "Survival7DayCategory"]
       : isHorde(data.uniqueId) ? ["HordeCategory"]
+      // Frostnite's theater (7.10, world/frostnite.js) has no alert category of its own (7.10's MissionAlertCategories
+      // name none) and no zone, so it carries no alerts.
+      : isFrostnite(data.uniqueId) ? []
       : stormsMiniBosses ? ["StormLowCategory"] : passive ? [] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
@@ -787,7 +794,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   // 3.2's group alerts first, one on every group mission a GroupMissionCategory row fits (tile difficulty 5 and up;
   // EventFlag.GroupMission): the category's Quota of 10 and MissionAlertRepeatable are profiles/alerts.js's. From 5.40
   // every group mission carries a Mega Alert there instead (MegaAlertCategory, Quota 3, not repeatable).
-  const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) || isHorde(data.uniqueId) ? [] : missions
+  const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) || isHorde(data.uniqueId) || isFrostnite(data.uniqueId) ? [] : missions
     .filter((mission) => isGroupMission(mission.missionGenerator))
     .flatMap((mission) => {
       const category = [megaAlertCategory, groupCategory].find((name) => alertFor(data, mission, name));
@@ -801,7 +808,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
       (mission) => region.tileIndices.includes(mission.tileIndex))))];
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
   // zone and a spread) and spreads from there; from 1.10 each theater has its fixed target of storms instead.
-  if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId) && !isHorde(data.uniqueId)) {
+  if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId) && !isHorde(data.uniqueId) && !isFrostnite(data.uniqueId)) {
     const zone = theaterZone(data);
     const anyRow = (category) => (mission) => Boolean(alertFor(data, mission, category));
     if (spreading) {
@@ -873,7 +880,7 @@ export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;
-  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater(), hordeTheater(now), hordeWeeklyTheater(now)].filter(Boolean)];
+  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater(), hordeTheater(now), hordeWeeklyTheater(now), frostniteTheater(now)].filter(Boolean)];
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {

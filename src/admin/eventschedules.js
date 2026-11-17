@@ -94,7 +94,7 @@ export const eventCards = [
     about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
     flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
   { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.20", ranges: [[4667333, 4727874]],
-    about: "Save the World's Frostnite: the quest map's Frostnite page. Its missions (the Endless mode, BP_ZT_Endless_Winter) and its weekly challenges (7.20's New Wave Holiday and Cold Chaos) aren't on the world map yet.",
+    about: "Save the World's Frostnite: the quest map's Frostnite page, its theater on the world map (the Endless missions at every Frostnite difficulty, each week's challenge from Slip Out on, its own backpack), its WinterQuest_2018 quests, the Winter Llama for Snowflake Tickets and Cloaked Shadow in the Event Store.",
     flags: ["EventFlag.Frostnite"] },
   // 7.20's (events/block.js, events/icestorm.js): the Block's two builds, and the Ice Storm Challenges on their dates.
   { id: "block720", kind: "dated", dated: "block720", seasons: [7], name: "The Block's community builds", builds: "7.20", ranges: [[4727874, 4727874]], always: true,
