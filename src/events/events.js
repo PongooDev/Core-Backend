@@ -578,6 +578,13 @@ export const iceKingClock = "WD0";
 export const iceKingLeadUp = "WD1";
 export const iceKingStorm = "WD2";
 export const iceKingStormPast = "SP";
+// The Ice Legion's spawners (CoreV2 #490): the Ice Storm playlists' W_Deimos_Mission_RiftSpawners_Dynamic (Mutator_DeimosMissions_W)
+// has RequiredEventFlag WDSPAWN, the only use of the name in 7.20's paks. AFortMission_RiftSpawners::EvaluateEventCalendar
+// (7.20 0x11B0B60) turns the mission's spawners (the Ice Shards its supply drop SupplyDrop_Deimos brings) on while the
+// calendar has it and off while it doesn't, again on each OnActiveEventsChanged. At the storm BP_MooneyScripting's
+// DeimosTurnOn mission event turns them on (the mission's handler 0x11BD280 -> 0x11C5380), and the calendar has to have
+// WDSPAWN from then on or its next change turns them off. Plain, like the event's other names.
+export const iceKingIceLegion = "WDSPAWN";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;

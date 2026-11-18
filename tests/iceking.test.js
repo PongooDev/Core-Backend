@@ -4,8 +4,8 @@ import { inBuild } from "../src/builds/context.js";
 import { eventSchedules, scheduleEventPatch } from "../src/admin/eventschedules.js";
 import { datedFlagsStatus } from "../src/events/datedflags.js";
 import { configureEvents } from "../src/events/events.js";
-import { iceKingState, iceKingStates } from "../src/events/icestorm.js";
-import { defaultReplacements, ltmOn } from "../src/events/ltms.js";
+import { iceKingState, iceKingStates, iceKingStormSoon } from "../src/events/icestorm.js";
+import { defaultReplacements, iceStormMatchBucket, ltmOn } from "../src/events/ltms.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { seasonMoment } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
@@ -112,8 +112,8 @@ test("Start now: the last 12 minutes on at once, the storm 30 seconds on, then t
     assert.deepEqual(typesAt(states, ms), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD1", "warning"]);
     const storm = states.find(({ events }) => events.some(({ eventType }) => eventType === "WD2"));
     assert.equal(storm.validFrom, ms + 30000, "the storm 30 seconds on");
-    assert.deepEqual(typesAt(states, ms + 30000), ["LoadLevel", "LoadSequence", "SP", "WD2"]);
-    assert.deepEqual(typesAt(states, ms + 30000 + 10 * 60000), ["LoadLevel", "LoadSequence", "SP"], "the storm's 10 minutes over, the snow stays");
+    assert.deepEqual(typesAt(states, ms + 30000), ["LoadLevel", "LoadSequence", "SP", "WD2", "WDSPAWN"]);
+    assert.deepEqual(typesAt(states, ms + 30000 + 10 * 60000), ["LoadLevel", "LoadSequence", "SP", "WDSPAWN"], "the storm's 10 minutes over, the snow and the Ice Legion stay");
     const wd1 = states[0].events.find(({ eventType }) => eventType === "WD1");
     assert.equal(Date.parse(wd1.activeUntil), ms + 30000, "WD1 ends at the storm");
     assert.equal(Date.parse(wd1.activeSince), ms + 30000 - 12 * 60000);
@@ -153,8 +153,8 @@ test("Epic's dates on Season 7's replay: the sphere, the Ice King, the TVs, the 
     assert.deepEqual(typesOnReplay("2019-01-17T12:00:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WDK", "warning"]);
     assert.deepEqual(typesOnReplay("2019-01-19T12:00:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD0", "warning"]);
     assert.deepEqual(typesOnReplay("2019-01-19T18:50:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD1", "warning"]);
-    assert.deepEqual(typesOnReplay("2019-01-19T19:05:00Z"), ["LoadLevel", "LoadSequence", "SP", "WD2"]);
-    assert.deepEqual(typesOnReplay("2019-01-25T12:00:00Z"), ["LoadLevel", "LoadSequence", "SP"]);
+    assert.deepEqual(typesOnReplay("2019-01-19T19:05:00Z"), ["LoadLevel", "LoadSequence", "SP", "WD2", "WDSPAWN"]);
+    assert.deepEqual(typesOnReplay("2019-01-25T12:00:00Z"), ["LoadLevel", "LoadSequence", "SP", "WDSPAWN"]);
     assert.equal(inBuild(v720, () => iceKingState(onReplay("2019-01-19T18:59:00Z"))), "before");
     assert.equal(inBuild(v720, () => iceKingState(onReplay("2019-01-19T19:01:00Z"))), "after");
     const defaults = createSettingsStore(null).get();
@@ -200,4 +200,47 @@ test("the Events page's cards: the Ice King held before the event with Start now
   const meteor = cards.find(({ id }) => id === "meteorStrike");
   assert.deepEqual([meteor.mode, meteor.modes], ["meteors", ["none", "broadcast", "meteors", "impact"]], "the meteor shower's choice as it was");
   assert.deepEqual(scheduleEventPatch({ event: "meteorStrike", mode: "impact" }, {}, now), { patch: { meteorStrike: "impact" } });
+});
+
+// CoreV2 #490: the storm's Ice Legion comes only to a match on an Ice Storm playlist (its Mutator_DeimosMissions_W); its
+// dynamic spawners wait for WDSPAWN, which DeimosTurnOn stands in for at the storm.
+test("the Ice Legion: WDSPAWN from the storm on, whatever the snow, and the default modes' matches on the Ice Storm's in the half hour before it", () => {
+  const defaults = createSettingsStore(null).get();
+  const now = new Date();
+  const ms = now.getTime();
+  const solo = `${v720}:0:NAE:playlist_defaultsolo`;
+  withConfig(season7, () => {
+    assert.equal(inBuild(v720, () => iceKingStormSoon(now)), false, "before the event: no storm coming");
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, now), solo);
+  });
+  // The storm 10 minutes on: the default modes' matches are the Ice Storm's.
+  const soon = scheduleEventPatch({ event: "iceKing", mode: "custom", startAt: new Date(ms + 10 * 60000).toISOString() }, season7, now).patch;
+  withConfig({ ...season7, ...soon }, () => {
+    assert.equal(iceKingStormSoon(now, v720), true);
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, now), `${v720}:0:NAE:playlist_deimos_solo_winter`);
+    assert.equal(iceStormMatchBucket(`${v720}:0:NAE:playlist_defaultduo`, v720, defaults, now), `${v720}:0:NAE:playlist_deimos_duo_winter`);
+    assert.equal(iceStormMatchBucket(`${v720}:0:NAE:playlist_defaultsquad`, v720, defaults, now), `${v720}:0:NAE:playlist_deimos_squad_winter`);
+    assert.equal(iceStormMatchBucket(`${v720}:0:NAE:playlist_respawn_24`, v720, defaults, now), `${v720}:0:NAE:playlist_respawn_24`, "another mode as it is");
+    assert.equal(iceStormMatchBucket(solo, v710, defaults, now), solo, "7.10 has no Ice Storm");
+    assert.equal(iceStormMatchBucket(solo, v720, { ...defaults, matchmakingModes: { ...defaults.matchmakingModes, iceStormSolo: false } }, now), solo, "Ice Storm Solo's switch off");
+    assert.equal(iceStormMatchBucket(solo, v720, { ...defaults, fortnitemaresReplacesDefaults: false }, now), solo, "the defaults kept");
+    const storm = ms + 10 * 60000;
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, new Date(storm + 1000)), solo, "after the storm the lobby has the Ice Storm modes");
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, new Date(storm - 31 * 60000)), solo, "more than half an hour before it");
+    const states = inBuild(v720, () => iceKingStates(now));
+    assert.ok(!typesAt(states, ms).includes("WDSPAWN"), "no Ice Legion before the storm");
+    assert.ok(typesAt(states, storm).includes("WDSPAWN"), "from the storm");
+    assert.ok(typesAt(states, storm + 86400000).includes("WDSPAWN"), "and after it");
+  });
+  withConfig({ ...season7, ...soon, iceKingSnow: "none" }, () => {
+    assert.ok(typesAt(inBuild(v720, () => iceKingStates(now)), ms + 11 * 60000).includes("WDSPAWN"), "Season 7's own snow keeps the Ice Legion");
+  });
+  withConfig({ ...season7, iceKingSnow: "full" }, () => {
+    assert.ok(!typesAt(inBuild(v720, () => iceKingStates(now)), ms).includes("WDSPAWN"), "the snow alone brings no Ice Legion");
+  });
+  // Epic's dates: the half hour before 19 January 2019, 19:00 UTC, on the replay.
+  withConfig({ ...season7, datedFlags: { iceKing: { mode: "dates" } } }, () => {
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, onReplay("2019-01-19T18:40:00Z")), `${v720}:0:NAE:playlist_deimos_solo_winter`);
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, onReplay("2019-01-19T18:20:00Z")), solo);
+  });
 });

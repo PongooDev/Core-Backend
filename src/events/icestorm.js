@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedStepsThisLap, datedWindows, iceStormCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, iceKingLoadLevel, iceKingLoadSequence, iceKingStormPast, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // The Ice Storm Challenges (7.20, CL-4727874; events/events.js). The Fortnite Wiki's Ice Storm (19 January 2019, 11:00 AM
@@ -150,6 +150,26 @@ export function iceKingState(now = new Date(), changelist = currentBuild(), conf
   const nowMs = now.getTime();
   const past = iceKingWindows(now, changelist, config).some(({ eventType, since, until }) => eventType === iceKingStormPast && since <= nowMs && nowMs < until);
   return past ? "after" : "before";
+}
+
+// The Ice Legion in the storm's own matches (CoreV2 #490). 7.20 brings it only to a match whose playlist has it: the
+// Ice Storm playlists' Mutator_DeimosMissions_W spawns the Ice Legion's two missions (W_Deimos_Mission_RiftSpawners_Static,
+// whose rifts 7.20's Deimos_Gameplay doesn't have, and _Dynamic, the Ice Shards SupplyDrop_Deimos drops), and the dynamic
+// one waits for WDSPAWN (events/events.js iceKingIceLegion). BP_MooneyScripting's DeimosTurnOn, 65 seconds into the storm,
+// goes to the match's missions, and only AFortMission_RiftSpawners takes it (7.20 0x11BD280: its spawners on, 0x11C5380);
+// Playlist_DefaultSolo, _Duo and _Squad have no mutator, no mission and no AI settings, so a match on them has nothing to
+// turn on. BP_MooneyScripting also gives a match on an Ice Storm playlist (Athena.Playlist.Deimos) whose storm hasn't
+// passed (no SP) the S7 day phases' fog (DayTimeOverrideFog 1), which only a match on them before the storm can see. So
+// Epic's matches at the storm were on the Ice Storm playlists, their spawners off until DeimosTurnOn, while the lobby
+// still had the normal three until the storm (Core-Backend #354). 🟡 How Epic's matchmaking did it isn't in the files:
+// here the default modes' matches are assigned as their Ice Storm playlists (events/ltms.js iceStormMatchBucket) from
+// iceKingLegionLeadMs before the storm until it, so every match running at the storm started on one (a match lasts up to
+// about 25 minutes). A match that started on a default playlist earlier plays the storm without the Ice Legion.
+export const iceKingLegionLeadMs = 30 * 60000;
+export function iceKingStormSoon(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  const nowMs = now.getTime();
+  return iceKingWindows(now, changelist, config)
+    .some(({ eventType, since }) => eventType === iceKingStorm && nowMs < since && since - iceKingLegionLeadMs <= nowMs);
 }
 
 // Whether the storm is on Epic's dates (Season 7's replay), where the Ice Storm modes' Original dates start with it.

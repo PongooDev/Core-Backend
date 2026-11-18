@@ -1,6 +1,6 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
-  iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
+  iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
@@ -248,7 +248,8 @@ export const datedEvents = [
       step("clock", "The sphere's clock counts down its last day", [iceKingClock], iceKingStormAt - iceKingClockMs, iceKingStormAt - iceKingLeadUpMs),
       step("leadUp", "The last 12 minutes: night falls on the island", [iceKingLeadUp], iceKingStormAt - iceKingLeadUpMs, iceKingStormAt),
       step("storm", "The Ice Storm: the Ice King breaks out and snow covers the island", [iceKingStorm], iceKingStormAt, iceKingStormAt + iceKingStormMs),
-      step("after", "After the storm: the island under snow", [iceKingStormPast], iceKingStormAt, null)
+      // WDSPAWN with it: the Ice Legion's spawners in the Ice Storm modes from the storm on (CoreV2 #490, events/events.js).
+      step("after", "After the storm: the island under snow and the Ice Legion", [iceKingStormPast, iceKingIceLegion], iceKingStormAt, null)
     ] },
   // The Ice Storm Challenges (7.20, events/icestorm.js): one step, the challenges' flag and the bundle's calendar event.
   { id: "iceStorm", name: "the Ice Storm Challenges (7.20)", season: 7, flag: ltmWinterDeimos, anchor: "challenges", parts: 1,

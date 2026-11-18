@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { ltms, playlistIdOfName } from "../events/ltms.js";
+import { iceStormMatchBucket, ltms, playlistIdOfName } from "../events/ltms.js";
 import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { inIpRanges } from "../network.js";
@@ -1085,7 +1085,12 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const options = { ...matchOptions, ...(forming.customKey ? { "match.option.customKey": forming.customKey } : {}),
       ...(teams.squads ? { "match.option.squads": teams.squads } : {}),
       ...(custom ? { [customMatchOptionsKey]: customMatchOptionsText(custom) } : {}) };
-    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions: options, teams }));
+    // 7.20's default modes in the half hour before the Ice Storm are its Ice Storm playlists' matches (CoreV2 #490,
+    // events/ltms.js iceStormMatchBucket): the server plays the one AssignMatch names.
+    const build = forming.parties.find((party) => party.ticket.build)?.ticket.build ?? server.build;
+    const matchBucket = iceStormMatchBucket(forming.bucketId, build);
+    if (matchBucket !== forming.bucketId) say(`Match ${forming.matchId} plays bucket ${matchBucket}, the Ice Storm's, for ${forming.bucketId}: the Ice Storm comes within the half hour`);
+    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(matchBucket, server.build), matchOptions: options, teams }));
   }
 
   function onAssignResult(server, payload) {

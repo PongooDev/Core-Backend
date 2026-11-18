@@ -2,7 +2,7 @@ import { currentBuild } from "../builds/context.js";
 import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 import { leakyLakeState } from "./butterfly.js";
-import { iceKingOnEpicDates, iceKingState } from "./icestorm.js";
+import { iceKingOnEpicDates, iceKingState, iceKingStormSoon } from "./icestorm.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
 //
@@ -1446,6 +1446,22 @@ export const replacesDefaultsOn = (settingsValue) => settingsValue?.fortnitemare
 export function defaultReplacements(build, settingsValue = settingsProvider(), now = new Date()) {
   if (Number(build) < frontEndPlaylistBuild || !replacesDefaultsOn(settingsValue)) return {};
   return Object.fromEntries(ltms.filter((ltm) => ltm.replaces && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => [ltm.replaces, ltm]));
+}
+
+// The bucket a 7.20 match is assigned with (CoreV2 #490): in the half hour before the Ice Storm (events/icestorm.js
+// iceKingStormSoon, which has why) the default Solo's, Duos' and Squads' matches are their Ice Storm playlist's (282 to
+// 284, `replaces`), so the storm's Ice Legion comes to them; the lobby keeps the normal three until the storm. Only while
+// that Ice Storm mode is on by its switch and the Ice Storm modes take the defaults' place (settings
+// fortnitemaresReplacesDefaults). From 4.4 a bucket names its playlist, lowercased ("4727874:0:NAE:playlist_defaultsolo");
+// the server sets the playlist by that name (CoreV2 AFortGameModeAthena::OnGivenMatchAssignment). Any other bucket, build
+// or time: the bucket as it is.
+export function iceStormMatchBucket(bucketId, build, settingsValue = settingsProvider(), now = new Date()) {
+  const parts = String(bucketId ?? "").split(":");
+  if (parts.length < 4 || !replacesDefaultsOn(settingsValue) || !iceKingStormSoon(now, build)) return bucketId;
+  const ltm = ltms.find((entry) => entry.fromIceStorm && entry.replaces?.toLowerCase() === parts[3].toLowerCase() && hasLtm(entry.id, build));
+  if (!ltm || settingsValue?.matchmakingModes?.[ltm.id] === false) return bucketId;
+  parts[3] = ltm.playlistName.toLowerCase();
+  return parts.join(":");
 }
 
 // The lobby's EFortAthenaPlaylist of an event queue (UFortGameUserSettings' LastSelectedPlaylist): AthenaEvent1 to 8
