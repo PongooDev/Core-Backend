@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
-import { datedEvent, datedParts, datedSettings, datedWindows, iceStormCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { datedEvent, datedParts, datedSettings, datedStepsThisLap, datedWindows, iceStormCalendarEvent } from "./datedflags.js";
+import { currentEventsConfig, iceKingLoadLevel, iceKingStormPast, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // The Ice Storm Challenges (7.20, CL-4727874; events/events.js). The Fortnite Wiki's Ice Storm (19 January 2019, 11:00 AM
@@ -61,3 +61,89 @@ export function iceStormDay(now = new Date(), changelist = currentBuild(), confi
 }
 
 export { iceStormCalendarEvent };
+
+// The Ice King and his Ice Storm, Season 7's live event (7.20, CL-4727874; 19 January 2019, 11:00 AM PST, code-named Mooney).
+// How 7.20 plays it (its client paks decompiled; nothing of it is server-only):
+// - Athena_POI_Foundations places BP_MooneyLoader (replicated, always relevant). Once the match's playlist has loaded, and
+//   not in Creative, it watches LoadLevel with a FortAsyncAction_CalendarEventWatcher, and LoadSequence too; on the
+//   server OnEventActive sets its replicated LoadMooneyMap or LoadMooneySequence, whose OnRep streams
+//   Athena/Maps/Test/S7/MooneyMap (BP_MooneyScripting, BP_Mooney_Countdown: the sphere over Polar Peak, the Ice King in it,
+//   its clock's twelve orbs) or MooneySequenceMap (a Replicated_LevelSequence playing MooneySequence) on the server and
+//   every client.
+// - BP_MooneyScripting (MooneyMap), once the authority's match is ready (FortAsyncAction_AuthorityMatchReady), reads SP
+//   (GetCalendarEventInformation): active, the event is past (EventPast: the sphere, the Ice King and the clock hidden) and
+//   nothing else runs. Otherwise it reads WDK (active: NormalizedBubbleVisible, the Ice King showing in the sphere by the
+//   event's progress) and watches WD0, WD1, WD2, warning (ShowTVWarning: the TVs' weather warning, MPC_Countdown's
+//   VillainBase) and Countdown (the TVs' countdown to its end, corrected by R0 five minutes before it); and in the Ice
+//   Storm playlists (Athena.Playlist.Deimos) it sets the S7 day phases' fog. WD0 (the clock: CurrentHour, an orb off each
+//   two hours), WD1 (LeadUpActive, and in its last 35 minutes the time of day set to reach 22:30 at the storm) and then
+//   WD2, which with LeadUpActive is the storm (BeginIceKingEvent): the server plays the sequence (the Ice King breaks out,
+//   his aurora, the blizzard rolls over the island, MooneySequence's Holiday_SnowAmount spreading the snow), 11.3 seconds
+//   in pauses the storm (Mutator.SpecialEvent's AFortAthenaMutator_SpecialEvent::PauseStormProgression) and pushes its
+//   clouds back, 45 seconds in blends the fog in, 65 seconds in sends the DeimosTurnOn mission event (the Ice Legion) and
+//   lets the storm go on, and 86 seconds in holds the sequence at its end. A match must have seen WD1 turn on before WD2
+//   to play it (LeadUpActive), so "Start now" sets the storm 30 seconds on with WD1 already on.
+// - BP_SnowSetup (Athena_Terrain), once the authority's match is ready, reads SP: its replicated Snow_Amount is 1 with it
+//   (MPC_Landscape's Holiday_SnowAmount at SnowCurve's 15: the island under snow) and 0 without (1.2: Season 7's own
+//   snow). That is 7.20's only snow input: its SetSnow(float) has no caller in the paks, and the melting stages came with
+//   later updates, not in 7.20's files. The snow switch below (config iceKingSnow) serves SP by the event ("event", the
+//   default), never ("none": Season 7's own snow, and the sphere and Ice King stay) or always ("full": the island under
+//   snow, the Ice King's visuals gone as after the storm). A match keeps the snow it started with; the storm's own spread
+//   plays only in the matches running at the storm.
+// The calendar's parts move on by themselves (validFrom) and a Core gameserver fetches an admin's change within 5 seconds
+// (CoreV2's AFortGameModeAthena::AskEventCalendarRevision), so a time or "Start now" plays in the matches running then.
+// Nothing of it is stripped from 7.20's server: on a headless 7.20 server (CoreV2 main with a logging-only diagnostic,
+// -CoreBotMatch, this backend's "Start now") the loader streamed both levels, WD1 set LeadUpActive, the TVs' warning and countdown, WD2 played the storm
+// (CurrentHour 0, the sequence), Mutator_SpecialEvent (Athena_GameMode's SpecialEventModifier) paused the storm
+// (bSafeZonePaused) and let it go on, and the fog blend ran; a match started after SP hid the Ice King (EventPast). A
+// watcher acts on a calendar download (OnEventActive for an event newly active there), and a server downloads its
+// calendar before it opens its session to players (its update check), so a match's watchers see it.
+// "before" (the default) holds the sphere as 7.20 shipped (LoadLevel only) and the default modes; Epic's dates play it on
+// Season 7's replay; the admin's times wherever they are. Its storm switches Solo, Duos and Squads to the Ice Storm's
+// (iceKingState, events/ltms.js fromIceStorm).
+export const iceKingEvent = datedEvent("iceKing");
+export const iceKingBuild = 4727874;
+export const iceKingSnowModes = ["event", "none", "full"];
+export const defaultIceKingSnow = "event";
+export const sanitizeIceKingSnow = (value, current = defaultIceKingSnow) =>
+  (typeof value === "string" && iceKingSnowModes.includes(value.trim().toLowerCase()) ? value.trim().toLowerCase() : current);
+
+// The event's windows [{eventType, since, until}] now by its mode, before the snow switch: none outside 7.20, with the
+// seasonal events off, or in another event mode.
+function iceKingWindows(now, changelist, config) {
+  if (Number(changelist) !== iceKingBuild || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  const nowMs = now.getTime();
+  const moment = seasonMoment(now, null, iceKingEvent.season).getTime();
+  const setting = datedSettings(config).iceKing;
+  if (setting.mode === "before") {
+    const sphere = datedStepsThisLap(iceKingEvent, nowMs, moment)[0];
+    return [{ eventType: iceKingLoadLevel, since: Date.parse(sphere.startAt), until: Infinity }];
+  }
+  return datedWindows(iceKingEvent, setting, nowMs, moment);
+}
+
+// The Ice King's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
+// that holds now on, with the snow switch's SP.
+export function iceKingStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  const windows = iceKingWindows(now, changelist, config);
+  if (!windows.length) return [];
+  const snow = sanitizeIceKingSnow(config?.iceKingSnow);
+  const nowMs = now.getTime();
+  const kept = snow === "event" ? windows : windows.filter(({ eventType }) => eventType !== iceKingStormPast);
+  if (snow === "full") kept.push({ eventType: iceKingStormPast, since: nowMs - 60000, until: Infinity });
+  return datedParts(kept, nowMs, iceKingEvent.parts);
+}
+
+// The island's state on 7.20 now, as its storm leaves it: "after" once the storm has come (its SP step served, whatever
+// the snow switch), else "before"; null on another build. 7.20's Ice Storm Solo, Duos and Squads take the default modes'
+// place from the storm (Epic's lobby had the normal three until the Ice Storm: Core-Backend #354), so they follow this
+// (events/ltms.js fromIceStorm), and the lobby's modes and the map come from the one schedule.
+export function iceKingState(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  if (Number(changelist) !== iceKingBuild) return null;
+  const nowMs = now.getTime();
+  const past = iceKingWindows(now, changelist, config).some(({ eventType, since, until }) => eventType === iceKingStormPast && since <= nowMs && nowMs < until);
+  return past ? "after" : "before";
+}
+
+// Whether the storm is on Epic's dates (Season 7's replay), where the Ice Storm modes' Original dates start with it.
+export const iceKingOnEpicDates = (config = currentEventsConfig()) => datedSettings(config).iceKing.mode === "dates";

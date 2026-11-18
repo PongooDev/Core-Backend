@@ -559,6 +559,25 @@ export const distantFogOverlap630 = "BR_S6_Approach_02";
 export const blockRiskyReels = "R0";
 export const blockLanded = "R1";
 export const blockSlab = (number) => `slab${number}`;
+// 7.20's Ice King and his Ice Storm (events/icestorm.js has how 7.20 plays it): the calendar names its blueprints hand to a
+// CalendarEventWatcher or to UFortKismetLibrary::GetCalendarEventInformation as strings, plain, with no "EventFlag."
+// prefix. BP_MooneyLoader (Athena_POI_Foundations) streams the event's levels: LoadLevel MooneyMap (the sphere over Polar
+// Peak, the Ice King, BP_MooneyScripting), LoadSequence MooneySequenceMap (the storm's level sequence). BP_MooneyScripting:
+// WDK the Ice King showing in the sphere, warning the TVs' weather warning, Countdown and R0 the TVs' countdown to the storm
+// (R0 its last five minutes' correction; 7.00's Block used the same name, events/block.js, which 7.20's no longer watches),
+// WD0 the sphere's clock (its last 24 hours less 12 minutes), WD1 the last 12 minutes, WD2 the storm itself. SP (storm
+// past) is read at a match's start by BP_MooneyScripting (the Ice King's visuals hidden) and BP_SnowSetup (Athena_Terrain:
+// the island under snow).
+export const iceKingLoadLevel = "LoadLevel";
+export const iceKingLoadSequence = "LoadSequence";
+export const iceKingVisible = "WDK";
+export const iceKingWarning = "warning";
+export const iceKingCountdown = "Countdown";
+export const iceKingCountdownCheck = "R0";
+export const iceKingClock = "WD0";
+export const iceKingLeadUp = "WD1";
+export const iceKingStorm = "WD2";
+export const iceKingStormPast = "SP";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;

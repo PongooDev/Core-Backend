@@ -80,9 +80,9 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       tournamentEvent = event;
     }
     // 6.21's Fortnitemares modes follow the Leaky Lake's state (Core-Backend #354, events/ltms.js untilButterfly), as the
-    // lobby lists them.
+    // lobby lists them, and 7.20's Ice Storm modes the island's state from its storm (fromIceStorm, Core-Backend #354).
     // 7.00's Creative is always on (#375): a matchmaking setting saved for it before changes nothing.
-    const off = tournamentEvent || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
+    const off = tournamentEvent || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly || ltm.fromIceStorm) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
       : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
@@ -90,7 +90,7 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       // (Core-Backend #313).
       log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: ${ltm?.name ?? mode} is off ` +
         "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on; " +
-        "6.21's Fortnitemares modes: after the Butterfly, Events page)");
+        "6.21's Fortnitemares modes: after the Butterfly; 7.20's Ice Storm modes: before the Ice Storm, Events page)");
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
     // 7.00's Creative (PongooDev/CoreV2#471, profiles/creative.js): Update v7.00's early access, Battle Pass owners only

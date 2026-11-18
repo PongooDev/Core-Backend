@@ -5,6 +5,7 @@ import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
+import { defaultIceKingSnow, sanitizeIceKingSnow } from "../events/icestorm.js";
 import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
@@ -248,6 +249,8 @@ const defaults = {
     contentUpdates: defaultContentUpdates,
     // 3.6's Season 3 finale (events/meteorstrike.js): "none", "broadcast", "meteors" or "impact".
     meteorStrike: defaultMeteorStrikePhase,
+    // 7.20's Ice Storm snow (events/icestorm.js): "event" (SP by the Ice King's storm), "none" or "full".
+    iceKingSnow: defaultIceKingSnow,
     // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its mode ("off", "dates": Epic's on the replay, "custom": its
     // launch time), the time and the countdown.
     rocketLaunch: defaultRocketLaunch,
@@ -466,6 +469,7 @@ function sanitizeEvents(input, current = defaults.events) {
   }
 
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
+  if (input.iceKingSnow !== undefined) result.iceKingSnow = sanitizeIceKingSnow(input.iceKingSnow, result.iceKingSnow ?? defaultIceKingSnow);
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
   if (input.season4Flags !== undefined) result.season4Flags = sanitizeSeason4Flags(input.season4Flags, result.season4Flags ?? defaultSeason4Flags);
   if (input.datedFlags !== undefined) result.datedFlags = sanitizeDatedFlags(input.datedFlags, result.datedFlags ?? defaultDatedFlags);

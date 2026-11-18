@@ -2,6 +2,7 @@ import { currentBuild } from "../builds/context.js";
 import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 import { leakyLakeState } from "./butterfly.js";
+import { iceKingOnEpicDates, iceKingState } from "./icestorm.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
 //
@@ -1240,13 +1241,13 @@ export const ltms = [
     advertise: "New", defaultOn: true, original: oneShot720Window,
     teams: "100 Teams × 4", description: "Low gravity, 50 health, sniper rifles only and Bandages the only healing, the storm's waits much shorter: Update v7.20's limited time mode (Playlist_Low_Squads)." },
   { id: "iceStormSolo", name: "Ice Storm (Solo)", playlistId: 282, playlistName: "Playlist_Deimos_Solo_Winter", eventFlag: null, builds: [build720, build720], seasons: [7],
-    advertise: "New", defaultOn: true, original: iceStormWindow, replaces: "Playlist_DefaultSolo",
+    advertise: "New", defaultOn: true, original: iceStormWindow, fromIceStorm: true, replaces: "Playlist_DefaultSolo",
     teams: "100 Teams × 1", description: "Battle Royale with the Ice Legion, Ice Fiends and Brutes across the island after the Ice Storm (Playlist_Deimos_Solo_Winter, 7.20's)." },
   { id: "iceStormDuos", name: "Ice Storm (Duos)", playlistId: 283, playlistName: "Playlist_Deimos_Duo_Winter", eventFlag: null, builds: [build720, build720], seasons: [7],
-    advertise: "New", defaultOn: true, original: iceStormWindow, replaces: "Playlist_DefaultDuo",
+    advertise: "New", defaultOn: true, original: iceStormWindow, fromIceStorm: true, replaces: "Playlist_DefaultDuo",
     teams: "100 Teams × 2", description: "Battle Royale with the Ice Legion, in duos (Playlist_Deimos_Duo_Winter, 7.20's)." },
   { id: "iceStormSquads", name: "Ice Storm (Squads)", playlistId: 284, playlistName: "Playlist_Deimos_Squad_Winter", eventFlag: null, builds: [build720, build720], seasons: [7],
-    advertise: "New", defaultOn: true, original: iceStormWindow, replaces: "Playlist_DefaultSquad",
+    advertise: "New", defaultOn: true, original: iceStormWindow, fromIceStorm: true, replaces: "Playlist_DefaultSquad",
     teams: "100 Teams × 4", description: "Battle Royale with the Ice Legion, in squads (Playlist_Deimos_Squad_Winter, 7.20's)." },
   { id: "sniperShootoutSolo720", name: "Sniper Shootout (Solo; 7.20)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build720, build720], seasons: [7],
     defaultOn: true, original: sniperShootout720Window,
@@ -1394,6 +1395,12 @@ export function ltmOn(id, build, settingsValue = settingsProvider(), now = new D
   // happened, by the admin's switch before it.
   const lake = ltm.untilButterfly ? leakyLakeState(now, build) : null;
   if (lake === "after") return false;
+  // 7.20's Ice Storm modes (Core-Backend #354): from the Ice Storm, not before it. Before the storm the default modes stay;
+  // after it each is on by its switch, and by its Original dates too while those are on and the storm is on Epic's
+  // dates (on the admin's own times the storm's moment is the admin's, and the dates' start would hide the modes).
+  const island = ltm.fromIceStorm ? iceKingState(now, build) : null;
+  if (island === "before") return false;
+  if (island === "after" && !iceKingOnEpicDates()) return ltm.defaultOn ? settingsValue?.matchmakingModes?.[id] !== false : settingsValue?.matchmakingModes?.[id] === true;
   const modes = lake === "before" ? settingsValue?.matchmakingModes : ltmModes(build, settingsValue, now);
   return ltm.defaultOn ? modes?.[id] !== false : modes?.[id] === true;
 }

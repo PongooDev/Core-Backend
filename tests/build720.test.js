@@ -173,17 +173,22 @@ test("7.20's event flags: 7.10's own and Frostnite; its paks' only new flag is t
   assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 4727874);
 });
 
-test("7.20's modes: One Shot, the Ice Storm's (in place of Solo, Duos and Squads) and Sniper Shootout on by default, each on its dates", () => {
+test("7.20's modes: One Shot and Sniper Shootout on by default, the Ice Storm's (in place of Solo, Duos and Squads) from the Ice Storm, each on its dates", () => {
   const defaults = createSettingsStore(null).get();
-  for (const id of ["oneShotSquads720", "iceStormSolo", "iceStormDuos", "iceStormSquads", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720",
+  for (const id of ["oneShotSquads720", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720",
     "fiftyFiftySeason7", "playgroundV2", "creative", "teamRumble"]) assert.equal(ltmOn(id, v720, defaults), true, id);
+  // Core-Backend #354: the Ice King's event waits before the storm by default, and Solo, Duos and Squads with it.
+  for (const id of ["iceStormSolo", "iceStormDuos", "iceStormSquads"]) assert.equal(ltmOn(id, v720, defaults), false, `${id} waits for the Ice Storm`);
   for (const id of ["teamsOf33", "oneShotSquads", "holidayDisco", "sniperShootoutSeason7Solo"]) assert.equal(hasLtm(id, v720), false, `${id} isn't 7.20's`);
   for (const id of ["iceStormSolo", "oneShotSquads720", "sniperShootoutDuos720"]) assert.equal(hasLtm(id, v710), false, `${id} is 7.20's`);
   assert.equal(ltmOfPlaylist(282, v720).id, "iceStormSolo");
   assert.equal(ltmOfPlaylist(252, v720).id, "oneShotSquads720");
   assert.equal(ltmOfPlaylist(252, v710).id, "oneShotSquads", "7.10's One Shot as it was");
   assert.equal(ltmOfPlaylist(40, v720).id, "sniperShootoutDuos720");
-  assert.deepEqual(Object.keys(defaultReplacements(v720, defaults)).sort(), ["Playlist_DefaultDuo", "Playlist_DefaultSolo", "Playlist_DefaultSquad"]);
+  assert.deepEqual(defaultReplacements(v720, defaults), {}, "Solo, Duos and Squads until the Ice Storm");
+  withConfig({ ...season7, datedFlags: { iceKing: { mode: "custom", schedule: [{ step: "after", startAt: "2020-01-01T00:00:00.000Z", endAt: null }] } } }, () => {
+    assert.deepEqual(Object.keys(defaultReplacements(v720, defaults)).sort(), ["Playlist_DefaultDuo", "Playlist_DefaultSolo", "Playlist_DefaultSquad"]);
+  });
   assert.deepEqual(defaultReplacements(v710, defaults), {});
   assert.deepEqual(playlistTeamsOf(`${v720}:0:NAE:playlist_deimos_squad_winter`, v720), { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 });
   assert.deepEqual(playlistTeamsOf(`${v720}:0:NAE:playlist_deimos_duo_winter`, v720), { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 });
@@ -199,9 +204,10 @@ test("7.20's modes: One Shot, the Ice Storm's (in place of Solo, Duos and Squads
     assert.deepEqual(defaultReplacements(v720, dated, at("2019-01-17T12:00:00Z")), {}, "Solo, Duos and Squads before the Ice Storm");
   });
   const lobby = ltmFrontEndPlaylists(v720, defaults);
-  for (const name of ["Playlist_Low_Squads", "Playlist_Deimos_Solo_Winter", "Playlist_Snipers_Duos", "Playlist_PlaygroundV2"]) {
+  for (const name of ["Playlist_Low_Squads", "Playlist_Snipers_Duos", "Playlist_PlaygroundV2"]) {
     assert.equal(lobby.find((own) => own.name === name)?.enabled, true, name);
   }
+  assert.equal(lobby.find((own) => own.name === "Playlist_Deimos_Solo_Winter")?.enabled, false, "the Ice Storm's waits for the storm");
   assert.equal(lobby.some((own) => own.name === "Playlist_33"), false, "the 14 Days' modes are 7.10's");
   assert.deepEqual(tournamentPlaylists.slice(-3).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
     [["iceStormShowSolo", 58288, true], ["iceStormShowDuos", 58289, true], ["iceStormShowSquads", 58290, true]]);

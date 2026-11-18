@@ -103,13 +103,24 @@ export const eventCards = [
   { id: "iceStorm", kind: "dated", dated: "iceStorm", seasons: [7], name: "The Ice Storm Challenges", builds: "7.20", ranges: [[4727874, 4727874]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "The Ice Storm Challenges: three at the start, two more each day for five days (destroy the Ice Legion), the Blue Metallic wrap for six and the Winter's Thorn glider for all (from the Ice Storm, 19 January 2019, 11 AM PST, to 28 January). Its modes, the Ice Storm's Solo, Duos and Squads, are the Battle Royale game modes' (Original dates). 🟡 The end is the wiki's last day.",
-    flags: ["EventFlag.LTM_WinterDeimos", "CalendarEvent_Season7_WinterDeimos"] }
+    flags: ["EventFlag.LTM_WinterDeimos", "CalendarEvent_Season7_WinterDeimos"] },
+  // 7.20's Ice King (events/icestorm.js): held before the event by default, started by the admin (Core-Backend #354), and its
+  // snow (7.20's two states, SP's).
+  { id: "iceKing", kind: "dated", dated: "iceKing", seasons: [7], name: "The Ice King's Ice Storm", builds: "7.20", ranges: [[4727874, 4727874]],
+    key: "storm", nowLeadSeconds: 30, startLabel: "The Ice Storm starts",
+    about: "The ice sphere over Polar Peak, the Ice King in it, the TVs' weather warning and countdown, the sphere's 24-hour clock, then the storm: the Ice King breaks out, the storm pauses, a blizzard covers the island in snow and the Ice Legion comes. Matches running then play it (it needs the last 12 minutes before the storm, so Start now starts it 30 seconds on); a match that starts after it starts under snow. Solo, Duos and Squads switch to the Ice Storm modes once the storm has started, and are back with Before the event. 🟡 Epic's hours before the storm aren't recorded." },
+  { id: "iceKingSnow", kind: "choice", choice: "iceKingSnow", seasons: [7], name: "The Ice Storm's snow", builds: "7.20", ranges: [[4727874, 4727874]],
+    about: "The island's snow on 7.20. 7.20 has two snow states (no stages in between: the melting came with later updates): Season 7's own snow, and the whole island under snow after the storm. Follows the storm by default. A match keeps the snow it started with; the storm itself spreads the snow over the island in the matches running then." }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
 const modeLabels = { off: "Off", before: "Before the event", dates: "Epic's dates", custom: "Custom", build: "As the build ran it", launch: "After the rocket launch", always: "Always on",
   season: "Epic's dates", all: "All on" };
 export const meteorStrikePhases = [["none", "Comet only"], ["broadcast", "TVs show static"], ["meteors", "Meteors"], ["impact", "Meteors at their most"]];
+export const iceKingSnowPhases = [["event", "Follows the storm"], ["none", "Season 7's own snow"], ["full", "Island under snow"]];
+// The choice cards' settings: the events config's key, its phases and its default.
+const choices = { meteorStrike: { phases: meteorStrikePhases, fallback: "meteors" }, iceKingSnow: { phases: iceKingSnowPhases, fallback: "event" } };
+const choiceOf = (card) => choices[card.choice ?? "meteorStrike"];
 const eventModeNames = { force_fortnitemares: "forces Fortnitemares 2017", force_mutantstorms: "forces the Mutant Storms", force_winter2017: "forces Survive the Holidays",
   custom: "serves only the flags listed under Advanced" };
 
@@ -152,7 +163,13 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
       return updates === "all" ? { tone: "on", nowLabel: "all on", text: "On now: every update" } : { tone: "dates", text: "Follows Epic's dates on Season 2's replay" };
     }
     if (card.kind === "choice") {
-      const phase = meteorStrikePhases.find(([id]) => id === (config.meteorStrike ?? "meteors")) ?? meteorStrikePhases[2];
+      const { phases, fallback } = choiceOf(card);
+      const key = card.choice ?? "meteorStrike";
+      const phase = phases.find(([id]) => id === (config[key] ?? fallback)) ?? phases.find(([id]) => id === fallback);
+      if (key === "iceKingSnow") {
+        return phase[0] === "event" ? { tone: "dates", text: "Follows the storm: Season 7's own snow before it, the island under snow after it" }
+          : { tone: "on", nowLabel: phase[1].toLowerCase(), text: `On now: ${phase[1]}, whatever the storm` };
+      }
       return { tone: phase[0] === "none" ? "off" : "on", nowLabel: phase[1].toLowerCase(), text: `On now: ${phase[1]}` };
     }
     if (card.kind === "storm") {
@@ -199,6 +216,9 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
     if (mode !== "auto" && !card.always) return { tone: "off", text: "Paused: runs in the Automatic event mode only" };
     // The Butterfly held before the event (Core-Backend #354): the map's pre-event state, with 6.21's Fortnitemares modes.
     if (event.mode === "before") {
+      if (card.id === "iceKing") {
+        return { tone: "on", nowLabel: "before the event", text: "On now: before the event: the ice sphere over Polar Peak and the normal Solo, Duos and Squads; the storm waits for Start now, a time or Epic's dates" };
+      }
       return { tone: "on", nowLabel: "before the event", text: "On now: the map before the event (Fortnitemares' Cube Monsters' days, POI0), and the Fortnitemares modes back with it; the Butterfly doesn't play" };
     }
     const state = stepsState(event.steps.map((step) => ({ label: step.label, ...(step.current ?? { startAt: null, endAt: null }) })).filter((step) => step.startAt), nowMs);
@@ -209,7 +229,10 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
   const controlOf = (card) => {
     if (card.kind === "build") return { modes: [] };
     if (card.kind === "contentUpdates") return { mode: config.contentUpdates?.mode ?? "season", modes: ["season", "all"] };
-    if (card.kind === "choice") return { mode: config.meteorStrike ?? "meteors", modes: meteorStrikePhases.map(([id]) => id), labels: Object.fromEntries(meteorStrikePhases) };
+    if (card.kind === "choice") {
+      const { phases, fallback } = choiceOf(card);
+      return { mode: config[card.choice ?? "meteorStrike"] ?? fallback, modes: phases.map(([id]) => id), labels: Object.fromEntries(phases) };
+    }
     if (card.kind === "storm") return { mode: storm?.mode ?? "dates", modes: ["off", "dates", "always"], percent: storm?.percent ?? 10 };
     if (card.kind === "rocket") {
       return { mode: rocket?.mode ?? "off", modes: ["off", "dates", "custom"], now: true, startAt: rocket?.launch ?? rocket?.at ?? null, countdownHours: rocket?.countdownHours ?? 48,
@@ -252,14 +275,15 @@ export function buildsNow(builds, cards, storm) {
 }
 
 // The one control as the stores' settings: {event, mode, startAt?, endAt?, countdownHours?, percent?} to an events config
-// patch ({rocketLaunch}, {season4Flags}, {datedFlags}, {stormDestruction}, {contentUpdates} or {meteorStrike}), or {error}.
+// patch ({rocketLaunch}, {season4Flags}, {datedFlags}, {stormDestruction}, {contentUpdates}, {meteorStrike} or {iceKingSnow}),
+// or {error}.
 // "now" is the custom mode from now (the key moment now, or nowLeadSeconds on). The current events config fills a
 // custom mode chosen without times with the ones it has.
 export function scheduleEventPatch(body, config = {}, now = new Date()) {
   const card = eventCard(body?.event);
   if (!card || card.kind === "build") return { error: `event must be one of ${eventCards.filter(({ kind }) => kind !== "build").map(({ id }) => id).join(", ")}` };
   const modes = card.kind === "rocket" ? ["off", "dates", "custom", "now"] : card.kind === "oddities" ? ["off", "dates", "launch", "custom", "now"]
-    : card.kind === "storm" ? ["off", "dates", "always"] : card.kind === "contentUpdates" ? ["season", "all"] : card.kind === "choice" ? meteorStrikePhases.map(([id]) => id)
+    : card.kind === "storm" ? ["off", "dates", "always"] : card.kind === "contentUpdates" ? ["season", "all"] : card.kind === "choice" ? choiceOf(card).phases.map(([id]) => id)
     : [...datedModesOf(datedEvent(card.dated)), "now"];
   const mode = body.mode;
   if (!modes.includes(mode)) return { error: `mode must be ${modes.join(", ")}` };
@@ -271,7 +295,7 @@ export function scheduleEventPatch(body, config = {}, now = new Date()) {
   const iso = (value) => new Date(value).toISOString();
 
   if (card.kind === "contentUpdates") return { patch: { contentUpdates: { mode } } };
-  if (card.kind === "choice") return { patch: { meteorStrike: mode } };
+  if (card.kind === "choice") return { patch: { [card.choice ?? "meteorStrike"]: mode } };
   if (card.kind === "storm") {
     const percent = body.percent === undefined ? undefined : Number(body.percent);
     if (percent !== undefined && !(Number.isInteger(percent) && percent >= 0 && percent <= 100)) return { error: "percent must be 0 to 100" };

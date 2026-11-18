@@ -1,6 +1,7 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
-  islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
+  iceKingVisible, iceKingWarning, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -122,6 +123,20 @@ const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${i
 const iceStormChallengesAt = Date.parse("2019-01-19T19:00:00.000Z");
 const iceStormChallengesEnd = Date.parse("2019-01-29T00:00:00.000Z");
 const blockModes = ["dates", "custom"];
+// 7.20's Ice King and his Ice Storm (events/icestorm.js has how 7.20 plays it). Epic's storm was 19 January 2019, 11:00 AM
+// PST (the Fortnite Wiki's Ice Storm; Newsweek: the TVs' countdown "set to expire around 2 p.m. EST on January 19"). Each
+// step's names and spacing are 7.20's blueprints': WD0 ends 12 minutes before the storm (BP_MooneyScripting adds 12 minutes
+// to its end for the clock, and WD1's default end is 12:00), WD1 runs those 12 minutes, the TVs' Countdown and R0 count to
+// the storm. 🟡 Epic's other hours aren't recorded: the sphere is up from the replay's first day (7.20 shipped with it, 15
+// January, as the Block's Looming Llama), the Ice King shows in it from Update v7.20's day (🟡 09:00 UTC) to the clock, the
+// TVs' warning and countdown from the Wednesday afternoon Newsweek dates them to (16 January, 🟡 2 PM ET), the clock its
+// last 24 hours (Fortnite Insider: the sphere "changed to a clock counting down 24 hours"), the storm's sequence level from
+// the clock to 10 minutes after the storm, WD2 the storm's first 10 minutes, and SP (storm past) from the storm on: a match
+// that starts after it begins under snow.
+export const iceKingStormAt = Date.parse("2019-01-19T19:00:00.000Z");
+const iceKingClockMs = 24 * 3600000;
+const iceKingLeadUpMs = 12 * 60000;
+const iceKingStormMs = 10 * 60000;
 
 export const datedEvents = [
   { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
@@ -213,6 +228,21 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds) },
   { id: "block720", name: "The Block's community builds (7.20)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds720) },
+  // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
+  // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
+  // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
+  { id: "iceKing", name: "the Ice King's Ice Storm (7.20)", season: 7, flag: iceKingStorm, anchor: "storm", parts: 6,
+    modes: ["before", "dates", "custom"], defaultMode: "before", steps: [
+      step("sphere", "The ice sphere hangs over Polar Peak", [iceKingLoadLevel], season7FirstDay, null),
+      step("iceKing", "The Ice King shows in the sphere", [iceKingVisible], Date.parse("2019-01-15T09:00:00.000Z"), iceKingStormAt - iceKingClockMs),
+      step("warning", "The TVs broadcast the weather warning and count down", [iceKingWarning, iceKingCountdown, iceKingCountdownCheck],
+        Date.parse("2019-01-16T19:00:00.000Z"), iceKingStormAt),
+      step("sequence", "The storm's sequence level loads", [iceKingLoadSequence], iceKingStormAt - iceKingClockMs, iceKingStormAt + iceKingStormMs),
+      step("clock", "The sphere's clock counts down its last day", [iceKingClock], iceKingStormAt - iceKingClockMs, iceKingStormAt - iceKingLeadUpMs),
+      step("leadUp", "The last 12 minutes: night falls on the island", [iceKingLeadUp], iceKingStormAt - iceKingLeadUpMs, iceKingStormAt),
+      step("storm", "The Ice Storm: the Ice King breaks out and snow covers the island", [iceKingStorm], iceKingStormAt, iceKingStormAt + iceKingStormMs),
+      step("after", "After the storm: the island under snow", [iceKingStormPast], iceKingStormAt, null)
+    ] },
   // The Ice Storm Challenges (7.20, events/icestorm.js): one step, the challenges' flag and the bundle's calendar event.
   { id: "iceStorm", name: "the Ice Storm Challenges (7.20)", season: 7, flag: ltmWinterDeimos, anchor: "challenges", parts: 1,
     challenges: "Schedule_WinterDeimos", steps: [

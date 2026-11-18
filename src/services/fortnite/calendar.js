@@ -19,7 +19,7 @@ import { birthdayActiveUntil, birthdayChallengeStates } from "../../events/birth
 import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { fourteenDaysStates } from "../../events/fourteendays.js";
-import { iceStormStates } from "../../events/icestorm.js";
+import { iceKingStates, iceStormStates } from "../../events/icestorm.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
 import { distantFogStates } from "../../events/distantfog.js";
@@ -69,7 +69,8 @@ import { fortnitemaresActiveUntil, lilKevinActiveUntil } from "../../events/fort
 // events/island.js) on Season 6's replay, and 6.21's Butterfly (POI0, the Cube's crack and drain, POI1: events/butterfly.js)
 // when the admin panel schedules it, and 6.30's snowstorm (BR_S6_Approach_01 and _02) and 6.31's iceberg (BR_S6_Approach_03
 // and _Overlap, events/distantfog.js), each on its own build, and Season 7's The Block (7.00's R0 and R1, 7.10's slab1 to
-// slab4: events/block.js), which is the map and so is served with the seasonal events off too.
+// slab4: events/block.js), which is the map and so is served with the seasonal events off too, and 7.20's Ice King (LoadLevel,
+// WDK, warning, Countdown, R0, LoadSequence, WD0 to WD2 and SP: events/icestorm.js).
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -110,10 +111,10 @@ export function calendarRoutes({ tokens, settings }) {
     // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
     // Butterfly (events/butterfly.js), the Birthday Challenges on the admin's times (events/birthday2018.js), Season 7's The
     // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and 7.20's Ice Storm Challenges
-    // (events/icestorm.js) as one schedule.
+    // (events/icestorm.js) and its Ice King and Ice Storm (events/icestorm.js iceKingStates) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
       islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
-      iceStormStates(now));
+      iceStormStates(now), iceKingStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
