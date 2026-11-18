@@ -128,6 +128,26 @@ const summitStrikerPack = {
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_253_Athena_Commando_M_MilitaryFashion2", "AthenaBackpack:BID_134_MilitaryFashion"]
 };
+// The Cobalt Pack (Core-Backend #385) is Season 7's: the Cobalt outfit (CID_327_Athena_Commando_M_BlueMystery) and the
+// Reinforced Backplate back bling (BID_203_BlueMystery), both Epic rarity, with 600 V-Bucks (500 + 100 bonus) for $4.99,
+// one per account, as the four before it (the reporter's screenshot of Epic's offer: "600 V-Bucks, Cobalt Outfit,
+// Reinforced Backplate", "500 V-Bucks + 100 BONUS"; the Fortnite Wiki's The Cobalt Pack: $4.99, added in Update v7.20, in
+// the store from 30 January 2019, the day after the Summit Striker Pack's last). 7.20's paks (CL-4727874) are the first
+// with both cosmetics and Cobalt's featured display asset (DA_Featured_CID_327_Athena_Commando_M_BlueMystery, its art here
+// as the packs' before it; no starter pack display asset is in them); 7.00's and 7.10's (CL-4629139, CL-4667333) have
+// neither. So, as the Summit Striker's (#356), it is offered on a Season 7 build whose cosmetics have both, for the whole
+// season (🟡 rather than from 30 January on the season's replay, which left Season 6's replay without a starter pack for
+// weeks). 🟡 7.00 and 7.10 keep offering none, as before (Epic sold the Summit Striker Pack on to 29 January 2019).
+const cobaltPack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s7",
+  title: "The Cobalt Pack",
+  description: "Cobalt outfit, Reinforced Backplate back bling and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_327_Athena_Commando_M_BlueMystery"),
+  season: 7,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_327_Athena_Commando_M_BlueMystery", "AthenaBackpack:BID_203_BlueMystery"]
+};
 // The Deep Freeze Bundle (Core-Backend #356) is a Season 6 real-money pack: the Frostbite outfit
 // (CID_261_Athena_Commando_M_RaptorArcticCamo), the Freezing Point back bling (BID_142_RaptorArcticCamo), the Chill-Axe
 // pickaxe (Pickaxe_ID_097_RaptorArcticCamo) and the Cold Front glider (Glider_ID_074_RaptorArcticCamo) with 1,000 V-Bucks
@@ -183,7 +203,7 @@ const foundersPackOffer = (from, to) => {
 const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
 
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack, acePack, summitStrikerPack, deepFreezeBundle, ...foundersPackOffers];
+  wingmanPack, acePack, summitStrikerPack, cobaltPack, deepFreezeBundle, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);

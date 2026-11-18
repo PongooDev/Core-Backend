@@ -640,6 +640,60 @@ test("#356: the Summit Striker Pack is Season 6's on 6.20 and later, all season;
   }
 });
 
+// Core-Backend #385: the Cobalt Pack, Season 7's, on a Season 7 build whose paks have Cobalt and the Reinforced Backplate
+// (7.20 on), all season; 7.00 and 7.10, without them, offer no starter pack, as before.
+const agent700s = "Fortnite/++Fortnite+Release-7.00-CL-4629139 Windows/10.0.19045.1.256.64bit";
+const agent710s = "Fortnite/++Fortnite+Release-7.10-CL-4667333 Windows/10.0.19045.1.256.64bit";
+const agent720s = "Fortnite/++Fortnite+Release-7.20-CL-4727874 Windows/10.0.19045.1.256.64bit";
+const cobaltCosmetics = ["AthenaCharacter:CID_327_Athena_Commando_M_BlueMystery", "AthenaBackpack:BID_203_BlueMystery"];
+const cobaltOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_starter_br_s7");
+test("#385: the Cobalt Pack is Season 7's on 7.20, all season; 7.00 and 7.10 offer none", async () => {
+  const cobalt = findRealMoneyOffer("core_starter_br_s7");
+  assert.deepEqual([cobalt.title, cobalt.season, cobalt.price, cobalt.currencyCode, cobalt.oncePerAccount], ["The Cobalt Pack", 7, 499, "USD", true]);
+  assert.deepEqual(cobalt.cosmetics, cobaltCosmetics);
+  assert.deepEqual(cobalt.grants, [{ templateId: "Currency:MtxPurchased", quantity: 500 }, { templateId: "Currency:MtxPurchaseBonus", quantity: 100 }]);
+  for (const build of ["4629139", "4667333"]) assert.equal(inBuild(build, () => lockerCosmeticId(cobaltCosmetics[0])), undefined, build);
+  for (const templateId of cobaltCosmetics) assert.ok(inBuild("4727874", () => lockerCosmeticId(templateId)), templateId);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "CobaltShopper");
+    const offered = async (userAgent, who = player) => currencyOf(await catalog(backend.port, who.token, userAgent)).catalogEntries
+      .map((entry) => entry.offerId).filter((id) => id.startsWith("core_starter_"));
+
+    // Whatever day the replay stands at: the Cobalt Pack on 7.20, none on 7.00 and 7.10; Season 6 keeps the Summit Striker's.
+    for (const start of ["2026-11-12", "2026-09-01", null]) {
+      assert.equal((await post(backend.port, "/admin/api/events/config", undefined, { seasonStarts: { 7: start } })).status, 200);
+      assert.deepEqual(await offered(agent720s), ["core_starter_br_s7"], `${start}`);
+      for (const userAgent of [agent700s, agent710s]) assert.deepEqual(await offered(userAgent), [], `${start} ${userAgent}`);
+    }
+    assert.deepEqual(await offered(agent631), ["core_starter_br_s6"]);
+    const offer = cobaltOf(await catalog(backend.port, player.token, agent720s));
+    assert.equal(offer.title, "The Cobalt Pack");
+    assert.equal(offer.prices[0].currencyType, "RealMoney");
+    assert.deepEqual(offer.metaInfo.map(({ key, value }) => `${key}=${value}`), ["MtxQuantity=600", "MtxBonus=100"]);
+    assert.equal(offer.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_Featured_CID_327_Athena_Commando_M_BlueMystery.DA_Featured_CID_327_Athena_Commando_M_BlueMystery");
+    assert.deepEqual(offer.requirements, [{ requirementType: "DenyOnFulfillment", requiredId: "core_starter_br_s7", minQuantity: 1 }]);
+
+    // Bought on 7.20: Cobalt, the Reinforced Backplate and 600 V-Bucks, once.
+    const id = offer.appStoreId[1];
+    const priced = (await as(backend.port, `/catalog/api/shared/bulk/offers?id=${id}&returnItemDetails=false`, await clientToken(backend.port), agent720s)).body;
+    assert.deepEqual([priced[id].price, priced[id].currencyCode, priced[id].title], [499, "USD", "The Cobalt Pack"]);
+    const page = await open(backend.port, id, agent720s);
+    assert.equal(page.status, 200);
+    assert.equal((await complete(backend.port, purchaseIdOf(page.body))).status, 200);
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent720s);
+    for (const templateId of cobaltCosmetics) assert.equal(owned(athena, templateId).length, 1, templateId);
+    const core = await query(backend.port, player.accountId, player.token, "common_core", agent720s);
+    assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
+    assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
+    assert.equal(cobaltOf(await catalog(backend.port, player.token, agent720s)), undefined);
+    assert.equal((await open(backend.port, id, agent720s)).status, 409);
+  } finally {
+    backend.close();
+  }
+});
+
 // Core-Backend #356: the Deep Freeze Bundle, a Season 6 real-money pack (Frostbite, Freezing Point, Chill-Axe, Cold Front and
 // 1,000 V-Bucks, $14.99), on sale from 14 November 2018 on Season 6's replay, on the builds whose paks have its items.
 const freezeCosmetics = ["AthenaCharacter:CID_261_Athena_Commando_M_RaptorArcticCamo", "AthenaBackpack:BID_142_RaptorArcticCamo",
