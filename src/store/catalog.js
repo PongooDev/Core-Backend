@@ -236,7 +236,9 @@ function offerJson(offer, sortPriority) {
     // Event Store say false. Earlier builds' offers have no such field.
     ...(hasRefunds() ? { refundable: Boolean(offer.athena) && !offer.seasonLevel } : {}),
     // FCatalogOffer's GiftInfo (3.0 on): 6.31's gifting (store/gifting.js) offers the Gift button only for an offer whose
-    // giftInfo is enabled, the item shop's cosmetics while the admin panel has gifting on. Builds before 6.31 get none.
+    // giftInfo is enabled: the item shop's cosmetics while the admin panel allows item gifting, the Battle Pass while it
+    // allows Battle Pass gifting (Core-Backend #386, each by its Original dates when those are on). Builds before 6.31 get
+    // none.
     ...(giftInfoOf(offer) ? { giftInfo: giftInfoOf(offer) } : {})
   };
 }

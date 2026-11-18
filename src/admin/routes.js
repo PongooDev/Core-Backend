@@ -79,7 +79,7 @@ import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
-import { giftingFriendDays } from "../store/gifting.js";
+import { giftingFriendDays, giftingStateOf } from "../store/gifting.js";
 import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, displayColorFields, displayTextFields, leaderboardOf, matchesInWindow, maxQualifierPlaces, maxWindows,
   rulesets, scoringOf, statusOf, tournamentPlaylists, windowsOf } from "../tournaments/store.js";
@@ -1322,6 +1322,8 @@ export function adminRoutes(context) {
       vivoxVoice: req.body?.vivoxVoice,
       gifting: req.body?.gifting,
       giftingFriendDays: req.body?.giftingFriendDays,
+      giftingBattlePass: req.body?.giftingBattlePass,
+      giftingOriginalDates: req.body?.giftingOriginalDates,
       purchaseMode: req.body?.purchaseMode,
       twitchPrimePack: req.body?.twitchPrimePack,
       matchStartCountdown: req.body?.matchStartCountdown,
@@ -1468,6 +1470,11 @@ export function adminRoutes(context) {
       // 6.31's item shop gifting (store/gifting.js), switched with /admin/api/settings.
       gifting: settings?.get?.()?.gifting !== false,
       giftingFriendDays: giftingFriendDays(settings?.get?.() ?? {}),
+      // Battle Pass gifting and Original dates (Core-Backend #386), and whether each kind is allowed now on the shown
+      // season's builds (store/gifting.js).
+      giftingBattlePass: settings?.get?.()?.giftingBattlePass === true,
+      giftingOriginalDates: settings?.get?.()?.giftingOriginalDates === true,
+      giftingNow: withoutSeasonStartRecording(() => giftingStateOf(s, settings?.get?.() ?? {}, now)),
       purchaseMode: settings?.get?.()?.purchaseMode === "code" ? "code" : "free",
       // Support-A-Creator's enabled codes (store/creators.js), set with /admin/api/creators.
       creatorNames: creatorNames(settings?.get?.() ?? {}),

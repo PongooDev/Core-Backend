@@ -136,6 +136,10 @@ const defaults = {
   // have been the sender's friend, Epic's 2 by default.
   gifting: true,
   giftingFriendDays: defaultGiftingFriendDays,
+  // Battle Pass gifting (Core-Backend #386), off by default: Epic opened it with Season X. Original dates: each kind only
+  // on Epic's dates (store/gifting.js), off by default.
+  giftingBattlePass: false,
+  giftingOriginalDates: false,
   // How those offers are paid (Core-Backend #248, services/fortnite/purchase.js): "free", the purchase page's Complete purchase
   // button, or "code", a purchase code (store/purchasecodes.js) the page asks for and the admin panel hands out.
   purchaseMode: "free",
@@ -759,6 +763,8 @@ export function createSettingsStore(dataDir) {
       settings.vbuckPacks = loaded.vbuckPacks !== false;
       settings.vivoxVoice = loaded.vivoxVoice !== false;
       settings.gifting = loaded.gifting !== false;
+      settings.giftingBattlePass = loaded.giftingBattlePass === true;
+      settings.giftingOriginalDates = loaded.giftingOriginalDates === true;
       settings.giftingFriendDays = giftingFriendDaysValue(loaded.giftingFriendDays) ?? defaultGiftingFriendDays;
       settings.purchaseMode = loaded.purchaseMode === "code" ? "code" : "free";
       settings.twitchPrimePack = loaded.twitchPrimePack === true;
@@ -945,6 +951,8 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
       if (typeof partial.vivoxVoice === "boolean") settings.vivoxVoice = partial.vivoxVoice;
       if (typeof partial.gifting === "boolean") settings.gifting = partial.gifting;
+      if (typeof partial.giftingBattlePass === "boolean") settings.giftingBattlePass = partial.giftingBattlePass;
+      if (typeof partial.giftingOriginalDates === "boolean") settings.giftingOriginalDates = partial.giftingOriginalDates;
       if (giftingFriendDaysValue(partial.giftingFriendDays) !== undefined) settings.giftingFriendDays = giftingFriendDaysValue(partial.giftingFriendDays);
       if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;
       if (typeof partial.twitchPrimePack === "boolean") settings.twitchPrimePack = partial.twitchPrimePack;

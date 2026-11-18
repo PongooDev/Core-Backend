@@ -168,6 +168,8 @@ const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("items
   6: readHistory("itemshop-season6.json"), 7: readHistory("itemshop-season7.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
+// Whether Core has the season's shop history, so its replay (seasonMoment) stands on its own days (store/gifting.js).
+export const hasSeasonHistory = (season) => Object.hasOwn(seasonHistories, season);
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
 export const seasonHistoryStart = (season) => historyOf(season).firstDay;
 const dayMs = 24 * 60 * 60 * 1000;

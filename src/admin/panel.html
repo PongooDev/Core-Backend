@@ -6967,12 +6967,32 @@ Each starts active; quests the account already has are left as they are.`, {
         el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
           el("h2", { text: "Gifting" }),
           toggleSwitch(shop.gifting !== false, async (checked) => {
-            const res = await act(api("/admin/api/settings", { gifting: checked }), checked ? "Gifting is on" : "Gifting is off");
+            const res = await act(api("/admin/api/settings", { gifting: checked }), checked ? "Item gifting is on" : "Item gifting is off");
             if (res) showShop();
           })),
         el("p", { class: "note", style: "margin:0 0 10px;", text: "From 6.31, as Epic opened it then, an item shop cosmetic can be bought for friends: the Gift button sends it in a gift wrap with a message, the giver pays its V-Bucks, and the friend finds it in their locker after a gift screen. A player can send 3 gifts in 24 hours, only to friends of the days below, not to someone who turned gifts off or already owns the item. A change shows once the game restarts." }),
         el("label", { style: "display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--muted);" },
-          el("span", { text: "Days of friendship before gifting" }), giftingDaysInput, saveGiftingDaysBtn));
+          el("span", { text: "Days of friendship before gifting" }), giftingDaysInput, saveGiftingDaysBtn),
+        // Battle Pass gifting and Original dates (Core-Backend #386, store/gifting.js), both off by default.
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Battle Pass gifting" }),
+            el("div", { class: "muted", text: "The season's Battle Pass (not the bundle or tiers) can be gifted too, for its V-Bucks: the friend gets the pass and the tiers it gives. It has its own switch, apart from the item shop's (the switch above). Epic only allowed it from Season X. Whether these builds' Season tab shows its Gift button isn't confirmed. Off by default." })),
+          toggleSwitch(shop.giftingBattlePass === true, async (checked) => {
+            const res = await act(api("/admin/api/settings", { giftingBattlePass: checked }), checked ? "Battle Pass gifting is on" : "Battle Pass gifting is off");
+            if (res) showShop();
+          })),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Original dates (gifting)" }),
+            el("div", { class: "muted", text: "Gifting only on Epic's dates, on the season replay clock (Events & Seasons): items from 27 November to 3 December 2018 (6.31) and again from 18 February 2019 on (Season 7's replay), the Battle Pass from Season X (1 August 2019), so on no build Core supports. A switch that is off keeps its kind off. Off by default." }),
+            shop.giftingNow
+              ? el("div", { class: "muted", text: `Season ${shop.season} (${shop.giftingNow.version}${shop.giftingNow.replayDay ? `, replay day ${shop.giftingNow.replayDay}` : ""}): items ${shop.giftingNow.items ? "can" : "can't"} be gifted now, the Battle Pass ${shop.giftingNow.battlePass ? "can" : "can't"}.` })
+              : el("div", { class: "muted", text: `Season ${shop.season}'s builds have no gifting (it came with 6.31).` })),
+          toggleSwitch(shop.giftingOriginalDates === true, async (checked) => {
+            const res = await act(api("/admin/api/settings", { giftingOriginalDates: checked }), checked ? "Gifting follows Epic's dates" : "Gifting no longer follows Epic's dates");
+            if (res) showShop();
+          })));
 
       // Support-A-Creator (6.02, store/creators.js, Core-Backend #349): the accounts that are creators, each with its own
       // code, the payout's share of what a supporter spends, and the creators' Twitch Prime packs.

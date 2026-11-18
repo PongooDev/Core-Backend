@@ -11,8 +11,9 @@ import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { giftCatalogEntry } from "../src/services/mcp/commands/GiftCatalogEntry.js";
 import { createSettingsStore } from "../src/settings/store.js";
-import { configureGifting, giftInfoOf, giftingRuntimeOptions, giftsInLastDay, notEligibleError, receiverErrors } from "../src/store/gifting.js";
-import { itemShopOffers } from "../src/store/itemshop.js";
+import { battlePassGiftingOn, configureGifting, giftInfoOf, giftingRuntimeOptions, giftsInLastDay, itemGiftingOn, notEligibleError, receiverErrors } from "../src/store/gifting.js";
+import { battlePassOffers } from "../src/battlepass/season2.js";
+import { configureItemShop, itemShopOffers } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // 6.31's item shop gifting (store/gifting.js): Epic opened it with 6.31 (CL-4573279); 6.30 and before stay as they were.
@@ -238,3 +239,103 @@ test("6.31 end to end: the catalog's giftInfo, the hotfix, GiftCatalogEntry and 
     backend.close();
   }
 });
+
+// Core-Backend #386: item gifting and Battle Pass gifting by their own switches, and Original dates (Epic's: items 27
+// November to 3 December 2018 and from 18 February 2019, the Battle Pass from Season X) on the season replay's clock.
+const v720 = "4727874";
+const replayOnEpicsDays = { mode: "fnbr", seasonStarts: { 6: "2018-09-27", 7: "2018-12-06" } };
+const at = (date) => new Date(`${date}T12:00:00Z`);
+
+test("#386: switches and Original dates decide item and Battle Pass gifting, by the season replay's day", () => {
+  configureItemShop(replayOnEpicsDays);
+  try {
+    const item = { athena: true, currencyType: "MtxCurrency", templateId: "AthenaCharacter:cid_x", price: 800 };
+    const pass = { battlePass: "pass", currencyType: "MtxCurrency", price: 950 };
+    const dated = { giftingOriginalDates: true };
+    // Defaults: items on, the pass off, no dates (as before #386).
+    assert.equal(itemGiftingOn(v631, {}, at("2018-10-01")), true);
+    assert.equal(battlePassGiftingOn(v631, {}, at("2018-10-01")), false);
+    assert.equal(giftInfoOf(pass, v631, { giftingBattlePass: true }).bIsEnabled, true);
+    assert.deepEqual(giftInfoOf(pass, v631, { giftingBattlePass: true }).purchaseRequirements, []);
+    assert.equal(giftInfoOf({ ...pass, battlePass: "bundle" }, v631, { giftingBattlePass: true }).bIsEnabled, false, "not the bundle");
+    assert.equal(giftInfoOf({ ...pass, battlePass: "tier" }, v631, { giftingBattlePass: true }).bIsEnabled, false, "not tiers");
+    assert.equal(giftInfoOf(item, v631, { gifting: false, giftingBattlePass: true }).bIsEnabled, false, "the item switch is apart");
+    assert.deepEqual(giftingRuntimeOptions(v631, { gifting: false, giftingBattlePass: true }, at("2018-10-01"))[0], "bDisableGifting=false");
+
+    // 6.31: 27 November to 3 December only.
+    assert.equal(itemGiftingOn(v631, dated, at("2018-11-26")), false);
+    assert.equal(itemGiftingOn(v631, dated, at("2018-11-27")), true);
+    assert.equal(itemGiftingOn(v631, dated, at("2018-12-03")), true);
+    assert.equal(itemGiftingOn(v631, dated, at("2018-12-04")), false);
+    assert.equal(giftInfoOf(item, v631, dated, at("2018-12-04")).bIsEnabled, false);
+    assert.deepEqual(giftingRuntimeOptions(v631, dated, at("2018-12-04")), ["bDisableGifting=true"]);
+    assert.equal(itemGiftingOn(v631, { ...dated, gifting: false }, at("2018-11-28")), false, "a switch that is off stays off");
+    // 7.20: Season 7's replay from 18 February.
+    assert.equal(itemGiftingOn(v720, dated, at("2019-02-17")), false);
+    assert.equal(itemGiftingOn(v720, dated, at("2019-02-18")), true);
+    assert.equal(itemGiftingOn(v720, {}, at("2019-01-01")), true, "without the dates, on");
+    // The Battle Pass: Season X's, so on no supported build with the dates.
+    assert.equal(battlePassGiftingOn(v720, { ...dated, giftingBattlePass: true }, at("2019-02-27")), false);
+    assert.equal(battlePassGiftingOn(v720, { giftingBattlePass: true }, at("2019-02-27")), true);
+    // 6.30 and before: unchanged, whatever the switches say.
+    assert.equal(giftInfoOf(item, v630, { giftingBattlePass: true, giftingOriginalDates: true }), undefined);
+    assert.deepEqual(giftingRuntimeOptions(v630, { giftingBattlePass: true }), []);
+
+    const store = createSettingsStore(null);
+    assert.deepEqual([store.get().giftingBattlePass, store.get().giftingOriginalDates], [false, false]);
+    store.update({ giftingBattlePass: true, giftingOriginalDates: true });
+    assert.deepEqual([store.get().giftingBattlePass, store.get().giftingOriginalDates], [true, true]);
+    store.update({ giftingBattlePass: "yes" });
+    assert.equal(store.get().giftingBattlePass, true, "only a boolean changes it");
+  } finally {
+    configureItemShop(null);
+  }
+});
+
+test("#386: Original dates refuse an item gift out of Epic's dates on 6.31 and allow it in them", () => world(({ sessionFor, befriend, gift, vbucks, setSettings }) => {
+  // Season 6's replay started so many days ago that today is its day 68 (4 December 2018, off) or 62 (28 November, on).
+  const startDaysAgo = (days) => new Date(Date.now() - days * day).toISOString().slice(0, 10);
+  try {
+    grant(sessionFor("sender"), "Currency:MtxPurchased", 5000);
+    befriend("sender", "alice");
+    setSettings({ giftingOriginalDates: true });
+    configureItemShop({ mode: "fnbr", seasonStarts: { 6: startDaysAgo(68) } });
+    assert.match(refusal(() => gift({ offerId: shopOffer().offerId, receiverAccountIds: ["alice"] })).message, /Gifting is off/);
+    assert.equal(vbucks("sender"), 5000);
+    configureItemShop({ mode: "fnbr", seasonStarts: { 6: startDaysAgo(62) } });
+    const offer = shopOffer();
+    gift({ offerId: offer.offerId, receiverAccountIds: ["alice"] });
+    assert.ok(ownsCosmetic(sessionFor("alice"), offer.templateId));
+    assert.equal(vbucks("sender"), 5000 - offer.price);
+  } finally {
+    configureItemShop(null);
+  }
+}));
+
+test("#386: a Battle Pass gift gives the receiver the sender's season's pass; an owner is turned down; off by default", () => world(({ sessionFor, befriend, gift, vbucks, setSettings }) => {
+  const offer = battlePassOffers().find(({ battlePass }) => battlePass === "pass");
+  assert.ok(offer, "6.31 sells Season 6's pass");
+  grant(sessionFor("sender"), "Currency:MtxPurchased", 5000);
+  befriend("sender", "alice");
+  befriend("sender", "owner");
+  sessionFor("alice").profile("athena");
+  assert.match(refusal(() => gift({ offerId: offer.offerId, receiverAccountIds: ["alice"] })).message, /Battle Pass gifting is off/);
+  setSettings({ gifting: false, giftingBattlePass: true });
+  const bundle = battlePassOffers().find(({ battlePass }) => battlePass === "bundle");
+  assert.match(refusal(() => gift({ offerId: bundle.offerId, receiverAccountIds: ["alice"] })).message, /can't be gifted/);
+
+  // The owner already has the pass: turned down, nothing charged.
+  gift({ offerId: offer.offerId, receiverAccountIds: ["owner"] });
+  const second = refusal(() => gift({ offerId: offer.offerId, receiverAccountIds: ["owner"] }));
+  assert.deepEqual(second.messageVars, ["[owner]", `[${receiverErrors.owned}]`]);
+  assert.equal(vbucks("sender"), 5000 - offer.price);
+
+  gift({ offerId: offer.offerId, receiverAccountIds: ["alice"], giftWrapTemplateId: "GiftBox:GB_GiftWrap3" });
+  assert.equal(vbucks("sender"), 5000 - offer.price * 2);
+  const athena = sessionFor("alice").profile("athena").profile;
+  assert.equal(athena.stats.attributes.book_purchased, true);
+  assert.equal(athena.stats.attributes.season_num, 6);
+  assert.notEqual(sessionFor("sender").profile("athena").profile.stats.attributes.book_purchased, true, "the sender gets nothing");
+  const box = Object.values(sessionFor("alice").profile("profile0").profile.items).find(({ templateId }) => templateId === "GiftBox:GB_GiftWrap3");
+  assert.equal(box.attributes.fromAccountId, "sender");
+}));
