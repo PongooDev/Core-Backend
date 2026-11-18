@@ -105,10 +105,16 @@ export const eventCards = [
     about: "The Ice Storm Challenges: three at the start, two more each day for five days (destroy the Ice Legion), the Blue Metallic wrap for six and the Winter's Thorn glider for all (from the Ice Storm, 19 January 2019, 11 AM PST, to 28 January). Its modes, the Ice Storm's Solo, Duos and Squads, are the Battle Royale game modes' (Original dates). 🟡 The end is the wiki's last day.",
     flags: ["EventFlag.LTM_WinterDeimos", "CalendarEvent_Season7_WinterDeimos"] },
   // 7.20's Ice King (events/icestorm.js): held before the event by default, started by the admin (Core-Backend #354), and its
-  // snow (7.20's two states, SP's).
+  // snow (7.20's two states, SP's). Two ways to start it (CoreV2 #490): Start now plays the storm 30 seconds on in the
+  // matches running (already on their playlist, so the default modes' get no Ice Legion), and Start in 5 minutes
+  // (soonLeadSeconds) gives the time to queue a match, which then is the Ice Storm's (events/ltms.js iceStormMatchBucket)
+  // and gets the Ice Legion after the storm. A match's playlist is set when it is assigned, so no admin change can give a
+  // running default match the Ice Legion's missions.
   { id: "iceKing", kind: "dated", dated: "iceKing", seasons: [7], name: "The Ice King's Ice Storm", builds: "7.20", ranges: [[4727874, 4727874]],
-    key: "storm", nowLeadSeconds: 30, startLabel: "The Ice Storm starts",
-    about: "The ice sphere over Polar Peak, the Ice King in it, the TVs' weather warning and countdown, the sphere's 24-hour clock, then the storm: the Ice King breaks out, the storm pauses, a blizzard covers the island in snow and the Ice Legion comes. The matches running at the storm play it: be in a match, then press Start now, and the storm comes 30 seconds later (it needs the last 12 minutes before the storm, which Start now turns on at once). A match that starts after the storm starts under snow, without the storm, so to watch it from the lobby pick a time a few minutes ahead with Custom and be in a match by then. The Ice Legion comes only to a match on an Ice Storm playlist (7.20's own rule), so from half an hour before the storm Solo, Duos and Squads still show in the lobby but their matches are the Ice Storm's: a match started then gets the Ice Fiends and Brutes as the storm ends. For that, use Custom with a time at least a few minutes ahead and start the match after setting it; with Start now the match already running started on the normal playlist and plays the storm without them. After the storm the Ice Storm modes keep the Ice Legion (WDSPAWN). Solo, Duos and Squads switch to the Ice Storm modes once the storm has started, and are back with Before the event; to play the storm again, set Before the event and start a new match first. 🟡 Epic's hours before the storm aren't recorded." },
+    key: "storm", nowLeadSeconds: 30, soonLeadSeconds: 300, soonLabel: "Start in 5 minutes", startLabel: "The Ice Storm starts",
+    nowConfirm: "Start the Ice Storm in 30 seconds? The matches running now play it, but they started on the normal Solo, Duos and Squads, so no Ice Fiends come to them. For the Ice Fiends, use Start in 5 minutes and then start a new match.",
+    soonConfirm: "Start the Ice Storm in 5 minutes? Start a Solo, Duos or Squads match after this: it runs as the Ice Storm's mode, plays the storm, and the Ice Fiends and Brutes come right after it. A match already running plays the storm without them.",
+    about: "The ice sphere over Polar Peak, the Ice King in it, the TVs' weather warning and countdown, the sphere's 24-hour clock, then the storm: the Ice King breaks out, the storm pauses, a blizzard covers the island in snow and the Ice Legion comes. To see the storm and the Ice Fiends: press Start in 5 minutes, then start a Solo, Duos or Squads match and stay alive until about 2 minutes after the storm. Matches started in the half hour before the storm are the Ice Storm's (the lobby still shows Solo, Duos and Squads), and only those get the Ice Legion (7.20's own rule: the Ice Legion's spawners are in the Ice Storm playlists). Start now plays the storm 30 seconds later in the match you're already in, without the Ice Legion: that match started on the normal playlist. Custom picks the storm's time yourself (the same rule: start the match after setting it). A match that starts after the storm starts under snow, without the storm, on the Ice Storm modes with the Ice Legion. To play the storm again, set Before the event first. 🟡 Epic's hours before the storm aren't recorded." },
   { id: "iceKingSnow", kind: "choice", choice: "iceKingSnow", seasons: [7], name: "The Ice Storm's snow", builds: "7.20", ranges: [[4727874, 4727874]],
     about: "The island's snow on 7.20. 7.20 has two snow states (no stages in between: the melting came with later updates): Season 7's own snow, and the whole island under snow after the storm. Follows the storm by default. A match keeps the snow it started with; the storm itself spreads the snow over the island in the matches running then." }
 ];
@@ -259,6 +265,9 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
       flags: card.flags ?? datedEvent(card.dated)?.steps.flatMap((step) => step.flags).filter((flag, index, all) => all.indexOf(flag) === index) ?? [],
       startLabel: card.startLabel ?? null, endLabel: card.endOfKey || card.endStep || card.kind === "oddities" ? card.endLabel : null,
       ...control, modeLabels: Object.fromEntries((control.modes ?? []).map((id) => [id, control.labels?.[id] ?? modeLabels[id] ?? id])),
+      // Start now's confirmation when the card has its own, and a second button from soonLeadSeconds on (the Ice King's).
+      nowConfirm: card.nowConfirm ?? null,
+      soon: control.now && card.soonLeadSeconds ? { seconds: card.soonLeadSeconds, label: card.soonLabel, confirm: card.soonConfirm ?? null } : null,
       state, links: links[card.id] ?? []
     };
   });
@@ -277,19 +286,21 @@ export function buildsNow(builds, cards, storm) {
 // The one control as the stores' settings: {event, mode, startAt?, endAt?, countdownHours?, percent?} to an events config
 // patch ({rocketLaunch}, {season4Flags}, {datedFlags}, {stormDestruction}, {contentUpdates}, {meteorStrike} or {iceKingSnow}),
 // or {error}.
-// "now" is the custom mode from now (the key moment now, or nowLeadSeconds on). The current events config fills a
-// custom mode chosen without times with the ones it has.
+// "now" is the custom mode from now (the key moment now, or nowLeadSeconds on), and "soon" from soonLeadSeconds on for a
+// card that has it (the Ice King's Start in 5 minutes). The current events config fills a custom mode chosen without
+// times with the ones it has.
 export function scheduleEventPatch(body, config = {}, now = new Date()) {
   const card = eventCard(body?.event);
   if (!card || card.kind === "build") return { error: `event must be one of ${eventCards.filter(({ kind }) => kind !== "build").map(({ id }) => id).join(", ")}` };
   const modes = card.kind === "rocket" ? ["off", "dates", "custom", "now"] : card.kind === "oddities" ? ["off", "dates", "launch", "custom", "now"]
     : card.kind === "storm" ? ["off", "dates", "always"] : card.kind === "contentUpdates" ? ["season", "all"] : card.kind === "choice" ? choiceOf(card).phases.map(([id]) => id)
-    : [...datedModesOf(datedEvent(card.dated)), "now"];
+    : [...datedModesOf(datedEvent(card.dated)), "now", ...(card.soonLeadSeconds ? ["soon"] : [])];
   const mode = body.mode;
   if (!modes.includes(mode)) return { error: `mode must be ${modes.join(", ")}` };
   const time = (value) => (value === undefined || value === null || value === "" ? null : typeof value === "string" && !Number.isNaN(Date.parse(value)) ? Date.parse(value) : NaN);
-  const start = mode === "now" ? now.getTime() + (card.nowLeadSeconds ?? 0) * 1000 : time(body.startAt);
-  const end = mode === "now" ? null : time(body.endAt);
+  const fromNow = mode === "now" || mode === "soon";
+  const start = fromNow ? now.getTime() + ((mode === "soon" ? card.soonLeadSeconds : card.nowLeadSeconds) ?? 0) * 1000 : time(body.startAt);
+  const end = fromNow ? null : time(body.endAt);
   if (Number.isNaN(start) || Number.isNaN(end)) return { error: "startAt and endAt must be dates and times" };
   if (start !== null && end !== null && end <= start) return { error: "The end must be after the start" };
   const iso = (value) => new Date(value).toISOString();
@@ -318,7 +329,7 @@ export function scheduleEventPatch(body, config = {}, now = new Date()) {
   }
   // A dated event: Epic's steps from its key moment, stretched or squeezed to the end when one is given.
   const event = datedEvent(card.dated);
-  if (mode !== "custom" && mode !== "now") return { patch: { datedFlags: { [event.id]: { mode } } } };
+  if (mode !== "custom" && !fromNow) return { patch: { datedFlags: { [event.id]: { mode } } } };
   if (start === null) {
     return validDatedSchedule(event, config.datedFlags?.[event.id]?.schedule ?? [])?.length ? { patch: { datedFlags: { [event.id]: { mode: "custom" } } } }
       : { error: `Pick when ${card.startLabel.toLowerCase()}` };

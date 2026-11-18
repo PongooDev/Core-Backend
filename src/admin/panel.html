@@ -8513,9 +8513,14 @@ Each starts active; quests the account already has are left as they are.`, {
             scheduleAction({ event: card.id, mode }, `${card.name}: ${card.modeLabels[mode] || mode}`);
           } }));
         const startNow = card.now ? btn(card.kind === "rocket" ? "Launch now" : "Start now", async () => {
-          const ok = await confirmModal(`Start ${card.name} now? Players in matches running on ${card.builds} see it within a few seconds, the others at their next match.`,
+          const ok = await confirmModal(card.nowConfirm || `Start ${card.name} now? Players in matches running on ${card.builds} see it within a few seconds, the others at their next match.`,
             { title: "Start now", confirmText: "Start now" });
           if (ok) scheduleAction({ event: card.id, mode: "now" }, `${card.name}: started now`);
+        }, "ghost small") : null;
+        // The Ice King's Start in 5 minutes (CoreV2 #490): time to start a match, which then is the Ice Storm's.
+        const startSoon = card.soon ? btn(card.soon.label, async () => {
+          const ok = await confirmModal(card.soon.confirm || `${card.soon.label}?`, { title: card.soon.label, confirmText: card.soon.label });
+          if (ok) scheduleAction({ event: card.id, mode: "soon" }, `${card.name}: ${card.soon.label.toLowerCase()}`);
         }, "ghost small") : null;
         const extra = advancedOf(card).filter(Boolean);
         return el("div", { "data-event": card.id, style: "padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm);" },
@@ -8528,7 +8533,7 @@ Each starts active; quests the account already has are left as they are.`, {
           el("div", { class: "event-state", style: "font-size:13px; margin-top:8px;", text: stateText(card.state) }),
           segButtons.length
             ? el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px;" },
-              el("div", { class: "seg", role: "group", "aria-label": `When ${card.name} runs` }, segButtons), startNow)
+              el("div", { class: "seg", role: "group", "aria-label": `When ${card.name} runs` }, segButtons), startNow, startSoon)
             : el("div", { class: "muted", style: "font-size:12px; margin-top:8px;", text: "Runs on its builds by itself; the event mode above switches it." }),
           customRow,
           (card.links || []).length ? el("div", { style: "margin-top:8px;" }, card.links.map((link) => el("a", { href: link.href, style: "display:block; font-size:12px; margin-top:4px;", text: `${link.text} →` }))) : null,

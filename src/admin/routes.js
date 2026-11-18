@@ -1758,7 +1758,7 @@ export function adminRoutes(context) {
   });
 
   // The Events page's one control per event (Core-Backend #351, admin/eventschedules.js scheduleEventPatch): {event, mode:
-  // "off" | "dates" | "custom" | "now" (and an event's own: the rifts' "launch", the Birthday Challenges' "build", Storm
+  // "off" | "dates" | "custom" | "now" (and an event's own: the Ice King's "soon", the rifts' "launch", the Birthday Challenges' "build", Storm
   // Destruction's "always", the loot updates' "season" | "all", the meteor shower's phase), startAt?, endAt?, countdownHours?,
   // percent?}. It sets the stores the routes above set (rocketLaunch, season4Flags, datedFlags, stormDestruction,
   // contentUpdates, meteorStrike); the calendar revision follows the events config, so running servers refresh.

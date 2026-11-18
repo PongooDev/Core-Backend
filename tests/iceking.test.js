@@ -202,6 +202,39 @@ test("the Events page's cards: the Ice King held before the event with Start now
   assert.deepEqual(scheduleEventPatch({ event: "meteorStrike", mode: "impact" }, {}, now), { patch: { meteorStrike: "impact" } });
 });
 
+// CoreV2 #490 (the reporter's second logs): Start now pressed in a running Solo match played the storm there (its storm
+// circle held 54 s longer), but that match had started on Playlist_DefaultSolo, so no Ice Legion could come. Start in 5
+// minutes gives the time to start a match after it, which is then the Ice Storm's and gets the Ice Legion.
+test("Start in 5 minutes: the storm 5 minutes on, and a match started now is the Ice Storm's; Start now's running match isn't", () => {
+  const defaults = createSettingsStore(null).get();
+  const now = new Date();
+  const ms = now.getTime();
+  const solo = `${v720}:0:NAE:playlist_defaultsolo`;
+  const { patch } = scheduleEventPatch({ event: "iceKing", mode: "soon" }, season7, now);
+  assert.equal(patch.datedFlags.iceKing.mode, "custom");
+  withConfig({ ...season7, ...patch }, () => {
+    const states = inBuild(v720, () => iceKingStates(now));
+    const storm = states.find(({ events }) => events.some(({ eventType }) => eventType === "WD2"));
+    assert.equal(storm.validFrom, ms + 5 * 60000, "the storm 5 minutes on");
+    assert.deepEqual(typesAt(states, ms), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD1", "warning"], "the last 12 minutes on at once");
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, now), `${v720}:0:NAE:playlist_deimos_solo_winter`, "a match started now");
+    assert.equal(iceStormMatchBucket(solo, v720, defaults, new Date(ms + 4 * 60000)), `${v720}:0:NAE:playlist_deimos_solo_winter`, "and up to the storm");
+  });
+  // Start now: the match already running stays on the playlist it started on; one started in its 30 seconds is the Ice Storm's.
+  const started = scheduleEventPatch({ event: "iceKing", mode: "now" }, season7, now).patch;
+  withConfig({ ...season7, ...started }, () => assert.equal(iceStormMatchBucket(solo, v720, defaults, now), `${v720}:0:NAE:playlist_deimos_solo_winter`));
+  // Only the Ice King has it.
+  assert.ok(scheduleEventPatch({ event: "cube", mode: "soon" }, {}, now).error);
+  const dated = datedFlagsStatus(ms, (season) => seasonMoment(now, null, season).getTime(), season7);
+  const cards = eventSchedules({ now, config: season7, dated });
+  const king = cards.find(({ id }) => id === "iceKing");
+  assert.equal(king.soon.seconds, 300);
+  assert.equal(king.soon.label, "Start in 5 minutes");
+  assert.match(king.soon.confirm, /Ice Fiends/);
+  assert.match(king.nowConfirm, /no Ice Fiends/);
+  assert.equal(cards.find(({ id }) => id === "cube").soon, null, "another card has Start now alone");
+});
+
 // CoreV2 #490: the storm's Ice Legion comes only to a match on an Ice Storm playlist (its Mutator_DeimosMissions_W); its
 // dynamic spawners wait for WDSPAWN, which DeimosTurnOn stands in for at the storm.
 test("the Ice Legion: WDSPAWN from the storm on, whatever the snow, and the default modes' matches on the Ice Storm's in the half hour before it", () => {
