@@ -130,9 +130,15 @@ const blockModes = ["dates", "custom"];
 // the storm. 🟡 Epic's other hours aren't recorded: the sphere is up from the replay's first day (7.20 shipped with it, 15
 // January, as the Block's Looming Llama), the Ice King shows in it from Update v7.20's day (🟡 09:00 UTC) to the clock, the
 // TVs' warning and countdown from the Wednesday afternoon Newsweek dates them to (16 January, 🟡 2 PM ET), the clock its
-// last 24 hours (Fortnite Insider: the sphere "changed to a clock counting down 24 hours"), the storm's sequence level from
-// the clock to 10 minutes after the storm, WD2 the storm's first 10 minutes, and SP (storm past) from the storm on: a match
-// that starts after it begins under snow.
+// last 24 hours (Fortnite Insider: the sphere "changed to a clock counting down 24 hours"), WD2 the storm's first 10
+// minutes, and SP (storm past) from the storm on: a match that starts after it begins under snow. The storm's sequence level
+// (LoadSequence) is up with the sphere, from the replay's first day on, idle but for the storm (CoreV2 #490): a client
+// sees the storm's sequence only when the server had MooneySequenceMap before the client made it visible (7.20's
+// UFortReplicationGraphNode_AlwaysRelevant_ForConnection::GatherActorListsForConnection drops a streaming level it has no
+// always-relevant actors for yet, 0x12FFAF0, and puts it back only on one of them flushing its dormancy, 0x1313C00, which
+// the awake MooneySequence never does). A match loads it at its start; one that saw it turn on mid-match, as Start now did
+// while LoadSequence began 24 hours before the storm, raced its clients' calendar downloads and the server played the storm
+// for itself (its storm circle paused) while its players saw nothing. So no admin change turns it on in a running match.
 export const iceKingStormAt = Date.parse("2019-01-19T19:00:00.000Z");
 const iceKingClockMs = 24 * 3600000;
 const iceKingLeadUpMs = 12 * 60000;
@@ -233,11 +239,12 @@ export const datedEvents = [
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
   { id: "iceKing", name: "the Ice King's Ice Storm (7.20)", season: 7, flag: iceKingStorm, anchor: "storm", parts: 6,
     modes: ["before", "dates", "custom"], defaultMode: "before", steps: [
+      // First, so the Events page names the step after it that's on (the sphere, the TVs...), not this idle level.
+      step("sequence", "The storm's sequence level is loaded", [iceKingLoadSequence], season7FirstDay, null),
       step("sphere", "The ice sphere hangs over Polar Peak", [iceKingLoadLevel], season7FirstDay, null),
       step("iceKing", "The Ice King shows in the sphere", [iceKingVisible], Date.parse("2019-01-15T09:00:00.000Z"), iceKingStormAt - iceKingClockMs),
       step("warning", "The TVs broadcast the weather warning and count down", [iceKingWarning, iceKingCountdown, iceKingCountdownCheck],
         Date.parse("2019-01-16T19:00:00.000Z"), iceKingStormAt),
-      step("sequence", "The storm's sequence level loads", [iceKingLoadSequence], iceKingStormAt - iceKingClockMs, iceKingStormAt + iceKingStormMs),
       step("clock", "The sphere's clock counts down its last day", [iceKingClock], iceKingStormAt - iceKingClockMs, iceKingStormAt - iceKingLeadUpMs),
       step("leadUp", "The last 12 minutes: night falls on the island", [iceKingLeadUp], iceKingStormAt - iceKingLeadUpMs, iceKingStormAt),
       step("storm", "The Ice Storm: the Ice King breaks out and snow covers the island", [iceKingStorm], iceKingStormAt, iceKingStormAt + iceKingStormMs),

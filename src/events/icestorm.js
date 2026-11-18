@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedStepsThisLap, datedWindows, iceStormCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, iceKingLoadLevel, iceKingStormPast, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, iceKingLoadLevel, iceKingLoadSequence, iceKingStormPast, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // The Ice Storm Challenges (7.20, CL-4727874; events/events.js). The Fortnite Wiki's Ice Storm (19 January 2019, 11:00 AM
@@ -65,11 +65,17 @@ export { iceStormCalendarEvent };
 // The Ice King and his Ice Storm, Season 7's live event (7.20, CL-4727874; 19 January 2019, 11:00 AM PST, code-named Mooney).
 // How 7.20 plays it (its client paks decompiled; nothing of it is server-only):
 // - Athena_POI_Foundations places BP_MooneyLoader (replicated, always relevant). Once the match's playlist has loaded, and
-//   not in Creative, it watches LoadLevel with a FortAsyncAction_CalendarEventWatcher, and LoadSequence too; on the
-//   server OnEventActive sets its replicated LoadMooneyMap or LoadMooneySequence, whose OnRep streams
-//   Athena/Maps/Test/S7/MooneyMap (BP_MooneyScripting, BP_Mooney_Countdown: the sphere over Polar Peak, the Ice King in it,
-//   its clock's twelve orbs) or MooneySequenceMap (a Replicated_LevelSequence playing MooneySequence) on the server and
-//   every client.
+//   not in Creative, it watches LoadLevel with a FortAsyncAction_CalendarEventWatcher, and LoadSequence too; its
+//   OnEventActive sets LoadMooneyMap or LoadMooneySequence, whose OnRep streams Athena/Maps/Test/S7/MooneyMap
+//   (BP_MooneyScripting, BP_Mooney_Countdown: the sphere over Polar Peak, the Ice King in it, its clock's twelve orbs) or
+//   MooneySequenceMap (a Replicated_LevelSequence, MooneySequence, that plays the storm), on the server and on each client
+//   from its own calendar (the reporter's client streamed MooneySequenceMap in the frame its calendar download came in).
+//   The storm reaches the clients only as MooneySequence's replicated playback, and 7.20's replication graph sends a
+//   client a streaming level's always-relevant actors only when the server had that level before the client made it
+//   visible (events/datedflags.js has why), so LoadSequence is served from the sphere's first day on, every mode with it:
+//   every match loads the storm's level at its start, before a client joins, and Start now, a time or Epic's dates play
+//   the storm to the players of the matches running then (🟡 Epic's LoadSequence times aren't recorded; its storm played
+//   to the matches running at it, so their servers had the level before their players).
 // - BP_MooneyScripting (MooneyMap), once the authority's match is ready (FortAsyncAction_AuthorityMatchReady), reads SP
 //   (GetCalendarEventInformation): active, the event is past (EventPast: the sphere, the Ice King and the clock hidden) and
 //   nothing else runs. Otherwise it reads WDK (active: NormalizedBubbleVisible, the Ice King showing in the sphere by the
@@ -98,9 +104,9 @@ export { iceStormCalendarEvent };
 // (bSafeZonePaused) and let it go on, and the fog blend ran; a match started after SP hid the Ice King (EventPast). A
 // watcher acts on a calendar download (OnEventActive for an event newly active there), and a server downloads its
 // calendar before it opens its session to players (its update check), so a match's watchers see it.
-// "before" (the default) holds the sphere as 7.20 shipped (LoadLevel only) and the default modes; Epic's dates play it on
-// Season 7's replay; the admin's times wherever they are. Its storm switches Solo, Duos and Squads to the Ice Storm's
-// (iceKingState, events/ltms.js fromIceStorm).
+// "before" (the default) holds the sphere as 7.20 shipped (LoadLevel, with the storm's idle sequence level LoadSequence) and
+// the default modes; Epic's dates play it on Season 7's replay; the admin's times wherever they are. Its storm switches
+// Solo, Duos and Squads to the Ice Storm's (iceKingState, events/ltms.js fromIceStorm).
 export const iceKingEvent = datedEvent("iceKing");
 export const iceKingBuild = 4727874;
 export const iceKingSnowModes = ["event", "none", "full"];
@@ -116,8 +122,9 @@ function iceKingWindows(now, changelist, config) {
   const moment = seasonMoment(now, null, iceKingEvent.season).getTime();
   const setting = datedSettings(config).iceKing;
   if (setting.mode === "before") {
-    const sphere = datedStepsThisLap(iceKingEvent, nowMs, moment)[0];
-    return [{ eventType: iceKingLoadLevel, since: Date.parse(sphere.startAt), until: Infinity }];
+    // The sphere and the storm's sequence level, held on: a match running when the admin starts the event has both.
+    const sphere = datedStepsThisLap(iceKingEvent, nowMs, moment).find(({ step }) => step === "sphere");
+    return [iceKingLoadLevel, iceKingLoadSequence].map((eventType) => ({ eventType, since: Date.parse(sphere.startAt), until: Infinity }));
   }
   return datedWindows(iceKingEvent, setting, nowMs, moment);
 }

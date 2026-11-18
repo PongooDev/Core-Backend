@@ -8,6 +8,7 @@ import { iceKingState, iceKingStates } from "../src/events/icestorm.js";
 import { defaultReplacements, ltmOn } from "../src/events/ltms.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { seasonMoment } from "../src/store/itemshop.js";
+import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // 7.20's Ice King and his Ice Storm (Core-Backend #354, PongooDev/CoreV2 #490): the calendar names 7.20's blueprints
 // watch, the event held before the storm by default and started from the admin panel, Solo, Duos and Squads switching to
@@ -29,12 +30,12 @@ const at = (iso) => new Date(iso);
 // The real time now at which Season 7's replay is at the given moment.
 const onReplay = (iso) => new Date(Date.now() + (Date.parse(iso) - seasonMoment(new Date(), null, 7).getTime()));
 
-test("before the event (the default): the sphere alone, the default modes, on 7.20 only", () => {
+test("before the event (the default): the sphere and the storm's idle sequence level, the default modes, on 7.20 only", () => {
   const defaults = createSettingsStore(null).get();
   withConfig(season7, () => {
     const now = new Date();
     const states = inBuild(v720, () => iceKingStates(now));
-    assert.deepEqual(typesAt(states, now.getTime()), ["LoadLevel"]);
+    assert.deepEqual(typesAt(states, now.getTime()), ["LoadLevel", "LoadSequence"]);
     assert.equal(states.length, 1, "nothing scheduled");
     assert.equal(inBuild(v720, () => iceKingState(now)), "before");
     assert.deepEqual(inBuild(v710, () => iceKingStates(now)), [], "7.10 has no Ice King");
@@ -42,6 +43,61 @@ test("before the event (the default): the sphere alone, the default modes, on 7.
     for (const id of ["iceStormSolo", "iceStormDuos", "iceStormSquads"]) assert.equal(ltmOn(id, v720, defaults, now), false, id);
     assert.deepEqual(defaultReplacements(v720, defaults, now), {});
   });
+});
+
+// CoreV2 #490: the server must have MooneySequenceMap before a client makes it visible, or 7.20's replication graph never
+// sends that client MooneySequence (the storm). So no admin change turns LoadSequence on in a running match: it is on
+// before the event and stays on through Start now, a time or Epic's dates, the storm and after it.
+test("the storm's sequence level is on before the event and stays on through the storm, whatever starts it", () => {
+  const now = new Date();
+  const ms = now.getTime();
+  const sequenceAt = (config, t) => withConfig(config, () => inBuild(v720, () => iceKingStates(now)))
+    .filter(({ validFrom }) => validFrom === -Infinity || validFrom <= t).at(-1)?.events.find(({ eventType }) => eventType === "LoadSequence");
+  const before = sequenceAt(season7, ms);
+  assert.ok(before, "before the event");
+  for (const body of [{ mode: "now" }, { mode: "custom", startAt: new Date(ms + 5 * 60000).toISOString() }, { mode: "custom", startAt: new Date(ms + 3 * 86400000).toISOString() }]) {
+    const { patch } = scheduleEventPatch({ event: "iceKing", ...body }, season7, now);
+    const started = { ...season7, ...patch };
+    const storm = Date.parse(patch.datedFlags.iceKing.schedule.find(({ step }) => step === "storm").startAt);
+    const own = sequenceAt(started, ms);
+    assert.ok(own, `${JSON.stringify(body)}: on at once, not turned on by the change`);
+    assert.ok(Date.parse(own.activeSince) < ms - 86400000, `${JSON.stringify(body)}: on long before (with the sphere)`);
+    assert.ok(sequenceAt(started, storm + 60000), `${JSON.stringify(body)}: on through the storm`);
+    assert.ok(sequenceAt(started, storm + 86400000), `${JSON.stringify(body)}: and after it, so a second start doesn't turn it on anew`);
+  }
+  withConfig({ ...season7, datedFlags: { iceKing: { mode: "dates" } } }, () => {
+    const replay = onReplay("2019-01-10T12:00:00Z");
+    assert.ok(typesAt(inBuild(v720, () => iceKingStates(replay)), replay.getTime()).includes("LoadSequence"), "Epic's dates: from the replay's first day");
+  });
+  // The Events page names the step that shows, not the idle level.
+  const { patch } = scheduleEventPatch({ event: "iceKing", mode: "now" }, season7, now);
+  const config = { ...season7, ...patch };
+  const dated = withConfig(config, () => datedFlagsStatus(ms, (season) => seasonMoment(now, null, season).getTime(), config));
+  const king = eventSchedules({ now, config, dated }).find(({ id }) => id === "iceKing");
+  assert.match(king.state.text, /^On now: The last 12 minutes/);
+});
+
+test("7.20's timeline: LoadSequence before the event, and Start now changes the revision without turning it on anew", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "IceKing");
+    const authed = (path) => send({ host: "127.0.0.1", port: backend.port, method: "GET", path,
+      headers: { "User-Agent": "game=FortniteGame, engine=UE4, build=++Fortnite+Release-7.20-CL-4727874", Authorization: `bearer ${token}` } });
+    const events = async () => (await authed("/fortnite/api/calendar/v1/timeline")).body.channels["client-events"].states[0].activeEvents
+      .filter(({ eventType }) => ["LoadLevel", "LoadSequence", "WD1", "WD2"].includes(eventType));
+    const before = await events();
+    assert.deepEqual(before.map(({ eventType }) => eventType).sort(), ["LoadLevel", "LoadSequence"]);
+    const revision = (await authed("/fortnite/api/game/v2/calendar/revision")).body.revision;
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", null, { event: "iceKing", mode: "now" })).status, 200);
+    const started = await events();
+    assert.deepEqual(started.map(({ eventType }) => eventType).sort(), ["LoadLevel", "LoadSequence", "WD1"]);
+    // On in both downloads, so a running match's loader sees it still on (OnEventUpdated), not newly on.
+    const since = Date.parse(started.find(({ eventType }) => eventType === "LoadSequence").activeSince);
+    assert.ok(since < Date.now() - 86400000, "on since long before the change");
+    assert.notEqual((await authed("/fortnite/api/game/v2/calendar/revision")).body.revision, revision, "a running server fetches it again");
+  } finally {
+    await backend.close();
+  }
 });
 
 test("Start now: the last 12 minutes on at once, the storm 30 seconds on, then the island under snow and the Ice Storm modes", () => {
@@ -57,7 +113,7 @@ test("Start now: the last 12 minutes on at once, the storm 30 seconds on, then t
     const storm = states.find(({ events }) => events.some(({ eventType }) => eventType === "WD2"));
     assert.equal(storm.validFrom, ms + 30000, "the storm 30 seconds on");
     assert.deepEqual(typesAt(states, ms + 30000), ["LoadLevel", "LoadSequence", "SP", "WD2"]);
-    assert.deepEqual(typesAt(states, ms + 30000 + 10 * 60000), ["LoadLevel", "SP"], "the storm's 10 minutes over, the snow stays");
+    assert.deepEqual(typesAt(states, ms + 30000 + 10 * 60000), ["LoadLevel", "LoadSequence", "SP"], "the storm's 10 minutes over, the snow stays");
     const wd1 = states[0].events.find(({ eventType }) => eventType === "WD1");
     assert.equal(Date.parse(wd1.activeUntil), ms + 30000, "WD1 ends at the storm");
     assert.equal(Date.parse(wd1.activeSince), ms + 30000 - 12 * 60000);
@@ -80,7 +136,7 @@ test("Start now: the last 12 minutes on at once, the storm 30 seconds on, then t
   withConfig({ ...config, datedFlags: { iceKing: { mode: "before", schedule: config.datedFlags.iceKing.schedule } } }, () => {
     const later = new Date(now.getTime() + 3600000);
     assert.equal(inBuild(v720, () => iceKingState(later)), "before");
-    assert.deepEqual(typesAt(inBuild(v720, () => iceKingStates(later)), later.getTime()), ["LoadLevel"]);
+    assert.deepEqual(typesAt(inBuild(v720, () => iceKingStates(later)), later.getTime()), ["LoadLevel", "LoadSequence"]);
     assert.equal(ltmOn("iceStormSolo", v720, defaults, later), false);
   });
 });
@@ -92,13 +148,13 @@ test("Epic's dates on Season 7's replay: the sphere, the Ice King, the TVs, the 
       const now = onReplay(iso);
       return typesAt(inBuild(v720, () => iceKingStates(now)), now.getTime());
     };
-    assert.deepEqual(typesOnReplay("2019-01-10T12:00:00Z"), ["LoadLevel"], "7.20 shipped with the sphere");
-    assert.deepEqual(typesOnReplay("2019-01-16T12:00:00Z"), ["LoadLevel", "WDK"]);
-    assert.deepEqual(typesOnReplay("2019-01-17T12:00:00Z"), ["Countdown", "LoadLevel", "R0", "WDK", "warning"]);
+    assert.deepEqual(typesOnReplay("2019-01-10T12:00:00Z"), ["LoadLevel", "LoadSequence"], "7.20 shipped with the sphere");
+    assert.deepEqual(typesOnReplay("2019-01-16T12:00:00Z"), ["LoadLevel", "LoadSequence", "WDK"]);
+    assert.deepEqual(typesOnReplay("2019-01-17T12:00:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WDK", "warning"]);
     assert.deepEqual(typesOnReplay("2019-01-19T12:00:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD0", "warning"]);
     assert.deepEqual(typesOnReplay("2019-01-19T18:50:00Z"), ["Countdown", "LoadLevel", "LoadSequence", "R0", "WD1", "warning"]);
     assert.deepEqual(typesOnReplay("2019-01-19T19:05:00Z"), ["LoadLevel", "LoadSequence", "SP", "WD2"]);
-    assert.deepEqual(typesOnReplay("2019-01-25T12:00:00Z"), ["LoadLevel", "SP"]);
+    assert.deepEqual(typesOnReplay("2019-01-25T12:00:00Z"), ["LoadLevel", "LoadSequence", "SP"]);
     assert.equal(inBuild(v720, () => iceKingState(onReplay("2019-01-19T18:59:00Z"))), "before");
     assert.equal(inBuild(v720, () => iceKingState(onReplay("2019-01-19T19:01:00Z"))), "after");
     const defaults = createSettingsStore(null).get();
@@ -119,7 +175,7 @@ test("the snow switch: SP by the storm, never, or always; the modes follow the s
   assert.ok(!typesWith("none", after).includes("SP"), "Season 7's own snow after the storm");
   assert.ok(typesWith("full", now.getTime()).includes("SP"), "the island under snow before it");
   withConfig({ ...season7, iceKingSnow: "full" }, () => {
-    assert.deepEqual(typesAt(inBuild(v720, () => iceKingStates(now)), now.getTime()), ["LoadLevel", "SP"], "before the event, under snow");
+    assert.deepEqual(typesAt(inBuild(v720, () => iceKingStates(now)), now.getTime()), ["LoadLevel", "LoadSequence", "SP"], "before the event, under snow");
     assert.equal(inBuild(v720, () => iceKingState(now)), "before", "the snow doesn't start the storm");
   });
   const store = createSettingsStore(null);
