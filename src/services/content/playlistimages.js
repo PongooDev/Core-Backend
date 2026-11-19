@@ -163,6 +163,24 @@ const loveShotTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_LoveShot_v2-1
 const swordFightTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_InfinityBlade_v2-1024x512-475608c25c288f7d5c884eeebc47fb565f6f5803.jpg`;
 const catchTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_CatchSquads-1024x512-7289222d56b08ef8de20c7187af2670496dca3df.jpg`;
 const driftinTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_Drifting50s_Powder-1024x512-5fb24cfd4d83e4cd3a3589b126313beba9cc69a7.jpg`;
+// 7.00's (CL-4629139) Creative, Playlist_PlaygroundV2 (events/ltms.js's `creative`, PongooDev/CoreV2#471), on 7.00 to 7.40:
+// the Battle Royale mode select's Creative tile is an AthenaMatchmakingTile like every other mode's, so it shows the
+// playlistinformation entry with its PlaylistName. Core's page had none for it, so the tile kept the blueprint's picture
+// (GameModeImage's brush, T_Athena_Tile_Matchmaking_Default: 7.40's AthenaMatchmakingTile; SetDefaultImage shows it), the
+// generic one every mode without a tile has. T_Creative_Right, which 7.00 to 7.40 also cook (UI/Login/SubGameSelect/
+// Textures), is the subgame select screen's Creative key art (SubgameSelectScreen's ShowCreativeImage), not this tile's.
+// Epic's later page (LawinServer's contentpages.json copy, its playlistinformation lastModified 2019-10-29) names
+// CM_LobbyTileArt for Playlist_PlaygroundV2 (Creative's launch art: a builder with the phone beside a tower, planes and a
+// quad), with no special_border, so no border; on Epic's CDN, checked 2026-11-19: 200, image/jpeg, 527,504 bytes, the hash
+// in its name the file's SHA-1. 7.30's (CL-4834550) NFL Rumble (Playlist_Omaha) has that page's
+// BR07_ModeTile_NFL_TeamRumble (a Patriots and a Rams player; 200, image/jpeg, 312,367 bytes, its SHA-1 the hash), no
+// border. 7.30's Party at Pleasant Park (Playlist_Music_Highest) keeps the default picture: that page names the Showtime
+// playlists only for later live events that reused them (Playlist_Music_Highest, _Higher, _Med and _Low Season 9's
+// 09BR_RobotFight_ModeTile, the Monster against the Mech; _High Season X's 10BR_In-Game_Farewell_ModeTile), and no Showtime
+// tile of Epic's is in any copy of its pages found or in the Wayback Machine's captures of the CDN's fortnite-game folders
+// (searched 2026-11-19: playlistinformation's Season 7 files are the BR07_ ones here and CM_LobbyTileArt).
+const creativeTile = `${cdn}/playlistinformation/CM_LobbyTileArt-1024x512-fbcd48db36552ccb1ab4021b722ea29d515377cc.jpg`;
+const nflRumbleTile = `${cdn}/playlistinformation/BR07_ModeTile_NFL_TeamRumble-1024x512-6facfc07214965dc2211d703904607a30c68d08a.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -253,7 +271,10 @@ export const epicPlaylistImages = {
   Playlist_Toss_Squads: catchTile,
   Playlist_Hover: driftinTile,
   Playlist_Hover_64: driftinTile,
-  Playlist_Hover_48: driftinTile
+  Playlist_Hover_48: driftinTile,
+  // 7.00's to 7.40's Creative and 7.30's NFL Rumble (above): only the pages of the builds that have them list them.
+  Playlist_PlaygroundV2: creativeTile,
+  Playlist_Omaha: nflRumbleTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads
