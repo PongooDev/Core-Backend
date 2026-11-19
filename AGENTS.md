@@ -151,6 +151,13 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
   `Co-Authored-By` line. Each Freebuff commit is reviewed later, so say what was verified live and what statically.
 - Close an issue only with a comment that names the fixing commit. Never "should work now", never without a commit.
   Reopen when the reporter says it still happens.
+- **One issue, several problems** (in its body or later comments): don't ask the reporter to refile. Keep the original
+  for its first problem. Open a new issue for each extra problem under the owner's account (gh is logged in as the
+  owner). Start it "Split out of #N (reported by @name)" and give the build, what happened and what should happen,
+  with the reporter's screenshots and log links. Comment the new numbers on the original, then fix each one (owner's
+  rule, 2026-11-19).
+- **MrPodge6's decisions count as the owner's** on issues and PRs, from 2026-11-17 on (not earlier ones): reopening,
+  closing, approving a change. The safety rules above still apply.
 - Unfinished work goes in `H:\CoreWork\HANDOFF.md`, not a pushed WIP branch.
 
 **Pull requests: review, fix, merge.** Agents review every open PR, make it right and merge it themselves (the
