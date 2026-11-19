@@ -28,6 +28,22 @@ const sessionFields = ["ownerId", "ownerName", "serverName", "serverAddress", "s
 // A session the server stops heartbeating is gone; the client must never be sent to a dead server.
 const staleAfterMs = 5 * 60 * 1000;
 
+// The game's rejoin check (CoreV2 #510). After login and on returning to the front end, URejoinCheck asks for the
+// sessions the account is registered in (findPlayer); with one, Save the World's lobby offers "Rejoin" ("An existing game
+// session was found", rejoining automatically after 30 s) and the client travels to that session's server. So a session
+// is offered only while its server is still there and its match still on:
+// - its server heartbeats it every HeartbeatInterval ([MCP] OnlineSessionMcp, 30 s unless configured: 7.30 CL-4834550
+//   0x627190; the Cert server alike), so one not heard from for two of them and a margin has a server that has stopped:
+//   crashed, or closed with its players still registered. Its game port may already be a restarted server's that has no
+//   such match ("Can't join game, match isn't ready!"), or nobody's: the client sat on its loading screen until the
+//   travel failed and was offered the same session again;
+// - a match that has ended (EndInternetSession, the session's stop) isn't rejoined (the client's
+//   NoMatchToRejoin_MatchEnded): its players are only still registered until they leave the end screen.
+// Its players leave it when the server unregisters them (they left, or abandoned the rejoin, which the client tells the
+// server) or the session ends.
+const heartbeatIntervalMs = 30_000;
+export const rejoinSilenceMs = 2 * heartbeatIntervalMs + 15_000;
+
 const compare = {
   EQUAL: (actual, value) => actual === value,
   NOT_EQUAL: (actual, value) => actual !== value,
@@ -180,6 +196,8 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
         openPublicPlayers: 0, openPrivatePlayers: 0, sortWeight: 0,
         publicPlayers: [], privatePlayers: [],
         started: false,
+        // Core's: its match has ended (setStarted), so it isn't offered for rejoin (CoreV2 #510).
+        ended: false,
         keys: {},
         zoneDifficulty: "",
         hostAccountId: String(hostAccountId ?? ""),
@@ -280,9 +298,12 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
       return session;
     },
 
+    // StartInternetSession and EndInternetSession: a session stopped after it started has ended its match (Core's ended,
+    // which the rejoin check reads: rejoinable).
     setStarted(id, started) {
       const session = this.get(id);
       if (session) {
+        session.ended = Boolean(session.started && !started);
         session.started = started;
         touch(session);
         changed();
@@ -357,6 +378,19 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
       return live().filter((session) => players(session).includes(accountId));
     },
 
+    // The sessions the rejoin check is offered (findPlayer's answer, CoreV2 #510): the account's, while its server still
+    // heartbeats and its match hasn't ended (rejoinSilenceMs). withheld(session, reason) hears each one left out.
+    rejoinable(accountId, withheld = () => {}) {
+      const now = Date.now();
+      return this.findPlayer(accountId).filter((session) => {
+        const silentMs = now - Date.parse(session.lastUpdated);
+        if (session.ended) withheld(session, "its match has ended");
+        else if (silentMs > rejoinSilenceMs) withheld(session, `its server hasn't been heard from for ${Math.round(silentMs / 1000)} s`);
+        else return true;
+        return false;
+      });
+    },
+
     // The AES key the client and server encrypt their connection with (FAESHandlerComponent wants 32 bytes).
     key(id, accountId) {
       const session = this.get(id);
@@ -376,7 +410,7 @@ const defaultNetwork = createNetwork();
 // A session hosted on another PC (Core-Backend #125) is handed out with that PC's address as it is: this machine's
 // addresses would send the player to the wrong PC.
 export function sessionJson(session, viewer, network = defaultNetwork) {
-  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, sourceAddress, customKey, ...json } = session;
+  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, sourceAddress, customKey, ended, ...json } = session;
   if (!remoteHost) json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
 }

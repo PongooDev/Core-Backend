@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createSessionStore, normalizeAddress, sessionJson } from "../src/matchmaking/sessions.js";
+import { createSessionStore, normalizeAddress, rejoinSilenceMs, sessionJson } from "../src/matchmaking/sessions.js";
 import { createDemand, mergeDemand } from "../src/matchmaking/demand.js";
 import { defaultEmptyServerWaitMs } from "../src/services/matchmaking/sessions.js";
 import http from "node:http";
@@ -735,4 +735,56 @@ test("a build stays wanted while its searches wait and for the hold after the la
   assert.deepEqual(mergeDemand([{ build: "1", mode: br, players: 1 }, { build: "2", mode: br, players: 1 }],
     [{ build: "2", mode: br, players: 2 }, { build: "2", mode: stw, players: 1 }, { build: null, mode: br, players: 5 }]),
   [{ build: "2", mode: br, players: 3 }, { build: "1", mode: br, players: 1 }, { build: "2", mode: stw, players: 1 }]);
+});
+
+// CoreV2 #510: the lobby's rejoin check (URejoinCheck, findPlayer) is offered the account's session only while its
+// server still heartbeats (every 30 s) and its match hasn't ended. A server that stopped (crashed, or closed with its
+// players registered) used to be offered for up to 5 minutes: "Rejoin" sent the player to its game port, by then
+// nobody's or a restarted server's, and they sat on the loading screen and came back to the same offer.
+test("the rejoin check is offered a session only while its server heartbeats and its match is on (CoreV2 #510)", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await clientToken(backend.port);
+    const { token, accountId } = await userLogin(backend.port, "RejoinPlayer");
+    const { body: session } = await post(backend.port, base, server, emptyServer);
+    const rejoinable = async () => (await get(backend.port, `${base}/findPlayer/${accountId}`, token)).body.map((found) => found.id);
+    // Registered at its beacon reservation, before it has joined: a client that crashes loading in may come back to it.
+    await post(backend.port, `${base}/${session.id}/players`, server, { publicPlayers: [accountId] });
+    assert.deepEqual(await rejoinable(), [session.id]);
+    assert.equal((await post(backend.port, `${base}/${session.id}/start`, server, {})).status, 204);
+    assert.equal((await post(backend.port, `${base}/${session.id}/heartbeat`, server, {})).status, 204);
+    assert.deepEqual(await rejoinable(), [session.id]);
+    // The mission ends (EndInternetSession): its players are still registered on the end screen, but there is nothing to
+    // rejoin.
+    assert.equal((await post(backend.port, `${base}/${session.id}/stop`, server, {})).status, 204);
+    assert.deepEqual(await rejoinable(), []);
+    assert.equal((await get(backend.port, `${base}/${session.id}`, token)).body.ended, undefined, "the session JSON is the game's");
+    // The next mission on the same session starts it again.
+    await post(backend.port, `${base}/${session.id}/start`, server, {});
+    assert.deepEqual(await rejoinable(), [session.id]);
+    // Unregistered (it left, or abandoned the rejoin): nothing.
+    await request(backend.port, "DELETE", `${base}/${session.id}/players`, server, [accountId]);
+    assert.deepEqual(await rejoinable(), []);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a session whose server stopped heartbeating isn't offered for rejoin, though it is still listed until it goes stale (CoreV2 #510)", () => {
+  const sessions = createSessionStore();
+  const session = sessions.create(emptyServer, "127.0.0.1", "server1");
+  sessions.addPlayers(session.id, { publicPlayers: ["player1"] });
+  sessions.setStarted(session.id, true);
+  assert.deepEqual(sessions.rejoinable("player1").map((found) => found.id), [session.id]);
+  // Its last heartbeat two missed heartbeats and more ago: its server has stopped.
+  session.lastUpdated = new Date(Date.now() - rejoinSilenceMs - 1000).toISOString();
+  const withheld = [];
+  assert.deepEqual(sessions.rejoinable("player1", (found, reason) => withheld.push([found.id, reason])), []);
+  assert.deepEqual(withheld.map(([id]) => id), [session.id]);
+  assert.match(withheld[0][1], /hasn't been heard from for \d+ s/);
+  // Still the account's session for anything else (the launcher's presence) until it goes stale.
+  assert.deepEqual(sessions.findPlayer("player1").map((found) => found.id), [session.id]);
+  // A heartbeat brings it back: the server was only busy.
+  sessions.heartbeat(session.id);
+  assert.deepEqual(sessions.rejoinable("player1").map((found) => found.id), [session.id]);
 });

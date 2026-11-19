@@ -117,8 +117,19 @@ export function sessionRoutes({ tokens, sessions, matchmaker, network, settings,
     res.on("close", () => finish());
   });
 
+  // The game's rejoin check (URejoinCheck, CoreV2 #510): the sessions the account may rejoin
+  // (matchmaking/sessions.js rejoinable): one whose server stopped heartbeating or whose match ended isn't offered.
+  // The console says so once a session and account (the lobby checks again on each return to it).
+  const told = new Set();
   router.get(`${base}/findPlayer/:accountId`, auth, (req, res) => {
-    res.json(sessions.findPlayer(req.params.accountId).map((session) => sessionJson(session, req, network)));
+    const withheld = (session, reason) => {
+      const key = `${req.params.accountId}|${session.id}|${session.ended}`;
+      if (told.has(key)) return;
+      if (told.size >= 1000) told.clear();
+      told.add(key);
+      log("Matchmaking", `Not offering ${req.params.accountId} a rejoin into session ${session.id}: ${reason}`);
+    };
+    res.json(sessions.rejoinable(req.params.accountId, withheld).map((session) => sessionJson(session, req, network)));
   });
 
   router.route(`${base}/:sessionId`)
