@@ -2023,3 +2023,196 @@ test("5.30's Playground matchmakes by default: the ticket is taken and the party
     backend.close();
   }
 });
+
+// Core-Backend #388: a Season 7 party that readies up before any server is started waits in the queue: Connecting,
+// Waiting and Queued (no ETA while no server is up), and nothing the client would take as the end of its matchmaking.
+// The server that registers later takes it at once, and each ticket ends in Play and the close that has the client join
+// that session, as for a party that queued after the server did. Each Season 7 build, 7.00 to 7.40.
+test("a Season 7 party that queues before any server waits, and is sent to the server that registers later (#388)", async () => {
+  for (const [version, build] of [["7.00", "4629139"], ["7.10", "4667333"], ["7.20", "4727874"], ["7.30", "4834550"], ["7.40", "5046157"]]) {
+    const agent = `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.19045.1.256.64bit`;
+    const as = (port, urlPath, token, method = "GET", body) => {
+      const text = body === undefined ? undefined : JSON.stringify(body);
+      const headers = { "User-Agent": agent, Authorization: `bearer ${token}` };
+      if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+      return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+    };
+    const backend = await startBackend({ matchmakingGatherMs: 200 });
+    const connections = [];
+    try {
+      const leader = await userLogin(backend.port, `S7Leader${build}`);
+      const mate = await userLogin(backend.port, `S7Mate${build}`);
+      const party = `${leader.accountId},${mate.accountId}`;
+      const queue = async (player, fill) => {
+        const ticket = await as(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${party}` +
+          `&bucketId=${build}:0:NAE:playlist_defaultduo&player.platform=Windows${fill ? "&player.option.fillTeam=true" : ""}`, player.token);
+        assert.equal(ticket.status, 200, `${version}: ${JSON.stringify(ticket.body)}`);
+        const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+        connections.push(connection);
+        // In an object: an async function's returned promise would wait for the flow to end.
+        return { flow: clientFlow(connection, JSON.parse(Buffer.from(ticket.body.payload, "base64").toString("utf8")).ticketId) };
+      };
+      const flows = [(await queue(leader, true)).flow, (await queue(mate, false)).flow];
+      // Long enough for the queue to be looked at again with no server up (each second): still only Queued.
+      await new Promise((resolve) => setTimeout(resolve, 1300));
+      assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [{ build, mode: "battleRoyale", players: 2 }], version);
+
+      const server = await userLogin(backend.port, `S7Server${build}`);
+      const session = (await as(backend.port, "/fortnite/api/matchmaking/session", server.token, "POST", {
+        ownerId: server.accountId, ownerName: "Core", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+        maxPublicPlayers: 120, maxPrivatePlayers: 0, buildUniqueId: build, attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+      })).body;
+      const gameserver = await matchmakingClient(backend.port, authorizationOf((await as(backend.port,
+        `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent(`${build}:0:NA:**`)}&minPlayers=1&maxPlayers=120`,
+        server.token)).body));
+      connections.push(gameserver);
+      assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+      const assign = await nextOf(gameserver, "AssignMatch");
+      assert.deepEqual(assign.payload.teams.flat(2).sort(), [leader.accountId, mate.accountId].sort(), version);
+      gameserver.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+      for (const flow of flows) {
+        const { state, sessionId, error, seen } = await flow;
+        assert.equal(error, null, `${version}: ${error} (${seen})`);
+        assert.deepEqual([state, sessionId], ["Finished", session.id], version);
+        assert.deepEqual(seen.slice(0, 3), ["Connecting", "Waiting", "Queued"], version);
+        assert.deepEqual(seen.slice(-2), ["SessionAssignment", "Play"], version);
+      }
+    } finally {
+      for (const connection of connections) connection.close();
+      backend.close();
+    }
+  }
+});
+
+// #388: a gameserver that went away while it waited for a match (stopped from the launcher, or its process ended) closes
+// its TCP connection without a WebSocket close frame. The HTTP server keeps such a socket half-open, so the service used
+// to keep the server as a free one until it next wrote to it: the next party to queue, typically one that readied up
+// before starting a server, was given that dead server, and once its AssignMatch failed the party was dropped from the
+// queue, still queued on its client, and the server started next never got it.
+test("a server whose connection drops without a close frame leaves at once: the next party goes to the server started after it (#388)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    const stopped = await regionServer(backend, "CoreServer1", "NA");
+    stopped.connection.close();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, []);
+
+    const player = await userLogin(backend.port, "ReadyFirst");
+    const { connection, flow } = await gameClient(backend, player);
+    connections.push(connection);
+    // Nobody can take it yet: the launcher hears the demand.
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [{ build: "3532353", mode: "battleRoyale", players: 1 }]);
+
+    // The launcher starts the server again, under the same account.
+    const started = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(started.connection);
+    const assign = await nextOf(started.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams, [[[player.accountId]]]);
+    started.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    const { state, sessionId, error, seen } = await flow;
+    assert.equal(error, null, `${error} (${seen})`);
+    assert.deepEqual([state, sessionId], ["Finished", started.session.id]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// #388: a server that leaves the service after its AssignMatch and before answering it (its session restarted, or it
+// crashed) doesn't take its players with it. Epic's matchmaker put a failed session assignment's tickets back in the
+// queue (UFortPlaylistAthena::bRequeueAfterFailedSessionAssignment): they hear Queued again, still in InQueue, and the
+// next server gets them. They used to be dropped from the queue and stayed queued until they cancelled.
+test("a match whose server leaves before answering AssignMatch queues again, and the next server gets it (#388)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    const player = await userLogin(backend.port, "RequeueSolo");
+    const { connection, flow } = await gameClient(backend, player);
+    connections.push(connection);
+    const first = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(first.connection);
+    const assign = await nextOf(first.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams, [[[player.accountId]]]);
+    first.connection.close();
+
+    const next = await regionServer(backend, "CoreServer2", "NA");
+    connections.push(next.connection);
+    const again = await nextOf(next.connection, "AssignMatch");
+    assert.notEqual(again.payload.matchId, assign.payload.matchId);
+    assert.deepEqual(again.payload.teams, [[[player.accountId]]]);
+    next.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: again.payload.matchId, result: "ready" } }));
+    const { state, sessionId, error, seen } = await flow;
+    assert.equal(error, null, `${error} (${seen})`);
+    assert.deepEqual([state, sessionId], ["Finished", next.session.id]);
+    assert.ok(seen.filter((step) => step === "Queued").length >= 2, `queued again: ${seen}`);
+    await joinAssigned(backend, player, next.session.id);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// #388: once AssignMatch has gone out, the server's match is the parties it names (OnGivenMatchAssignment sets
+// MaxPlayerCount to them): a party that queues while the server is answering waits for the next server instead of being
+// sent to a match with no room kept for it.
+test("a party that queues after its server's AssignMatch went out waits for the next server (#388)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    const server = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(server.connection);
+    const early = await userLogin(backend.port, "EarlySolo");
+    const late = await userLogin(backend.port, "LateSolo");
+    const first = await gameClient(backend, early);
+    connections.push(first.connection);
+    const assign = await nextOf(server.connection, "AssignMatch");
+    const second = await gameClient(backend, late);
+    connections.push(second.connection);
+    // Its ticket is in before the answer, and waits for a server.
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [{ build: "3532353", mode: "battleRoyale", players: 1 }]);
+    server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await first.flow).sessionId, server.session.id);
+
+    const next = await regionServer(backend, "CoreServer2", "NA");
+    connections.push(next.connection);
+    const nextAssign = await nextOf(next.connection, "AssignMatch");
+    assert.deepEqual(nextAssign.payload.teams, [[[late.accountId]]]);
+    next.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: nextAssign.payload.matchId, result: "ready" } }));
+    const { state, sessionId, error } = await second.flow;
+    assert.equal(error, null);
+    assert.deepEqual([state, sessionId], ["Finished", next.session.id]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// #388: a party's member whose ticket followed its leader's into a forming match isn't dropped when the leader's ticket
+// leaves: it queues on by itself and is sent to the match it forms.
+test("a party member's ticket stays queued when the ticket it followed into a forming match leaves (#388)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 1500 });
+  const connections = [];
+  try {
+    const server = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(server.connection);
+    const leader = await userLogin(backend.port, "LeavingLeader");
+    const member = await userLogin(backend.port, "StayingMember");
+    const first = await gameClient(backend, leader, { party: [leader, member] });
+    connections.push(first.connection);
+    const second = await gameClient(backend, member, { party: [leader, member] });
+    connections.push(second.connection);
+    first.connection.close();
+
+    const assign = await nextOf(server.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams.flat(2).sort(), [leader.accountId, member.accountId].sort());
+    server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    const { state, sessionId, error, seen } = await second.flow;
+    assert.equal(error, null, `${error} (${seen})`);
+    assert.deepEqual([state, sessionId], ["Finished", server.session.id]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});

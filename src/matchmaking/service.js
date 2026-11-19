@@ -933,7 +933,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         }
         return true;
       }
-      if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && (forming.customScope ?? null) === customScopeOf(party.ticket)
+      // Another party joins only while the match is still forming: once AssignMatch has gone out, the server's teams are
+      // the ones it names, and the match holds only those players (OnGivenMatchAssignment's MaxPlayerCount, #388).
+      if (forming && !forming.sent && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && (forming.customScope ?? null) === customScopeOf(party.ticket)
         && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion }) && hostsMode(server, bucketId, party.ticket.build)
         && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
@@ -1085,8 +1087,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   }, 1000);
   countdown.unref?.();
 
-  // Parties placed in a forming match hear their ETA straight away.
+  // Parties placed in a forming match hear their ETA straight away. A registered server whose session is gone first
+  // leaves (dropGoneServers): no party is placed on it.
   function placeWaiting() {
+    dropGoneServers();
     const placed = new Set();
     for (let index = 0; index < waiting.length;) {
       if (place(waiting[index])) placed.add(queueKey(waiting.splice(index, 1)[0]));
@@ -1094,6 +1098,49 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     }
     for (const key of placed) announceQueue(key);
   }
+
+  // A match that won't be played where it was forming goes back to the queue, its parties first in line (#388): Epic's
+  // matchmaker put a failed session assignment's tickets back in the queue (the playlists' matchmaking setting
+  // UFortPlaylistAthena::bRequeueAfterFailedSessionAssignment, 5.0 to 7.40). Its clients haven't been sent a session yet
+  // (SessionAssignment comes only with the server's "ready"), so they are still queued, in InQueue: each hears Queued
+  // again, now for the next free server, and nothing that would end its matchmaking.
+  function requeue(forming) {
+    clearTimeout(forming.timer);
+    const parties = forming.parties.filter((party) => !party.done && !party.ws.closed);
+    waiting.unshift(...parties);
+    placeWaiting();
+    for (const key of new Set(parties.map(queueKey))) announceQueue(key);
+  }
+
+  // A registered server leaves the service: its connection closed, or its session is gone. Its match, forming or
+  // assigned and not yet answered (the server restarted or crashed before AssignMatchResult), queues again: an assigned
+  // one used to be dropped, its players left queued on their clients until they cancelled (#388).
+  function dropServer(server, why) {
+    if (!servers.delete(server)) return false;
+    if (hosts.get(server.sessionId) === server) hosts.delete(server.sessionId);
+    say(`Session ${server.sessionId} ${why}`);
+    const forming = server.forming;
+    server.forming = null;
+    if (!forming) {
+      placeWaiting();
+      return true;
+    }
+    if (forming.sent) say(`Session ${server.sessionId} left before answering match ${forming.matchId}: its parties queue again`);
+    requeue(forming);
+    return true;
+  }
+
+  // A registered server whose session has ended or timed out (sessions.js staleAfterMs), or was replaced by the next one
+  // its account made on that PC (the launcher restarting it), is no server any more: it leaves, and its socket is closed
+  // (1001, going away; 1000 would tell a server answering an assignment that its match is on). Asked on every change to
+  // the sessions and before parties are placed (#388).
+  function dropGoneServers() {
+    for (const server of [...servers]) {
+      if (sessions.get(server.sessionId)) continue;
+      if (dropServer(server, "has no session any more: it leaves the matchmaking service")) server.ws.close(1001);
+    }
+  }
+  const stopWatchingSessions = sessions.watch?.(dropGoneServers);
 
   function assign(server) {
     const forming = server.forming;
@@ -1134,10 +1181,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       say(`Session ${server.sessionId} refused match ${forming.matchId} (${payload.result}); its parties queue again`);
       servers.delete(server);
       hosts.delete(server.sessionId);
+      server.forming = null;
       server.ws.close(1000);
-      waiting.unshift(...forming.parties);
-      placeWaiting();
-      for (const key of new Set(forming.parties.map(queueKey))) announceQueue(key);
+      requeue(forming);
       return;
     }
     servers.delete(server);
@@ -1294,15 +1340,26 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       ws.closed = true;
       const index = waiting.indexOf(party);
       if (index >= 0) waiting.splice(index, 1);
+      let left = false;
       for (const server of servers) {
         const forming = server.forming;
         if (!forming || forming.sent || !forming.parties.includes(party)) continue;
+        left = true;
         forming.parties = forming.parties.filter((entry) => entry !== party);
         forming.players -= party.size;
         if (!forming.parties.length) {
           clearTimeout(forming.timer);
           server.forming = null;
         }
+      }
+      // Its party's other tickets, which followed it into the match, queue on by themselves instead of leaving with it
+      // (#388: they were dropped, still queued on their clients).
+      const followers = left ? party.members.filter((member) => !member.done && !member.ws.closed) : [];
+      if (followers.length) {
+        party.members = [];
+        waiting.unshift(...followers);
+        placeWaiting();
+        for (const key of new Set(followers.map(queueKey))) announceQueue(key);
       }
       // A held custom match whose host (this player, or its party's) left (#186).
       for (const server of servers) {
@@ -1316,6 +1373,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     ws.send(status("Connecting"));
     ws.send(status("Waiting", { totalPlayers: party.size, connectedPlayers: party.size }));
     say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}${party.customKey ? ` with custom key ${party.customKey}` : ""}`);
+    dropGoneServers();
     if (!place(party)) waiting.push(party);
     if (!party.done) announceQueue(queueKey(party));
     // A party no queue announces (a Playground match, assigned at once; a member following its party into a forming match)
@@ -1352,15 +1410,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     });
     ws.on("close", () => {
       ws.closed = true;
-      if (!servers.delete(server)) return;
-      hosts.delete(server.sessionId);
-      say(`Session ${server.sessionId} left the matchmaking service`);
-      if (server.forming && !server.forming.sent) {
-        clearTimeout(server.forming.timer);
-        waiting.unshift(...server.forming.parties);
-      }
-      server.forming = null;
-      placeWaiting();
+      dropServer(server, "left the matchmaking service");
     });
     ws.send(message("Registered", {}));
     say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)` +
@@ -1400,6 +1450,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     activeServersCount,
     closeAll() {
       clearInterval(countdown);
+      stopWatchingSessions?.();
       for (const ws of sockets) ws.close(1001);
     },
     // Core's (Core-Launcher #18): the builds whose parties wait for a server, [{ build, mode: "battleRoyale", players }],

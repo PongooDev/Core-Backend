@@ -110,6 +110,12 @@ export function acceptWebSocket(req, socket, head, { protocols = [], maxMessage 
     parse();
   });
   socket.on("error", () => socket.destroy());
+  // The peer closing its TCP connection without a close frame (a game or gameserver that exits, crashes or is stopped):
+  // the HTTP server the upgrade came in on keeps its sockets half-open (allowHalfOpen), so without this the connection
+  // would stay open here until something was next written to it (RFC 6455 7.1.5: closed, 1006). The matchmaking
+  // service kept such a gameserver as a free one and gave it the next party (Core-Backend #388), as XMPP once kept
+  // such a player online (xmpp/service.js).
+  socket.on("end", () => socket.destroy());
   socket.on("close", () => {
     closed = true;
     ws.emit("close");
