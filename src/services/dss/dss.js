@@ -3,10 +3,12 @@ import path from "node:path";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
+import { currentBuild } from "../../builds/context.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { plotItem } from "../../profiles/creative.js";
+import { creativeProfileBuild } from "../../profiles/ids.js";
 
 // The DSS (data storage service) a 7.00 (CL-4629139) Creative server keeps its players' islands in (PongooDev/CoreV2#471).
 //
@@ -113,15 +115,25 @@ export function readIslandInfo(dataDir, island) {
 }
 export const saveIslandInfo = (dataDir, island, info) => writeAtomic(islandInfoFile(dataDir, island), JSON.stringify(info));
 
+// The changelist of a Creative build (7.00, CL-4629139, or later) as a string, or null: what an island file's record keeps
+// as the build whose server wrote it.
+export const creativeChangelist = (value) => (/^\d{7,9}$/.test(String(value ?? "")) && Number(value) >= creativeProfileBuild ? String(value) : null);
+
 // A write of the file: the version it replaces kept as "previous", the meta replaced by `meta`. The caller saves `info`.
-export function storeIsland(dataDir, island, info, data, meta) {
+// `build` is the changelist of the game that made the data (the uploading server's, a copied file's own), kept as the
+// record's build (🟡 Core's: Epic's DSS kept no build; the island transfer, services/dss/transfer.js, needs it, because
+// ULevelSaveRecord's data carries a SaveVersion, +0x30 in the 7.00 to 7.40 SDKs, that only its own build or a newer
+// one is known to read); null when nobody knows it.
+export function storeIsland(dataDir, island, info, data, meta, build = null) {
   const file = islandFileOf(dataDir, island);
   if (fs.existsSync(file)) {
     writeAtomic(islandPreviousFile(dataDir, island), fs.readFileSync(file));
     info.previousMeta = info.meta ?? {};
+    info.previousBuild = info.build ?? null;
   }
   writeAtomic(file, data);
   info.meta = meta;
+  info.build = creativeChangelist(build);
   info.size = data.length;
   info.updated = new Date().toISOString();
 }
@@ -195,7 +207,7 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
     res.type("application/octet-stream").send(fs.readFileSync(fileOf(island)));
   };
 
-  const store = (island, info, data, meta) => storeIsland(dataDir, island, info, data, meta);
+  const store = (island, info, data, meta, build = currentBuild()) => storeIsland(dataDir, island, info, data, meta, build);
 
   const raw = express.raw({ type: () => true, limit: maxIslandBytes });
   const base = "/api/dss/v1/:appName/*filePath";
@@ -276,12 +288,14 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
       // needs no checkout, and the checkpoint copied back to the island, which needs the server's.
       if (!held && !island.checkpoint) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
       const from = String(req.query.from ?? "");
-      const source = from === "previous" ? { file: previousFile(island), meta: info.previousMeta ?? {} } : (() => {
+      const source = from === "previous" ? { file: previousFile(island), meta: info.previousMeta ?? {}, build: info.previousBuild } : (() => {
         const other = parseIslandPath(from);
-        return other && other.owner === island.owner && ownsIsland(other) ? { file: fileOf(other), meta: readInfo(other).meta ?? {} } : null;
+        if (!other || other.owner !== island.owner || !ownsIsland(other)) return null;
+        const otherInfo = readInfo(other);
+        return { file: fileOf(other), meta: otherInfo.meta ?? {}, build: otherInfo.build };
       })();
       if (!source || !fs.existsSync(source.file)) return dssError(res, 404, "file_not_found", `Sorry, the file ${dssApp}/${from} could not be found`, [dssApp, from]);
-      store(island, info, fs.readFileSync(source.file), { ...source.meta });
+      store(island, info, fs.readFileSync(source.file), { ...source.meta }, source.build);
       if (info.lock) info.lock.at = Date.now();
       saveInfo(island, info);
       log("DSS", `${island.owner}'s island ${island.plotItemId}${island.checkpoint ? "'s checkpoint" : ""} restored from ${from}`);

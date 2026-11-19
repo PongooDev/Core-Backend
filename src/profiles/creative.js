@@ -147,9 +147,17 @@ const plotSetsBuild = 4667333;
 // sent it.
 const frostyFortressPlotTemplateId = "CreativePlot:arctic_competitive_medium1";
 const frostyFortressBuild = 4727874;
-const plotSets = (build = currentBuild()) => [{ templateId: plotTemplateId, count: plotCount },
-  ...(Number(build) >= plotSetsBuild ? [{ templateId: arcticPlotTemplateId, count: 4 }, { templateId: blockPlotTemplateId, count: 2 }] : []),
-  ...(Number(build) >= frostyFortressBuild ? [{ templateId: frostyFortressPlotTemplateId, count: 1 }] : [])];
+// A player's island types: the plot definition, how many of it an account gets (the island limit of that type), the first
+// build that has it, and its display name without the {islandIndex} (the definitions' own names, above).
+export const playerPlotTypes = [
+  { templateId: plotTemplateId, count: plotCount, firstBuild: creativeProfileBuild, name: "Island" },
+  { templateId: arcticPlotTemplateId, count: 4, firstBuild: plotSetsBuild, name: "Arctic Island" },
+  { templateId: blockPlotTemplateId, count: 2, firstBuild: plotSetsBuild, name: "The Block" },
+  { templateId: frostyFortressPlotTemplateId, count: 1, firstBuild: frostyFortressBuild, name: "Frosty Fortress" }
+];
+// The island type of a plot template id (any case), or null.
+export const playerPlotType = (templateId) => playerPlotTypes.find((type) => type.templateId.toLowerCase() === String(templateId ?? "").toLowerCase()) ?? null;
+const plotSets = (build = currentBuild()) => playerPlotTypes.filter((type) => type.templateId === plotTemplateId || Number(build) >= type.firstBuild);
 
 // The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, and
 // from 7.20 a Frosty Fortress.

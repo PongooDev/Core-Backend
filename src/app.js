@@ -43,6 +43,7 @@ import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { portalRoutes } from "./services/portal/routes.js";
 import { contentRoutes } from "./services/content/pages.js";
+import { coreIslandRoutes, islandImportPath } from "./services/core/islands.js";
 import { corePresenceRoutes } from "./services/core/presence.js";
 import { coreStatusRoutes } from "./services/core/status.js";
 import { coreTlsRoutes } from "./services/core/tls.js";
@@ -247,8 +248,10 @@ export function createApp(config, context = createContext(config)) {
   if (context.vivox) app.use(vivoxWebRoutes(context));
   // The admin panel's news image upload (#215) reads its larger body itself, after the admin gate (admin/routes.js).
   const json = express.json();
-  // So does the Creative island upload (admin/creative.js, PongooDev/CoreV2#488).
-  const ownBody = (url) => url === "/admin/api/news/image" || /^\/admin\/api\/accounts\/[^/]+\/creative\/[^/]+\/upload$/.test(url);
+  // So does the Creative island upload (admin/creative.js, PongooDev/CoreV2#488), and an island file's import, the
+  // player's (services/core/islands.js) and the admin's (Core-Launcher #21).
+  const ownBody = (url) => url === "/admin/api/news/image" || url === islandImportPath
+    || /^\/admin\/api\/accounts\/[^/]+\/creative\/([^/]+\/upload|import)$/.test(url);
   app.use((req, res, next) => (ownBody(req.path) ? next() : json(req, res, next)));
   app.use(express.urlencoded({ extended: false }));
 
@@ -293,6 +296,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes(context));
   app.use(corePresenceRoutes(context));
+  app.use(coreIslandRoutes(context));
   app.use(coreTlsRoutes(context));
   app.use(networkAdminRoutes(context));
   // The admin panel's Creative tab and its players' islands (admin/creative.js, PongooDev/CoreV2#488).

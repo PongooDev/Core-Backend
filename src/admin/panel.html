@@ -9922,10 +9922,29 @@ Each starts active; quests the account already has are left as they are.`, {
     // A player's Creative islands (the Players page's Creative tab): saves, the in-game backup, the admin's backups.
     function creativeTab(a) {
       const holder = el("div", {}, el("div", { class: "empty", text: "Loading islands…" }));
+      // An island file (.coreisland, Core-Launcher #21) made a new island of the player's, in the first free slot of its type.
+      const importFile = el("input", { type: "file", accept: ".coreisland,.json", style: "display:none;", onchange: async () => {
+        const file = importFile.files?.[0];
+        importFile.value = "";
+        if (!file) return;
+        const result = await act((async () => {
+          const response = await fetch(`/admin/api/accounts/${a.id}/creative/import`, { method: "POST", headers: { "Content-Type": "application/json" }, body: await file.text() });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            if (response.status === 401) handleUnauthorized();
+            throw new Error(data.errorMessage ?? `${response.status} ${response.statusText}`);
+          }
+          return data;
+        })(), (data) => `${file.name} imported as ${data.imported.name}${data.imported.title ? ` ("${data.imported.title}")` : ""}`);
+        render(result);
+      } });
+      const importBar = el("div", { class: "actions", style: "gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;" },
+        btn("Import an island file", () => importFile.click(), "primary small"), importFile,
+        el("span", { class: "muted", style: "font-size:12px;", text: "A .coreisland file exported from any Core backend (here, or by the player in Core Launcher's Islands page) becomes a new island in the player's first free slot of its type: one never saved, or reset. It must come from the newest build this backend knows or an older one." }));
       const render = (player) => {
         if (!player || state.account?.id !== a.id) return;
         if (!player.islands.length) {
-          holder.replaceChildren(el("div", { class: "empty", text: "No Creative islands: an account gets them on 7.00 and later once it may play Creative." }));
+          holder.replaceChildren(el("div", { class: "empty", text: "No Creative islands: an account gets them on 7.00 and later once it may play Creative." }), importBar);
           return;
         }
         const run = (path, body, message, method) => act(api(`/admin/api/accounts/${a.id}/creative/${path}`, body, method), message).then(render);
@@ -9953,10 +9972,12 @@ Each starts active; quests the account already has are left as they are.`, {
                 island.published ? chip(`Published ${island.published.mnemonic}${island.published.active ? "" : " (off)"}`, "sky") : null)),
             el("div", { class: "grid cols-2", style: "margin-top:8px;" },
               el("div", {},
-                el("div", {}, el("strong", { text: "Save: " }), island.save ? `${islandBytes(island.save.size)}, ${ago(island.save.updated)}` : el("span", { class: "muted", text: "never saved (the island's template)" })),
+                el("div", {}, el("strong", { text: "Save: " }), island.save ? `${islandBytes(island.save.size)}, ${ago(island.save.updated)}${island.build ? ` on ${island.build.version ?? `CL-${island.build.changelist}`}` : ""}` : el("span", { class: "muted", text: "never saved (the island's template)" })),
+                island.imported ? el("div", { class: "muted", style: "font-size:12px;", text: `Imported ${ago(island.imported.at)}${island.imported.title ? `: "${island.imported.title}"` : ""}` }) : null,
                 el("div", {}, el("strong", { text: "In-game backup: " }), island.checkpoint ? `${islandBytes(island.checkpoint.size)}, ${ago(island.checkpoint.updated)}` : el("span", { class: "muted", text: "none" }))),
               el("div", { class: "actions", style: "flex-wrap:wrap; gap:6px; justify-content:flex-end;" },
                 island.save ? fileLink(island, "save", "Download save") : null,
+                island.save ? el("a", { class: "btn ghost small", href: `/admin/api/accounts/${a.id}/creative/${island.plotItemId}/export`, download: "", title: "The island as a .coreisland file, to import on another Core backend" }, el("span", { text: "Export island file" })) : null,
                 island.checkpoint ? fileLink(island, "checkpoint", "Download in-game backup") : null,
                 island.checkpoint ? btn("Restore in-game backup", () => restore(island, "checkpoint", "the in-game backup"), "ghost small") : null,
                 island.hasPrevious ? btn("Restore previous", () => restore(island, "previous", "the version before its last save"), "ghost small") : null,
@@ -9982,6 +10003,7 @@ Each starts active; quests the account already has are left as they are.`, {
         };
         holder.replaceChildren(
           el("p", { class: "note", style: "margin:0;", text: `${player.canPublish ? "This player has a Support-A-Creator code, so they can publish islands in game." : "No Support-A-Creator code: this player can't publish in game (you can from the Creative page)."} A restore is refused while a server has the island loaded; it takes effect the next time the island loads.` }),
+          importBar,
           player.islands.map(islandCard));
       };
       act(api(`/admin/api/accounts/${a.id}/creative`)).then(render);

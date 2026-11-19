@@ -2,10 +2,13 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import express from "express";
+import { versionOf } from "../builds/detect.js";
 import { sendError } from "../errors.js";
 import { log } from "../log.js";
 import { plotItem, plotsOf } from "../profiles/creative.js";
 import { islandFileOf, islandFolder, lockIdleMs, maxIslandBytes, readIslandInfo, saveIslandInfo, storeIsland } from "../services/dss/dss.js";
+import { exportIsland, importIsland, IslandTransferError, maxIslandFileBytes } from "../services/dss/transfer.js";
+import { notifyProfiles } from "../services/mcp/profile.js";
 import { linkJson, maxFeatured, maxTagline, maxTitle, normalizeMnemonic } from "../services/links/islands.js";
 import { publisherOf } from "../services/links/links.js";
 import { enabledCreators } from "../store/creators.js";
@@ -28,7 +31,8 @@ const backupIdPattern = /^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{6}$/;
 export const maxBackups = 20;
 const maxNote = 80;
 
-export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks, adminAuth, dataDir }) {
+export function creativeAdminRoutes(context) {
+  const { accounts, profiles, settings, islandLinks, adminAuth, dataDir } = context;
   const router = express.Router();
   router.use(["/admin/api/creative", "/admin/api/accounts/:accountId/creative"], createAdminGate({ adminAuth, settings }));
   const nameOf = (accountId) => accounts.get(accountId)?.displayName ?? null;
@@ -141,7 +145,8 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
       } catch {
         // A backup without its note still lists.
       }
-      return { id, created: note.created ?? null, note: note.note ?? "", size: fs.statSync(backupFile(accountId, plotItemId, id)).size, from: note.from ?? "save" };
+      return { id, created: note.created ?? null, note: note.note ?? "", size: fs.statSync(backupFile(accountId, plotItemId, id)).size, from: note.from ?? "save",
+        build: note.build ?? null };
     }).sort((a, b) => b.id.localeCompare(a.id));
   };
   const fileState = (file, info) => (fs.existsSync(file) ? { size: fs.statSync(file).size, updated: info?.updated ?? fs.statSync(file).mtime.toISOString() } : null);
@@ -155,7 +160,9 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
       const link = islandLinks.ofIsland(accountId, plotItemId);
       return {
         plotItemId, templateId: item.templateId, islandIndex: item.attributes?.islandIndex ?? null, islandName: item.attributes?.islandName ?? "",
-        save: fileState(islandFileOf(dataDir, island), info), checkedOut: Boolean(info.lock?.pid), inUse: inUse(info),
+        save: fileState(islandFileOf(dataDir, island), info), build: info.build ? { changelist: info.build, version: versionOf(info.build) } : null,
+        imported: info.imported ?? null,
+        checkedOut: Boolean(info.lock?.pid), inUse: inUse(info),
         hasPrevious: fs.existsSync(`${islandFileOf(dataDir, island)}.prev`),
         checkpoint: fileState(islandFileOf(dataDir, checkpoint), readIslandInfo(dataDir, checkpoint)),
         backups: backupsOf(accountId, plotItemId), published: link ? linkView(link) : null
@@ -185,7 +192,8 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     if (found) res.json(playerView(found.account));
   });
 
-  function makeBackup(accountId, plotItemId, contents, note, from) {
+  // `build`: the changelist of the game that wrote the copied save (dss.js storeIsland), null for an uploaded file.
+  function makeBackup(accountId, plotItemId, contents, note, from, build = null) {
     const existing = backupsOf(accountId, plotItemId);
     for (const old of existing.slice(maxBackups - 1)) {
       fs.rmSync(backupFile(accountId, plotItemId, old.id), { force: true });
@@ -195,7 +203,7 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     const file = backupFile(accountId, plotItemId, id);
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, contents);
-    fs.writeFileSync(`${file}.json`, JSON.stringify({ created: new Date().toISOString(), note: String(note ?? "").slice(0, maxNote), from }));
+    fs.writeFileSync(`${file}.json`, JSON.stringify({ created: new Date().toISOString(), note: String(note ?? "").slice(0, maxNote), from, build }));
     log("Creative", `${accountId}'s island ${plotItemId} backed up (${contents.length} bytes, from ${from})`);
     return id;
   }
@@ -206,7 +214,8 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     if (!found) return;
     const file = islandFileOf(dataDir, { owner: found.account.id, plotItemId: found.plotItemId });
     if (!fs.existsSync(file)) return invalid(res, "The island has never been saved");
-    makeBackup(found.account.id, found.plotItemId, fs.readFileSync(file), req.body?.note, "save");
+    const build = readIslandInfo(dataDir, { owner: found.account.id, plotItemId: found.plotItemId }).build ?? null;
+    makeBackup(found.account.id, found.plotItemId, fs.readFileSync(file), req.body?.note, "save", build);
     res.json(playerView(found.account));
   });
 
@@ -243,6 +252,36 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     res.attachment(`${found.account.displayName}-${found.plotItemId}-${which}.island`).type("application/octet-stream").send(fs.readFileSync(file));
   });
 
+  // The island as a .coreisland file (services/dss/transfer.js, Core-Launcher #21), for another Core backend.
+  const transferFailed = (res, error) => {
+    if (!(error instanceof IslandTransferError)) throw error;
+    sendError(res, error.status, error.errorCode, error.message);
+  };
+  router.get("/admin/api/accounts/:accountId/creative/:plotItemId/export", (req, res) => {
+    const found = target(req, res);
+    if (!found) return;
+    try {
+      const { fileName, contents } = exportIsland(context, found.account, found.plotItemId);
+      res.attachment(`${found.account.displayName}-${fileName}`).type("application/json").send(contents);
+    } catch (error) {
+      transferFailed(res, error);
+    }
+  });
+
+  // A .coreisland file (the body as is) made a new island of the player's, in the lowest free slot of its type; ?build=
+  // checks it loads on that build (by default: on the newest build this backend knows).
+  router.post("/admin/api/accounts/:accountId/creative/import", express.raw({ type: () => true, limit: maxIslandFileBytes }), (req, res) => {
+    const found = target(req, res, false);
+    if (!found) return;
+    try {
+      const imported = importIsland(context, found.account, Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0),
+        { build: typeof req.query.build === "string" && req.query.build ? req.query.build : null, notify: (session) => notifyProfiles(context, session) });
+      res.json({ ...playerView(found.account), imported });
+    } catch (error) {
+      transferFailed(res, error);
+    }
+  });
+
   // {from: a backup's id, "checkpoint" or "previous"}: the island's save replaced. Refused while a server is using it.
   router.post("/admin/api/accounts/:accountId/creative/:plotItemId/restore", (req, res) => {
     const found = target(req, res);
@@ -254,8 +293,11 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     const file = from === "previous" ? `${islandFileOf(dataDir, island)}.prev` : from === "checkpoint" ? islandFileOf(dataDir, { ...island, checkpoint: true })
       : backupIdPattern.test(from) ? backupFile(island.owner, island.plotItemId, from) : null;
     if (!file || !fs.existsSync(file)) return invalid(res, `Nothing to restore from ${from || "(none given)"}`);
-    const meta = from === "previous" ? info.previousMeta ?? {} : from === "checkpoint" ? readIslandInfo(dataDir, { ...island, checkpoint: true }).meta ?? {} : {};
-    storeIsland(dataDir, island, info, fs.readFileSync(file), { ...meta });
+    const checkpointInfo = from === "checkpoint" ? readIslandInfo(dataDir, { ...island, checkpoint: true }) : null;
+    const meta = from === "previous" ? info.previousMeta ?? {} : checkpointInfo ? checkpointInfo.meta ?? {} : {};
+    const build = from === "previous" ? info.previousBuild : checkpointInfo ? checkpointInfo.build
+      : backupsOf(island.owner, island.plotItemId).find((backup) => backup.id === from)?.build;
+    storeIsland(dataDir, island, info, fs.readFileSync(file), { ...meta }, build ?? null);
     delete info.lock;
     saveIslandInfo(dataDir, island, info);
     log("Creative", `${island.owner}'s island ${island.plotItemId} restored from ${from} by the admin`);
@@ -271,12 +313,20 @@ export function creativeAdminRoutes({ accounts, profiles, settings, islandLinks,
     if (inUse(info)) return sendError(res, 409, "errors.com.epicgames.dss.file_checked_out", "A server has this island loaded now. Try again once the player has left it");
     const file = islandFileOf(dataDir, island);
     if (fs.existsSync(file)) {
-      makeBackup(island.owner, island.plotItemId, fs.readFileSync(file), "before reset", "save");
+      makeBackup(island.owner, island.plotItemId, fs.readFileSync(file), "before reset", "save", info.build ?? null);
       fs.rmSync(file, { force: true });
     }
     saveIslandInfo(dataDir, island, { ...info, meta: {}, size: 0, updated: new Date().toISOString(), lock: undefined });
     log("Creative", `${island.owner}'s island ${island.plotItemId} reset by the admin`);
     res.json(playerView(found.account));
+  });
+
+  // An island file past the import's limit (express.raw's 413).
+  router.use("/admin/api/accounts/:accountId/creative", (error, req, res, next) => {
+    if (error?.type === "entity.too.large") {
+      return sendError(res, 413, "errors.com.epicgames.creative.island_file_too_large", `An island file can't be more than ${Math.floor(maxIslandFileBytes / 1048576)} MB`);
+    }
+    next(error);
   });
 
   return router;

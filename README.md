@@ -229,6 +229,17 @@ the state `lobby` while the account's game is logged in to XMPP and `match` whil
 session; with `&after=<state>` it answers once the state changes, or after 55 s): another machine is only told about an
 account whose game plays from that machine's address, and anyone else hears `offline` with no name.
 
+The launcher's **Islands** page (Core-Launcher #21) moves Creative islands between Core backends, signed in as the
+player (the same login as Play, from any machine that may sign in): `GET /core/api/creative/islands?build=<CL>` lists
+the account's islands and free slots, `GET /core/api/creative/islands/<island id>/export` gives one island as a
+`.coreisland` file (JSON: format version, the build that saved it, the island's type, title and description, and its save
+gzipped in base64), and `POST /core/api/creative/islands/import?build=<CL>` makes a file a **new** island of that
+account, in the lowest free slot of its type (one never saved, or reset in the admin panel), within the type's limit
+(4 islands, 4 Arctic islands, 2 Blocks, 1 Frosty Fortress). Each acts only for the token's own account, so an import never
+writes over anyone's island. A file is checked before anything is written: at most about 22 MB, its save at most 16 MB
+and matching its SHA-256, only known fields read, and only on the build that saved it or a newer one. The admin panel's
+Players → Creative tab has the same export and import for any player.
+
 A player can link their own email to their account: optionally when registering on the web portal (`/register`), later
 in its **Email** tab, or by the host in the admin panel's account view. They can then sign in with that email instead of
 their name, in the launcher, the game and the portal, always with their password: an account without a password can't
