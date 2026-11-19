@@ -157,6 +157,9 @@ import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windo
 //   CompletedNotPartipated, Cancelled) has no qualified state. A finalist's "you qualify" was Epic's service answering them
 //   a list with the finals in it, which nobody else's had (an invite-only event, store.js validateQualifier). Season 7's
 //   posters are 6.10's: the line under a tile's title is schedule_info (tournamentInformationFor).
+// - 7.40 (CL-5046157) asks Epic's events service for the same tournaments (tournaments/eventsservice.js): the same events
+//   as tournaments, windows and scores in its own shape, the same content page entries (7.40's reader, 0x314AE30, adds
+//   style_info_id to 6.10's fields), the same Showdown playlists, ticket attributes and points alerts.
 //
 // What Core serves. Epic's tournaments (their names, days, scoring and art) were its services' data, and none of it is in
 // the build's files, so there is no schedule to replay. The tournaments are the admin panel's own (tournaments/store.js,
@@ -175,6 +178,8 @@ import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windo
 // EVENT DETAILS text, which does; Core gives them. Not served, for want of Epic's data: regions or platforms (every
 // player is offered every event, but an invite-only one: #383).
 export const showdownBuild = 4464155;
+// 7.40 (CL-5046157) asks Epic's events service in place of FortMcpUtils' event URLs (tournaments/eventsservice.js).
+export const eventsServiceBuild = 5046157;
 export const tournamentsCompleteMessage = "com.epicgames.tournaments.complete";
 export const placementStat = "PLACEMENT_STAT_INDEX";
 export const eliminationsStat = "TEAM_ELIMS_STAT_INDEX";
@@ -341,6 +346,9 @@ export function tournamentOf(event) {
   };
 }
 
+// The team a player played a match with, themselves among them, sorted: the accounts a history (and 7.40's score) names.
+export const teamOf = (accountId, match) => [...new Set([accountId, ...(Array.isArray(match.team) ? match.team : [])])].sort();
+
 // A player's histories in an event (FPlayerEventHistory), one for each window and team they played it with (alone:
 // themselves): the matches' ids, the team, and the points with what they were for, "<stat>:<tier's key>" by how often the
 // tier was earned. A window's histories hold only its own matches (#364): the game shows each window's score.
@@ -354,7 +362,7 @@ export function historiesOf(event, accountId) {
   for (const match of matches) {
     const windowId = matchWindowOf(event, match);
     if (!windowIds.has(windowId)) continue;
-    const team = [...new Set([accountId, ...(Array.isArray(match.team) ? match.team : [])])].sort();
+    const team = teamOf(accountId, match);
     const key = `${windowId}|${team.join(",")}`;
     const history = teams.get(key) ?? { windowId, team, matchIds: [], points: 0, breakdown: {} };
     teams.set(key, history);
@@ -523,10 +531,18 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
 // - With the admin's "Hide the Events tab while it has no tournament" on (settings hideEmptyEventsTab, off by default)
 //   and no event listed: bEnableShowdown=false, the option 6.02 shipped with, which hides the tab and asks nothing
 //   (🟡 read in the exe, 0x2E37520 and 0x11A6100; not seen in a running client), in place of the line above.
+// - 7.40 (eventsServiceBuild) and later: bEnableEventLeaderboards=true too. 7.40's tournament details offer a window's
+//   leaderboard (UFortShowdownDetailView::IsEventLeaderboardAvailable, 7.40 0x33A2B00) only with that option
+//   (UFortRuntimeOptions +0xC9), a window with a leaderboardId and a window that is live or over; the leaderboard is the
+//   events service's (tournaments/eventsservice.js). 🟡 Its constructor (0x1801110) sets bEnableShowdown and
+//   bEnableShowdownXmppNotify and not this one, and 7.40's own DefaultRuntimeOptions.ini wasn't read: the line is
+//   served whatever it says. The cache line matters as much on 7.40: its frontend (UFortUIStateWidget_Frontend's
+//   construct, 0x33D2C70 -> 0x135F3D0) downloads the events again only once ShowdownTournamentCacheExpirationHours have
+//   passed since the last download.
 export function showdownRuntimeOptions(build, settingsValue, now = new Date(), store = storeProvider()) {
   if (!hasShowdown(build)) return [];
   if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true) return ["bEnableShowdown=false"];
-  return ["ShowdownTournamentCacheExpirationHours=0"];
+  return ["ShowdownTournamentCacheExpirationHours=0", ...(Number(build) >= eventsServiceBuild ? ["bEnableEventLeaderboards=true"] : [])];
 }
 
 // Keeps the lobbies of the builds with the Events tab in step with the events (Core-Backend #336). The client's tournament

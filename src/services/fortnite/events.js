@@ -5,6 +5,7 @@ import { currentBuild } from "../../builds/context.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
+import { isEventsServiceBuild } from "../../tournaments/eventsservice.js";
 import { eventWindowHistory, hasShowdown, tournamentAndHistory, tournamentsCompleteMessage } from "../../tournaments/showdown.js";
 
 // 6.10's in-game tournaments (tournaments/showdown.js has what the client does with each): FortMcpUtils' three event URLs,
@@ -30,14 +31,20 @@ import { eventWindowHistory, hasShowdown, tournamentAndHistory, tournamentsCompl
 // asks the download only when UseEventsService holds (0x15CD550: the -UseEventsService command line or
 // UFortRuntimeOptions' bUseEventsService, false by default and set by neither 7.30's DefaultGame.ini nor Core's hotfix),
 // and otherwise these McpUtils routes as before (0x12C98F0), as does the leaderboard's page request (0x135C3E0). So 7.30's
-// Events tab is served here, as 7.20's.
+// Events tab is served here, as 7.20's. 🟡 Yet a 7.30 client asked the download on 19 November 2026 (the live backend's
+// data/logs/unknown/4834550.jsonl, five times): bUseEventsService is a FortRuntimeOptions config value (7.30 +0x2EC) and
+// 7.30's own DefaultRuntimeOptions.ini wasn't read. Not followed up: 7.30 is still answered here only.
 // 7.40 (CL-5046157) drops them: its DefaultGame.ini's FortMcpUtils names none of the six events URLs 7.30's did
 // (GetEventTournamentAndHistoryUrl and the rest) and adds ProcessPendingRewardsUrl
 // (/api/game/v2/events/v2/processPendingRewards/`accountId); its exe has no "UseEventsService" and none of these routes'
 // strings, so its tournament manager asks Epic's events service alone. Its FOnlineEventsServiceMcp (the routes' table,
-// 7.40 0x4AAB60) has the three routes above and a fourth, /api/v1/players/<gameId>/<accountId>; the download's JSON keys
-// are a block of their own (0x3B008A8: gameId, tokens, pendingPayouts, teams ... eventWindows, templates, scoringRules).
-// None of them is answered yet (H:\CoreWork\HANDOFF.md), so 7.40's Events tab has no tournaments.
+// 7.40 0x4AAB60) has the three routes above and a fourth, /api/v1/players/<gameId>/<accountId>: services/events/events.js
+// answers them for 7.40 and later, with the same tournaments (tournaments/eventsservice.js).
+// - ProcessPendingRewardsUrl, POST .../events/v2/processPendingRewards/<accountId> (7.40 0x12EE870, an McpUtils request):
+//   sent when the events service's player has pendingPayouts (UFortTournamentManager, 0x13692E0). Its answer is read as a
+//   JSON array of strings (0x12C7880); a non-empty one makes the client download the events again (0x1368400). Core's
+//   player never has pending payouts (an event's prizes are given when won, tournaments/payouts.js), so nothing is
+//   pending: an empty array. Older builds have no such URL and get the unanswered route as before.
 export function eventRoutes(context) {
   const { tokens, accounts, sessions } = context;
   const router = express.Router();
@@ -61,6 +68,11 @@ export function eventRoutes(context) {
       return sendError(res, 404, "errors.com.epicgames.fortnite.invalid_event_window_id", `No event window ${req.params.eventWindowId}`);
     }
     res.json(histories);
+  });
+
+  router.post(`${base}/v2/processPendingRewards/:accountId`, (req, res, next) => (isEventsServiceBuild(currentBuild()) ? next() : next("router")), auth, (req, res) => {
+    if (!own(req, res)) return;
+    res.json([]);
   });
 
   const text = (value) => (typeof value === "string" && value.length <= 128 ? value : "");

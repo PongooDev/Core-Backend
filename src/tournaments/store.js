@@ -425,11 +425,17 @@ export function leaderboardOf(event, nameOf = (accountId) => accountId) {
       ...(ruleset.bestWindow ? { bestWindow: best } : {})
     };
   });
-  rows.sort((a, b) => b.points - a.points || b.wins - a.wins || b.eliminations - a.eliminations
+  return rankRows(rows);
+}
+// Rows ({points, wins, eliminations, averagePlacement, displayName}) in the contest rules' order, each with its rank: by
+// points, then wins, eliminations and average placement (lower is better), a tie on all four sharing one rank, 1 up;
+// the name only orders a tie. leaderboardOf's players and 7.40's event window leaderboards (tournaments/eventsservice.js).
+export function rankRows(rows) {
+  const sorted = [...rows].sort((a, b) => b.points - a.points || b.wins - a.wins || b.eliminations - a.eliminations
     || (a.averagePlacement ?? Infinity) - (b.averagePlacement ?? Infinity) || a.displayName.localeCompare(b.displayName));
   let rank = 0;
-  return rows.map((row, index) => {
-    const previous = rows[index - 1];
+  return sorted.map((row, index) => {
+    const previous = sorted[index - 1];
     if (!previous || previous.points !== row.points || previous.wins !== row.wins || previous.eliminations !== row.eliminations
       || previous.averagePlacement !== row.averagePlacement) rank = index + 1;
     return { rank, ...row };

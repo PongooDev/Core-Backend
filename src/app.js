@@ -22,6 +22,7 @@ import { botModeFor, matchBots } from "./matchmaking/botmodes.js";
 import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
 import { createPayoutSettler } from "./tournaments/payouts.js";
 import { eventRoutes } from "./services/fortnite/events.js";
+import { eventsServiceRoutes } from "./services/events/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -282,6 +283,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(feedbackRoutes(context));
   app.use(battleRoyaleRoutes(context));
   app.use(eventRoutes(context));
+  // 7.40's Events tab: Epic's events service (services/events/events.js).
+  app.use(eventsServiceRoutes(context));
   app.use(affiliateRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
