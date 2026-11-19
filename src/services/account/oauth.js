@@ -9,6 +9,7 @@ import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { allowsHosting, defaultHostingIps, requestAddress } from "../../network.js";
 import { createFailureTracker } from "../portal/ratelimit.js";
+import { banMessage, hardwareHeader, playerBan } from "../../accounts/bans.js";
 
 function basicClient(req) {
   const [scheme, value] = (req.get("authorization") ?? "").split(" ");
@@ -17,10 +18,20 @@ function basicClient(req) {
   return clientId ? { clientId, secret: secret.join(":") } : null;
 }
 
-// The admin panel's ban: the account can't log in (its tokens were revoked when it was banned).
-function banned(res, account) {
-  sendError(res, 403, "errors.com.epicgames.account.account_not_active",
-    `This account is banned${account.banned.reason ? `: ${account.banned.reason}` : ""}`);
+// The admin panel's bans (accounts/bans.js, Core-Backend #390): the account's own, its address's or its machine's. A
+// banned player can't log in or refresh (their tokens were revoked when the ban was made). Every kind answers Epic's
+// account_not_active (🟡 Epic's code for a banned account; it had no IP or hardware bans to copy), with the end of a
+// timed ban in the message, which Core's launcher shows.
+function refuseBan(res, refusal) {
+  sendError(res, 403, "errors.com.epicgames.account.account_not_active", banMessage(refusal));
+}
+
+// 🟡 Core's own: the admin panel's Require hardware ID is on and neither this request (Core's launcher's
+// X-Core-Hardware-Id) nor an earlier launcher login gave the account a machine id.
+function hardwareIdRequired(res, req, who) {
+  log("Core", `Refused ${who}'s login from ${requestAddress(req)}: no hardware ID (admin panel, Require hardware ID)`);
+  sendError(res, 403, "errors.com.epicgames.account.hardware_id_required",
+    "This server requires Core's launcher: log in through an up-to-date Core launcher.");
 }
 
 function invalidGrant(res, message) {
@@ -52,8 +63,18 @@ function refusesBuild(res, settings, login) {
   return true;
 }
 
-export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeCodes }) {
+export function oauthRoutes({ accounts, bans, tokens, settings, resetTokens, exchangeCodes }) {
   const router = express.Router();
+
+  // The request's machine: the salted hash of the hardware id Core's launcher sends (accounts/bans.js), or null.
+  const requestHardware = (req) => bans?.hardwareHash(req.get(hardwareHeader)) ?? null;
+  // The ban a player's request is refused by (null for none), by the account, the request's address and its machine (the
+  // request's own, else the one the account last logged in with). account may be null: a login's address and machine
+  // are checked before its password.
+  const banOf = (req, account) => playerBan({ accounts, bans, account, address: requestAddress(req), hardwareHash: requestHardware(req) });
+  const requiresHardware = (req, account) => settings?.get?.().requireHardwareId === true && !requestHardware(req) && !account?.hardware?.hash;
+  // A player's request that got through: the address and machine it came from, kept on the account.
+  const recordAccess = (req, account) => accounts.recordAccess?.(account, { address: requestAddress(req), hardwareHash: requestHardware(req) });
   const failureTracker = createFailureTracker({ windowMs: 5 * 60 * 1000, maxFailures: 10 });
 
   router.post("/account/api/oauth/token", async (req, res) => {
@@ -92,13 +113,22 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
           if (!account) {
             account = accounts.getOrCreate(displayName);
           }
-          // Server accounts bypass password authentication
-          if (account.banned) return banned(res, account);
+          // Server accounts bypass password authentication. Only an account ban stops them: IP and hardware bans are
+          // players' (a gameserver's address is a Trusted Hosting IP, and it sends no hardware id).
+          const serverBan = playerBan({ accounts, account });
+          if (serverBan) return refuseBan(res, serverBan);
           accounts.recordLogin(account);
           return res.json(tokens.issueUser(clientId, account, "password"));
         }
 
         if (refusesBuild(res, settings, displayName)) return;
+
+        // A banned address or machine (#390) is refused before any password is checked or account made.
+        const earlyBan = banOf(req, null);
+        if (earlyBan) {
+          log("Core", `Refused ${displayName}'s login from ${requestAddress(req)}: ${bans.describe(earlyBan.ban)}`);
+          return refuseBan(res, earlyBan);
+        }
 
         // Regular player account: check IP failure tracker
         if (failureTracker.isBlocked(req)) {
@@ -114,6 +144,8 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
           return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
             "Your e-mail and/or password are incorrect. Please check them and try again.");
         }
+
+        if (requiresHardware(req, account)) return hardwareIdRequired(res, req, displayName);
 
         // An address no account has linked never makes an account: it is more likely a mistyped email than a new player.
         if (!account && !emailLogin) {
@@ -157,7 +189,9 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
         }
 
         failureTracker.clear(req);
-        if (account.banned) return banned(res, account);
+        const loginBan = banOf(req, account);
+        if (loginBan) return refuseBan(res, loginBan);
+        recordAccess(req, account);
         accounts.recordLogin(account, currentBuild());
         return res.json(tokens.issueUser(clientId, account, "password"));
       }
@@ -167,8 +201,16 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
         const account = entry && accounts.get(entry.accountId);
         if (!account) return invalidGrant(res, "Invalid or expired refresh token");
         if (!isServerAccountName(account.displayName) && refusesBuild(res, settings, account.displayName)) return;
-        if (account.banned) return banned(res, account);
-        if (!isServerAccountName(account.displayName)) accounts.recordBuild(account, currentBuild());
+        if (isServerAccountName(account.displayName)) {
+          const serverBan = playerBan({ accounts, account });
+          if (serverBan) return refuseBan(res, serverBan);
+        } else {
+          const tokenBan = banOf(req, account);
+          if (tokenBan) return refuseBan(res, tokenBan);
+          if (requiresHardware(req, account)) return hardwareIdRequired(res, req, account.displayName);
+          recordAccess(req, account);
+          accounts.recordBuild(account, currentBuild());
+        }
         return res.json(tokens.issueUser(clientId, account, "refresh_token"));
       }
 
@@ -181,8 +223,16 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
             "Sorry the exchange code you supplied was not found. It is possible that it was no longer valid");
         }
         if (!isServerAccountName(account.displayName) && refusesBuild(res, settings, account.displayName)) return;
-        if (account.banned) return banned(res, account);
-        if (!isServerAccountName(account.displayName)) accounts.recordBuild(account, currentBuild());
+        if (isServerAccountName(account.displayName)) {
+          const serverBan = playerBan({ accounts, account });
+          if (serverBan) return refuseBan(res, serverBan);
+        } else {
+          const tokenBan = banOf(req, account);
+          if (tokenBan) return refuseBan(res, tokenBan);
+          if (requiresHardware(req, account)) return hardwareIdRequired(res, req, account.displayName);
+          recordAccess(req, account);
+          accounts.recordBuild(account, currentBuild());
+        }
         return res.json(tokens.issueUser(clientId, account, "exchange_code"));
       }
 
@@ -193,7 +243,15 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
   });
 
   // The client checks its token here every minute; a 401 makes it refresh, and a refused refresh logs it out.
+  // A player banned while logged in (#390: an IP or hardware ban made since, or an ended-and-renewed one) fails it: their
+  // tokens go, and the refresh the client then tries is refused with the ban. An account ban made in the panel has
+  // revoked the tokens already.
   router.get("/account/api/oauth/verify", requireAuth(tokens), (req, res) => {
+    const account = req.session.accountId && accounts.get(req.session.accountId);
+    if (account && !isServerAccountName(account.displayName) && banOf(req, account)) {
+      tokens.revokeAccount(account.id);
+      return sendError(res, 401, "errors.com.epicgames.common.oauth.invalid_token", "Invalid or expired access token");
+    }
     res.json(tokens.verify(req.session));
   });
 
@@ -206,7 +264,8 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
     if (!account) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "An exchange code needs an account's token");
     }
-    if (account.banned) return banned(res, account);
+    const exchangeBan = isServerAccountName(account.displayName) ? playerBan({ accounts, account }) : banOf(req, account);
+    if (exchangeBan) return refuseBan(res, exchangeBan);
     res.set("Cache-Control", "no-store").json(exchangeCodes.issue(req.session));
   });
 

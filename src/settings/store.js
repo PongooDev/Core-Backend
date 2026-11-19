@@ -126,6 +126,10 @@ const defaults = {
   // Whether the portal and the admin panel show cosmetics' pictures, loaded from fortnite-api.com (portal/images.js; #249).
   showItemImages: true,
   allowAutoRegistration: true,
+  // The admin panel's "Require hardware ID" (Core-Backend #390, accounts/bans.js): on, a player's login is refused unless
+  // Core's launcher sent its machine id with it or the account has one from an earlier launcher login. Off by default, so
+  // older launchers and players without the launcher still log in.
+  requireHardwareId: false,
   sidebarWidth: 240,
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
@@ -889,6 +893,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.allowRegistration === "boolean") settings.allowRegistration = partial.allowRegistration;
       if (typeof partial.showItemImages === "boolean") settings.showItemImages = partial.showItemImages;
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
+      if (typeof partial.requireHardwareId === "boolean") settings.requireHardwareId = partial.requireHardwareId;
       if (partial.battlepass && typeof partial.battlepass === "object") {
         settings.battlepass = sanitizeBattlePass(partial.battlepass, settings.battlepass ?? defaults.battlepass);
       }

@@ -150,7 +150,13 @@ other sites). It has:
   - **Quests:** complete, claim or remove quests; skip the tutorial.
   - **Storm shields:** set each storm shield's level.
   - **Account:** kick (logs the player out everywhere), ban with a reason and unban, reset chosen profiles or all
-    progress, delete the account.
+    progress, delete the account. A ban (Manage tab) is of the account, of the IP address the player last logged in
+    from, or of their PC (hardware: Core's launcher v1.0.74+ sends a hash of the PC's id, and the backend keeps only a
+    salted hash of that), either permanent or for a number of hours or days; a timed ban lifts itself when it ends. The
+    bans in force are listed on the Manage tab and on the Players page, each with Unban, and every ban and unban is
+    written to the backend log. Loopback and this PC's own addresses can't be IP banned; a private (LAN or VPN)
+    address asks to confirm. Settings → Authentication has **Require hardware ID** (off by default): on, a player has
+    to log in through such a launcher at least once.
 - **Sessions:** registered game servers with their mode, region, players and state; end a session.
 - **Friends:** turn remote access on or off, set the public address, and see what friends enter and which ports to
   forward ([Play with friends](#play-with-friends)).

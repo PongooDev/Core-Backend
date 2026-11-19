@@ -3269,6 +3269,7 @@
         holder.replaceChildren(
           el("section", { class: "panel" }, el("div", { class: "empty" }, el("h2", { text: "Pick a player" }),
             el("p", { text: "Choose an account on the left to edit its currencies, items, quests, storm shields and access." }))),
+          activeBansPanel(),
           allFriendCodesPanel()
         );
         return;
@@ -4516,26 +4517,100 @@ Each starts active; quests the account already has are left as they are.`, {
       );
     }
 
+    // A ban's end as the lists show it (Core-Backend #390).
+    const banEnds = (ban) => (ban.until ? `until ${new Date(ban.until).toLocaleString()} (${ago(ban.until)})` : "permanent");
+    const banKinds = { account: "Account", ip: "IP address", hardware: "Hardware" };
+
+    // The bans in force (#390), every one, or (a) those touching one player: their account's, their last address's and
+    // their machine's. Each can be lifted here.
+    function activeBansPanel(a) {
+      const holder = el("div", {}, el("div", { class: "note", text: "Loading bans…" }));
+      const load = async () => {
+        const list = await act(api(a ? `/admin/api/bans?accountId=${encodeURIComponent(a.id)}` : "/admin/api/bans")) ?? [];
+        holder.replaceChildren(table([
+          ["Type", (b) => chip(banKinds[b.type] ?? b.type, b.type === "account" ? "bad" : "warn")],
+          ["Banned", (b) => b.type === "account" || !b.value ? (b.accountId ? el("a", { href: `#/players/${b.accountId}/manage`, text: b.displayName ?? b.accountId }) : "—")
+            : [el("span", { class: "mono", text: b.value }), b.displayName ? el("div", { class: "note", text: `from ${b.displayName}'s page` }) : null]],
+          ["Reason", (b) => b.reason || "—"],
+          ["Since", (b) => ago(b.at)],
+          ["Ends", (b) => banEnds(b)],
+          ["", (b) => btn("Unban", async () => {
+            if (!(await confirmModal(`Lift this ${(banKinds[b.type] ?? b.type).toLowerCase()} ban${b.displayName ? ` (${b.displayName})` : ""}?`, { title: "Unban", confirmText: "Unban" }))) return;
+            if (await act(api("/admin/api/bans/unban", { id: b.id }), "Ban lifted")) {
+              load();
+              if (state.account && b.accountId === state.account.id) setAccount(await act(api(`/admin/api/accounts/${state.account.id}`)));
+            }
+          }, "ghost small")]
+        ], list, a ? "Nothing bans this player now." : "No bans in force."));
+      };
+      load();
+      return el("section", { class: "panel", style: a ? "" : "margin-top:16px;" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px;" }, el("h2", { text: a ? "Bans on this player" : "Active bans" }), btn("Refresh", load, "ghost small")),
+        el("p", { class: "note", text: "Account, IP address and hardware bans in force. A timed ban lifts itself when it ends (checked at each login and token check). Every ban and unban is written to the backend log." }),
+        holder);
+    }
+
     function manageTab(a) {
       const reason = el("input", { class: "field", placeholder: "Reason (shown when they try to log in)", style: "flex:1 1 260px" });
+      // The ban form (#390): what to ban, for how long, and why.
+      const banType = el("select", { class: "field", "aria-label": "Ban type" },
+        el("option", { value: "account", text: "Account" }),
+        el("option", { value: "ip", text: "IP address", disabled: a.isServer }),
+        el("option", { value: "hardware", text: "Hardware (their PC)", disabled: a.isServer || !a.hardware }));
+      const lengthKind = el("select", { class: "field", "aria-label": "Ban length" },
+        el("option", { value: "permanent", text: "Permanent" }), el("option", { value: "hours", text: "Hours" }), el("option", { value: "days", text: "Days" }));
+      const lengthValue = el("input", { class: "field num", type: "number", min: 1, value: 24, "aria-label": "Ban length", style: "width:90px; display:none" });
+      const address = el("input", { class: "field mono", placeholder: "IP address", value: a.lastAddress ?? "", "aria-label": "IP address to ban", style: "flex:0 1 220px; display:none" });
+      const hint = el("p", { class: "note" });
+      const showFields = () => {
+        lengthValue.style.display = lengthKind.value === "permanent" ? "none" : "";
+        address.style.display = banType.value === "ip" ? "" : "none";
+        hint.textContent = banType.value === "ip"
+          ? `Bans the address their logins come from (last seen: ${a.lastAddress ?? "none yet"}). Every player on that address is refused and logged out. This PC's own and loopback addresses can't be banned.`
+          : banType.value === "hardware"
+            ? `Bans the PC Core's launcher last logged them in from (hardware ${a.hardware?.hash ?? "?"}…, ${ago(a.hardware?.at)}). Any account logging in from it is refused, also through the game's own login.`
+            : a.hardware ? "Bans this account only." : "Bans this account only. A hardware ban needs a login through Core's launcher v1.0.74 or later first.";
+      };
+      banType.addEventListener("change", showFields);
+      lengthKind.addEventListener("change", showFields);
+      showFields();
+      const ban = async () => {
+        const type = banType.value;
+        const body = { type, reason: reason.value };
+        if (lengthKind.value !== "permanent") {
+          const count = Number(lengthValue.value);
+          if (!Number.isInteger(count) || count < 1) return toast("Enter a whole number of hours or days", true);
+          body.hours = lengthKind.value === "days" ? count * 24 : count;
+        }
+        const length = body.hours ? ` for ${lengthValue.value} ${lengthKind.value}` : " permanently";
+        let warning = "";
+        if (type === "ip") {
+          const checked = await act(api(`/admin/api/bans/address?address=${encodeURIComponent(address.value.trim())}`));
+          if (!checked) return;
+          if (checked.problem) return toast(checked.problem, true);
+          body.address = checked.address;
+          if (checked.warning) {
+            warning = `\n${checked.warning}`;
+            body.allowPrivate = true;
+          }
+        }
+        const what = type === "ip" ? `the IP address ${body.address}` : type === "hardware" ? `${a.displayName}'s PC` : a.displayName;
+        if (!(await confirmModal(`Ban ${what}${length}?${warning}`, { title: "Ban Player", confirmText: "Ban", confirmKind: "danger" }))) return;
+        await post("ban", body, `${what} banned${length}`);
+      };
       const profileBoxes = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"].map((profileId) =>
         el("label", { class: "check" }, el("input", { type: "checkbox", value: profileId }), profileId));
       const confirmName = el("input", { class: "field", placeholder: `Type ${a.displayName} to confirm`, style: "flex:1 1 260px" });
       return el("div", { class: "grid" },
         el("section", { class: "panel" }, el("h2", { text: "Access" }),
-          el("p", { class: "note", text: "Kick revokes every token and closes XMPP and STOMP: the game drops to the login screen. A ban also refuses future logins." }),
-          a.banned
-            ? el("div", { class: "actions" }, chip(`Banned ${ago(a.banned.at)}${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad"), btn("Unban", () => post("unban", {}, `${a.displayName} unbanned`), "primary"))
-            : el("div", { class: "actions" }, reason, btn("Ban", async () => {
-                if (await confirmModal(`Ban ${a.displayName}?`, {
-                  title: "Ban Player",
-                  confirmText: "Ban Player",
-                  confirmKind: "danger"
-                })) {
-                  post("ban", { reason: reason.value }, `${a.displayName} banned`);
-                }
-              }, "danger"),
-              btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+          el("p", { class: "note", text: "Kick revokes every token and closes XMPP and STOMP: the game drops to the login screen. A ban also refuses future logins, until it ends or is lifted." }),
+          a.banned ? el("div", { class: "actions" }, chip(`Account banned ${ago(a.banned.at)}, ${banEnds(a.banned)}${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad"),
+            btn("Unban", () => post("unban", {}, `${a.displayName} unbanned`), "primary")) : null,
+          el("div", { class: "actions" }, banType, lengthKind, lengthValue, address),
+          hint,
+          el("div", { class: "actions" }, reason, btn("Ban", ban, "danger"),
+            btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+        activeBansPanel(a),
         el("section", { class: "panel" }, el("h2", { text: "Custom Matchmaking" }),
           el("p", { class: "note", text: "Lets this player open a custom matchmaking key (the Battle Royale lobby's Custom Matchmaking Key, 2.4 and later). Players who queue with the same key share a match of their own. Anyone can join a key while an allowed player's match for it is queued or forming; any other key is refused with \"Custom matchmaking key is not supported\"." }),
           el("div", { class: "actions" },
@@ -10278,6 +10353,15 @@ Each starts active; quests the account already has are left as they are.`, {
               ? "Passwords are required for in-game login. Players must register an account and enter the matching password to authenticate."
               : "Passwords are not checked: any player connecting to your backend can log in with any name and password."
           }));
+      // Core-Backend #390: logins must carry Core's launcher's machine id (or the account one from an earlier launcher login).
+      const panelHardwareId = el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Require Hardware ID" }),
+              settings.requireHardwareId ? chip("Required", "warn") : chip("Not required")),
+            toggleSwitch(settings.requireHardwareId === true, (checked) =>
+              save({ requireHardwareId: checked }, checked ? "Hardware ID required" : "Hardware ID no longer required"))),
+          el("p", { class: "note", text: "Core's launcher (v1.0.74 and later) sends a hash of the player's PC with its login; the backend keeps only a salted hash of it, which hardware bans use. On, a player's login is refused unless it came through such a launcher, or the account logged in through one before (the game's own login sends no hash). Off, older launchers and players without the launcher log in as before." }));
       const panelBuilds = el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const builds = settings.knownBuilds ?? [];
@@ -10514,7 +10598,7 @@ Each starts active; quests the account already has are left as they are.`, {
       const [settingsSubtabs, settingsContent] = subtabSections(settingsTabs, state.settingsSub, (key) => key === "general"
         ? [panelAdmin, panelHosting, panelBuilds, panelCheats]
         : key === "auth"
-          ? [panelPassword, panelPortalReg, panelPortal]
+          ? [panelPassword, panelHardwareId, panelPortalReg, panelPortal]
           : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch, panelVoice], (key) => { state.settingsSub = key; });
 
       $("view").replaceChildren(

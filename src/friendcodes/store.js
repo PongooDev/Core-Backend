@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { isActiveBan } from "../accounts/bans.js";
 import { readJson, writeJson } from "../json-file.js";
 
 // The friend codes and promotional reward codes Core has issued, stored in <dataDir>/friendcodes.json.
@@ -324,7 +325,7 @@ export function createFriendCodeStore(dataDir) {
     // RedeemError; whatever apply throws passes through with nothing recorded.
     async redeem(codeStr, account, ip = "", apply = () => {}) {
       if (!account || !account.id) throw new RedeemError("Account required for redemption.");
-      if (account.banned) throw new RedeemError("This account is banned and cannot redeem codes.");
+      if (isActiveBan(account.banned)) throw new RedeemError("This account is banned and cannot redeem codes.");
 
       const cleanCode = String(codeStr ?? "").trim().toUpperCase();
       if (!cleanCode) throw new RedeemError("Code is required.");

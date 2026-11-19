@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isContactEmailLogin, validateEmail } from "../../accounts/email.js";
 import { isServerAccountName, validatePassword, validateUsername, verifyPassword } from "../../accounts/password.js";
+import { isActiveBan } from "../../accounts/bans.js";
 import { EmailError } from "../../accounts/store.js";
 import { sendError } from "../../errors.js";
 import { grantCodeRewards } from "../../friendcodes/rewards.js";
@@ -194,7 +195,7 @@ export function portalRoutes(context) {
   router.post("/api/account/details", accountLimiter, async (req, res) => {
     const account = await signIn(res, String(req.body?.username ?? "").trim(), String(req.body?.password ?? "").trim());
     if (!account) return;
-    if (account.banned) return sendError(res, 403, "errors.com.epicgames.account.banned", "This account is banned.");
+    if (isActiveBan(account.banned)) return sendError(res, 403, "errors.com.epicgames.account.banned", "This account is banned.");
     res.json(accountSummary(context, account));
   });
 
@@ -243,7 +244,7 @@ export function portalRoutes(context) {
       redeemFailureTracker.recordFailure(req);
       return;
     }
-    if (account.banned) {
+    if (isActiveBan(account.banned)) {
       return sendError(res, 403, "errors.com.epicgames.account.banned", "This account is banned and cannot redeem codes.");
     }
 

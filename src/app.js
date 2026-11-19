@@ -1,6 +1,7 @@
 import express from "express";
 import compression from "compression";
 import { createAccountStore } from "./accounts/store.js";
+import { createBanStore } from "./accounts/bans.js";
 import { createExchangeCodeStore } from "./accounts/exchange-codes.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
@@ -91,6 +92,8 @@ import { vivoxWebRoutes } from "./vivox/web.js";
 export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
   const accounts = createAccountStore(config.dataDir);
+  // IP and hardware bans (Core-Backend #390); account bans stay on the accounts.
+  const bans = createBanStore(config.dataDir);
   const settings = createSettingsStore(config.dataDir);
   const adminAuth = createAdminAuthStore(config.dataDir);
   configureItemShop(() => settings.get().itemShop);
@@ -145,6 +148,7 @@ export function createContext(config) {
   });
   return {
     accounts,
+    bans,
     tokens,
     settings,
     adminAuth,

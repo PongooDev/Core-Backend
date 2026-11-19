@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { isActiveBan } from "../../accounts/bans.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { httpsProxied, sentToHost } from "../../network.js";
@@ -287,7 +288,7 @@ ${purchase}
     const entry = context.exchangeCodes?.redeem(String(req.query.exchangeCode ?? ""));
     const account = entry && accounts.get(entry.accountId);
     if (!query) return page(res, 400, "Unknown page", "<h1>Unknown page</h1><p class=\"error\">Close this window and open the Store again.</p>");
-    if (!account || account.banned) {
+    if (!account || isActiveBan(account.banned)) {
       return page(res, 400, "Sign-in expired", "<h1>Sign-in expired</h1><p class=\"error\">Close this window and open the Store again.</p>");
     }
     const { access_token: token } = tokens.issueAccess(entry.clientId, account, "exchange_code", pageMinutes * 60);

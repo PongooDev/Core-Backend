@@ -76,6 +76,7 @@ import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekC
   previewPlan, timeOnly, weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
+import { banTypes, banUntil, checkBanAddress, isActiveBan, maxBanHours, untilText } from "../accounts/bans.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
@@ -208,7 +209,7 @@ const eventBuilds = [
 const datedStatus = (now, config) => withoutSeasonStartRecording(() => datedFlagsStatus(now.getTime(), (season) => seasonMoment(now, null, season).getTime(), config));
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
+  const { accounts, bans, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
   const router = express.Router();
   router.use("/admin", createAdminGate({ adminAuth, settings }));
   // The panel's gives, resets and conversions read the build whose data has what they touch; none is the player's own
@@ -237,7 +238,7 @@ export function adminRoutes(context) {
       vbucks: profile ? sum(profile, currencies[0].templates) : 0,
       tutorialCompleted: profile ? tutorialCompleted(profile) : false,
       online: online(account.id),
-      banned: account.banned ?? null,
+      banned: isActiveBan(account.banned) ? account.banned : null,
       // The Custom Matchmaking permission (#186): the player's party may open a custom matchmaking key.
       customMatchmaking: account.customMatchmaking === true,
       hasPassword: Boolean(account.password),
@@ -315,8 +316,36 @@ export function adminRoutes(context) {
       // Battle Royale's season level (profiles/athena.js), once the account has an athena profile.
       battleRoyale: battleRoyaleLevel(loadIfExists(account.id, "athena")),
       sessions: sessionsOf(account.id),
-      profiles: profiles.ids(account.id)
+      profiles: profiles.ids(account.id),
+      // What an IP or hardware ban from the player page bans (Core-Backend #390): the address of the account's last login or
+      // token request, and when Core's launcher last sent its machine's id (the salted hash's start only).
+      lastAddress: account.lastAddress ?? null,
+      hardware: account.hardware?.hash ? { hash: account.hardware.hash.slice(0, 12), at: account.hardware.at ?? null } : null
     };
+  }
+
+  // A ban as the admin panel lists it (#390): the account bans from the accounts, the IP and hardware bans from bans.json.
+  const accountBanEntry = (account) => ({ id: `account:${account.id}`, type: "account", value: account.displayName, accountId: account.id,
+    displayName: account.displayName, reason: account.banned.reason ?? "", at: account.banned.at ?? null, until: account.banned.until ?? null });
+  const banEntry = (ban) => ({ ...ban, value: ban.type === "hardware" ? `${ban.value.slice(0, 12)}…` : ban.value });
+  function activeBans() {
+    const now = Date.now();
+    return [...accounts.list().filter((account) => isActiveBan(account.banned, now)).map(accountBanEntry), ...(bans?.list(now) ?? []).map(banEntry)]
+      .sort((a, b) => String(b.at ?? "").localeCompare(String(a.at ?? "")));
+  }
+  // The bans that touch an account: its own, its last address's, its machine's, and the ones made from its page.
+  function bansOf(account) {
+    const hash = account.hardware?.hash ?? null;
+    const own = (bans?.list() ?? []).filter((ban) => ban.accountId === account.id || (ban.type === "ip" && ban.value === account.lastAddress)
+      || (ban.type === "hardware" && ban.value === hash));
+    return [...(isActiveBan(account.banned) ? [accountBanEntry(account)] : []), ...own.map(banEntry)];
+  }
+  // Logs out every player account an IP or hardware ban now refuses (their next refresh is refused with the ban).
+  function kickBanned(type, value) {
+    for (const other of accounts.list()) {
+      if (isServerAccountName(other.displayName)) continue;
+      if ((type === "ip" && other.lastAddress === value) || (type === "hardware" && other.hardware?.hash === value)) kick(other);
+    }
   }
 
   // The season the profile is in (1.11's Season 2 with its Battle Pass, profiles/seasons.js), with that season's cap.
@@ -518,7 +547,7 @@ export function adminRoutes(context) {
       port: req.socket.localPort,
       dataDir,
       accounts: list.length,
-      banned: list.filter((account) => account.banned).length,
+      banned: list.filter((account) => isActiveBan(account.banned)).length,
       online: (xmpp?.onlineAccounts() ?? []).map(({ accountId, resources }) => ({ accountId, displayName: accounts.get(accountId)?.displayName ?? accountId, resources }))
         .filter(({ displayName }) => !isServerAccountName(displayName)),
       sessions: sessions.list().map(sessionSummary),
@@ -1118,13 +1147,80 @@ export function adminRoutes(context) {
     res.json(details(account));
   });
 
-  // {reason}: a banned account is kicked and can't log in again until unbanned.
+  // {reason, type, hours, address, allowPrivate} (Core-Backend #390): bans the player's account (type "account", the
+  // default, as before), the address they last logged in from or the one given (type "ip"), or the machine Core's launcher
+  // last logged them in from (type "hardware"). hours: a timed ban's length (the panel's hours or days), none for a
+  // permanent ban. A private (LAN or VPN) address needs allowPrivate; loopback and this PC's own addresses are refused
+  // (accounts/bans.js checkBanAddress). Everyone the ban refuses is logged out.
   router.post("/admin/api/accounts/:accountId/ban", (req, res) => {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
-    accounts.setBan(account, { reason: String(req.body?.reason ?? "").trim().slice(0, 200), at: new Date().toISOString() });
-    kick(account);
-    res.json(details(account));
+    const type = req.body?.type ?? "account";
+    if (!banTypes.includes(type)) return invalid(res, `type must be one of ${banTypes.join(", ")}`);
+    const until = banUntil(req.body?.hours);
+    if (until === undefined) return invalid(res, `hours must be a whole number from 1 to ${maxBanHours}, or empty for a permanent ban`);
+    const reason = String(req.body?.reason ?? "").trim().slice(0, 200);
+    const length = until ? untilText({ until }) : " permanently";
+
+    if (type === "account") {
+      // A permanent ban is saved as it always was, {reason, at}.
+      accounts.setBan(account, { reason, at: new Date().toISOString(), ...(until ? { until } : {}) });
+      kick(account);
+      log("Core", `Banned the account ${account.displayName}${length}${reason ? `: ${reason}` : ""} (admin panel)`);
+      return res.json(details(account));
+    }
+    if (!bans) return invalid(res, "This backend keeps no IP or hardware bans");
+    if (isServerAccountName(account.displayName)) return invalid(res, "A gameserver account can only get an account ban");
+
+    if (type === "ip") {
+      const given = req.body?.address ?? account.lastAddress;
+      if (!given) return invalid(res, `No address is recorded for ${account.displayName} yet (it is kept from their next login). Type the address to ban.`);
+      const checked = checkBanAddress(given);
+      if (checked.problem) return invalid(res, checked.problem);
+      if (checked.warning && req.body?.allowPrivate !== true) {
+        return sendError(res, 409, "errors.com.core.admin.private_address", `${checked.warning} Confirm to ban it anyway.`);
+      }
+      const ban = bans.add({ type, value: checked.address, reason, until, accountId: account.id, displayName: account.displayName });
+      kickBanned("ip", checked.address);
+      log("Core", `Banned the IP address ${checked.address} (${account.displayName}'s)${length}${reason ? `: ${reason}` : ""} (admin panel)`);
+      return res.json({ ...details(account), ban: banEntry(ban), warning: checked.warning ?? null });
+    }
+
+    const hash = account.hardware?.hash;
+    if (!hash) {
+      return invalid(res, `No hardware ID is recorded for ${account.displayName}: they haven't logged in through a Core launcher that sends one (v1.0.74 or later).`);
+    }
+    const ban = bans.add({ type, value: hash, reason, until, accountId: account.id, displayName: account.displayName });
+    kickBanned("hardware", hash);
+    log("Core", `Banned the PC ${account.displayName} last logged in from (hardware ${hash.slice(0, 12)}…)${length}${reason ? `: ${reason}` : ""} (admin panel)`);
+    res.json({ ...details(account), ban: banEntry(ban) });
+  });
+
+  // Whether an address may be IP banned, and the warning for a private one (#390), before the panel asks to confirm.
+  router.get("/admin/api/bans/address", (req, res) => res.json(checkBanAddress(req.query.address)));
+
+  // The bans in force (#390), every one or (accountId) those that touch one account.
+  router.get("/admin/api/bans", (req, res) => {
+    if (req.query.accountId === undefined) return res.json(activeBans());
+    const account = accounts.get(String(req.query.accountId));
+    if (!account) return notFound(res, req.originalUrl);
+    res.json(bansOf(account));
+  });
+
+  // {id}: lifts a ban from the list ("account:<accountId>" for an account ban).
+  router.post("/admin/api/bans/unban", (req, res) => {
+    const id = String(req.body?.id ?? "");
+    if (id.startsWith("account:")) {
+      const account = accounts.get(id.slice("account:".length));
+      if (!account?.banned) return notFound(res, req.originalUrl);
+      accounts.setBan(account, null);
+      log("Core", `Unbanned the account ${account.displayName} (admin panel)`);
+      return res.json({ unbanned: id });
+    }
+    const ban = bans?.remove(id);
+    if (!ban) return notFound(res, req.originalUrl);
+    log("Core", `Lifted the ${ban.type === "ip" ? `IP ban of ${ban.value}` : `hardware ban of ${ban.value.slice(0, 12)}…`}${ban.displayName ? ` (${ban.displayName})` : ""} (admin panel)`);
+    res.json({ unbanned: id });
   });
 
   // {allowed}: grants or takes back the Custom Matchmaking permission (Core-Backend #186, matchmaking/service.js).
@@ -1139,6 +1235,7 @@ export function adminRoutes(context) {
   router.post("/admin/api/accounts/:accountId/unban", (req, res) => {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
+    if (account.banned) log("Core", `Unbanned the account ${account.displayName} (admin panel)`);
     accounts.setBan(account, null);
     res.json(details(account));
   });
@@ -1302,6 +1399,7 @@ export function adminRoutes(context) {
       allowRegistration: req.body?.allowRegistration,
       showItemImages: req.body?.showItemImages,
       allowAutoRegistration: req.body?.allowAutoRegistration,
+      requireHardwareId: req.body?.requireHardwareId,
       defaultFoundersAccess: req.body?.defaultFoundersAccess,
       remoteAdmin: req.body?.remoteAdmin,
       seasonalEvents: req.body?.seasonalEvents,

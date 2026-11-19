@@ -165,7 +165,24 @@ export function createAccountStore(dataDir) {
       save(account);
     },
 
-    // ban: {reason, at} or null to lift it.
+    // Where a player's login or token request came from (Core-Backend #390, accounts/bans.js): lastAddress, the address
+    // an IP ban from the admin panel's player page bans, and hardware {hash, at}, the salted hash of the machine id Core's
+    // launcher sent (never the id itself), which the game's own logins, sending none, are checked by. Saved on a change.
+    recordAccess(account, { address, hardwareHash } = {}) {
+      let changed = false;
+      if (address && account.lastAddress !== address) {
+        account.lastAddress = address;
+        changed = true;
+      }
+      if (hardwareHash && account.hardware?.hash !== hardwareHash) {
+        account.hardware = { hash: hardwareHash, at: new Date().toISOString() };
+        changed = true;
+      }
+      if (changed) save(account);
+    },
+
+    // ban: {reason, at, until?} or null to lift it. A ban without until is permanent (every ban before #390 is one); one
+    // with until ends then (accounts/bans.js isActiveBan).
     setBan(account, ban) {
       if (ban) account.banned = ban;
       else delete account.banned;
