@@ -21,6 +21,16 @@ import { eventWindowHistory, hasShowdown, tournamentAndHistory, tournamentsCompl
 //   matches through battleroyale/recordresults, which scores them by their playlist; this takes Epic's own report all the
 //   same, from a game server, for a server that sends it: each of the team's players gets the match in that event, with
 //   the team's placement and eliminations (a match already counted, by its id, isn't counted again).
+// 7.30 (CL-4834550) adds Epic's events service to the exe (its DefaultEngine.ini's [OnlineSubsystemMcp.OnlineEventsServiceMcp]:
+// ServiceName events, BasePath /api/v1, events-public-service-live.ol.epicgames.com; FOnlineEventsServiceMcp, 7.30
+// 0x49DE40) with three routes: /api/v1/events/<gameId>/download/<accountId>?region=&platform=&teamAccountIds= (JSON
+// player, events, templates and scores: 0x53F930), /api/v1/events/<gameId>/<eventId>/<eventWindowId>/history and
+// /api/v1/leaderboards/<gameId>/<eventId>/<eventWindowId>/<accountId>?page=&rank=&teamAccountIds= (the new event
+// leaderboard screen, UFortEventLeaderboardScreen). They aren't answered: the tournament manager's refresh (0x1359180)
+// asks the download only when UseEventsService holds (0x15CD550: the -UseEventsService command line or
+// UFortRuntimeOptions' bUseEventsService, false by default and set by neither 7.30's DefaultGame.ini nor Core's hotfix),
+// and otherwise these McpUtils routes as before (0x12C98F0), as does the leaderboard's page request (0x135C3E0). So 7.30's
+// Events tab is served here, as 7.20's.
 export function eventRoutes(context) {
   const { tokens, accounts, sessions } = context;
   const router = express.Router();

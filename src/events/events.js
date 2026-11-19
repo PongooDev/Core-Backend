@@ -489,8 +489,16 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // LobbySeason7, the Season 7 Warmup's alerts and Frostnite (Update v7.20's "Weekly Frostnite Challenge 3"; 🟡 it ends
 // none of them); the 14 Days of Fortnite "has ended", by its switch only. Its Ice Storm modes are playlists, not flags
 // (events/ltms.js).
+//
+// 7.30 (CL-4834550, Update v7.30, 29 January 2019), Season 7. Every EventFlag.* in its paks (the same byte scan, the
+// 445,201 uasset, umap, uexp and ini files its paks mount, the keyed pakchunk1001, 1002, 1004, 1005, 1007 and 1008 with
+// them; pakchunk1000's, 1003's and 1006's keys aren't in the keychain): 7.20's and one more, EventFlag.LTE_Festivus (the
+// Showtime Challenges' schedule and bundle, Schedule_Festivus: events/festivus.js serves it on its dates). 7.30 keeps
+// 7.20's LobbySeason7, the Season 7 Warmup's alerts and Frostnite (Content Update v7.30's "Weekly Frostnite Challenge 6";
+// 🟡 Update v7.30 ends none of them); the 14 Days of Fortnite and the Ice Storm Challenges are its switches only.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
+export const lteFestivus = "EventFlag.LTE_Festivus";
 export const frostnite = "EventFlag.Frostnite";
 export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
@@ -554,7 +562,7 @@ export const distantFogOverlap = "BR_S6_Approach_Overlap";
 export const distantFogApproach630 = "BR_S6_Approach_01";
 export const distantFogOverlap630 = "BR_S6_Approach_02";
 // Season 7's The Block (BP_SlabScripting's calendar names, events/block.js): 7.00's R0 (Risky Reels stands) and R1 (the
-// Block has landed on it), 7.10's slab1 to slab4 (its four community builds), 7.20's slab1 and slab2 (its two). Plain names with no "EventFlag." prefix:
+// Block has landed on it), 7.10's slab1 to slab4 (its four community builds), 7.20's slab1 and slab2 (its two), 7.30's slab1 to slab3 (its two and the blank Block). Plain names with no "EventFlag." prefix:
 // the blueprint hands them to a CalendarEventWatcher as strings.
 export const blockRiskyReels = "R0";
 export const blockLanded = "R1";
@@ -578,6 +586,9 @@ export const iceKingClock = "WD0";
 export const iceKingLeadUp = "WD1";
 export const iceKingStorm = "WD2";
 export const iceKingStormPast = "SP";
+// 7.30's BP_SnowSetup reads SP1 when SP isn't active: the island's storm snow melting, Snow_Amount 1 less SP1's progress
+// (its TimeSpanRatio) at a match's start, Season 7's own snow once it is gone (events/icestorm.js iceStormMeltStates).
+export const iceStormSnowMelt = "SP1";
 // The Ice Legion's spawners (CoreV2 #490): the Ice Storm playlists' W_Deimos_Mission_RiftSpawners_Dynamic (Mutator_DeimosMissions_W)
 // has RequiredEventFlag WDSPAWN, the only use of the name in 7.20's paks. AFortMission_RiftSpawners::EvaluateEventCalendar
 // (7.20 0x11B0B60) turns the mission's spawners (the Ice Shards its supply drop SupplyDrop_Deimos brings) on while the
@@ -585,6 +596,13 @@ export const iceKingStormPast = "SP";
 // DeimosTurnOn mission event turns them on (the mission's handler 0x11BD280 -> 0x11C5380), and the calendar has to have
 // WDSPAWN from then on or its next change turns them off. Plain, like the event's other names.
 export const iceKingIceLegion = "WDSPAWN";
+// 7.30's Showtime, Marshmello's concert at Pleasant Park (events/festivus.js has how 7.30 plays it), plain names too:
+// FLevel, read by Athena_POI_Foundations' level Blueprint at a match's start (Pleasant Park's field with the stage,
+// PleasentParkFestivus, instead of PleasentParkDefault) and watched by BP_FestivusManager in the concert's playlists (its
+// sub-level); F0, the countdown to the show (BP_FestivusManager shows it from 29 hours before F0's end); F1, the show.
+export const festivusLevel = "FLevel";
+export const festivusCountdown = "F0";
+export const festivusShow = "F1";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;
@@ -611,6 +629,7 @@ const build631 = 4573279;
 const build700 = 4629139;
 const build710 = 4667333;
 const build720 = 4727874;
+const build730 = 4834550;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -661,11 +680,12 @@ const events = [
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
-  // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's and 7.20's too, and their Frostnite.
-  { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build720 },
-  { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build720 },
-  { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build720 },
-  { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build720 },
+  // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's, 7.20's and 7.30's too, and their
+  // Frostnite.
+  { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build730 },
+  { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build730 },
+  { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build730 },
+  { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build730 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

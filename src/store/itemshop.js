@@ -158,7 +158,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Malcore, Cabbie, Snowstrike and the Deep Sea Destroyer and Dominator, their harvesting tools and gliders, the Hot & Cold
 // wrap and the emotes Flux, IDK, Whirlwind and Slick. The Krakenaxe (pickaxe_id_131_nautilus, sold 22 and 23 February) is
 // left out: 7.10's data has it too, as TBD, and would show it so. Only 7.20's data has the others, so 7.10's days are as
-// they were. A build's season is its athena data's seasonNumber, Season 1 without one.
+// they were. 7.30 (CL-4834550) adds the 14 of its cosmetics the shop sold, 28 times on 14 of the season's days from 1
+// February 2019 on, the same way: Marshmello, his Mello Rider glider and Marsh Walk emote, Firewalker with Outburst and the
+// Golden Clouds wrap, Kitbash and Sparkplug (with Trash Lid and Scrappy), the Extra Cheese and Nautilus gliders, Squid
+// Striker, and the emotes Bobbin', Glowsticks and Air Horn. Only 7.30's data has them, so 7.20's days are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -652,7 +655,10 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_322_athena_commando_m_techops": "AthenaBackpack:bid_198_techops",
   "AthenaCharacter:cid_330_athena_commando_f_icequeen": "AthenaBackpack:bid_199_icequeen",
   "AthenaCharacter:cid_329_athena_commando_f_snowninja": "AthenaBackpack:bid_200_snowninjafemale",
-  "AthenaCharacter:cid_328_athena_commando_f_tennis": "AthenaBackpack:bid_204_tennisfemale"
+  "AthenaCharacter:cid_328_athena_commando_f_tennis": "AthenaBackpack:bid_204_tennisfemale",
+  // 7.30's (CL-4834550) the same way: Kitbash's Trash Lid and Sparkplug's Scrappy. Marshmello and Firewalker have none.
+  "AthenaCharacter:cid_334_athena_commando_m_scrapyard": "AthenaBackpack:bid_205_scrapyardmale",
+  "AthenaCharacter:cid_335_athena_commando_f_scrapyard": "AthenaBackpack:bid_206_scrapyardfemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

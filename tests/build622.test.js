@@ -127,9 +127,9 @@ test("6.22's event flags: Save the World's Fortnitemares with Part 2, the challe
   assert.equal(activeEventFlags(v621).includes(islandPoi(1)), false);
   for (const flag of [islandPoi(0), islandPoi(1), islandCrack]) assert.equal(season4Flag(flag).builds[1], Number(v622), flag);
   // and on to 6.31 (tests/build631.test.js), but the Cube's end.
-  for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, fortnitemaresPhase2]) assert.equal(season4Flag(flag).builds[1], 4727874, flag);
+  for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, fortnitemaresPhase2]) assert.equal(season4Flag(flag).builds[1], 4834550, flag);
   assert.deepEqual(season4Flag(islandDrain).builds, [Number(v621), Number(v622)]);
-  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4727874]);
+  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4834550]);
   assert.deepEqual(season4Flag(fortnitemaresPart4).builds, [Number(v621), Number(v621)], "gone from 6.22's paks");
   assert.equal(inBuild(v622, () => isEventActive(fortnitemares)), true);
   assert.equal(inBuild(v622, () => isEventActive(fortnitemares2018)), true);

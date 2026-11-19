@@ -136,10 +136,12 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // 6.10's default modes with glider redeploy and its tournament playlists had no tile of their own either, nor 6.20's
   // Fortnitemares tournament playlists, nor 6.30's Scavenger Pop-Up Cup ones, nor 7.20's Ice Storm ones. 6.20's Fortnitemares modes have Epic's (#348,
   // below). 7.00's Creative (Playlist_PlaygroundV2, PongooDev/CoreV2#471) keeps the tile 7.00 cooks for it (T_Creative_Right):
-  // no page of Epic's from its season survives, and later ones are Creative's later playlist.
+  // no page of Epic's from its season survives, and later ones are Creative's later playlist. 7.30's Party at Pleasant Park
+  // and NFL Rumble (Playlist_Music_Highest, Playlist_Omaha) have none here either: no page of Epic's naming their tiles is at
+  // hand (🟡 the default tile until the host sets one).
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
-    "Playlist_PlaygroundV2",
+    "Playlist_Music_Highest", "Playlist_Omaha", "Playlist_PlaygroundV2",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";

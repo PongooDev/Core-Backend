@@ -54,15 +54,15 @@ const withSession = (build, name, run) => {
 const replayDaysAgo = (days) => new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()) - days * 86400000)
   .toISOString().slice(0, 10);
 
-test("7.20 is known, on its own data, Season 7's newest build", () => {
+test("7.20 is known, on its own data, Season 7's", () => {
   assert.equal(versionOf(v720), "7.20");
   assert.equal(allowedBuildList(["7.20"]).join(), v720);
   assert.equal(dataBuild(v720), v720);
   assert.equal(dataBuild("4700000"), v710, "a build between 7.10 and 7.20 plays on 7.10's");
-  assert.equal(dataBuild("4800000"), v720, "a later build Core doesn't know plays on 7.20's");
+  assert.equal(dataBuild("4800000"), v720, "a later build Core doesn't know, before 7.30, plays on 7.20's");
   assert.equal(releasedOn(v720), Date.UTC(2019, 0, 15));
-  assert.equal(buildOfSeason(7), v720);
-  assert.equal(seasonName(7), "Season 7 (7.00 – 7.20)");
+  assert.equal(buildOfSeason(7), "4834550", "7.30 is Season 7's newest (tests/build730.test.js)");
+  assert.equal(seasonName(7), "Season 7 (7.00 – 7.30)");
   const season = inBuild(v720, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.battlePassLevelOfferId], [7, "BRSeason7", "64A3020B098841A7805EE257D68C554F"]);
 });
@@ -139,7 +139,7 @@ test("the Ice Storm's flag and calendar event: from the Ice Storm to 28 January 
   withConfig({ ...season7, datedFlags: { iceStorm: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v720, () => iceStormFlagsNow(at("2019-01-22T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltmWinterDeimos).builds, [4727874, 4727874]);
+  assert.deepEqual(season4Flag(ltmWinterDeimos).builds, [4727874, 4834550], "7.30: by the switch only");
 });
 
 test("a 7.20 player gets the Ice Storm Challenges while they run, two more for each day they have run", () => {
@@ -167,10 +167,10 @@ test("7.20's event flags: 7.10's own and Frostnite; its paks' only new flag is t
   const flags = activeEventFlags(v720);
   for (const flag of [lobbySeason7, "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", frostnite]) assert.ok(flags.includes(flag), flag);
   assert.equal(flags.includes(ltm14DaysOfFortnite), false, "the 14 Days have ended");
-  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 4727874]);
+  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 4834550]);
   assert.deepEqual(season4Flag("EventFlag.Fortnitemares").builds[1], 4629139);
   assert.deepEqual(season4Flag("EventFlag.WinterBattleBus").builds, [4629139, 4629139]);
-  assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 4727874);
+  assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 4834550);
 });
 
 test("7.20's modes: One Shot and Sniper Shootout on by default, the Ice Storm's (in place of Solo, Duos and Squads) from the Ice Storm, each on its dates", () => {
@@ -209,7 +209,7 @@ test("7.20's modes: One Shot and Sniper Shootout on by default, the Ice Storm's 
   }
   assert.equal(lobby.find((own) => own.name === "Playlist_Deimos_Solo_Winter")?.enabled, false, "the Ice Storm's waits for the storm");
   assert.equal(lobby.some((own) => own.name === "Playlist_33"), false, "the 14 Days' modes are 7.10's");
-  assert.deepEqual(tournamentPlaylists.slice(-3).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
+  assert.deepEqual(tournamentPlaylists.filter(({ id }) => id.startsWith("iceStormShow")).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
     [["iceStormShowSolo", 58288, true], ["iceStormShowDuos", 58289, true], ["iceStormShowSquads", 58290, true]]);
 });
 

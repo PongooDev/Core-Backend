@@ -191,12 +191,12 @@ test("6.21's event flags: 6.20's, POI0 (its Cube Monsters' spawners need it), Fo
   assert.equal(islandPoi(0), "POI0");
   for (const flag of ["POI0", "POI1", islandCrack]) assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4543176], flag); // not 6.30's (tests/build630.test.js)
   assert.deepEqual(season4Flag(fortnitemaresPart4).builds, [Number(v621), Number(v621)], "gone from 6.22's paks");
-  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4727874], "and on to 6.30 (tests/build622.test.js, tests/build630.test.js)");
+  assert.deepEqual(season4Flag(ltmLilKevin).builds, [Number(v621), 4834550], "and on to 6.30 (tests/build622.test.js, tests/build630.test.js)");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4727874], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4834550], flag);
   }
   for (const flag of [lobbySeason6, "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event", "EventFlag.Blockbuster2018Phase4", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], 4727874, flag);
+    assert.equal(season4Flag(flag).builds[1], 4834550, flag);
   }
   // The floating island's flags stop at 6.20: 6.21's BP_IslandScripting watches none of them.
   assert.equal(season4Flag(islandRune(8)).builds[1], Number(v620));

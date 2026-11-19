@@ -77,7 +77,7 @@ export const eventCards = [
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." },
   // 7.00's (events/events.js): Save the World's Season 7 Warmup.
-  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.20", ranges: [[4629139, 4727874]],
+  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.30", ranges: [[4629139, 4834550]],
     about: "Save the World's start of Season 7: Mutant Storm alerts with Snowflake Tickets (10 a day), Mini-Boss alerts back to normal (no tickets), the Frostbite in the Weekly Store; the Season 7 lobby.",
     flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] },
   // The Block (events/block.js): the map's, so `always`: served with the seasonal events off or another event mode, and
@@ -93,7 +93,7 @@ export const eventCards = [
     key: "challenges", endStep: "extended", startLabel: "Challenges start", endLabel: "Extension ends",
     about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
     flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
-  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.20", ranges: [[4667333, 4727874]],
+  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.30", ranges: [[4667333, 4834550]],
     about: "Save the World's Frostnite: the quest map's Frostnite page, its theater on the world map (the Endless missions at every Frostnite difficulty, each week's challenge from Slip Out on, its own backpack), its WinterQuest_2018 quests, the Winter Llama for Snowflake Tickets and Cloaked Shadow in the Event Store.",
     flags: ["EventFlag.Frostnite"] },
   // 7.20's (events/block.js, events/icestorm.js): the Block's two builds, and the Ice Storm Challenges on their dates.
@@ -116,7 +116,24 @@ export const eventCards = [
     soonConfirm: "Start the Ice Storm in 5 minutes? Start a Solo, Duos or Squads match after this: it runs as the Ice Storm's mode, plays the storm, and the Ice Fiends and Brutes come right after it. A match already running plays the storm without them.",
     about: "The ice sphere over Polar Peak, the Ice King in it, the TVs' weather warning and countdown, the sphere's 24-hour clock, then the storm: the Ice King breaks out, the storm pauses, a blizzard covers the island in snow and the Ice Legion comes. To see the storm and the Ice Fiends: press Start in 5 minutes, then start a Solo, Duos or Squads match and stay alive until about 2 minutes after the storm. Matches started in the half hour before the storm are the Ice Storm's (the lobby still shows Solo, Duos and Squads), and only those get the Ice Legion (7.20's own rule: the Ice Legion's spawners are in the Ice Storm playlists). Start now plays the storm 30 seconds later in the match you're already in, without the Ice Legion: that match started on the normal playlist. Custom picks the storm's time yourself (the same rule: start the match after setting it). A match that starts after the storm starts under snow, without the storm, on the Ice Storm modes with the Ice Legion. To play the storm again, set Before the event first. 🟡 Epic's hours before the storm aren't recorded." },
   { id: "iceKingSnow", kind: "choice", choice: "iceKingSnow", seasons: [7], name: "The Ice Storm's snow", builds: "7.20", ranges: [[4727874, 4727874]],
-    about: "The island's snow on 7.20. 7.20 has two snow states (no stages in between: the melting came with later updates): Season 7's own snow, and the whole island under snow after the storm. Follows the storm by default. A match keeps the snow it started with; the storm itself spreads the snow over the island in the matches running then." }
+    about: "The island's snow on 7.20. 7.20 has two snow states (no stages in between: the melting came with later updates): Season 7's own snow, and the whole island under snow after the storm. Follows the storm by default. A match keeps the snow it started with; the storm itself spreads the snow over the island in the matches running then." },
+  // 7.30's (events/block.js, events/icestorm.js, events/festivus.js): the Block's two builds, the Ice Storm's snow melting,
+  // Showtime and its challenges on their dates.
+  { id: "block730", kind: "dated", dated: "block730", seasons: [7], name: "The Block's community builds", builds: "7.30", ranges: [[4834550, 4834550]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "CoLLAMAsseum goes up", endLabel: "Streat Festival goes up",
+    about: "7.30's two community-built islands on the Block, each a level in its paks: CoLLAMAsseum (Zarbot; 7.30 shipped with it on 29 January, so it is up from the replay's first day) and Streat Festival (NIBLL, the wiki's Lunar Street Festival, 5 February, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  { id: "iceStormMelt", kind: "dated", dated: "iceStormMelt", seasons: [7], name: "The Ice Storm's snow melting", builds: "7.30", ranges: [[4834550, 4834550]],
+    key: "melt", startLabel: "The snow starts melting", endLabel: "The snow is gone",
+    about: "The island's snow on 7.30: under the Ice Storm's snow as 7.30 shipped (from the replay's first day to Update v7.30's day, 29 January), then melting to Season 7's own snow by 1 February (the Fortnite Wiki's \"The snow melted\"). A match keeps the snow it started with: the further into the melt it starts, the less snow. Off leaves Season 7's own snow. 7.30 has no Ice King: its paks no longer have the sphere's or the storm's levels. 🟡 The days', no hours (00:00 UTC).",
+    flags: ["SP", "SP1"] },
+  { id: "festivus", kind: "dated", dated: "festivus", seasons: [7], name: "Showtime (Marshmello's concert)", builds: "7.30", ranges: [[4834550, 4834550]],
+    key: "show", startLabel: "The show starts",
+    about: "The stage on Pleasant Park's field from Update v7.30's day (29 January) to the encore, the countdown to each show, and the two ten-minute shows (2 February 2019, 11 AM and 11 PM PST). The concert itself plays only in Party at Pleasant Park, the Battle Royale game mode of its own (Original dates); every other match has the stage from its start. A match keeps the field it started with. 🟡 The stage's hours aren't recorded (00:00 UTC on the 29th).",
+    flags: ["FLevel", "F0", "F1"] },
+  { id: "showtime", kind: "dated", dated: "showtime", seasons: [7], name: "The Showtime Challenges", builds: "7.30", ranges: [[4834550, 4834550]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "The Showtime Challenges: search a Showtime poster (Mello Made It Right) at the start, and from the next day visit the Showtime venue (Keep It Mello) and use Keep It Mello at Trucker's Oasis, the Ice Cream Parlor and Frozen Lake (Marshy Smasher); the Showtime banner for all three (from 30 January to 2 February 2019). 🟡 The wiki's days, 00:00 UTC.",
+    flags: ["EventFlag.LTE_Festivus", "CalendarEvent_Season7_Festivus"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 

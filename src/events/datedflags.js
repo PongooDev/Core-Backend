@@ -1,12 +1,15 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
-  iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
-  iceKingVisible, iceKingWarning, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
+  iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
+  ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
 // 7.20's Ice Storm Challenges bundle's (QuestBundle_WinterDeimos).
 export const iceStormCalendarEvent = "CalendarEvent_Season7_WinterDeimos";
+// 7.30's Showtime Challenges bundle's (QuestBundle_Festivus, and Schedule_Festivus's).
+export const showtimeCalendarEvent = "CalendarEvent_Season7_Festivus";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -109,12 +112,17 @@ const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
 // so on the replay it is up from the lap's first day, as 5.21's rift is formed from its lap's start (events/block.js has
 // why 7.10's blank Block can't be served instead). 7.20: its two, Looming Llama (Stormhawk; 7.20 shipped with it, 15
 // January, so from the lap's first day) and Omega Pyramid (Directingpete, Content Update v7.20, 22 January), on to the
-// season's end (🟡 the wiki's days, 00:00 UTC; Update v7.30's Firebase Omega isn't in 7.20's paks).
+// season's end (🟡 the wiki's days, 00:00 UTC; Update v7.30's Firebase Omega isn't in 7.20's paks). 7.30: its two,
+// CoLLAMAsseum (Zarbot, as 7.30's SLAB_1 names him; the wiki's "Zartbot": 7.30 shipped with it, 29 January, so from the
+// lap's first day) and Streat Festival (NIBLL, SLAB_2's name for the wiki's "Lunar Street Festival", 5 February, the
+// Content Update's day), on to the season's end (🟡 the wiki's days, 00:00 UTC); its slab3 is the blank Block (SLAB_3,
+// POI_Block_Blank), which Epic never showed in 7.30, so it isn't served.
 const blockLandsAt = Date.parse("2018-12-07T01:30:00.000Z");
 const at7 = (date) => Date.parse(`${date}T00:00:00.000Z`);
 const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23", "Risky Runways, by AKE"],
   ["2018-12-30", "Mysterious Markets, by Bludriv"], ["2019-01-08", "DM Arena, by KojackNumber2"]];
 const blockBuilds720 = [["2018-12-06", "Looming Llama, by Stormhawk"], ["2019-01-22", "Omega Pyramid, by Directingpete"]];
+const blockBuilds730 = [["2018-12-06", "CoLLAMAsseum, by Zarbot"], ["2019-02-05", "Streat Festival, by NIBLL"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -123,6 +131,24 @@ const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${i
 const iceStormChallengesAt = Date.parse("2019-01-19T19:00:00.000Z");
 const iceStormChallengesEnd = Date.parse("2019-01-29T00:00:00.000Z");
 const blockModes = ["dates", "custom"];
+// 7.30's snow (events/icestorm.js iceStormMeltStates): the Ice Storm's snow (SP) as 7.30 shipped with it, from the lap's
+// first day to Update v7.30's day (29 January), then its melting (SP1: BP_SnowSetup's Snow_Amount is 1 less SP1's progress
+// at a match's start) to the Fortnite Wiki's "February 1st 2019: The snow melted" (🟡 the days', 00:00 UTC: no source
+// gives the hours).
+const iceStormMeltAt = Date.parse("2019-01-29T00:00:00.000Z");
+const iceStormMeltedAt = Date.parse("2019-02-01T00:00:00.000Z");
+// 7.30's Showtime (events/festivus.js has how 7.30 plays it). The Fortnite Wiki's Showtime: "aired on February 2nd 2019 at
+// 11AM PST and the encore on the same day at 11PM PST", ten minutes each (its end date: 11:10 PM PST); its Pleasant Park:
+// "January 29th 2019: A stage is being set up ... February 3rd 2019: The stage at Pleasant Park is now gone". So FLevel
+// (the stage) from Update v7.30's day to the encore's end, F0 (the countdown) until each show, F1 the shows' ten minutes
+// (🟡 the stage's hours aren't recorded: 00:00 UTC on the 29th, and it goes after the encore). The Showtime Challenges: the
+// wiki's "available from January 30th 2019 to February 2nd 2019" (🟡 00:00 UTC of the 30th to the 2nd's end).
+const festivusShowAt = Date.parse("2019-02-02T19:00:00.000Z");
+const festivusEncoreAt = Date.parse("2019-02-03T07:00:00.000Z");
+const festivusShowMs = 10 * 60000;
+const festivusStageAt = Date.parse("2019-01-29T00:00:00.000Z");
+const showtimeChallengesAt = Date.parse("2019-01-30T00:00:00.000Z");
+const showtimeChallengesEnd = Date.parse("2019-02-03T00:00:00.000Z");
 // 7.20's Ice King and his Ice Storm (events/icestorm.js has how 7.20 plays it). Epic's storm was 19 January 2019, 11:00 AM
 // PST (the Fortnite Wiki's Ice Storm; Newsweek: the TVs' countdown "set to expire around 2 p.m. EST on January 19"). Each
 // step's names and spacing are 7.20's blueprints': WD0 ends 12 minutes before the storm (BP_MooneyScripting adds 12 minutes
@@ -234,6 +260,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds) },
   { id: "block720", name: "The Block's community builds (7.20)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds720) },
+  { id: "block730", name: "The Block's community builds (7.30)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds730) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -255,6 +283,25 @@ export const datedEvents = [
   { id: "iceStorm", name: "the Ice Storm Challenges (7.20)", season: 7, flag: ltmWinterDeimos, anchor: "challenges", parts: 1,
     challenges: "Schedule_WinterDeimos", steps: [
       step("challenges", "The Ice Storm Challenges: more each day", [ltmWinterDeimos, iceStormCalendarEvent], iceStormChallengesAt, iceStormChallengesEnd)
+    ] },
+  // 7.30's snow after the Ice Storm (events/icestorm.js): under snow, then melting.
+  { id: "iceStormMelt", name: "the Ice Storm's snow melting (7.30)", season: 7, flag: iceStormSnowMelt, anchor: "melt", parts: 2, steps: [
+    step("snow", "The island under the Ice Storm's snow", [iceKingStormPast], season7FirstDay, iceStormMeltAt),
+    step("melt", "The snow melts", [iceStormSnowMelt], iceStormMeltAt, iceStormMeltedAt)
+  ] },
+  // 7.30's Showtime (events/festivus.js): the stage at Pleasant Park, the countdowns and the two shows. Steps of one name
+  // don't overlap, so each is served once at a time.
+  { id: "festivus", name: "Showtime, Marshmello's concert (7.30)", season: 7, flag: festivusShow, anchor: "show", parts: 5, steps: [
+    step("stage", "The stage stands at Pleasant Park", [festivusLevel], festivusStageAt, festivusEncoreAt + festivusShowMs),
+    step("countdown", "The countdown to the show", [festivusCountdown], festivusStageAt, festivusShowAt),
+    step("show", "Showtime: Marshmello plays Pleasant Park", [festivusShow], festivusShowAt, festivusShowAt + festivusShowMs),
+    step("encoreCountdown", "The countdown to the encore", [festivusCountdown], festivusShowAt + festivusShowMs, festivusEncoreAt),
+    step("encore", "The encore", [festivusShow], festivusEncoreAt, festivusEncoreAt + festivusShowMs)
+  ] },
+  // 7.30's Showtime Challenges (events/festivus.js): one step, the challenges' flag and the bundle's calendar event.
+  { id: "showtime", name: "the Showtime Challenges (7.30)", season: 7, flag: lteFestivus, anchor: "challenges", parts: 1,
+    challenges: "Schedule_Festivus", steps: [
+      step("challenges", "The Showtime Challenges", [lteFestivus, showtimeCalendarEvent], showtimeChallengesAt, showtimeChallengesEnd)
     ] }
 ];
 export const datedEvent = (id) => datedEvents.find((event) => event.id === id);

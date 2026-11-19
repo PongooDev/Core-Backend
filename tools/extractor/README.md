@@ -471,6 +471,25 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   the snowball launcher gone), `homebasenodes.json`, `quests.json`, `objectivestats.json` and `world.json` (the Endgame
   and Endless Endgame zones up to Power Level 128); the other eight are 7.10's, byte for byte. Its Frosty Fortress
   (Arctic_Competitive_Medium1) is a FortCreativeRealEstatePlotItemDefinition, still skipped.
+  7.30's (CL-4834550, Update v7.30, Season 7) is `4.22.0-4834550+++Fortnite+Release-7.30` (no `Build.version`; the build
+  folder is `windows-7.30.30`; the exe's own build string is ++Fortnite+Release-7.30-CL-4834550) with 7.20's full data
+  (Cert's files with `gamedata/4727874` applied) as the fifth argument, and the main key FModel's settings hold for its
+  build folder. A full install again: 24 paks (465,234 files) besides Core-Launcher's, pakchunk0 and its s1 to s7,
+  pakchunk1 and pakchunk1_s1, the language paks 2, 5, 7, 8 and 9 and the keyed pakchunk1000 to 1008, all read on the
+  backend's keychain but pakchunk1000, 1003 and 1006, whose keys it hasn't. Every primary mission's tags are in these paks;
+  its mission alerts are still the fifth argument's. No extractor change. Against 7.20 thirteen files change:
+  `athena.json` (30 cosmetics: Marshmello and his gear, The Prisoner and Padlock, Firewalker, Kitbash and Sparkplug and
+  their back blings, Honor Guard, the emotes Glowsticks, Bobbin', Air Horn and Marsh Walk, the Pigskin toy, the Nautilus
+  and Extra Cheese gliders; Jumpshot and Triple Threat under new ids, CID_136_Athena_Commando_M_StreetBasketball and
+  CID_137_Athena_Commando_F_StreetBasketball, which 7.30's DefaultGame.ini redirects the old ones to; the Fourth Down set's
+  two Super Bowl styles; 16 display assets; Schedule_Festivus, the Showtime Challenges (EventName EventFlag.LTE_Festivus,
+  CategoryID Festivus), and its bundle; BundleSchedule_Styles_CupidDark, whose outfit isn't in the paks read; the Prisoner
+  as the Season 7 weekly challenges' reward with its stage quests and variant tokens; the loot tables), `banners.json`,
+  `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `alterations.json`, `collectionbook.json` and
+  `upgrades.json` (the Chiller Grenade, the new outfits' heroes, a new outlander hero set (HID_Outlander_022), the Lunar Llama's card packs,
+  the medieval explosive and Halloween sword schematics, Creative's arctic and disco galleries, its barrier devices and
+  wall and ceiling elimination zones), `homebasenodes.json` (three hero loadout nodes), `quests.json`, `objectivestats.json` and
+  `world.json` (Frostnite's weeks 5 and 6 challenge quests); the other seven are 7.20's, byte for byte.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

@@ -262,6 +262,19 @@ const playlistTeamsFrom720 = {
   58290: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams720Build = 4727874;
+// 7.30's (CL-4834550) NFL Rumble (285, Playlist_Omaha: 2 × 20 in squads of 4, a large team game as Team Rumble; the id is
+// also 7.20's Playlist_Deimos_Solo_WinterCN's, which Core doesn't serve) and Party at Pleasant Park (Playlist_Music_Low,
+// _Med, _High, _Higher and _Highest, 321 to 325: 2 × 24, 28, 32, 40 and 50 in squads of 4). Its other playlists have the
+// teams above.
+const playlistTeamsFrom730 = {
+  285: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 },
+  321: { maxTeamCount: 2, maxTeamSize: 24, maxSquadSize: 4 },
+  322: { maxTeamCount: 2, maxTeamSize: 28, maxSquadSize: 4 },
+  323: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 },
+  324: { maxTeamCount: 2, maxTeamSize: 40, maxSquadSize: 4 },
+  325: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 }
+};
+const playlistTeams730Build = 4834550;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -467,6 +480,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams730Build && playlistTeamsFrom730[playlistId]) return playlistTeamsFrom730[playlistId];
   if (Number(build) >= playlistTeams720Build && playlistTeamsFrom720[playlistId]) return playlistTeamsFrom720[playlistId];
   if (Number(build) >= playlistTeams710Build && playlistTeamsFrom710[playlistId]) return playlistTeamsFrom710[playlistId];
   if (Number(build) >= playlistTeams700Build && playlistTeamsFrom700[playlistId]) return playlistTeamsFrom700[playlistId];

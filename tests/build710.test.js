@@ -59,8 +59,8 @@ test("7.10 is known, on its own data, Season 7's newest build", () => {
   assert.equal(dataBuild("4650000"), v700, "a build between 7.00 and 7.10 plays on 7.00's");
   assert.equal(dataBuild("4700000"), v710, "a later build Core doesn't know plays on 7.10's");
   assert.equal(releasedOn(v710), Date.UTC(2018, 11, 18));
-  assert.equal(buildOfSeason(7), "4727874", "Season 7's newest is 7.20");
-  assert.equal(seasonName(7), "Season 7 (7.00 – 7.20)");
+  assert.equal(buildOfSeason(7), "4834550", "Season 7's newest is 7.30");
+  assert.equal(seasonName(7), "Season 7 (7.00 – 7.30)");
   const season = inBuild(v710, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.battlePassLevelOfferId], [7, "BRSeason7", "64A3020B098841A7805EE257D68C554F"]);
 });
@@ -119,7 +119,7 @@ test("the 14 Days' flag and calendar event: its dates on Season 7's replay, on 7
   withConfig({ ...season7, datedFlags: { fourteenDays: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v710, () => fourteenDaysFlagsNow(at("2018-12-25T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltm14DaysOfFortnite).builds, [4667333, 4727874], "7.20: by the switch only");
+  assert.deepEqual(season4Flag(ltm14DaysOfFortnite).builds, [4667333, 4834550], "7.20 and 7.30: by the switch only");
 });
 
 test("a 7.10 player gets the 14 Days' schedule while it runs, and a challenge for each day it has run", () => {
@@ -154,10 +154,10 @@ test("7.10's event flags: 7.00's own, Frostnite; Fortnitemares' and the Winter b
   const flags = activeEventFlags(v710);
   for (const flag of [lobbySeason7, "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", frostnite]) assert.ok(flags.includes(flag), flag);
   assert.equal(activeEventFlags(v700).includes(frostnite), false);
-  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 4727874]);
+  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 4834550]);
   assert.deepEqual(season4Flag("EventFlag.Fortnitemares").builds[1], 4629139);
   assert.deepEqual(season4Flag("EventFlag.WinterBattleBus").builds, [4629139, 4629139]);
-  assert.equal(season4Flag("EventFlag.ActiveStorms").builds[1], 4727874);
+  assert.equal(season4Flag("EventFlag.ActiveStorms").builds[1], 4834550);
 });
 
 test("7.10's modes: the 14 Days of Fortnite's on by default, each on its day from 14:00 UTC with Original dates", () => {

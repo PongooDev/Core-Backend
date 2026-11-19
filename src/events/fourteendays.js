@@ -1,7 +1,8 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows, fourteenDaysCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, ltm14DaysOfFortnite, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, lteFestivus, ltm14DaysOfFortnite, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { showtimeDay } from "./festivus.js";
 import { iceStormDay } from "./icestorm.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
@@ -62,9 +63,10 @@ export function fourteenDaysDay(now = new Date(), changelist = currentBuild(), c
   return Number.isFinite(days) && days >= 0 ? days : null;
 }
 
-// The days an event schedule's challenges have had, by its event flag: the 14 Days of Fortnite's and 7.20's Ice Storm
-// Challenges' (events/icestorm.js) count days; no other event's does.
-const eventDays = { [ltm14DaysOfFortnite.toLowerCase()]: fourteenDaysDay, [ltmWinterDeimos.toLowerCase()]: iceStormDay };
+// The days an event schedule's challenges have had, by its event flag: the 14 Days of Fortnite's, 7.20's Ice Storm
+// Challenges' (events/icestorm.js) and 7.30's Showtime Challenges' (events/festivus.js) count days; no other event's does.
+const eventDays = { [ltm14DaysOfFortnite.toLowerCase()]: fourteenDaysDay, [ltmWinterDeimos.toLowerCase()]: iceStormDay,
+  [lteFestivus.toLowerCase()]: showtimeDay };
 export const eventDaysOf = (eventName, now = new Date()) => eventDays[String(eventName ?? "").toLowerCase()]?.(now) ?? null;
 
 export { fourteenDaysCalendarEvent };

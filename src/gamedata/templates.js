@@ -8,7 +8,22 @@ const creativePlotTemplates = (build) => [...(Number(build) >= 4629139 ? ["Creat
   ...(Number(build) >= 4667333 ? ["CreativePlot:arctic_medium", "CreativePlot:theblock_season7"] : []),
   ...(Number(build) >= 4727874 ? ["CreativePlot:arctic_competitive_medium1"] : [])];
 
-// The template ids a build's data has: items, quests, skill tree nodes, banners and Battle Royale's cosmetics, lower-cased.
+// Template ids a build's client still loads under an id of its own: its DefaultGame.ini's PrimaryAssetIdRedirects (the
+// asset manager's Old to New, at load). 7.30 (CL-4834550) renames Jumpshot and Triple Threat (the basketball outfits of
+// 4.4) to CID_136_Athena_Commando_M_StreetBasketball and CID_137_Athena_Commando_F_StreetBasketball and redirects their
+// old ids, so an account's outfit bought on an earlier build is the same outfit there: it isn't hidden from 7.30 (its
+// data has only the new ids) and the full locker doesn't give the new ids beside it (profiles/athena.js lockerCosmetics).
+export const assetIdRedirects = [
+  { firstBuild: 4834550, from: "AthenaCharacter:cid_136_athena_commando_m_basketball", to: "AthenaCharacter:cid_136_athena_commando_m_streetbasketball" },
+  { firstBuild: 4834550, from: "AthenaCharacter:cid_137_athena_commando_f_basketball", to: "AthenaCharacter:cid_137_athena_commando_f_streetbasketball" }
+];
+const redirectsOf = (build) => assetIdRedirects.filter(({ firstBuild }) => Number(build) >= firstBuild);
+// Whether an id is a redirect's new one, which the build's client also loads under the old id.
+export const isRedirectTarget = (templateId, build = activeBuild()) =>
+  redirectsOf(build).some(({ to }) => to.toLowerCase() === String(templateId).toLowerCase());
+
+// The template ids a build's data has: items, quests, skill tree nodes, banners and Battle Royale's cosmetics, lower-cased;
+// and the old ids its client redirects.
 function templateIds(build) {
   const read = (name) => buildGameData(build, name, {});
   const { nodes = {} } = read("homebasenodes");
@@ -21,7 +36,8 @@ function templateIds(build) {
     ...Object.keys(icons).map((row) => `HomebaseBannerIcon:${row}`),
     ...Object.keys(colors).map((row) => `HomebaseBannerColor:${row}`),
     ...Object.keys(cosmetics),
-    ...creativePlotTemplates(build)
+    ...creativePlotTemplates(build),
+    ...redirectsOf(build).map(({ from }) => from)
   ].map((id) => id.toLowerCase()));
 }
 

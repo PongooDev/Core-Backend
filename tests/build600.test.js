@@ -106,7 +106,7 @@ test("6.00's event flags: LobbySeason6, the ticketless storms and Cram Session's
   }
   assert.equal(inBuild(v541, () => isEventActive(cramSession2018)), false);
   for (const flag of [cubeTurnOn, ltmHeist, "EventFlag.RoadTrip2018", "EventFlag.Horde"]) assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [Number(v6000), 4727874], "LobbySeason6 runs on to 7.20 (tests/build720.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [Number(v6000), 4834550], "LobbySeason6 runs on to 7.30 (tests/build730.test.js)");
   withConfig(replay, () => {
     assert.deepEqual(inBuild(v600, () => cubeStates(at("2018-10-01T00:00:00Z"))), []);
     assert.deepEqual(inBuild(v600, () => highStakesStates(at("2018-10-01T00:00:00Z"))), []);

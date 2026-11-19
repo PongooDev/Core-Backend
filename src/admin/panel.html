@@ -2182,7 +2182,7 @@
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
       { id: "6", label: "Season 6 (6.00 – 6.31)", from: "6.00+", days: 70 },
-      { id: "7", label: "Season 7 (7.00 – 7.20)", from: "7.00+", days: 84 }
+      { id: "7", label: "Season 7 (7.00 – 7.30)", from: "7.00+", days: 84 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -8009,7 +8009,9 @@ Each starts active; quests the account already has are left as they are.`, {
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("7.20")
+        el("span", { class: "muted", text: b.version.startsWith("7.30")
+          ? "Showtime: the stage at Pleasant Park, Marshmello's concert on 2 February (11 AM and 11 PM PST) in Party at Pleasant Park, and the Showtime Challenges (30 January to 2 February); the Ice Storm's snow melting away by 1 February; NFL Rumble and Content Update v7.30's Wild West Duos on by default (Original dates); the Block's CoLLAMAsseum and Streat Festival; the Prisoner from the Snowfall challenges; Marshmello, Firewalker, Kitbash and Sparkplug in the shop on their days; the Fourth Down set's Super Bowl styles; Save the World's Frostnite page."
+          : b.version.startsWith("7.20")
           ? "The Ice Storm (19 January): the Ice Legion in Solo, Duos and Squads (the Ice Storm modes) and the Ice Storm Challenges, more each day (Blue Metallic, Winter's Thorn); One Shot (Squads) and Content Update v7.20's Sniper Shootout on by default (Original dates); the Block's Looming Llama and Omega Pyramid; Malcore, The Ice Queen, Jaeger, Fyra, Tech Ops and the others in the shop on their days; the daily challenges from 7.20's own definitions; Save the World's Frostnite page."
           : b.version.startsWith("7.10")
           ? "The 14 Days of Fortnite: a challenge a day from 19 December (gifts, the Equalizer glider, the 14 Days ribbon), its 21 modes on by default with Epic's tiles (Teams of 33, Team Terror, Holiday Disco Domination, Team Rumble, Food Fight 16 v 16, Close Encounters 50's, High Explosives 50's and a small mode a day; Original dates from 14:00 UTC), Krampus and the holiday cosmetics in the shop, Creative's four Arctic islands and two Blocks, Save the World's Frostnite page and Down Tier Crafting."
@@ -8248,7 +8250,7 @@ Each starts active; quests the account already has are left as they are.`, {
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22", 4573096: "6.30", 4573279: "6.31", 4629139: "7.00", 4667333: "7.10", 4727874: "7.20" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22", 4573096: "6.30", 4573279: "6.31", 4629139: "7.00", 4667333: "7.10", 4727874: "7.20", 4834550: "7.30" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -8442,7 +8444,7 @@ Each starts active; quests the account already has are left as they are.`, {
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Flag switches, Seasons 4 to 7 (4.0 – 7.20):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Flag switches, Seasons 4 to 7 (4.0 – 7.30):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's to 6's paks. Automatic serves what the build served in its day (and the events above by their schedules); On or Off overrides it on the builds whose paks have the flag, in the Automatic event mode. The rocket's flags follow the Rocket launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),

@@ -22,13 +22,16 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // never, events/season4flags.js).
 export const iceStormEvent = datedEvent("iceStorm");
 const dayMs = 24 * 60 * 60 * 1000;
+// The build its dates serve it on: 7.20's. 7.30's paks keep the schedule, but its challenges ended on 28 January, the day
+// before Update v7.30, so 7.30 serves it by the admin's switch only (as 7.20 does the 14 Days of Fortnite).
+const iceStormDatedBuild = 4727874;
 
 // The flags' calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
 // that holds now on: on 7.20 with the seasonal events on, in the Automatic mode. A flag the admin switched on is served
 // always (season4Overrides) and one switched off never, so neither is scheduled here.
 export function iceStormStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(iceStormEvent.flag);
-  if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  if (!entry || Number(changelist) !== iceStormDatedBuild || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
   const nowMs = now.getTime();
   const windows = datedWindows(iceStormEvent, datedSettings(config).iceStorm, nowMs, seasonMoment(now, null, 7).getTime());
@@ -174,3 +177,20 @@ export function iceKingStormSoon(now = new Date(), changelist = currentBuild(), 
 
 // Whether the storm is on Epic's dates (Season 7's replay), where the Ice Storm modes' Original dates start with it.
 export const iceKingOnEpicDates = (config = currentEventsConfig()) => datedSettings(config).iceKing.mode === "dates";
+
+// The Ice Storm's snow on 7.30 (CL-4834550). 7.30's paks keep BP_MooneyLoader in Athena_POI_Foundations, but not the
+// levels it streams (MooneyMap and MooneySequenceMap, Athena/Maps/Test/S7, are gone with BP_MooneyScripting), so 7.30 has
+// no Ice King, sphere or storm to serve. Its BP_SnowSetup (Athena_Terrain), once the authority's match is ready, reads SP
+// (active: Snow_Amount 1, the island under the storm's snow) and else SP1 (active: Snow_Amount 1 less SP1's TimeSpanRatio,
+// the snow melting over SP1's span; neither: 0, Season 7's own snow): a match keeps the snow it started with. So this
+// serves 7.30's own: SP as 7.30 shipped with it until Update v7.30's day, then SP1 to the Fortnite Wiki's "The snow
+// melted" (events/datedflags.js iceStormMelt), Epic's dates on Season 7's replay, the admin's times, or off (Season 7's
+// own snow). Not with the seasonal events off or in another event mode, as the Ice King's.
+export const iceStormMeltEvent = datedEvent("iceStormMelt");
+export const iceStormMeltBuild = 4834550;
+export function iceStormMeltStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  if (Number(changelist) !== iceStormMeltBuild || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  const nowMs = now.getTime();
+  const windows = datedWindows(iceStormMeltEvent, datedSettings(config).iceStormMelt, nowMs, seasonMoment(now, null, iceStormMeltEvent.season).getTime());
+  return datedParts(windows, nowMs, iceStormMeltEvent.parts);
+}

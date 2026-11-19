@@ -5,6 +5,7 @@ import { activeEventFlags } from "../events/events.js";
 import { highStakesFlagsNow } from "../events/highstakes.js";
 import { fourteenDaysFlagsNow } from "../events/fourteendays.js";
 import { iceStormFlagsNow } from "../events/icestorm.js";
+import { showtimeFlagsNow } from "../events/festivus.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
@@ -13,6 +14,7 @@ import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedu
   getAthenaQuest, seasonLevels, splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
+import { isRedirectTarget } from "../gamedata/templates.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
@@ -142,7 +144,9 @@ const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
 // The build's locker cosmetics, as its game data spells them.
-export const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter(isLockerItem);
+// A redirect's new id (gamedata/templates.js assetIdRedirects: 7.30's Jumpshot and Triple Threat) isn't one of them: the
+// old id, which the earlier builds' data has, is the same outfit there.
+export const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter((id) => isLockerItem(id) && !isRedirectTarget(id));
 
 // The build's template id for one of its cosmetics, as its game data spells it; undefined if it has none.
 function cosmeticId(templateId) {
@@ -1449,12 +1453,13 @@ function settleSeasonGrants(session) {
 // Schedule_LTM_Heist (the High Stakes Challenges, EventFlag.LTM_Heist) the same while its dates serve the flag
 // (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316);
 // 7.10's Schedule_14DaysOfFortnite (EventFlag.LTM_14DaysOfFortnite) while its dates serve it (events/fourteendays.js), and
-// 7.20's Schedule_WinterDeimos (EventFlag.LTM_WinterDeimos, the Ice Storm Challenges) while its dates do (events/icestorm.js).
+// 7.20's Schedule_WinterDeimos (EventFlag.LTM_WinterDeimos, the Ice Storm Challenges) while its dates do (events/icestorm.js),
+// and 7.30's Schedule_Festivus (EventFlag.LTE_Festivus, the Showtime Challenges) while its dates do (events/festivus.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

@@ -390,7 +390,7 @@ export function givenVariantTokens(profile) {
 
 // Battle Stars, what the Battle Pass's tiers are earned with (a FortPersistentResourceItemDefinition, "Battle Stars"):
 // AccountResource:AthenaSeasonalBP from 1.11 (CL-3807424) to 6.31 (CL-4573279), AccountResource:AthenaBattleStar from 7.00
-// (CL-4629139). 7.00's to 7.20's item data define only AthenaBattleStar, and 7.00's client knows the stars by that id alone
+// (CL-4629139). 7.00's to 7.30's item data define only AthenaBattleStar, and 7.00's client knows the stars by that id alone
 // (its static "AccountResource:athenabattlestar", 0x3AEC8F0, which its quest rewards, store and challenge entries compare
 // with; no "athenaseasonalbp" is left in its exe). Season 7's level rewards (AthenaSeason7's SeasonXpScheduleFree: 2 stars a
 // level, 5 every fifth, 10 every tenth) and its challenges give it. Core-Backend #381: only AthenaSeasonalBP was known, so a

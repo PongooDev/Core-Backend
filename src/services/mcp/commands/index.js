@@ -87,6 +87,11 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 //   Epic tagged "eligible for a reset" (those whose definitions it rebalanced: v7.10's Damage Resistance to Armor perks,
 //   the Six Feet Under shovel) and what each refunded was its service's; Core sets no item refundable, so the inspect
 //   screen offers no reset.
+// - ClearHeroLoadout (7.30's, CL-4834550, UFortMcpProfileCampaign, beside SetActiveHeroLoadout): the new Hero Loadout's
+//   (Content Update v7.30: "Most Heroes will become unique once the new Hero Loadout launches"), behind UFortGlobals'
+//   bEnableHeroLoadoutSystem, which 7.30's DefaultGame.ini doesn't set (false) and Core's hotfix doesn't either, so 7.30
+//   keeps the old squads screen (🟡 read from the switch, not from the commands' callers). What clearing a loadout did was
+//   Epic's service's.
 // Each is told "Unknown command" (errors.com.epicgames.fortnite.operation_not_found, HTTP 400) and logged with the
 // build's unknown requests, as before.
 export const clientCommands = {

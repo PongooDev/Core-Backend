@@ -6,7 +6,7 @@ import { snowflakeTickets } from "./winter2017.js";
 
 export { frostnite2018 };
 
-// Frostnite (7.10, CL-4667333; events.js frostnite2018, EventFlag.Frostnite, run to 7.20), Save the World's winter event of
+// Frostnite (7.10, CL-4667333; events.js frostnite2018, EventFlag.Frostnite, run to 7.30), Save the World's winter event of
 // 2018. Update v7.10: "Frostnite is a new experience in 7.10, testing player's survival in a long winter night ... Keep
 // the Burner filled with scavenged BluGlo ... Keep an eye out for the Krampus Smashers who dwell in these cold regions
 // ... The longer you survive the more Snowflake Tickets you will earn! Tickets can be spent on the new Winter Llama.
