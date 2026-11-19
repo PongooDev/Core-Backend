@@ -6,19 +6,18 @@ import { sendError } from "../../errors.js";
 import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory, isEventsServiceBuild } from "../../tournaments/eventsservice.js";
 
 // Epic's events service (OnlineSubsystemMcp.OnlineEventsServiceMcp: ServiceName "events", BasePath /api/v1,
-// events-public-service-live.ol.epicgames.com), which 7.40's (CL-5046157) Events tab asks in place of FortMcpUtils' event
-// URLs (tournaments/eventsservice.js has the routes, what the client reads and what Core serves):
+// events-public-service-live.ol.epicgames.com), which 7.30's (CL-4834550) and 7.40's (CL-5046157) Events tab asks in place
+// of FortMcpUtils' event URLs (tournaments/eventsservice.js has the routes, what the client reads and what Core serves):
 // - GET /api/v1/events/<gameId>/download/<accountId>?region=&platform=&teamAccountIds= (DownloadUrl): the player, the
 //   tournaments their Events tab lists, a template of each one's rules and their scores.
 // - GET /api/v1/events/<gameId>/<eventId>/<eventWindowId>/history (RefreshEventHistoryUrl, which 7.40 doesn't ask): the
 //   player's scores in the window.
 // - GET /api/v1/leaderboards/<gameId>/<eventId>/<eventWindowId>/<accountId>?page=&rank=&teamAccountIds=
 //   (RequestLeaderboardUrl): a page of the window's leaderboard.
-// - GET /api/v1/players/<gameId>/<accountId> (RefreshPlayerUrl): the player.
-// Only for 7.40 and later: an older build's request falls through to the unanswered routes as before (7.30's client has
-// the same routes, and asked the download here, data/logs/unknown/4834550.jsonl; its Events tab is served through
-// FortMcpUtils, services/fortnite/events.js). A window the player's list doesn't have is a 404 (🟡 the error code is
-// Core's: Epic's isn't known).
+// - GET /api/v1/players/<gameId>/<accountId> (RefreshPlayerUrl, 7.40's only): the player.
+// Only for 7.30 and later (eventsServiceBuild): 7.20's and older builds' requests fall through to the unanswered routes as
+// before (they ask FortMcpUtils, services/fortnite/events.js). A window the player's list doesn't have is a 404 (🟡 the
+// error code is Core's: Epic's isn't known).
 export function eventsServiceRoutes(context) {
   const { tokens } = context;
   const router = express.Router();

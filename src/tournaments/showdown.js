@@ -157,9 +157,10 @@ import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windo
 //   CompletedNotPartipated, Cancelled) has no qualified state. A finalist's "you qualify" was Epic's service answering them
 //   a list with the finals in it, which nobody else's had (an invite-only event, store.js validateQualifier). Season 7's
 //   posters are 6.10's: the line under a tile's title is schedule_info (tournamentInformationFor).
-// - 7.40 (CL-5046157) asks Epic's events service for the same tournaments (tournaments/eventsservice.js): the same events
-//   as tournaments, windows and scores in its own shape, the same content page entries (7.40's reader, 0x314AE30, adds
-//   style_info_id to 6.10's fields), the same Showdown playlists, ticket attributes and points alerts.
+// - 7.30 (CL-4834550) and 7.40 (CL-5046157) ask Epic's events service for the same tournaments
+//   (tournaments/eventsservice.js): the same events as tournaments, windows and scores in its own shape, the same content
+//   page entries (7.40's reader, 0x314AE30, adds style_info_id to 6.10's fields), the same Showdown playlists, ticket
+//   attributes and points alerts. 7.30 still has FortMcpUtils' URLs, but its UseEventsService is on as shipped.
 //
 // What Core serves. Epic's tournaments (their names, days, scoring and art) were its services' data, and none of it is in
 // the build's files, so there is no schedule to replay. The tournaments are the admin panel's own (tournaments/store.js,
@@ -178,8 +179,9 @@ import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windo
 // EVENT DETAILS text, which does; Core gives them. Not served, for want of Epic's data: regions or platforms (every
 // player is offered every event, but an invite-only one: #383).
 export const showdownBuild = 4464155;
-// 7.40 (CL-5046157) asks Epic's events service in place of FortMcpUtils' event URLs (tournaments/eventsservice.js).
-export const eventsServiceBuild = 5046157;
+// 7.30 (CL-4834550) and later ask Epic's events service in place of FortMcpUtils' event URLs (tournaments/eventsservice.js):
+// 7.30 because its UseEventsService is on as shipped, 7.40 because it has no other way.
+export const eventsServiceBuild = 4834550;
 export const tournamentsCompleteMessage = "com.epicgames.tournaments.complete";
 export const placementStat = "PLACEMENT_STAT_INDEX";
 export const eliminationsStat = "TEAM_ELIMS_STAT_INDEX";
@@ -531,18 +533,16 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
 // - With the admin's "Hide the Events tab while it has no tournament" on (settings hideEmptyEventsTab, off by default)
 //   and no event listed: bEnableShowdown=false, the option 6.02 shipped with, which hides the tab and asks nothing
 //   (🟡 read in the exe, 0x2E37520 and 0x11A6100; not seen in a running client), in place of the line above.
-// - 7.40 (eventsServiceBuild) and later: bEnableEventLeaderboards=true too. 7.40's tournament details offer a window's
-//   leaderboard (UFortShowdownDetailView::IsEventLeaderboardAvailable, 7.40 0x33A2B00) only with that option
-//   (UFortRuntimeOptions +0xC9), a window with a leaderboardId and a window that is live or over; the leaderboard is the
-//   events service's (tournaments/eventsservice.js). 🟡 Its constructor (0x1801110) sets bEnableShowdown and
-//   bEnableShowdownXmppNotify and not this one, and 7.40's own DefaultRuntimeOptions.ini wasn't read: the line is
-//   served whatever it says. The cache line matters as much on 7.40: its frontend (UFortUIStateWidget_Frontend's
-//   construct, 0x33D2C70 -> 0x135F3D0) downloads the events again only once ShowdownTournamentCacheExpirationHours have
-//   passed since the last download.
+// - 7.30 and 7.40 (eventsServiceBuild) need nothing more. Their tournament details offer a window's leaderboard
+//   (UFortShowdownDetailView::IsEventLeaderboardAvailable, 7.40 0x33A2B00) only with bEnableEventLeaderboards, which
+//   UFortRuntimeOptions' constructor turns on (+0xC8 and +0xC9 set together: 7.30 0x15C2BC0 at 0x15C2D1C, 7.40 0x15D14E0
+//   at 0x15D1640; 7.30's shipped config files don't set it); 7.20's leaves it off (0x1582720). The cache line matters as much: 7.40's
+//   frontend (UFortUIStateWidget_Frontend's construct, 0x33D2C70 -> 0x135F3D0) and 7.30's download (0x1353D10) keep the
+//   events for ShowdownTournamentCacheExpirationHours.
 export function showdownRuntimeOptions(build, settingsValue, now = new Date(), store = storeProvider()) {
   if (!hasShowdown(build)) return [];
   if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true) return ["bEnableShowdown=false"];
-  return ["ShowdownTournamentCacheExpirationHours=0", ...(Number(build) >= eventsServiceBuild ? ["bEnableEventLeaderboards=true"] : [])];
+  return ["ShowdownTournamentCacheExpirationHours=0"];
 }
 
 // Keeps the lobbies of the builds with the Events tab in step with the events (Core-Backend #336). The client's tournament

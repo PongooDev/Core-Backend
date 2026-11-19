@@ -3,7 +3,7 @@ import { eliminationsStat, eventWindowsOf, eventsServiceBuild, hasShowdown, hist
   teamOf, tournamentIdOf } from "./showdown.js";
 import { matchWindowOf, rankRows, scoringOf } from "./store.js";
 
-// 7.40's Events tab (CL-5046157; its exe in IDA, CL-4834550's for comparison, Epic's names from the 21.40 PDB). 7.40's
+// 7.40's and 7.30's Events tab (CL-5046157 and CL-4834550, below; their exes in IDA, Epic's names from the 21.40 PDB). 7.40's
 // DefaultGame.ini has none of FortMcpUtils' event URLs (tournaments/showdown.js has 6.10's), and its exe has no
 // "UseEventsService" switch: UFortTournamentManager asks Epic's events service alone (FOnlineEventsServiceMcp, made in
 // 0x4AAB60; DefaultEngine.ini's [OnlineSubsystemMcp.OnlineEventsServiceMcp]: ServiceName events, BasePath /api/v1, Domain
@@ -47,12 +47,27 @@ import { matchWindowOf, rankRows, scoringOf } from "./store.js";
 // (GetEventResultsSummary, 0x3396630). A window's visibility "public", "private" or "locked" is its eligibility in the
 // details (GetEventWindowEligibility, 0x33971A0); round numbers its rounds and sessions (0x33973E0, 0x3398170). The
 // leaderboard is offered for a window with a leaderboardId that is live or over, with bEnableEventLeaderboards on
-// (0x33A2B00, showdownRuntimeOptions). A player with pendingPayouts makes the client POST ProcessPendingRewardsUrl
+// (0x33A2B00; on as shipped, showdownRuntimeOptions). A player with pendingPayouts makes the client POST ProcessPendingRewardsUrl
 // (services/fortnite/events.js) and download again (0x13692E0, 0x1368400). The XMPP message
 // com.epicgames.tournaments.complete is read as an FEventsServiceTeamScore that replaces the score it matches (0x1379950);
 // Core's ({}) matches none, and the next lobby downloads the scores again.
 //
-// What Core serves: the tournaments 6.10 to 7.30 get through FortMcpUtils (the admin panel's in-game events, showdownEvents:
+// 7.30 (CL-4834550; its exe in IDA) asks the same service, as shipped. Its tournament manager's refresh
+// (0x1359180) takes the events service when UseEventsService holds (0x15CD550: the -UseEventsService command line, else
+// UFortRuntimeOptions' bUseEventsService, +0x2EC), and UFortRuntimeOptions' constructor (0x15C2BC0) sets it
+// (0x15C31EC: mov byte ptr [rsi+2ECh], 1); none of 7.30's shipped config files sets it back and the launcher passes no
+// such switch. 7.20's (0x1582720, +0x2D4) and 7.10's (0x1499500, +0x2E4) constructors leave it clear, and 7.00's exe has
+// none. The client logs agree: 7.30's lobbies log LogOnlineEventsService "Starting download" (answered 404 before this)
+// and no FortMcpUtils tournamentandhistory, 7.20's and 7.00's the FortMcpUtils request. 7.30's routes are 7.40's but the
+// players one (FOnlineEventsServiceMcp, 0x49DE40: download, history, leaderboards), its shapes 7.40's but the window's
+// visibility (0x540D70; serializers 0x53F930 download, 0x5412A0 player, 0x540590 event, 0x5409F0 template, 0x541B20
+// scoring rule, 0x541EF0 score, 0x540E90 leaderboard), and its download's handler (0x1353D10) turns the events and their
+// templates into 6.10's tournaments (0x1258940: a window's eventData from the template its eventTemplateId names,
+// 0x12415F0) and the scores into 6.10's window histories (0x1258100: eventId, eventWindowId, teamAccountIds,
+// pointsEarned, pointBreakdown, sessionHistory's sessionIds), reading no player. So 7.30 is served the same answers as
+// 7.40 (an extra field is skipped by the reader). It has no ProcessPendingRewardsUrl.
+//
+// What Core serves: the tournaments 6.10 to 7.20 get through FortMcpUtils (the admin panel's in-game events, showdownEvents:
 // the same events, invite-only ones only for the invited, #383), in the events service's shape, from the same store and
 // the same functions (eventWindowsOf, showdownTiers, historiesOf). Each event is one event of the service and one
 // template (its rules, as every window has them); each window of it (#364) an event window. 🟡 Core's own choices, where
@@ -65,6 +80,8 @@ import { matchWindowOf, rankRows, scoringOf } from "./store.js";
 // prizes still count every window (leaderboardOf).
 export const eventsGameId = "Fortnite";
 export const isEventsServiceBuild = (build) => Number(build) >= eventsServiceBuild;
+// FortMcpUtils' ProcessPendingRewardsUrl, new in 7.40's DefaultGame.ini (services/fortnite/events.js).
+export const pendingRewardsBuild = 5046157;
 // Entries on a leaderboard page (🟡 Core's size: the client asks page 0 first and the next one from the end of its list,
 // 0x31D13E0 and 0x31BA4C0, taking what each holds).
 export const leaderboardPageSize = 100;

@@ -3,17 +3,19 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory, isEventsServiceBuild, leaderboardPageSize,
+import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory, isEventsServiceBuild, leaderboardPageSize, pendingRewardsBuild,
   windowLeaderboardOf } from "../src/tournaments/eventsservice.js";
 import { eventsServiceBuild, historiesOf, showdownRuntimeOptions, showdownTiers, tournamentAndHistory } from "../src/tournaments/showdown.js";
 import { createTournamentStore, leaderboardOf } from "../src/tournaments/store.js";
 import { dedicatedServerToken, send, startBackend, userLogin } from "./helpers.js";
 
-// 7.40's Events tab asks Epic's events service (tournaments/eventsservice.js, services/events/events.js): the same
-// tournaments 6.10 to 7.30 get through FortMcpUtils, in the shapes 7.40's exe reads (CL-5046157: FEventsServiceDownload
-// 0x54DDB0, FEventsServiceLeaderboard 0x54F330, FEventsServicePlayer 0x54F740). Older builds are answered as before.
+// 7.30's and 7.40's Events tab asks Epic's events service (tournaments/eventsservice.js, services/events/events.js): the
+// same tournaments 6.10 to 7.20 get through FortMcpUtils, in the shapes 7.40's exe reads (CL-5046157: FEventsServiceDownload
+// 0x54DDB0, FEventsServiceLeaderboard 0x54F330, FEventsServicePlayer 0x54F740) and 7.30's (CL-4834550: the same but the
+// window's visibility, 0x540D70, and the players route). Older builds are answered as before.
 const v740 = "5046157";
 const v730 = "4834550";
+const v720 = "4727874";
 const v610 = "4480234";
 const at = (iso) => new Date(iso);
 const created = at("2026-11-15T12:00:00.000Z");
@@ -32,9 +34,10 @@ function withStore(run) {
 }
 const keysOf = (object) => Object.keys(object);
 
-test("the events service is 7.40's and later's", () => {
-  assert.equal(eventsServiceBuild, Number(v740));
-  assert.deepEqual([v610, v730, v740, "5203069", "unknown"].map(isEventsServiceBuild), [false, false, true, true, false]);
+test("the events service is 7.30's and later's (7.30's UseEventsService is on as shipped), processPendingRewards 7.40's", () => {
+  assert.equal(eventsServiceBuild, Number(v730));
+  assert.deepEqual([v610, v720, v730, v740, "5203069", "unknown"].map(isEventsServiceBuild), [false, false, true, true, true, false]);
+  assert.equal(pendingRewardsBuild, Number(v740));
 });
 
 test("7.40's download: the player, each listed event with its windows, a template of its rules and the player's scores, with the fields 7.40 reads", () => withStore((store) => {
@@ -150,20 +153,22 @@ test("a team is one leaderboard entry, however many of its players are recorded;
   assert.deepEqual(entries[0].sessionHistory[0].trackedStats, { PLACEMENT_STAT_INDEX: 2, TEAM_ELIMS_STAT_INDEX: 6 });
 }));
 
-test("the hotfix turns 7.40's event leaderboards on; 6.10's and 7.30's lines are as before", () => withStore((store) => {
+test("the hotfix's Events tab lines are the same on every build with the tab: 7.30's and 7.40's own constructors turn the event leaderboards on", () => withStore((store) => {
   const now = at("2026-11-12T12:00:00.000Z");
-  assert.deepEqual(showdownRuntimeOptions(v740, {}, now, store), ["ShowdownTournamentCacheExpirationHours=0", "bEnableEventLeaderboards=true"]);
-  assert.deepEqual(showdownRuntimeOptions(v740, { hideEmptyEventsTab: true }, now, store), ["bEnableShowdown=false"]);
-  for (const build of [v610, v730]) assert.deepEqual(showdownRuntimeOptions(build, {}, now, store), ["ShowdownTournamentCacheExpirationHours=0"], build);
+  for (const build of [v610, v720, v730, v740]) {
+    assert.deepEqual(showdownRuntimeOptions(build, {}, now, store), ["ShowdownTournamentCacheExpirationHours=0"], build);
+    assert.deepEqual(showdownRuntimeOptions(build, { hideEmptyEventsTab: true }, now, store), ["bEnableShowdown=false"], build);
+  }
 }));
 
 const agentOf = (build, version) => `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.26200.1.256.64bit`;
 const agent740 = agentOf(v740, "7.40");
 const agent730 = agentOf(v730, "7.30");
+const agent720 = agentOf(v720, "7.20");
 const ask = (port, method, urlPath, token, agent) => send({ host: "127.0.0.1", port, method, path: urlPath,
   headers: { "User-Agent": agent, ...(token ? { Authorization: `bearer ${token}` } : {}) } });
 
-test("7.40's events service over HTTP: download, players, leaderboards, history and processPendingRewards; 7.30 and older get the unanswered routes and FortMcpUtils' as before", async () => {
+test("the events service over HTTP: 7.40's download, players, leaderboards, history and processPendingRewards, 7.30's the same but processPendingRewards; 7.20 and older get the unanswered routes and FortMcpUtils' as before", async () => {
   const backend = await startBackend();
   try {
     const hour = 60 * 60 * 1000;
@@ -210,27 +215,40 @@ test("7.40's events service over HTTP: download, players, leaderboards, history 
     assert.deepEqual([rewards.status, rewards.body], [200, []]);
     assert.equal((await ask(backend.port, "POST", `/fortnite/api/game/v2/events/v2/processPendingRewards/${ann.accountId}`, bob.token, agent740)).status, 403);
 
-    // 7.40's hotfix turns its event leaderboards on.
+    // No hotfix line for the leaderboards: the build turns them on itself.
     const runtime = await ask(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", ann.token, agent740);
-    assert.match(runtime.body, /\r\nShowdownTournamentCacheExpirationHours=0\r\nbEnableEventLeaderboards=true\r\n/);
+    assert.match(runtime.body, /\r\nShowdownTournamentCacheExpirationHours=0\r\n/);
+    assert.doesNotMatch(runtime.body, /bEnableEventLeaderboards/);
 
-    // 7.30: the same requests are unanswered routes, logged as before; its Events tab is FortMcpUtils', unchanged.
+    // 7.30 (UseEventsService on as shipped) gets the same answers as 7.40, the FortMcpUtils ones as before, and no
+    // processPendingRewards (it has no such URL).
+    const download730 = await ask(backend.port, "GET", downloadPath, ann.token, agent730);
+    assert.equal(download730.status, 200, JSON.stringify(download730.body));
+    assert.deepEqual(download730.body, download.body);
+    const board730 = await ask(backend.port, "GET", `/api/v1/leaderboards/Fortnite/${eventId}/${eventId}/${ann.accountId}?page=0&rank=0&teamAccountIds=${ann.accountId}`, ann.token, agent730);
+    assert.deepEqual([board730.status, board730.body.entries.map(({ rank }) => rank)], [200, [1, 2]]);
+    assert.equal((await ask(backend.port, "GET", `/api/v1/events/Fortnite/${eventId}/${eventId}/history`, ann.token, agent730)).status, 200);
+    assert.equal((await ask(backend.port, "POST", `/fortnite/api/game/v2/events/v2/processPendingRewards/${ann.accountId}`, ann.token, agent730)).status, 404);
+    const old730 = await ask(backend.port, "GET", `/fortnite/api/game/v2/events/tournamentandhistory/${ann.accountId}/NAE/WindowsClient`, ann.token, agent730);
+    assert.deepEqual([old730.status, old730.body.eventTournaments.map(({ tournamentId }) => tournamentId)], [200, [eventId]]);
+
+    // 7.20: the same requests are unanswered routes, logged as before; its Events tab is FortMcpUtils', unchanged.
     for (const [method, urlPath] of [["GET", downloadPath], ["GET", `/api/v1/players/Fortnite/${ann.accountId}`],
       ["GET", `/api/v1/leaderboards/Fortnite/${eventId}/${eventId}/${ann.accountId}?page=0&rank=0&teamAccountIds=`],
       ["GET", `/api/v1/events/Fortnite/${eventId}/${eventId}/history`], ["POST", `/fortnite/api/game/v2/events/v2/processPendingRewards/${ann.accountId}`]]) {
-      const answer = await ask(backend.port, method, urlPath, ann.token, agent730);
+      const answer = await ask(backend.port, method, urlPath, ann.token, agent720);
       assert.equal(answer.status, 404, `${method} ${urlPath}`);
       assert.equal(answer.body.errorCode, "errors.com.epicgames.common.not_found", urlPath);
     }
-    const unknown = backend.unknownLog(v730).map(({ path: logged }) => logged);
+    const unknown = backend.unknownLog(v720).map(({ path: logged }) => logged);
     assert.ok(unknown.includes("/api/v1/events/Fortnite/download/:id"), JSON.stringify(unknown));
-    const old = await ask(backend.port, "GET", `/fortnite/api/game/v2/events/tournamentandhistory/${ann.accountId}/NAE/WindowsClient`, ann.token, agent730);
+    const old = await ask(backend.port, "GET", `/fortnite/api/game/v2/events/tournamentandhistory/${ann.accountId}/NAE/Windows`, ann.token, agent720);
     assert.equal(old.status, 200);
     assert.deepEqual(old.body.eventTournaments.map(({ tournamentId }) => tournamentId), [eventId]);
     assert.equal(old.body.eventWindowHistories[0].payload.pointsEarned, 5);
-    const runtime730 = await ask(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", ann.token, agent730);
-    assert.match(runtime730.body, /\r\nShowdownTournamentCacheExpirationHours=0\r\n/);
-    assert.doesNotMatch(runtime730.body, /bEnableEventLeaderboards/);
+    const runtime720 = await ask(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", ann.token, agent720);
+    assert.match(runtime720.body, /\r\nShowdownTournamentCacheExpirationHours=0\r\n/);
+    assert.doesNotMatch(runtime720.body, /bEnableEventLeaderboards/);
     // 7.40's content page has the tournament's entry, by the event's displayDataId.
     const page = await ask(backend.port, "GET", "/content/api/pages/fortnite-game", ann.token, agent740);
     assert.deepEqual(page.body.tournamentinformation.tournament_info.tournaments.map(({ tournament_display_id: id }) => id), [eventId]);
