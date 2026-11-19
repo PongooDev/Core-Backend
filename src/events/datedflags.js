@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  ltmWinterDeimos, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteS7Overtime, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -10,6 +10,8 @@ export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite
 export const iceStormCalendarEvent = "CalendarEvent_Season7_WinterDeimos";
 // 7.30's Showtime Challenges bundle's (QuestBundle_Festivus, and Schedule_Festivus's).
 export const showtimeCalendarEvent = "CalendarEvent_Season7_Festivus";
+// 7.40's Overtime Challenges bundle's (QuestBundle_S7_Overtime, and Season7_OT_Schedule's).
+export const overtimeCalendarEvent = "CalendarEvent_Season7_OverTime";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -116,13 +118,18 @@ const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
 // CoLLAMAsseum (Zarbot, as 7.30's SLAB_1 names him; the wiki's "Zartbot": 7.30 shipped with it, 29 January, so from the
 // lap's first day) and Streat Festival (NIBLL, SLAB_2's name for the wiki's "Lunar Street Festival", 5 February, the
 // Content Update's day), on to the season's end (🟡 the wiki's days, 00:00 UTC); its slab3 is the blank Block (SLAB_3,
-// POI_Block_Blank), which Epic never showed in 7.30, so it isn't served.
+// POI_Block_Blank), which Epic never showed in 7.30, so it isn't served. 7.40: its two, Oily Oaks (MrSlickWillyz, SLAB_1,
+// Athena/Maps/Block/7_30's Block_25x25_OilyOaks: 7.40 shipped with it, 14 February, so from the lap's first day) and
+// Colossal Compound (Aril_lian1, SLAB_2, 7_40's Block_25x25_ColossalCompound, 19 February, Content Update v7.40's day), on
+// to the season's end (the Fortnite Wiki's Season 7 map history; 🟡 its days, 00:00 UTC); its slab3 is the blank Block
+// again, not served.
 const blockLandsAt = Date.parse("2018-12-07T01:30:00.000Z");
 const at7 = (date) => Date.parse(`${date}T00:00:00.000Z`);
 const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23", "Risky Runways, by AKE"],
   ["2018-12-30", "Mysterious Markets, by Bludriv"], ["2019-01-08", "DM Arena, by KojackNumber2"]];
 const blockBuilds720 = [["2018-12-06", "Looming Llama, by Stormhawk"], ["2019-01-22", "Omega Pyramid, by Directingpete"]];
 const blockBuilds730 = [["2018-12-06", "CoLLAMAsseum, by Zarbot"], ["2019-02-05", "Streat Festival, by NIBLL"]];
+const blockBuilds740 = [["2018-12-06", "Oily Oaks, by MrSlickWillyz"], ["2019-02-19", "Colossal Compound, by Aril_lian1"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -149,6 +156,29 @@ const festivusShowMs = 10 * 60000;
 const festivusStageAt = Date.parse("2019-01-29T00:00:00.000Z");
 const showtimeChallengesAt = Date.parse("2019-01-30T00:00:00.000Z");
 const showtimeChallengesEnd = Date.parse("2019-02-03T00:00:00.000Z");
+// 7.40's Overtime Challenges (events/overtime.js): the Fortnite Wiki's "available from February 14th 2019 to February 28th
+// 2019", Update v7.40's day to the season's end (🟡 00:00 UTC; Epic's free Season 8 Battle Pass went to those with 13 done
+// "by February 27").
+const overtimeChallengesAt = Date.parse("2019-02-14T00:00:00.000Z");
+// The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
+// - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
+//   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
+// - EQ2, the cracks: 7.40's BP_S8LeadupEvents opens crack n once EQ2 has run its FissureHour[n] hours (0, 56.5, 63.25 ...
+//   371.3, 27 of them; the first shows at 56.5). 🟡 It began 12 February 2019 at 09:00 UTC (4 AM ET): the only start that
+//   puts the cracks on the Fortnite Wiki's days (two on the 14th, the first southwest of Tomato Temple, ... the 26th through
+//   Tilted Towers on the 27th; one off by a day) at the hours Epic's replay of the same Blueprint in 2026 shows (12:30 PM ET
+//   for the first, 3:18 PM ET for the 26th); EQ2 then runs to the season's end.
+// - EQH, every crack open: from the last crack (371.3 hours in) to the season's end, so a custom EQ2 that ends keeps them.
+// - HP, the heat drying the Wailing Woods (7.40's BP_SnowSetup): the wiki's "February 24th 2019: The grass in the west part
+//   of Wailing Woods is dying out and turning brown" to "February 27th 2019: ... All of the forest is brown and dried up",
+//   then HP1, burnt through, to the season's end (🟡 the days, 00:00 UTC).
+const s8TremorsAt = Date.parse("2019-02-05T00:00:00.000Z");
+export const s8CracksAt = Date.parse("2019-02-12T09:00:00.000Z");
+export const s8FissureHours = [0, 56.5, 63.25, 70.45, 81.4, 93.55, 106, 124.25, 136.1, 156.9, 178, 212.05, 231.95, 239.1, 244.25,
+  255.75, 270.1, 277.05, 288.5, 300.55, 318.4, 333, 344.3, 351.05, 355.4, 364.5, 371.3];
+const s8CrackedAt = s8CracksAt + s8FissureHours.at(-1) * 3600000;
+const s8HeatAt = Date.parse("2019-02-24T00:00:00.000Z");
+const s8BurntAt = Date.parse("2019-02-27T00:00:00.000Z");
 // 7.20's Ice King and his Ice Storm (events/icestorm.js has how 7.20 plays it). Epic's storm was 19 January 2019, 11:00 AM
 // PST (the Fortnite Wiki's Ice Storm; Newsweek: the TVs' countdown "set to expire around 2 p.m. EST on January 19"). Each
 // step's names and spacing are 7.20's blueprints': WD0 ends 12 minutes before the storm (BP_MooneyScripting adds 12 minutes
@@ -262,6 +292,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds720) },
   { id: "block730", name: "The Block's community builds (7.30)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds730) },
+  { id: "block740", name: "The Block's community builds (7.40)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds740) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -302,7 +334,22 @@ export const datedEvents = [
   { id: "showtime", name: "the Showtime Challenges (7.30)", season: 7, flag: lteFestivus, anchor: "challenges", parts: 1,
     challenges: "Schedule_Festivus", steps: [
       step("challenges", "The Showtime Challenges", [lteFestivus, showtimeCalendarEvent], showtimeChallengesAt, showtimeChallengesEnd)
-    ] }
+    ] },
+  // 7.40's Overtime Challenges (events/overtime.js): one step, the challenges' flag and the bundle's calendar event.
+  { id: "overtime", name: "the Overtime Challenges (7.40)", season: 7, flag: lteS7Overtime, anchor: "challenges", parts: 1,
+    challenges: "Season7_OT_Schedule", steps: [
+      step("challenges", "The Overtime Challenges", [lteS7Overtime, overtimeCalendarEvent], overtimeChallengesAt, null)
+    ] },
+  // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
+  { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [
+    step("tremors", "Tremors shake the island", [s8Tremors], s8TremorsAt, null),
+    step("cracks", "The ground cracks open, crack by crack (7.40)", [s8Cracks], s8CracksAt, null),
+    step("cracked", "Every crack open, Tilted Towers' News HQ down (7.40)", [s8Cracked], s8CrackedAt, null)
+  ] },
+  { id: "s8Heat", name: "the Wailing Woods drying up (7.40)", season: 7, flag: s8Heat, anchor: "heat", parts: 2, steps: [
+    step("heat", "The Wailing Woods dry up", [s8Heat], s8HeatAt, s8BurntAt),
+    step("burnt", "The Wailing Woods burnt brown", [s8Burnt], s8BurntAt, null)
+  ] }
 ];
 export const datedEvent = (id) => datedEvents.find((event) => event.id === id);
 export const datedModes = ["dates", "custom", "off"];

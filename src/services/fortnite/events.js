@@ -31,6 +31,13 @@ import { eventWindowHistory, hasShowdown, tournamentAndHistory, tournamentsCompl
 // UFortRuntimeOptions' bUseEventsService, false by default and set by neither 7.30's DefaultGame.ini nor Core's hotfix),
 // and otherwise these McpUtils routes as before (0x12C98F0), as does the leaderboard's page request (0x135C3E0). So 7.30's
 // Events tab is served here, as 7.20's.
+// 7.40 (CL-5046157) drops them: its DefaultGame.ini's FortMcpUtils names none of the six events URLs 7.30's did
+// (GetEventTournamentAndHistoryUrl and the rest) and adds ProcessPendingRewardsUrl
+// (/api/game/v2/events/v2/processPendingRewards/`accountId); its exe has no "UseEventsService" and none of these routes'
+// strings, so its tournament manager asks Epic's events service alone. Its FOnlineEventsServiceMcp (the routes' table,
+// 7.40 0x4AAB60) has the three routes above and a fourth, /api/v1/players/<gameId>/<accountId>; the download's JSON keys
+// are a block of their own (0x3B008A8: gameId, tokens, pendingPayouts, teams ... eventWindows, templates, scoringRules).
+// None of them is answered yet (H:\CoreWork\HANDOFF.md), so 7.40's Events tab has no tournaments.
 export function eventRoutes(context) {
   const { tokens, accounts, sessions } = context;
   const router = express.Router();

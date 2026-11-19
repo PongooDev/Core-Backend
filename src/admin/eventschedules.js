@@ -77,7 +77,7 @@ export const eventCards = [
     key: "butterfly", startLabel: "The Butterfly happens",
     about: "The Cube cracks and drains into the lake, then bursts: every player in a match goes to the In-Between and back. Matches running then play it. Fortnitemares' modes end with it and Solo, Duos and Squads come back; Before the event puts the map back as it was, the Fortnitemares modes with it." },
   // 7.00's (events/events.js): Save the World's Season 7 Warmup.
-  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.30", ranges: [[4629139, 4834550]],
+  { id: "season7Warmup2018", kind: "build", seasons: [7], name: "Season 7 Warmup", builds: "7.00 – 7.40", ranges: [[4629139, 5046157]],
     about: "Save the World's start of Season 7: Mutant Storm alerts with Snowflake Tickets (10 a day), Mini-Boss alerts back to normal (no tickets), the Frostbite in the Weekly Store; the Season 7 lobby.",
     flags: ["EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", "EventFlag.LobbySeason7"] },
   // The Block (events/block.js): the map's, so `always`: served with the seasonal events off or another event mode, and
@@ -93,7 +93,7 @@ export const eventCards = [
     key: "challenges", endStep: "extended", startLabel: "Challenges start", endLabel: "Extension ends",
     about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
     flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
-  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.30", ranges: [[4667333, 4834550]],
+  { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.40", ranges: [[4667333, 5046157]],
     about: "Save the World's Frostnite: the quest map's Frostnite page, its theater on the world map (the Endless missions at every Frostnite difficulty, each week's challenge from Slip Out on, its own backpack), its WinterQuest_2018 quests, the Winter Llama for Snowflake Tickets and Cloaked Shadow in the Event Store.",
     flags: ["EventFlag.Frostnite"] },
   // 7.20's (events/block.js, events/icestorm.js): the Block's two builds, and the Ice Storm Challenges on their dates.
@@ -133,7 +133,24 @@ export const eventCards = [
   { id: "showtime", kind: "dated", dated: "showtime", seasons: [7], name: "The Showtime Challenges", builds: "7.30", ranges: [[4834550, 4834550]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "The Showtime Challenges: search a Showtime poster (Mello Made It Right) at the start, and from the next day visit the Showtime venue (Keep It Mello) and use Keep It Mello at Trucker's Oasis, the Ice Cream Parlor and Frozen Lake (Marshy Smasher); the Showtime banner for all three (from 30 January to 2 February 2019). 🟡 The wiki's days, 00:00 UTC.",
-    flags: ["EventFlag.LTE_Festivus", "CalendarEvent_Season7_Festivus"] }
+    flags: ["EventFlag.LTE_Festivus", "CalendarEvent_Season7_Festivus"] },
+  // 7.40's (events/block.js, events/overtime.js, events/s8leadup.js): the Block's two builds, the Overtime Challenges and
+  // the lead-up to Season 8 (its tremors on 7.30 too) on their dates.
+  { id: "block740", kind: "dated", dated: "block740", seasons: [7], name: "The Block's community builds", builds: "7.40", ranges: [[5046157, 5046157]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Oily Oaks goes up", endLabel: "Colossal Compound goes up",
+    about: "7.40's two community-built islands on the Block, each a level in its paks: Oily Oaks (MrSlickWillyz; 7.40 shipped with it on 14 February, so it is up from the replay's first day) and Colossal Compound (Aril_lian1, Content Update v7.40, 19 February, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  { id: "overtime", kind: "dated", dated: "overtime", seasons: [7], name: "The Overtime Challenges", builds: "7.40", ranges: [[5046157, 5046157]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "Share the Love's Overtime Challenges: four free ones at the start and more on the 3rd, 6th and 9th day; 13 of them give the Season 8 Battle Pass token and the Overtime banner, some the Valentine wrap, the True Form and Season 7 loading screens and the Vines contrail; Battle Pass owners also get Powder's, Trog's and Onesie's styles (Battle Pass tiers 47, 71 and 87, then 5, 10 and 15 free challenges). From Update v7.40's day, 14 February 2019, to the season's end (the Fortnite Wiki's 14 to 28 February). 🟡 00:00 UTC. The Season 8 Battle Pass itself isn't given: no build Core supports has Season 8; the token stays on the account.",
+    flags: ["EventFlag.LTE_S7_OverTime", "CalendarEvent_Season7_OverTime"] },
+  { id: "earthquakes", kind: "dated", dated: "earthquakes", seasons: [7], name: "The earthquakes (Season 8's lead-up)", builds: "7.30 – 7.40", ranges: [[4834550, 5046157]],
+    key: "cracks", startLabel: "The cracking starts",
+    about: "The Prisoner's earthquakes. Tremors shake the island from Content Update v7.30's day (5 February 2019; 7.30 and 7.40). On 7.40 the ground then cracks open crack by crack at Epic's hours from the cracking's start: the first two on 14 February (southwest of Tomato Temple and of the Block, Lazy Bridge partly falling in), then one or two a day, the 26th through Tilted Towers on 27 February, bringing down its News HQ; after that every crack stays open. A match keeps the cracks it started with and opens the next at its hour. Custom picks the cracking's start (the cracks keep Epic's spacing). 🟡 The cracking's start, 12 February 09:00 UTC, is the one that puts the cracks on the wiki's days at the hours Epic's 2026 replay showed; the tremors' days have no hours (00:00 UTC).",
+    flags: ["EQ", "EQ2", "EQH"] },
+  { id: "s8Heat", kind: "dated", dated: "s8Heat", seasons: [7], name: "The Wailing Woods drying up", builds: "7.40", ranges: [[5046157, 5046157]],
+    key: "heat", endStep: "burnt", startLabel: "The woods start drying", endLabel: "The woods are burnt brown",
+    about: "The heat before the volcano: the Wailing Woods' grass browns from 24 February 2019 (the west first) and the forest, the Block and parts of Tomato Temple and Lonely Lodge are all brown by 27 February, to the season's end. A match keeps the colour it started with. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC).",
+    flags: ["HP", "HP1"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 

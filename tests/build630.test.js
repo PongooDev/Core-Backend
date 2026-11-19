@@ -144,7 +144,7 @@ test("6.30's event flags: 6.22's but POI1; Save the World's Fortnitemares with P
   // The switches run on to 6.30, and on to 6.31 (tests/build631.test.js), but the Cube's end (6.30's paks have no island
   // scripting).
   for (const flag of [lobbySeason6, lobbySeason6Halloween, halloweenBattleBus, ltmFortnitemares, ltmLilKevin, fortnitemaresPhase2]) {
-    assert.equal(season4Flag(flag).builds[1], 4834550, flag);
+    assert.equal(season4Flag(flag).builds[1], 5046157, flag);
   }
   for (const flag of [islandPoi(0), islandPoi(1), islandCrack, islandDrain]) assert.equal(season4Flag(flag).builds[1], Number(v622), flag);
   assert.equal(inBuild(v630, () => isEventActive(fortnitemares2018)), true);

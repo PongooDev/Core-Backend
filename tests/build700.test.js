@@ -71,9 +71,9 @@ test("7.00 is known, on its own data, Season 7's first build", () => {
   assert.equal(dataBuild("4600000"), v631, "a build between 6.31 and 7.00 plays on 6.31's");
   assert.equal(dataBuild("4650000"), v700, "a build between 7.00 and 7.10 plays on 7.00's");
   assert.equal(releasedOn(v700), Date.UTC(2018, 11, 6));
-  assert.equal(buildOfSeason(7), "4834550", "Season 7's newest is 7.30");
+  assert.equal(buildOfSeason(7), "5046157", "Season 7's newest is 7.40");
   assert.equal(buildOfSeason(6), v631, "Season 6's newest is still 6.31");
-  assert.equal(seasonName(7), "Season 7 (7.00 – 7.30)");
+  assert.equal(seasonName(7), "Season 7 (7.00 – 7.40)");
   const season = inBuild(v700, athenaSeason);
   assert.equal(season.seasonNumber, 7);
   assert.equal(season.storefront, "BRSeason7");
@@ -164,7 +164,7 @@ test("7.00's event flags: the Season 7 lobby and Save the World's Season 7 Warmu
   assert.equal(inBuild(v700, () => isEventActive(season7Warmup2018)), true);
   assert.equal(inBuild(v631, () => isEventActive(season7Warmup2018)), false);
   assert.equal(activeEventFlags(v631).includes(lobbySeason7), false);
-  assert.deepEqual(season4Flag(lobbySeason7).builds, [4629139, 4834550], "7.00's to 7.30's");
+  assert.deepEqual(season4Flag(lobbySeason7).builds, [4629139, 5046157], "7.00's to 7.40's");
   assert.deepEqual(season4Flag("EventFlag.WinterBattleBus").builds, [4629139, 4629139], "gone from 7.10's paks");
   assert.equal(season4Flag(lobbySeason6).builds[0] <= 4629139 && season4Flag(lobbySeason6).builds[1] >= 4629139, true,
     "Season 6's lobby still switches by hand on 7.00");
@@ -220,9 +220,9 @@ test("Season 7's shop: 84 days of 7.00's cosmetics, replayed from 7.00's first d
   assert.equal(history.length, 84);
   assert.deepEqual([history[0].date, history.at(-1).date], ["2018-12-06", "2019-02-27"]);
   const c700 = inBuild(v700, athenaCosmetics);
-  const c730 = inBuild("4834550", athenaCosmetics);
-  // 7.10's, 7.20's and 7.30's own (Krampus, The Ice Queen, Marshmello...) are in the history too; 7.00 is shown only its own.
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c730[id])), "only 7.30's cosmetics");
+  const c740 = inBuild("5046157", athenaCosmetics);
+  // 7.10's to 7.40's own (Krampus, The Ice Queen, Marshmello, Skully...) are in the history too; 7.00 is shown only its own.
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c740[id])), "only 7.40's cosmetics");
   configureItemShop(() => shopConfig);
   const offered700 = inBuild(v700, () => itemShopOffers(at("2018-12-20T12:00:00Z"), shopConfig));
   assert.ok([...offered700.BRWeeklyStorefront, ...offered700.BRDailyStorefront].every(({ templateId }) => c700[templateId]), "7.00 sells only its own");

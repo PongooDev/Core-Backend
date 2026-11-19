@@ -92,6 +92,11 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 //   bEnableHeroLoadoutSystem, which 7.30's DefaultGame.ini doesn't set (false) and Core's hotfix doesn't either, so 7.30
 //   keeps the old squads screen (🟡 read from the switch, not from the commands' callers). What clearing a loadout did was
 //   Epic's service's.
+// - CreateNewIsland {templateId}, DeleteIsland {plotItemId}, RestoreDeletedIsland {plotItemId}, SetCreativePlotMetadata
+//   {plotItemId, locale, title, tagline, youtubeVideoId, introduction} (in SetCreativePlotIslandName's place) and
+//   UpdatePlotPublishInfo {plotItemId, linkCode, linkVersion} (7.40's, CL-5046157, UFortMcpProfileCreative, dedicated
+//   server commands): only their FNames' initialisers (0x148B40 to 0x148C00) reference the FNames (0x5A39E40 to
+//   0x5A39E70); no wrapper in 7.40, so no code there sends them.
 // Each is told "Unknown command" (errors.com.epicgames.fortnite.operation_not_found, HTTP 400) and logged with the
 // build's unknown requests, as before.
 export const clientCommands = {

@@ -161,7 +161,15 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // they were. 7.30 (CL-4834550) adds the 14 of its cosmetics the shop sold, 28 times on 14 of the season's days from 1
 // February 2019 on, the same way: Marshmello, his Mello Rider glider and Marsh Walk emote, Firewalker with Outburst and the
 // Golden Clouds wrap, Kitbash and Sparkplug (with Trash Lid and Scrappy), the Extra Cheese and Nautilus gliders, Squid
-// Striker, and the emotes Bobbin', Glowsticks and Air Horn. Only 7.30's data has them, so 7.20's days are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
+// Striker, and the emotes Bobbin', Glowsticks and Air Horn. Only 7.30's data has them, so 7.20's days are as they were.
+// 7.40 (CL-5046157) adds the 16 of its cosmetics the shop sold, 26 times on nine of the season's days from 14 February 2019
+// on, the same way: Heartbreaker with Chocollama and Skully with the Skully Splitter (14 February had two shops; the
+// second, Update v7.40's, is the day's for 7.40: its 7.40 cosmetics are added to the day's first), the Cuddle Paw, Lil Whip
+// with the Ice Pop, Ice Cream Cruiser and Sprinkles, the Brite Blimp, the Chromatic wrap, Revolt and Rebel with Crossroads,
+// and the emotes Overdrive and Jamboree. Only 7.40's data has them, so 7.30's days are as they were. Not sold here: the
+// Heartspan glider (Part 2's "Gift Only!" for 0 V-Bucks, Valentine's free gift to 15 February) and the Fallen Love Ranger
+// (a real-money pack, the Fallen Love Ranger Quest Pack). A build's season is its athena data's seasonNumber, Season 1
+// without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -658,7 +666,14 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_328_athena_commando_f_tennis": "AthenaBackpack:bid_204_tennisfemale",
   // 7.30's (CL-4834550) the same way: Kitbash's Trash Lid and Sparkplug's Scrappy. Marshmello and Firewalker have none.
   "AthenaCharacter:cid_334_athena_commando_m_scrapyard": "AthenaBackpack:bid_205_scrapyardmale",
-  "AthenaCharacter:cid_335_athena_commando_f_scrapyard": "AthenaBackpack:bid_206_scrapyardfemale"
+  "AthenaCharacter:cid_335_athena_commando_f_scrapyard": "AthenaBackpack:bid_206_scrapyardfemale",
+  // 7.40's (CL-5046157) the same way: Heartbreaker's Sweetheart, Skully's Skully Satchel, Lil Whip's Sno Cone, Revolt's
+  // Board Bag and Rebel's Cannister Carrier.
+  "AthenaCharacter:cid_345_athena_commando_m_lovellama": "AthenaBackpack:bid_214_lovellama",
+  "AthenaCharacter:cid_341_athena_commando_f_skullbrite": "AthenaBackpack:bid_211_skullbrite",
+  "AthenaCharacter:cid_344_athena_commando_m_icecream": "AthenaBackpack:bid_213_icecream",
+  "AthenaCharacter:cid_339_athena_commando_m_robottrouble": "AthenaBackpack:bid_209_robottroublemale",
+  "AthenaCharacter:cid_340_athena_commando_f_robottrouble": "AthenaBackpack:bid_210_robottroublefemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

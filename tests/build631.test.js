@@ -140,8 +140,8 @@ test("6.31's event flags are 6.30's", () => {
   for (const flag of ["EventFlag.Fortnitemares", fortnitemaresPhase2, ltmFortnitemares, ltmLilKevin, lobbySeason6, "EventFlag.PassiveStorms"]) {
     assert.ok(activeEventFlags(v631).includes(flag), flag);
     // Their switches run on to 7.00 (CL-4629139), whose paks keep them (build700.test.js), and on to 7.10 (CL-4667333) and
-    // 7.30 (CL-4834550) but EventFlag.Fortnitemares, which 7.10's paks drop (build710.test.js, build720.test.js, build730.test.js).
-    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : 4834550, flag);
+    // 7.40 (CL-5046157) but EventFlag.Fortnitemares, which 7.10's paks drop (build710.test.js to build740.test.js).
+    assert.equal(season4Flag(flag).builds[1], flag === "EventFlag.Fortnitemares" ? 4629139 : 5046157, flag);
   }
   assert.equal(activeEventFlags(v631).includes(islandPoi(1)), false);
   assert.equal(season4Flag(islandPoi(1)).builds[1], 4543176, "the Cube's end stays 6.22's");

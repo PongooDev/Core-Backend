@@ -275,6 +275,24 @@ const playlistTeamsFrom730 = {
   325: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 }
 };
 const playlistTeams730Build = 4834550;
+// 7.40's (CL-5046157) Driftin' (Playlist_Hover 320, _Hover_64 326 and _Hover_48 348: 2 × 40, 32 and 24 in squads of 4,
+// large team games, Athena.Playlist.Hover.LargeTeam), Sword Fight (335 to 337), Catch! (Playlist_Toss_*, 340 to 342) and
+// Love Shot (345 to 347): 100 teams of 1, 2 and 4. Its other playlists have the teams above.
+const playlistTeamsFrom740 = {
+  320: { maxTeamCount: 2, maxTeamSize: 40, maxSquadSize: 4 },
+  326: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 },
+  348: { maxTeamCount: 2, maxTeamSize: 24, maxSquadSize: 4 },
+  335: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  336: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  337: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  340: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  341: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  342: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  345: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  346: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  347: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams740Build = 5046157;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -480,6 +498,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams740Build && playlistTeamsFrom740[playlistId]) return playlistTeamsFrom740[playlistId];
   if (Number(build) >= playlistTeams730Build && playlistTeamsFrom730[playlistId]) return playlistTeamsFrom730[playlistId];
   if (Number(build) >= playlistTeams720Build && playlistTeamsFrom720[playlistId]) return playlistTeamsFrom720[playlistId];
   if (Number(build) >= playlistTeams710Build && playlistTeamsFrom710[playlistId]) return playlistTeamsFrom710[playlistId];

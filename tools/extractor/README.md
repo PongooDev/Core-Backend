@@ -490,6 +490,27 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   the medieval explosive and Halloween sword schematics, Creative's arctic and disco galleries, its barrier devices and
   wall and ceiling elimination zones), `homebasenodes.json` (three hero loadout nodes), `quests.json`, `objectivestats.json` and
   `world.json` (Frostnite's weeks 5 and 6 challenge quests); the other seven are 7.20's, byte for byte.
+  7.40's (CL-5046157, Update v7.40, the last build of Season 7) is `4.22.0-5046157+++Fortnite+Release-7.40` (no
+  `Build.version`; the build folder is `windows-7.40.40`; the exe's own build string is ++Fortnite+Release-7.40-CL-5046157)
+  with 7.30's full data (Cert's files with `gamedata/4834550` applied) as the fifth argument, and the main key FModel's
+  settings hold for its build folder. A full install: 20 paks besides Core-Launcher's, pakchunk0 and its s1 to s7, pakchunk1
+  and pakchunk1_s1, the language paks 2, 5, 7, 8 and 9 and the keyed pakchunk1000 to 1004, read on the backend's keychain
+  but pakchunk1000, 1001 and 1002, whose keys it hasn't. Its mission alerts are still the fifth argument's. No extractor
+  change. Against 7.30 twelve files change: `athena.json` (34 cosmetics: Skully and the Skully Splitter, Heartbreaker and
+  Chocollama, Lil Whip, Revolt and Rebel, the Fallen Love Ranger and Fallen Wings, the Heartspan glider, the Cuddle Paw,
+  the Valentine, Sprinkles, Chromatic and Cuddle Hearts wraps, the emotes Overdrive, Daydream and Jamboree, the five Share
+  The Love sprays and the Overtime Challenges' True Form and Season 7 loading screens; Bob What and Mary Bobbins, two
+  emoticons of 7.30's, gone; the Vines contrail named; styles for The Ice Queen, the Yeti, Durrr Burger PJs and the Snowboard
+  outfit; 19 display assets; Season7_OT_Schedule, the Overtime Challenges (EventName EventFlag.LTE_S7_OverTime, CategoryID
+  S7_Overtime), and its bundle, whose later quests come DaysFromEventStart; BundleSchedule_Styles_IceQueen and
+  _SkullBrite with their bundles and 14 variant tokens; the Dark Love Ranger bundle's visual style and gift boxes; the loot
+  tables), `banners.json` (the Overtime and Ice Queen completion icons and seven Save the World achievement banners),
+  `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `alterations.json`, `collectionbook.json` and
+  `upgrades.json` (the Infantry Rifle, the Valentine's crossbow, the Driftboard's spawner, the Overtime tokens and the free
+  Season 8 Battle Pass token, two new hero sets of each class (HID_*_021 and _022, HID_Outlander_020 and _021) and the
+  new outfits' heroes, the medieval sniper rifle and its perk group, the achievement and Frostnite banner card packs; six
+  Deco packs gone), `quests.json`, `objectivestats.json` and `world.json` (Frostnite's weeks 7 and 8 challenge quests);
+  the other eight are 7.30's, byte for byte.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

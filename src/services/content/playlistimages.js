@@ -155,6 +155,14 @@ const wildWest14DaysTile = `${cdn}/playlistinformation/BR_LTM_WildWest-1024x512-
 const iceStormSoloTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Solo-1024x512-5c759fe60ec85988f35c729b5fb6a7993d8dbb58.jpg`;
 const iceStormDuosTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Duos_-1024x512-84315aac8d1fcfb840deba46c4dafda8e9005b2a.jpg`;
 const iceStormSquadsTile = `${cdn}/playlistinformation/BR07_ModeTile_WinterDeimos_Squads-1024x512-cf4323aa9c2cfd027484cf4da14544128e3d4c7e.jpg`;
+// 7.40's (CL-5046157) modes, from the same later page, which names one tile for each mode's playlists (each on Epic's CDN,
+// checked 2026-11-19: 200, image/jpeg, the hash in each name the file's SHA-1): Love Shot's BR07_ModeTile_LTM_LoveShot_v2
+// (362,936 bytes), Sword Fight's BR07_ModeTile_LTM_InfinityBlade_v2 (129,987), Catch!'s BR07_ModeTile_LTM_CatchSquads
+// (248,858) and Driftin's BR07_ModeTile_LTM_Drifting50s_Powder (398,266).
+const loveShotTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_LoveShot_v2-1024x512-cd7b917157be2472bebc3db3b125e9b20174c748.jpg`;
+const swordFightTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_InfinityBlade_v2-1024x512-475608c25c288f7d5c884eeebc47fb565f6f5803.jpg`;
+const catchTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_CatchSquads-1024x512-7289222d56b08ef8de20c7187af2670496dca3df.jpg`;
+const driftinTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_Drifting50s_Powder-1024x512-5fb24cfd4d83e4cd3a3589b126313beba9cc69a7.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -233,7 +241,19 @@ export const epicPlaylistImages = {
   Playlist_Barrier_16: foodFight16Tile,
   Playlist_Deimos_Solo_Winter: iceStormSoloTile,
   Playlist_Deimos_Duo_Winter: iceStormDuosTile,
-  Playlist_Deimos_Squad_Winter: iceStormSquadsTile
+  Playlist_Deimos_Squad_Winter: iceStormSquadsTile,
+  Playlist_Love_Solo: loveShotTile,
+  Playlist_Love_Duos: loveShotTile,
+  Playlist_Love_Squads: loveShotTile,
+  Playlist_Sword_Solo: swordFightTile,
+  Playlist_Sword_Duos: swordFightTile,
+  Playlist_Sword_Squads: swordFightTile,
+  Playlist_Toss_Solo: catchTile,
+  Playlist_Toss_Duos: catchTile,
+  Playlist_Toss_Squads: catchTile,
+  Playlist_Hover: driftinTile,
+  Playlist_Hover_64: driftinTile,
+  Playlist_Hover_48: driftinTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads

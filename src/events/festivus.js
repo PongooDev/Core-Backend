@@ -46,11 +46,12 @@ export function festivusStates(now = new Date(), changelist = currentBuild(), co
   return datedParts(windows, nowMs, festivusEvent.parts);
 }
 
-// The Showtime Challenges' calendar events the same way. A flag the admin switched on is served always (season4Overrides)
-// and one switched off never, so neither is scheduled here.
+// The Showtime Challenges' calendar events the same way, on 7.30: 7.40's paks keep the schedule, but its challenges ended on
+// 2 February, before Update v7.40, so 7.40 serves it by the admin's switch only (as 7.30 does the Ice Storm Challenges). A
+// flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is scheduled here.
 export function showtimeStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(showtimeEvent.flag);
-  if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  if (!entry || Number(changelist) !== festivusBuild || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
   const nowMs = now.getTime();
   const windows = datedWindows(showtimeEvent, datedSettings(config).showtime, nowMs, seasonMoment(now, null, showtimeEvent.season).getTime());

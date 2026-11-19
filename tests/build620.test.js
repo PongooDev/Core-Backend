@@ -134,7 +134,7 @@ test("6.20 keeps Season 6's Battle Pass and what #334 carries over; level 100 ga
 test("6.20's outfits' challenges: the same schedules, each under a CategoryID of its own, given to the outfits' owners; the purple styles as 6.02's", () => {
   const schedules = inBuild(v620, athenaChallengeSchedules);
   assert.deepEqual([schedules.bundleschedule_styles_skulltrooper.category, schedules.bundleschedule_styles_tomatohead.category], ["Styles_SkullTrooper", "Styles_Tomatohead"]);
-  for (const id of Object.keys(styleSchedules)) {
+  for (const id of Object.keys(styleSchedules).filter((own) => inBuild(v610, athenaChallengeSchedules)[own])) {
     assert.ok(isStylesCategory(schedules[id].category), id);
     assert.deepEqual({ ...schedules[id], category: "Styles" }, inBuild(v610, athenaChallengeSchedules)[id], id);
   }
@@ -287,9 +287,9 @@ test("6.20's event flags:Fortnitemares (its quest map's Part 1, the Mini-Bosses,
   assert.equal(inBuild(v620, () => hasEventEnded(fortnitemares)), false);
   assert.equal(inBuild(v18, () => isEventActive(fortnitemares)), true, "1.8's own run");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4834550], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 5046157], flag);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4834550], "and on to 7.30 (tests/build631.test.js, tests/build730.test.js)");
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 5046157], "and on to 7.40 (tests/build631.test.js, tests/build740.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610), "BR_Winter_CandyCaneGuns is gone from 6.20's paks");
   // The admin's switches: Part 2's quest map on, the lobby off.
   withConfig({ mode: "auto", season4Flags: { overrides: { "EventFlag.FortnitemaresPhase2": "on", "EventFlag.LobbySeason6Halloween": "off" } } }, () => {

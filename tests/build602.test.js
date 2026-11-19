@@ -199,7 +199,7 @@ test("6.02's event flags are 6.01's: LobbySeason6, the ticketless storms and Cra
   }
   // Every range that ran to 6.02 runs to 6.21 now (tests/build610.test.js, tests/build620.test.js, tests/build621.test.js),
   // but BR.CandyCaneGuns'.
-  const v610 = "4834550"; // 7.30 now (tests/build730.test.js); EventFlag.Fortnitemares stops at 7.00
+  const v610 = "5046157"; // 7.40 now (tests/build740.test.js); EventFlag.Fortnitemares stops at 7.00
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], 4480234);
   assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v610)]);
   assert.equal(season4Flag("EventFlag.BirthdayBattleBus").builds[1], Number(v600), "gone since 6.01");
@@ -451,7 +451,8 @@ const heldOf = (session, templateId) => itemsOf(session, templateId.split(":")[0
 const questOf = (session, questId) => heldOf(session, `Quest:${questId}`);
 
 test("6.02's data has the outfits' own challenges: the Skull Trooper's five for the Ghost Portal, Tomatohead's three for the Crown", () => inBuild(v602, () => {
-  assert.deepEqual(styleSchedules, { bundleschedule_styles_tomatohead: tomatohead, bundleschedule_styles_skulltrooper: skullTrooper });
+  // 6.02's two (7.40's three are tests/build740.test.js's).
+  assert.deepEqual([styleSchedules.bundleschedule_styles_tomatohead, styleSchedules.bundleschedule_styles_skulltrooper], [tomatohead, skullTrooper]);
   assert.deepEqual(athenaChallengeSchedules().bundleschedule_styles_skulltrooper,
     { bundles: [{ bundle: "questbundle_styles_skulltrooper", unlockType: "OnScheduleGranted", unlockValue: 0 }], category: "Styles", cleanUpOnBundleCompletion: true });
   const bundle = athenaChallengeBundles().questbundle_styles_skulltrooper;
@@ -475,7 +476,7 @@ test("6.02's data has the outfits' own challenges: the Skull Trooper's five for 
     .filter((reward) => reward.giftBox).map((reward) => [count, reward.templateId, reward.quantity, reward.giftBox])),
   [[4, "AccountResource:athenaseasonalxp", 5000, challengeCompleteBox]]);
   assert.equal(athenaChallengeBundles().questbundle_ltm_heist.completionSteps[0].rewards[0].giftBox, undefined, "High Stakes' names none");
-  for (const outfit of Object.values(styleSchedules)) assert.ok(athenaCosmetics()[outfit], outfit);
+  for (const outfit of [tomatohead, skullTrooper]) assert.ok(athenaCosmetics()[outfit], outfit);
   // 6.01's files have Tomatohead's and no Skull Trooper Challenges; 6.00's overlay was made before the extractor kept either.
   assert.equal(inBuild(v601, athenaChallengeSchedules).bundleschedule_styles_skulltrooper, undefined);
   assert.deepEqual(inBuild(v601, athenaChallengeSchedules).bundleschedule_styles_tomatohead, athenaChallengeSchedules().bundleschedule_styles_tomatohead);

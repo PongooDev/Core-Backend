@@ -78,7 +78,10 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 7.20's (CL-4727874): One Shot, the Ice Storm's modes and Content Update v7.20's Sniper Shootout.
   "oneShotSquads720", "iceStormSolo", "iceStormDuos", "iceStormSquads", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720",
   // 7.30's (CL-4834550): Party at Pleasant Park, NFL Rumble and Content Update v7.30's Wild West Duos.
-  "partyAtPleasantPark", "nflRumble", "wildWestDuos730"];
+  "partyAtPleasantPark", "nflRumble", "wildWestDuos730",
+  // 7.40's (CL-5046157): Love Shot, Sword Fight, Catch! and Content Update v7.40's Driftin'.
+  "loveShotDuos", "loveShotSolo", "loveShotSquads", "swordFightSquads", "swordFightSolo", "swordFightDuos", "catchSolo", "catchDuos",
+  "catchSquads", "driftin", "driftin40", "driftin20s"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
@@ -87,8 +90,8 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
 // owner's request: "enable the playlist by default"), 6.30's Food Fight and Wild West, the modes 6.30 shipped with, 6.31's Team Rumble,
 // and 7.00's 50v50 (its shipped lobby's) and Close Encounters (Update v7.01's mode, whose playlists 7.00's paks have).
 // 7.00's Creative has no switch: always on (events/ltms.js alwaysOn, Core-Backend #375). 7.10's 14 Days of Fortnite modes
-// are on by default too, and 7.20's One Shot, Ice Storm and Sniper Shootout, and 7.30's Party at Pleasant Park, NFL Rumble
-// and Wild West Duos.
+// are on by default too, and 7.20's One Shot, Ice Storm and Sniper Shootout, 7.30's Party at Pleasant Park, NFL Rumble
+// and Wild West Duos, and 7.40's Love Shot (Duos), Sword Fight (Squads), Catch! and Driftin'.
 const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6", "discoDomination602",
   "fortnitemares2018Solo", "fortnitemares2018Duos", "fortnitemares2018Squads", "teamTerror",
   "foodFight", "wildWestSolo", "wildWestDuos", "wildWestSquads", "teamRumble",
@@ -99,7 +102,9 @@ const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "
   // 7.20's (CL-4727874): One Shot, the Ice Storm's modes and Content Update v7.20's Sniper Shootout.
   "oneShotSquads720", "iceStormSolo", "iceStormDuos", "iceStormSquads", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720",
   // 7.30's (CL-4834550): Party at Pleasant Park, NFL Rumble and Content Update v7.30's Wild West Duos.
-  "partyAtPleasantPark", "nflRumble", "wildWestDuos730"];
+  "partyAtPleasantPark", "nflRumble", "wildWestDuos730",
+  // 7.40's (CL-5046157): Love Shot (Duos), Sword Fight (Squads), Catch! and Content Update v7.40's Driftin'.
+  "loveShotDuos", "swordFightSquads", "catchSolo", "catchDuos", "catchSquads", "driftin"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.

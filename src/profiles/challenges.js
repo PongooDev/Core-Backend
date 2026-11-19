@@ -492,10 +492,24 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // (settleCompletedSchedules).
 // 6.20 (CL-4497486) gives each its own CategoryID, "Styles_SkullTrooper" and "Styles_Tomatohead" (the schedules, bundles
 // and quests are 6.10's otherwise).
+// 7.40 (CL-5046157) adds three, each the same shape (one bundle given with the schedule, CleanUpOnBundleCompletion):
+// - BundleSchedule_Styles_SkullBrite, Skully's (CID_341_Athena_Commando_F_SkullBrite; Epic's post of 14 February 2019: "the
+//   Skully Outfit, with challenges for an unlockable style"): play 25 matches, outlast 1,000 opponents, earn 20,000 season
+//   XP; all three give the Heart style (VTID_095_SkullBrite_StyleB) and the Skully Satchel's (VTID_118).
+// - BundleSchedule_Styles_IceQueen, The Ice Queen's (CID_330, 7.20's outfit): outlast 1,000, 5,000 and 10,000 opponents,
+//   each a style of the outfit, its back bling's and (the pickaxe's tokens, VTID_122 to 124, are given by none) the
+//   completion banner.
+// - BundleSchedule_Styles_CupidDark, the Fallen Love Ranger's (CID_343_Athena_Commando_M_CupidDark, "Love hurts.", sold from
+//   15 February 2019 as the Fallen Love Ranger Pack: "the outfit, backbling, and V-Buck Challenges", "earn up to 2,000
+//   V-Bucks"): complete 1, 3, 5, 7, 10 and 14 daily challenges for 100 to 500 V-Bucks each, 2,000 in all. 7.30's data
+//   already has it (not the outfit).
 export const isStylesCategory = (category) => category === "Styles" || String(category ?? "").startsWith("Styles_");
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
-  bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween"
+  bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween",
+  bundleschedule_styles_skullbrite: "AthenaCharacter:cid_341_athena_commando_f_skullbrite",
+  bundleschedule_styles_icequeen: "AthenaCharacter:cid_330_athena_commando_f_icequeen",
+  bundleschedule_styles_cupiddark: "AthenaCharacter:cid_343_athena_commando_m_cupiddark"
 };
 export function settleStyleSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules() ?? {};

@@ -21,6 +21,8 @@ import { highStakesStates } from "../../events/highstakes.js";
 import { fourteenDaysStates } from "../../events/fourteendays.js";
 import { iceKingStates, iceStormMeltStates, iceStormStates } from "../../events/icestorm.js";
 import { festivusStates, showtimeStates } from "../../events/festivus.js";
+import { overtimeStates } from "../../events/overtime.js";
+import { earthquakesStates, s8HeatStates } from "../../events/s8leadup.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
 import { distantFogStates } from "../../events/distantfog.js";
@@ -113,10 +115,12 @@ export function calendarRoutes({ tokens, settings }) {
     // Butterfly (events/butterfly.js), the Birthday Challenges on the admin's times (events/birthday2018.js), Season 7's The
     // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and 7.20's Ice Storm Challenges
     // (events/icestorm.js) and its Ice King and Ice Storm (events/icestorm.js iceKingStates), and 7.30's snow melting
-    // (events/icestorm.js iceStormMeltStates), Showtime and its challenges (events/festivus.js) as one schedule.
+    // (events/icestorm.js iceStormMeltStates), Showtime and its challenges (events/festivus.js), and 7.40's Overtime Challenges
+    // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
       islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
-      iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now));
+      iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now),
+      earthquakesStates(now), s8HeatStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

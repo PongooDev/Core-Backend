@@ -56,15 +56,15 @@ const replayDaysAgo = (days) => new Date(Date.UTC(new Date().getUTCFullYear(), n
   .toISOString().slice(0, 10);
 const typesOf = (states) => states[0]?.events.map(({ eventType }) => eventType) ?? [];
 
-test("7.30 is known, on its own data, Season 7's newest build", () => {
+test("7.30 is known, on its own data, Season 7's", () => {
   assert.equal(versionOf(v730), "7.30");
   assert.equal(allowedBuildList(["7.30"]).join(), v730);
   assert.equal(dataBuild(v730), v730);
   assert.equal(dataBuild("4800000"), v720, "a build between 7.20 and 7.30 plays on 7.20's");
-  assert.equal(dataBuild("4900000"), v730, "a later build Core doesn't know plays on 7.30's");
+  assert.equal(dataBuild("4900000"), v730, "a later build Core doesn't know, before 7.40, plays on 7.30's");
   assert.equal(releasedOn(v730), Date.UTC(2019, 0, 29));
-  assert.equal(buildOfSeason(7), v730);
-  assert.equal(seasonName(7), "Season 7 (7.00 – 7.30)");
+  assert.equal(buildOfSeason(7), "5046157", "7.40 is Season 7's newest (tests/build740.test.js)");
+  assert.equal(seasonName(7), "Season 7 (7.00 – 7.40)");
   const season = inBuild(v730, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront], [7, "BRSeason7"]);
   // What 7.20 has for Season 7 holds on 7.30: the Cobalt Pack (Core-Backend #385) and gifting.
@@ -130,8 +130,8 @@ test("the Showtime Challenges' flag: 30 January to 2 February on Season 7's repl
   withConfig({ ...season7, datedFlags: { showtime: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v730, () => showtimeFlagsNow(at("2019-01-31T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(lteFestivus).builds, [4834550, 4834550]);
-  assert.deepEqual(season4Flag(ltmWinterDeimos).builds, [4727874, 4834550]);
+  assert.deepEqual(season4Flag(lteFestivus).builds, [4834550, 5046157], "7.40: by the switch only");
+  assert.deepEqual(season4Flag(ltmWinterDeimos).builds, [4727874, 5046157]);
 });
 
 test("a 7.30 player gets the Showtime Challenges while they run, the venue's two from the second day", () => {
@@ -182,8 +182,8 @@ test("7.30's event flags: 7.20's own and Frostnite; its paks' only new flag is t
   const flags = activeEventFlags(v730);
   for (const flag of [lobbySeason7, "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses", frostnite]) assert.ok(flags.includes(flag), flag);
   for (const flag of [ltm14DaysOfFortnite, ltmWinterDeimos, lteFestivus]) assert.equal(flags.includes(flag), false, flag);
-  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 4834550]);
-  assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 4834550);
+  assert.deepEqual(season4Flag(frostnite).builds, [4667333, 5046157]);
+  assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 5046157);
 });
 
 test("7.30's modes: Party at Pleasant Park, NFL Rumble and Wild West Duos on by default, on their dates; 7.20's own stay 7.20's", () => {

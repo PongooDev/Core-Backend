@@ -199,7 +199,8 @@ const eventBuilds = [
   { version: "7.00", cl: 4629139, event: "Season 7 Warmup" },
   { version: "7.10", cl: 4667333, event: "14 Days of Fortnite, Frostnite" },
   { version: "7.20", cl: 4727874, event: "Ice Storm, Frostnite" },
-  { version: "7.30", cl: 4834550, event: "Showtime, Frostnite" }
+  { version: "7.30", cl: 4834550, event: "Showtime, Frostnite" },
+  { version: "7.40", cl: 5046157, event: "Share the Love's Overtime, the earthquakes, Frostnite" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin
@@ -1423,10 +1424,11 @@ export function adminRoutes(context) {
     // now as 6.21's (CL-4526925), with its own (Shogun, Spooky Team Leader, Ruckus, Mayhem, Growler, Flapjackie, Yee-Haw!...),
     // now as 6.22's (CL-4543176), with its own (the NFL outfits, their referees, tools and glider, Spike It, Denied, A.X.E.),
     // now as 6.30's (CL-4573096), with its own (Castor, Elmira, Maki Master, Tender Defender, Taro, Nara, Riot, Night Slicer...),
-    // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In). Season 7's as 7.30's
-    // (CL-4834550): 7.00's, 7.10's (Krampus, Crackabella, Fishstick, DJ Bop, Sugarplum...), 7.20's (The Ice Queen, Malcore,
-    // Jaeger, Fyra, Tech Ops, Volley Girl...) and its own (Marshmello, Firewalker, Kitbash, Sparkplug, Glowsticks...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279", 7: "4834550" }[s];
+    // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In). Season 7's as 7.40's
+    // (CL-5046157): 7.00's, 7.10's (Krampus, Crackabella, Fishstick, DJ Bop, Sugarplum...), 7.20's (The Ice Queen, Malcore,
+    // Jaeger, Fyra, Tech Ops, Volley Girl...), 7.30's (Marshmello, Firewalker, Kitbash, Sparkplug, Glowsticks...) and its own
+    // (Skully, Heartbreaker, Lil Whip, Revolt, Rebel...).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279", 7: "5046157" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);

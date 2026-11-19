@@ -6,6 +6,7 @@ import { highStakesFlagsNow } from "../events/highstakes.js";
 import { fourteenDaysFlagsNow } from "../events/fourteendays.js";
 import { iceStormFlagsNow } from "../events/icestorm.js";
 import { showtimeFlagsNow } from "../events/festivus.js";
+import { overtimeFlagsNow } from "../events/overtime.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
@@ -1454,12 +1455,13 @@ function settleSeasonGrants(session) {
 // (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316);
 // 7.10's Schedule_14DaysOfFortnite (EventFlag.LTM_14DaysOfFortnite) while its dates serve it (events/fourteendays.js), and
 // 7.20's Schedule_WinterDeimos (EventFlag.LTM_WinterDeimos, the Ice Storm Challenges) while its dates do (events/icestorm.js),
-// and 7.30's Schedule_Festivus (EventFlag.LTE_Festivus, the Showtime Challenges) while its dates do (events/festivus.js).
+// 7.30's Schedule_Festivus (EventFlag.LTE_Festivus, the Showtime Challenges) while its dates do (events/festivus.js), and
+// 7.40's Season7_OT_Schedule (EventFlag.LTE_S7_OverTime, the Overtime Challenges) while its dates do (events/overtime.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.
