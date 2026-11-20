@@ -75,9 +75,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // 6.31's Team Rumble, and 7.00's eighteen (50v50, Close Encounters' three, High Explosives' two, Unvaulted's, Siphon's,
     // Sniper Shootout's and Soaring's three each), and 7.10's nineteen (the 14 Days of Fortnite's), and 7.20's seven (One
     // Shot, the Ice Storm's three and Sniper Shootout's three; its three tournament playlists the Tournaments tab's), and
-    // 7.30's three (Party at Pleasant Park, NFL Rumble, Wild West Duos), and 7.40's twelve (Love Shot's, Sword Fight's,
-    // Catch!'s and Driftin's three each). 7.00's Creative is a game mode always on, with no switch (#375).
-    assert.equal(ov.playlists.length, 165);
+    // 7.30's three (Party at Pleasant Park, NFL Rumble, Wild West Duos), 7.40's twelve (Love Shot's, Sword Fight's,
+    // Catch!'s and Driftin's three each), and 8.00's seven (Season 8's 50v50, Close Encounters, Team Rumble, Fly Explosives,
+    // One Shot, Solid Gold and Classic). 7.00's Creative is a game mode always on, with no switch (#375).
+    assert.equal(ov.playlists.length, 172);
     assert.equal(ov.playlists.some((p) => p.id === "creative"), false);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
@@ -104,7 +105,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "oneShotSquads720", "iceStormSolo", "iceStormDuos", "iceStormSquads", "sniperShootoutSolo720", "sniperShootoutDuos720", "sniperShootoutSquads720",
       "partyAtPleasantPark", "nflRumble", "wildWestDuos730",
       "loveShotDuos", "loveShotSolo", "loveShotSquads", "swordFightSquads", "swordFightSolo", "swordFightDuos", "catchSolo", "catchDuos",
-      "catchSquads", "driftin", "driftin40", "driftin20s"]);
+      "catchSquads", "driftin", "driftin40", "driftin20s",
+      "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
+      "solidGoldSeason8Squads", "classicSeason8Squads"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);

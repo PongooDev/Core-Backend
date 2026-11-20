@@ -696,6 +696,7 @@ const build730 = 4834550;
 // 7.40 with their switches.
 const build740 = 5046157;
 const build800 = 5203069;
+const season8Window = [{ builds: [build800, build800], start: "2019-02-28", end: "2019-05-09" }];
 const season7Window = [{ builds: [build700, build740], start: "2018-12-06", end: "2019-02-28" }];
 const loveShotWindow = [{ builds: [build740, build740], start: "2019-02-14", end: "2019-02-16" }];
 const swordFightWindow = [{ builds: [build740, build740], start: "2019-02-15", end: "2019-02-17" }];
@@ -974,8 +975,8 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build740], seasons: [5, 6, 7], defaultOn: true,
-    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window],
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build800], seasons: [5, 6, 7, 8], defaultOn: true,
+    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window, ...season8Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
     original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
@@ -1352,6 +1353,40 @@ export const ltms = [
     teams: "2 Teams × 40", description: "Driftin' with two teams of 40 (Playlist_Hover, 7.40's)." },
   { id: "driftin20s", name: "Driftin' 20's", playlistId: 348, playlistName: "Playlist_Hover_48", eventFlag: null, builds: [build740, build740], seasons: [7],
     teams: "2 Teams × 24", description: "Driftin' with two teams of 24 (Playlist_Hover_48, 7.40's)." },
+  // 8.00 (CL-5203069, Update v8.00, 28 February 2019), Season 8's first build. Its Athena/Playlists (every playlist asset of
+  // its paks, all but the keyed pakchunk1000, 1001 and 1002) are 7.40's less Gun Game's Playlist_Gungame_Solo and _Reverse
+  // (999, 1000) and Playlist_Playground16 (35): no mode is new in its paks. Its shipped DefaultGame.ini's lobby is the
+  // default Solo, Duo and Squad, Playlist_50v50, Playlist_Playground (AdvertiseType Updated), Playlist_PlaygroundV2
+  // (bDisplayAsNew) and Playlist_Creative_TDM_v1, so 50v50, Playground and Creative are on as 7.00's were and no other mode
+  // is on by default. Update v8.00's notes name 50v50 and Close Encounters; the modes of Season 8's later updates aren't in
+  // 8.00's paks: High Stakes 2019's Getaway (8.10's Playlist_Heist_*), Floor is Lava (8.20's Playlist_Lava_*), Air Royale
+  // (8.40's Playlist_AirRoyale) and Endgame (8.50). Buccaneer's Bounty (8.30) rotated six modes a day from 10 to 15 April;
+  // five are 8.00's playlists (the Getaway's isn't), so they run on its replay each by its day, the Fortnite Wiki's
+  // Buccaneer's Bounty list. Team Rumble is 8.30's other mode (its eliminations went from 100 to 150, the final circle
+  // from 20000 to 12500); no source gives its Season 8 window (🟡 10 to 17 April, the event's days), and 8.00's lobby doesn't
+  // ship it, so it is off by default. Close Encounters' launch window ends at 8.10 (🟡 no source gives it).
+  { id: "fiftyFiftySeason8", name: "50v50 (Season 8)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build800, build800], seasons: [8], defaultOn: true,
+    original: season8Window,
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height: 8.00's lobby ships it on (Playlist_50v50, 8.00's)." },
+  { id: "closeEncountersSeason8Squads", name: "Close Encounters (Season 8, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-02-28", end: "2019-03-12" },
+      { builds: [build800, build800], start: "2019-04-12", end: "2019-04-13" }],
+    teams: "100 Teams × 4", description: "Shotguns and jetpacks only, close quarters: Update v8.00's mode, and Buccaneer's Bounty's third day (Playlist_Close_Squad, 8.00's)." },
+  { id: "teamRumbleSeason8", name: "Team Rumble (Season 8)", playlistId: 280, playlistName: "Playlist_Respawn_24", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-04-10", end: "2019-04-17" }],
+    teams: "2 Teams × 20", description: "Two teams of twenty, a bus each: respawn after 5 seconds with your inventory, Uncommon weapons or better; 8.30 puts the win at 150 eliminations and the final circle at 12500 (Playlist_Respawn_24, 8.00's)." },
+  { id: "flyExplosivesSeason8Squads", name: "Fly Explosives (Season 8, Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-04-10", end: "2019-04-11" }],
+    teams: "100 Teams × 4", description: "Explosives only, with Jetpacks on the floor and a faster storm: Buccaneer's Bounty's first day (Playlist_FlyExplosives_Squads, back in 8.00's paks)." },
+  { id: "oneShotSeason8Squads", name: "One Shot (Season 8, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-04-11", end: "2019-04-12" }],
+    teams: "100 Teams × 4", description: "Low gravity, 50 health, snipers only and Bandages the only healing: Buccaneer's Bounty's second day (Playlist_Low_Squads, 8.00's)." },
+  { id: "solidGoldSeason8Squads", name: "Solid Gold (Season 8, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-04-13", end: "2019-04-14" }],
+    teams: "100 Teams × 4", description: "Every weapon Legendary: Buccaneer's Bounty's fourth day (Playlist_SolidGold_Squads, 8.00's)." },
+  { id: "classicSeason8Squads", name: "Classic (Season 8, Squads)", playlistId: 216, playlistName: "Playlist_Classic_Squads", eventFlag: null, builds: [build800, build800], seasons: [8],
+    original: [{ builds: [build800, build800], start: "2019-04-15", end: "2019-04-16" }],
+    teams: "100 Teams × 4", description: "Battle Royale with the vaulted weapons back in the loot: Buccaneer's Bounty's sixth day (Playlist_Classic_Squads, 8.00's; the fifth, the Getaway, is 8.10's playlist and not served)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
   // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,
@@ -1366,7 +1401,7 @@ export const ltms = [
   // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
   // v7.00's early access).
-  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build740], seasons: [7], defaultOn: true,
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build800], seasons: [7, 8], defaultOn: true,
     alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];

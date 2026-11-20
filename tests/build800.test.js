@@ -8,6 +8,7 @@ import { allowedBuildList } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
 import { configureEvents } from "../src/events/events.js";
+import { hasLtm, ltmFrontEndPlaylists, ltmOn, ltms } from "../src/events/ltms.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
@@ -138,6 +139,38 @@ test("8.00's shop: Season 8 has no recorded history, so it serves its own cosmet
   } finally {
     configureItemShop(null);
   }
+});
+
+test("Season 8's LTMs: 8.00's lobby, Close Encounters, Team Rumble and Buccaneer's Bounty's days", () => {
+  const replay = { mode: "auto", seasonStarts: { 8: "2019-02-28" } };
+  const dated = { ltmOriginalDates: true };
+  withConfig(replay, () => {
+    // 8.00's DefaultGame.ini: 50v50, Playground and Creative are on, and Close Encounters (Update v8.00's other mode) is
+    // not a default.
+    for (const id of ["fiftyFiftySeason8", "playgroundV2", "creative"]) assert.equal(ltmOn(id, v800, {}, at("2019-03-10T12:00:00Z")), true, id);
+    assert.equal(ltmOn("closeEncountersSeason8Squads", v800, {}, at("2019-03-01T00:00:00Z")), false);
+    // Playground and 50v50 stay on with Original dates too: their windows cover Season 8.
+    for (const id of ["fiftyFiftySeason8", "playgroundV2"]) assert.equal(ltmOn(id, v800, dated, at("2019-03-10T12:00:00Z")), true, id);
+    // Its launch window (8.00 to 8.10) and Buccaneer's Bounty's third day.
+    assert.equal(ltmOn("closeEncountersSeason8Squads", v800, dated, at("2019-03-01T00:00:00Z")), true);
+    assert.equal(ltmOn("closeEncountersSeason8Squads", v800, dated, at("2019-03-20T00:00:00Z")), false);
+    const days = [["flyExplosivesSeason8Squads", "2019-04-10"], ["oneShotSeason8Squads", "2019-04-11"],
+      ["closeEncountersSeason8Squads", "2019-04-12"], ["solidGoldSeason8Squads", "2019-04-13"],
+      ["teamRumbleSeason8", "2019-04-10"], ["classicSeason8Squads", "2019-04-15"]];
+    for (const [id, day] of days) assert.equal(ltmOn(id, v800, dated, at(`${day}T12:00:00Z`)), true, id);
+    assert.equal(ltmOn("solidGoldSeason8Squads", v800, dated, at("2019-04-11T12:00:00Z")), false);
+    assert.equal(ltmOn("classicSeason8Squads", v800, dated, at("2019-04-11T12:00:00Z")), false);
+    // Nothing Season 8's later builds brought is served: no Getaway, lava or plane mode is one of 8.00's playlists.
+    assert.equal(ltms.filter(({ seasons }) => seasons?.includes(8)).some(({ playlistName }) => /heist|lava|airroyale/i.test(playlistName ?? "")), false);
+    // 8.00's entries are 8.00's alone, and 7.40's modes aren't 8.00's.
+    for (const id of ["fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads"])
+      assert.deepEqual([hasLtm(id, v800), hasLtm(id, v740)], [true, false], id);
+    assert.equal(hasLtm("fiftyFiftySeason7", v800), false);
+    // The lobby hotfix keeps 8.00's shipped 50v50, Playground and Creative, and lists the Season 8 modes.
+    const frontEnd = ltmFrontEndPlaylists(v800, {}).map(({ name }) => name);
+    for (const name of ["Playlist_50v50", "Playlist_Playground", "Playlist_PlaygroundV2", "Playlist_Respawn_24"]) assert.ok(frontEnd.includes(name), name);
+    assert.equal(frontEnd.includes("Playlist_Gungame_Solo"), false);
+  });
 });
 
 test("7.40 is unchanged by 8.00: its own data, Season 7's pass, no Season 8 challenges", () => {
