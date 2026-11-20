@@ -67,6 +67,8 @@ const templates = {
     favorite_battlebus: "",
     favorite_dance: "",
     favorite_victorypose: "",
+    // 8.00's Party Assist (SetPartyAssistQuest): the quest this player's party helps with; empty when none.
+    party_assist_quest: "",
     // The 2FA reward (Battle Royale's emote) counts as claimed, so the client doesn't offer it again (#310).
     mfa_reward_claimed: true
   }),

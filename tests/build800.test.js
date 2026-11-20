@@ -15,6 +15,7 @@ import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
+import { send, startBackend, userLogin } from "./helpers.js";
 import { hasGifting } from "../src/store/gifting.js";
 import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, weeklyStoreEnd } from "../src/store/itemshop.js";
 
@@ -171,6 +172,31 @@ test("Season 8's LTMs: 8.00's lobby, Close Encounters, Team Rumble and Buccaneer
     for (const name of ["Playlist_50v50", "Playlist_Playground", "Playlist_PlaygroundV2", "Playlist_Respawn_24"]) assert.ok(frontEnd.includes(name), name);
     assert.equal(frontEnd.includes("Playlist_Gungame_Solo"), false);
   });
+});
+
+test("8.00's Party Assist pins and clears athena's party_assist_quest", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Party8");
+    const command = (name, profileId, body) => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=${profileId}&rvn=-1`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-8.00-CL-5203069",
+        Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
+    }, JSON.stringify(body));
+    const attributes = async () => (await command("QueryProfile", "athena", {})).body.profileChanges[0].profile.stats.attributes;
+    assert.equal((await attributes()).party_assist_quest, "", "none pinned yet");
+    const pinned = await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: "Quest:s8_week_001" });
+    assert.equal(pinned.status, 200);
+    assert.equal(pinned.body.profileChanges[0].profile.stats.attributes.party_assist_quest, "Quest:s8_week_001");
+    assert.equal((await attributes()).party_assist_quest, "Quest:s8_week_001");
+    await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: "" });
+    assert.equal((await attributes()).party_assist_quest, "");
+  } finally {
+    backend.close();
+  }
 });
 
 test("7.40 is unchanged by 8.00: its own data, Season 7's pass, no Season 8 challenges", () => {

@@ -49,6 +49,7 @@ import { setHomebaseMeta } from "./SetHomebaseMeta.js";
 import { setHomebaseName } from "./SetHomebaseName.js";
 import { setItemFavoriteStatus, setItemFavoriteStatusBatch } from "./SetItemFavoriteStatus.js";
 import { setMtxPlatform } from "./SetMtxPlatform.js";
+import { setPartyAssistQuest } from "./SetPartyAssistQuest.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { setReceiveGiftsEnabled } from "./SetReceiveGiftsEnabled.js";
 import { skipTutorial } from "./SkipTutorial.js";
@@ -168,6 +169,7 @@ export const clientCommands = {
   SetItemFavoriteStatusBatch: setItemFavoriteStatusBatch,
   SetModeLoadout: setModeLoadout,
   SetMtxPlatform: setMtxPlatform,
+  SetPartyAssistQuest: setPartyAssistQuest,
   SetPinnedQuests: setPinnedQuests,
   SetReceiveGiftsEnabled: setReceiveGiftsEnabled,
   SkipTutorial: skipTutorial,
