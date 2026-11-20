@@ -17,7 +17,7 @@ import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { send, startBackend, userLogin } from "./helpers.js";
 import { hasGifting } from "../src/store/gifting.js";
-import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, weeklyStoreEnd } from "../src/store/itemshop.js";
+import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 
 // Fortnite 8.00 (Update v8.00, 28 February 2019; Season 8's first build): CL-5203069, on its own data (gamedata/5203069).
 // Battle Royale: Season 8's Battle Pass (BRSeason8, 100 tiers; Blackheart, Hybrid, Peely, Sidewinder, Ember and Luxe),
@@ -119,24 +119,39 @@ test("an 8.00 player's first login gets Season 8's free schedule and its first w
   }));
 });
 
-test("8.00's shop: Season 8 has no recorded history, so it serves its own cosmetics from the random shop", () => {
+test("8.00's shop: Season 8's own history, day by day from Epic's 28 February shop", () => {
   const shopConfig = { mode: "fnbr", rotationHour: 0, seasonStarts: { 8: "2019-02-28" } };
   configureItemShop(() => shopConfig);
   try {
-    assert.equal(hasSeasonHistory(8), false);
+    assert.equal(hasSeasonHistory(8), true);
     assert.equal(hasSeasonHistory(7), true);
+    const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season8.json", import.meta.url), "utf8")).days;
+    assert.equal(history.length, 70);
+    assert.deepEqual([history[0].date, history.at(-1).date], ["2019-02-28", "2019-05-08"]);
     const cosmetics = inBuild(v800, athenaCosmetics);
-    const shop = inBuild(v800, () => itemShopOffers(at("2019-03-05T12:00:00Z"), shopConfig));
-    const offers = [...shop.BRWeeklyStorefront, ...shop.BRDailyStorefront];
-    assert.ok(offers.length > 0, "offers instead of Season 1's 2017 days");
-    assert.ok(offers.every(({ templateId }) => cosmetics[templateId]), "only 8.00's cosmetics");
-    // Its countdowns follow the replay: the weekly pair at the end of its 7 seeded days, the season at the end of its own
-    // 70 (28 February to 8 May 2019), not stuck on a 2019 date.
-    const now = at("2019-03-05T12:00:00Z");
-    const weekEnd = inBuild(v800, () => weeklyStoreEnd(now, shopConfig));
-    const end = inBuild(v800, () => seasonEnd(now, shopConfig));
-    assert.ok(weekEnd > now && weekEnd - now <= 7 * 86400000, "the weekly storefront's end");
-    assert.equal(end.toISOString().slice(0, 10), "2019-05-09");
+    inBuild(v800, () => {
+      // 28 February 2019 had 7.40's last shop and Season 8's launch shop (Fishstick's pirate style, Chomp Sr. with Chomp
+      // Jr. and Laser Chomp): both are in, as 14 February's two were for 7.40.
+      const launch = itemShopOffers(at("2019-02-28T12:00:00Z"), shopConfig);
+      const offers = [...launch.BRWeeklyStorefront, ...launch.BRDailyStorefront];
+      const ids = offers.map(({ templateId }) => templateId);
+      const recorded = new Set([...history[0].featured, ...history[0].daily].map(([templateId]) => templateId));
+      assert.ok(offers.length >= 20, "the day's two shops");
+      assert.ok(ids.every((templateId) => recorded.has(templateId)), "only the day's recorded items");
+      for (const templateId of ["AthenaCharacter:cid_315_athena_commando_m_teriyakifish", "AthenaCharacter:cid_168_athena_commando_m_shark",
+        "AthenaPickaxe:pickaxe_id_017_shark", "AthenaGlider:glider_id_058_shark"]) assert.ok(ids.includes(templateId), templateId);
+      assert.ok(offers.every(({ templateId }) => cosmetics[templateId]), "only 8.00's cosmetics");
+      // Each UTC day is its own day of the 70, and the 71st is the first again.
+      assert.deepEqual(shopDay(at("2019-03-05T12:00:00Z"), shopConfig), history[5]);
+      assert.equal(shopDay(at("2019-05-09T12:00:00Z"), shopConfig).date, "2019-02-28");
+      // Its countdowns follow the replay: the weekly pair at the end of its 7 seeded days, the season at the end of its own
+      // 70 (28 February to 8 May 2019).
+      const now = at("2019-03-05T12:00:00Z");
+      const weekEnd = weeklyStoreEnd(now, shopConfig);
+      const end = seasonEnd(now, shopConfig);
+      assert.ok(weekEnd > now && weekEnd - now <= 7 * 86400000, "the weekly storefront's end");
+      assert.equal(end.toISOString().slice(0, 10), "2019-05-09");
+    });
   } finally {
     configureItemShop(null);
   }

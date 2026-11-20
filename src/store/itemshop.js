@@ -168,30 +168,28 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // with the Ice Pop, Ice Cream Cruiser and Sprinkles, the Brite Blimp, the Chromatic wrap, Revolt and Rebel with Crossroads,
 // and the emotes Overdrive and Jamboree. Only 7.40's data has them, so 7.30's days are as they were. Not sold here: the
 // Heartspan glider (Part 2's "Gift Only!" for 0 V-Bucks, Valentine's free gift to 15 February) and the Fallen Love Ranger
-// (a real-money pack, the Fallen Love Ranger Quest Pack). A build's season is its athena data's seasonNumber, Season 1
-// without one.
+// (a real-money pack, the Fallen Love Ranger Quest Pack).
+//
+// 8.00 (CL-5203069) is Season 8, with its own shop the same way: Epic's of Season 8, day by day from its first day, 28
+// February 2019, to its last, 8 May 2019 (itemshop-season8.json, the same wiki pages, 28 February from its Part 1 and
+// Part 2), replayed in a 70-day cycle from the day 8.00 is first served. Only the cosmetics 8.00's data has are in, so
+// Season 8's later updates' (8.10's to 8.50's: Kuno, Kenji, Aura, Guild, Pastel, Psion, Supersonic, Nitehare, the Black
+// Widow's and Star-Lord's sets, the wraps and the emotes) are left out, and 13 of the 70 days have an empty featured
+// section. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
+// shop's items after the first's, as 14 February's were for 7.40. Battle Pass Tiers, bundles, free (0 V-Bucks) items
+// and real-money offers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
   3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json"),
-  6: readHistory("itemshop-season6.json"), 7: readHistory("itemshop-season7.json") };
+  6: readHistory("itemshop-season6.json"), 7: readHistory("itemshop-season7.json"),
+  8: readHistory("itemshop-season8.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
-// Season 8's shop (8.00, CL-5203069) isn't recorded here yet: its history is empty, so the build serves the random shop
-// from its own cosmetics rather than replaying Season 1's 2017 days (🟡 Core's choice until the wiki's Season 8 pages are
-// transcribed like Season 7's).
-const emptyHistories = { 8: { days: [], firstDay: Date.parse("2019-02-28T00:00:00Z") } };
-// The day a season with no recorded history ends: Season 8 ran to 8 May 2019, Season 9 beginning on the 9th.
-const seasonEnds = { 8: Date.parse("2019-05-09T00:00:00Z") };
-const historyOf = (season) => seasonHistories[season] ?? emptyHistories[season] ?? seasonHistories[1];
-// A season's replay is as long as its recorded history; a season without one (Season 8) replays its own length, its
-// start to its end.
-const cycleOf = (season) => {
-  const history = historyOf(season);
-  return history.days.length ? history.days.length * dayMs
-    : Math.max(dayMs, (seasonEnds[season] ?? history.firstDay + dayMs) - history.firstDay);
-};
+const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
+// A season's replay is as long as its recorded history (Season 8's 70 days, 28 February to 8 May 2019).
+const cycleOf = (season) => historyOf(season).days.length * dayMs;
 // Whether Core has the season's shop history, so its replay (seasonMoment) stands on its own days (store/gifting.js).
 export const hasSeasonHistory = (season) => Object.hasOwn(seasonHistories, season);
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
@@ -208,7 +206,7 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
 // 3.0 is first served, Season 4 on the day 4.0 is, Season 5 on the day 5.0 is, Season 6 on the day 6.00 is, Season 7
-// on the day 7.00 is, and Season 8 (which has no recorded history: emptyHistories) on the day 8.00 is.
+// on the day 7.00 is, and Season 8 on the day 8.00 is.
 const anchoredSeasons = [2, 3, 4, 5, 6, 7, 8];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
@@ -420,7 +418,7 @@ export function shopDay(now = new Date(), overrideConfig = null, season = season
   const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
   const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
   const days = Math.floor((adjustedTime - firstDay) / dayMs);
-  // A season with no recorded history (Season 8) has no recorded day; its own day, with nothing on it.
+  // A season with no recorded history has no recorded day; its own day, with nothing on it.
   if (!history.length) {
     return { date: new Date(firstDay + Math.max(0, days) * dayMs).toISOString().slice(0, 10), featured: [], daily: [] };
   }
@@ -448,8 +446,8 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season =
   const dayStart = (day) => new Date(day * dayMs + rotationMs);
 
   const { days: history } = historyOf(season);
-  // Away from history mode, and for a season with no recorded history (Season 8, always the random shop): the end of the
-  // period the featured pair is seeded by.
+  // Away from history mode, and for a season with no recorded history (always the random shop): the end of the period
+  // the featured pair is seeded by.
   if (config.mode === "custom" || config.mode === "random" || !history.length) {
     const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
     const weekNumber = Math.floor((dayNumber + 4) / weeklyDays);
@@ -481,8 +479,8 @@ export function seasonEnd(now = new Date(), overrideConfig = null, season = seas
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
   const { days: history } = historyOf(season);
   const firstDay = seasonStart(season, now, config);
-  // A season with no recorded history (Season 8) replays its own length (28 February to 8 May 2019: Season 9 began on the
-  // 9th), so its countdown runs to the end of the cycle it is in, as the seasons with a history do.
+  // A season with no recorded history replays its own length, one day, so its countdown runs to the end of the cycle it is
+  // in, as the seasons with a history do.
   if (!history.length) {
     const cycle = cycleOf(season);
     const cycles = Math.floor((now.getTime() - rotationMs - firstDay) / cycle);
@@ -748,7 +746,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
 
   // 2.2's Battle Pass tier sale, on its days (battlepass/season2.js).
   const day = shopDay(now, config);
-  // A season with no recorded history (Season 8, 8.00) has no day to replay: its own cosmetics, the random shop's.
+  // A season with no recorded history has no day to replay: its own cosmetics, the random shop's.
   if (!historyOf(seasonOfBuild()).days.length) {
     const random = generateRandomShop(now, config);
     return { BRWeeklyStorefront: toOffers(random.featured, true), BRDailyStorefront: toOffers(random.daily) };
