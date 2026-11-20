@@ -252,3 +252,49 @@ test("1.7.2 gives founders the Founder's Glider, or the Founder's Umbrella once 
     backend.close();
   }
 });
+
+// Core-Backend #398: 7.40 (CL-5046157) and 8.00 (CL-5203069) ask stats v2 for the lobby's account and friend scores,
+// not only the pre-v2 stats screen. The live backend's unknown-route logs have both requests; Epic's StatsProxy names
+// the stats with the input type and the playlist's name (br_score_keyboardmouse_m0_playlist_defaultsolo).
+test("7.40's stats v2 account and query answer the recorded career stats", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StatsV2Player");
+    const friend = await userLogin(backend.port, "StatsV2Friend");
+    const dedicated = await dedicatedServerToken(backend.port);
+    assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, {
+      playlistId: 2, results: [{ accountId: player.accountId, place: 1, kills: 2, secondsAlive: 600, score: 472 }]
+    })).status, 200);
+
+    const agent = "game=Fortnite, engine=UE4, build=++Fortnite+Release-CL-5046157";
+    const getV2 = (accountId, token) => send({ host: "127.0.0.1", port: backend.port,
+      path: `/fortnite/api/statsv2/account/${accountId}`, headers: { "User-Agent": agent, Authorization: `bearer ${token}` } });
+    const account = await getV2(player.accountId, player.token);
+    assert.equal(account.status, 200);
+    assert.equal(account.body.accountId, player.accountId);
+    assert.equal(account.body.startTime, 0);
+    assert.ok(account.body.endTime > 9e15);
+    assert.equal(account.body.stats.br_score_keyboardmouse_m0_playlist_defaultsolo, 472);
+    assert.equal(account.body.stats.br_matchesplayed_keyboardmouse_m0_playlist_defaultsolo, 1);
+    assert.equal(account.body.stats.br_minutesplayed_keyboardmouse_m0_playlist_defaultsolo, 10);
+    assert.equal(account.body.stats.br_kills_keyboardmouse_m0_playlist_defaultsolo, 2);
+
+    const payload = JSON.stringify({ appId: "fortnite", startDate: 0, endDate: 9223372036854775807,
+      owners: [player.accountId, friend.accountId], stats: ["br_score_keyboardmouse_m0_playlist_defaultsolo"] });
+    const query = await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/fortnite/api/statsv2/query",
+      headers: { "User-Agent": agent, Authorization: `bearer ${player.token}`, "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(payload) } }, payload);
+    assert.equal(query.status, 200);
+    assert.ok(Array.isArray(query.body));
+    assert.deepEqual(query.body, [
+      { startTime: 0, endTime: 9223372036854776000, accountId: player.accountId,
+        stats: { br_score_keyboardmouse_m0_playlist_defaultsolo: 472 } },
+      { startTime: 0, endTime: 9223372036854776000, accountId: friend.accountId, stats: {} }
+    ]);
+
+    // An unknown account's account route is Epic's not-found; the query leaves its stats empty instead of failing.
+    assert.equal((await getV2("0123456789abcdef0123456789abcdef", player.token)).status, 404);
+  } finally {
+    backend.close();
+  }
+});

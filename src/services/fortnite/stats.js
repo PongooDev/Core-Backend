@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { sendError } from "../../errors.js";
 import { seasonNumber } from "../../profiles/seasons.js";
 import { windowEnd, windows } from "../../stats/store.js";
 
@@ -91,6 +92,62 @@ export function statsRoutes({ tokens, stats, accounts }) {
   };
   router.post("/fortnite/api/leaderboards/type/:type/stat/:stat/window/:window", requireAuth(tokens), leaderboard);
   router.get("/fortnite/api/leaderboards/type/:type/stat/:stat/window/:window", requireAuth(tokens), leaderboard);
+
+  // 7.40 (CL-5046157) and 8.00 (CL-5203069) ask for stats v2 as well as the pre-v2 screen above: the live backend's
+  // unknown-route logs have GET /fortnite/api/statsv2/account/<id> and POST /fortnite/api/statsv2/query with
+  // {owners, stats: ["br_score_keyboardmouse_m0_playlist_defaultsolo"]}. Epic's StatsProxy UserStats answer is
+  // {startTime, endTime, stats: {<stat>: <value>}, accountId} (the example in FortniteEndpointsDocumentation's
+  // StatsProxyService/Stats/UserStats.md, whose names have the input type and the playlist's name instead of pc/p<id>),
+  // and the query answers one such object per owner. Core records the three main playlists' career stats
+  // (src/stats/store.js), so those are the names it can answer; an input type or playlist Core has no record of is
+  // left out, which the client reads as 0 like the pre-v2 screen's absent stat. The clients ask for the all-time window (0 and
+  // 9223372036854775807); Core's store keeps days, not arbitrary ranges, so a custom window is answered with the career.
+  const allTimeEnd = 9223372036854775807;
+  const statsV2Playlists = { 2: "playlist_defaultsolo", 10: "playlist_defaultduo", 9: "playlist_defaultsquad" };
+
+  // The recorded career stats in v2 names, limited to the names asked for when requested is given.
+  function statsV2(accountId, requested = null) {
+    const recorded = stats.playlists(accountId);
+    const answer = {};
+    for (const [playlistId, playlistName] of Object.entries(statsV2Playlists)) {
+      for (const [name, value] of Object.entries(recorded[playlistId] ?? {})) {
+        const statName = `br_${name === "secondsplayed" ? "minutesplayed" : name}_keyboardmouse_m0_${playlistName}`;
+        if (requested && !requested.includes(statName)) continue;
+        answer[statName] = name === "secondsplayed" ? Math.floor(value / 60) : value;
+      }
+    }
+    return answer;
+  }
+
+  function timeOf(value, fallback) {
+    const time = Number(value);
+    return Number.isFinite(time) ? time : fallback;
+  }
+
+  router.get("/fortnite/api/statsv2/account/:accountId", requireAuth(tokens), (req, res) => {
+    if (!accounts.get(req.params.accountId)) {
+      return sendError(res, 404, "errors.com.epicgames.account.account_not_found", `Sorry, we couldn't find an account for ${req.params.accountId}`);
+    }
+    res.json({
+      startTime: timeOf(req.query.startTime, 0),
+      endTime: timeOf(req.query.endTime, allTimeEnd),
+      stats: statsV2(req.params.accountId),
+      accountId: req.params.accountId
+    });
+  });
+
+  router.post("/fortnite/api/statsv2/query", requireAuth(tokens), (req, res) => {
+    const owners = Array.isArray(req.body?.owners) ? req.body.owners.filter((id) => typeof id === "string") : [];
+    const requested = Array.isArray(req.body?.stats) ? req.body.stats.filter((name) => typeof name === "string") : null;
+    const startTime = timeOf(req.body?.startDate ?? req.body?.startTime, 0);
+    const endTime = timeOf(req.body?.endDate ?? req.body?.endTime, allTimeEnd);
+    res.json(owners.map((accountId) => ({
+      startTime,
+      endTime,
+      stats: accounts.get(accountId) ? statsV2(accountId, requested) : {},
+      accountId
+    })));
+  });
 
   return router;
 }
