@@ -695,6 +695,7 @@ const build730 = 4834550;
 // Epic's events service, services/fortnite/events.js). 7.30's own modes stay 7.30's; 7.00's to 7.20's other modes run to
 // 7.40 with their switches.
 const build740 = 5046157;
+const build800 = 5203069;
 const season7Window = [{ builds: [build700, build740], start: "2018-12-06", end: "2019-02-28" }];
 const loveShotWindow = [{ builds: [build740, build740], start: "2019-02-14", end: "2019-02-16" }];
 const swordFightWindow = [{ builds: [build740, build740], start: "2019-02-15", end: "2019-02-17" }];
@@ -1429,7 +1430,7 @@ export function eventTagOfPlaylist(playlistId, build = currentBuild()) {
   return ltm && inRange(ltm.builds, build) ? ltm.tag351 ?? ltm.playlistId : undefined;
 }
 
-const seasonOf = (build) => (Number(build) >= build700 ? 7 : Number(build) >= build6000 ? 6 : Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3
+const seasonOf = (build) => (Number(build) >= build800 ? 8 : Number(build) >= build700 ? 7 : Number(build) >= build6000 ? 6 : Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3
   : Number(build) >= build111 ? 2 : 1);
 const day = (date) => Date.parse(`${date}T00:00:00Z`);
 // An LTM's original windows ([] for none): {builds, start, end, season}, start and end in ms of Epic's calendar (UTC), end

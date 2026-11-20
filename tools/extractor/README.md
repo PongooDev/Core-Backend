@@ -511,6 +511,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   new outfits' heroes, the medieval sniper rifle and its perk group, the achievement and Frostnite banner card packs; six
   Deco packs gone), `quests.json`, `objectivestats.json` and `world.json` (Frostnite's weeks 7 and 8 challenge quests);
   the other eight are 7.30's, byte for byte.
+  8.00's (CL-5203069, Update v8.00, Season 8's first build) is `4.22.0-5203069+++Fortnite+Release-8.00` (no
+  `Build.version`; the build folder is `8.00-CL-5203069\8.00-CL-5203069\Fortnite`) with 7.40's full data (Cert's files
+  with `gamedata/5046157` applied) as the fifth argument, and the main key FModel's settings hold for its build folder.
+  A full install: 20 paks besides Core-Launcher's config pak, pakchunk0 and its s1 to s8, pakchunk1 and pakchunk1_s1,
+  the language paks 2, 5, 7, 8 and 9 and the keyed pakchunk1000 to 1002, read on the backend's keychain but
+  pakchunk1001, which is the only one it has a key for. Its mission alerts are still the fifth argument's. No extractor
+  change. Against 7.40 twenty files change: `athena.json` (123 cosmetics: Blackheart, Hybrid, Sidewinder, Peely, Ember,
+  Luxe, the Season 8 Battle Pass's outfits, Wraps, toys, pets and emotes; Season 8's Battle Pass (BRSeason8, 100 tiers)
+  with its free weekly challenges (Season8_Free_Schedule, ten bundles from 28 February), the paid ones (Season8_Paid_
+  Schedule: Blackheart's and Hybrid's progressive challenges) and its cumulative bundle; Season8_Shiny_Schedule, Luxe's;
+  the loot tables with the Pirate Cannon's and the geysers' rows), `items.json`, `characters.json`, `cardpacks.json`,
+  `fabricator.json`, `alterations.json`, `collectionbook.json`, `upgrades.json`, `quests.json`, `objectivestats.json`,
+  `world.json`, `banners.json`, `cardpacks.json`, the skill tree's, the daily rewards', the collection book's and
+  Save the World's; the other five are Cert's, unchanged.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

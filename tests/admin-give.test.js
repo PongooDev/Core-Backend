@@ -11,22 +11,25 @@ test("Give lists and gives items only a later build's data has, with the builds 
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "GivePlayer");
-    const catalog = (await admin(backend, "/catalog?search=hazard&category=heroes")).body;
+    // By id: 8.00 renamed the hero, so searching its old name ("Hazard the 13th") no longer finds it.
+    const catalog = (await admin(backend, "/catalog?search=hid_constructor_007hw_sr_t01&category=heroes")).body;
     const entry = catalog.items.find((item) => item.templateId === hazard);
-    assert.deepEqual([entry?.name, entry?.category, entry?.single, entry?.builds], ["Hazard the 13th", "heroes", true, "1.8+"]);
-    assert.ok((await admin(backend, "/catalog?search=marine%20corpse%20ramirez")).body.items.some((item) => item.templateId === "Hero:hid_commando_007hw_sr_t01"));
+    // 8.00 renamed the hero (8.00's items.json: "Kyle the 13th"), and the panel shows the newest data's name.
+    assert.deepEqual([entry?.name, entry?.category, entry?.single, entry?.builds], ["Kyle the 13th", "heroes", true, "1.8+"]);
+    // 8.00 also renamed this one, from "Marine Corps Ramirez".
+    assert.ok((await admin(backend, "/catalog?search=ghoul%20trooper%20ramirez")).body.items.some((item) => item.templateId === "Hero:hid_commando_007hw_sr_t01"));
     // Cert's items show no chip.
     assert.equal((await admin(backend, "/catalog?search=hid_commando_007_r_t01")).body.items[0].builds, null);
     assert.ok((await admin(backend, "/items")).body.includes(hazard));
 
     const lookup = (await admin(backend, `/catalog/lookup?templateId=${encodeURIComponent(hazard.toUpperCase())}`)).body;
-    assert.deepEqual([lookup.known, lookup.item.templateId, lookup.item.name], [true, hazard, "Hazard the 13th"]);
+    assert.deepEqual([lookup.known, lookup.item.templateId, lookup.item.name], [true, hazard, "Kyle the 13th"]);
 
     const given = await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: hazard, quantity: 2 });
     assert.equal(given.status, 200);
     assert.equal(given.body.granted, 2);
     const heroes = given.body.items.filter((item) => item.templateId === hazard);
-    assert.deepEqual(heroes.map((item) => [item.name, item.quantity]), [["Hazard the 13th", 1], ["Hazard the 13th", 1]]);
+    assert.deepEqual(heroes.map((item) => [item.name, item.quantity]), [["Kyle the 13th", 1], ["Kyle the 13th", 1]]);
     // A single item still has its cap, from the data of the build that has it.
     assert.equal((await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: hazard, quantity: 501 })).status, 400);
   } finally {

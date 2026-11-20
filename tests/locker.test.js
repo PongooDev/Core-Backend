@@ -201,6 +201,9 @@ test("the admin panel gives the full locker and takes back only what it gave", a
       // 7.30's but its new ids for Jumpshot and Triple Threat, which redirect the old ones (gamedata/templates.js).
       ...inBuild("4834550", () => Object.keys(athenaCosmetics())).filter((id) => !/_streetbasketball$/.test(id)),
       ...inBuild("5046157", () => Object.keys(athenaCosmetics())).filter((id) => !/_streetbasketball$/.test(id)),
+      // 8.00's Season 8 Battle Pass (Blackheart, Hybrid, Sidewinder, Peely, Ember, Luxe, the Wraps, pets and emotes),
+      // and 7.40's new ids for Jumpshot and Triple Threat again, which 8.00's DefaultGame.ini still redirects.
+      ...inBuild("5203069", () => Object.keys(athenaCosmetics())).filter((id) => !/_streetbasketball$/.test(id)),
       // 1.11's Winter Bus (back in 7.10's data), 3.5.2's Smooth Ride and 3.6's Ride the Lightning.
       "AthenaBattleBus:bbid_winterbus", "AthenaDance:eid_smoothride",
       "AthenaSkyDiveContrail:trails_id_008_ridethelightning"])]
@@ -284,14 +287,15 @@ test("what giveAllCosmetics gave stays once the panel gives the full locker", ()
   // Blue Metallic and the rest) and its banner, and 7.30's twenty-seven (Marshmello, The Prisoner, Firewalker, Kitbash,
   // Sparkplug and the rest; not its new ids for Jumpshot and Triple Threat, the old ones held already) and its two banners,
   // and 7.40's thirty-four (Skully, Heartbreaker, Lil Whip, Revolt, Rebel, the Fallen Love Ranger, the Share The Love sprays
-  // and the rest) and its nine banners.
-  assert.deepEqual(grantFullLocker(session), { cosmetics: 910, banners: inBuild("5046157", bannerIds).length - held });
+  // and the rest) and its nine banners, and 8.00's hundred and twenty-three (Season 8's Battle Pass: Blackheart, Hybrid,
+  // Sidewinder, Peely, Ember, Luxe, the Wraps, pets and emotes) and its twenty-two banners.
+  assert.deepEqual(grantFullLocker(session), { cosmetics: 1033, banners: inBuild("5203069", bannerIds).length - held });
   session.commit();
   for (const profileId of ["athena", "profile0"]) createProfileStore(dataDir).save(session.profile(profileId).profile);
 
   session = locker({});
-  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 910);
-  assert.equal(removeFullLocker(session).cosmetics, total + 910 - 6);
+  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 1033);
+  assert.equal(removeFullLocker(session).cosmetics, total + 1033 - 6);
 })));
 
 // Core-Backend #161: the full locker gave Cert's EID_GunShow, a consumable emote no one was given, which 1.11's emote
@@ -351,7 +355,8 @@ test("the admin panel sets an account's Battle Royale season level, with its cha
     assert.deepEqual(set.body.battleRoyale, { level: 30, xp: 0, maxLevel: set.body.battleRoyale.maxLevel, season: 1,
       battlePasses: [{ season: 2, tier: 1, purchased: false, paid: 0 }, { season: 3, tier: 1, purchased: false, paid: 0 },
         { season: 4, tier: 1, purchased: false, paid: 0 }, { season: 5, tier: 1, purchased: false, paid: 0 },
-        { season: 6, tier: 1, purchased: false, paid: 0 }, { season: 7, tier: 1, purchased: false, paid: 0 }] });
+        { season: 6, tier: 1, purchased: false, paid: 0 }, { season: 7, tier: 1, purchased: false, paid: 0 },
+        { season: 8, tier: 1, purchased: false, paid: 0 }] });
     const after = await athena(backend.port, player);
     assert.ok((await revision()) > beforeRvn);
     assert.equal(after.stats.attributes.level, 30);
@@ -400,8 +405,8 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // The builds with Battle Royale, the newest the default (no build a player last played is recorded).
     let listed = await list();
     assert.equal(listed.status, 200);
-    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }, { build: "4395664", version: "6.00.0" }, { build: "4402180", version: "6.00" }, { build: "4417689", version: "6.01.0" }, { build: "4424678", version: "6.01" }, { build: "4442095", version: "6.02.0" }, { build: "4461277", version: "6.02" }, { build: "4464155", version: "6.10.0" }, { build: "4476098", version: "6.10.1" }, { build: "4480234", version: "6.10" }, { build: "4497486", version: "6.20" }, { build: "4526925", version: "6.21" }, { build: "4543176", version: "6.22" }, { build: "4573096", version: "6.30" }, { build: "4573279", version: "6.31" }, { build: "4629139", version: "7.00" }, { build: "4667333", version: "7.10" }, { build: "4727874", version: "7.20" }, { build: "4834550", version: "7.30" }, { build: "5046157", version: "7.40" }]);
-    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["5046157", "7.40", false]);
+    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }, { build: "4395664", version: "6.00.0" }, { build: "4402180", version: "6.00" }, { build: "4417689", version: "6.01.0" }, { build: "4424678", version: "6.01" }, { build: "4442095", version: "6.02.0" }, { build: "4461277", version: "6.02" }, { build: "4464155", version: "6.10.0" }, { build: "4476098", version: "6.10.1" }, { build: "4480234", version: "6.10" }, { build: "4497486", version: "6.20" }, { build: "4526925", version: "6.21" }, { build: "4543176", version: "6.22" }, { build: "4573096", version: "6.30" }, { build: "4573279", version: "6.31" }, { build: "4629139", version: "7.00" }, { build: "4667333", version: "7.10" }, { build: "4727874", version: "7.20" }, { build: "4834550", version: "7.30" }, { build: "5046157", version: "7.40" }, { build: "5203069", version: "8.00" }]);
+    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["5203069", "8.00", false]);
     for (const bad of ["3700114", "3532353", "nope"]) {
       assert.equal((await list(`?build=${bad}`)).status, 400, bad);
       assert.equal((await give({ build: bad, templateIds: ["AthenaPickaxe:halloweenscythe"] })).status, 400, bad);

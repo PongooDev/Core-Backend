@@ -71,8 +71,15 @@ import { currentBattlePassConfig } from "./season1.js";
 // half of the weeks is every player's (Season7_Free_Schedule, SeasonGrantsToEveryone). It is the first with Wraps (six,
 // AthenaItemWrap: profiles/athena.js's ItemWrap slots) and has two pets (Hamirez, Remus). The offers' texts are Core's
 // again, in Season 6's form, from what AthenaSeason7's pass and its first 26 tiers give.
+// Season 8's Battle Pass (8.00, CL-5203069) is AthenaSeason8's the same way: 100 tiers, the BRSeason8 storefront, its own
+// display assets (DA_BR_Season8_BattlePass, DA_BR_Season8_BattlePassWithLevels), its own tier offer (BattlePassLevelOfferID
+// E07E41D52D4A425F8DC6592496B75301), at Epic's prices (Update v8.00's pass, 950 V-Bucks; the bundle 2,800). Its tier 1
+// Battle Pass rewards give Blackheart and Hybrid, the Discovery challenges (Season8_Paid_Schedule's cumulative bundle) and
+// their progressive challenges (_ProgressiveA_), the free half of the weeks is every player's (Season8_Free_Schedule,
+// SeasonGrantsToEveryone), and its tier 100 Luxe (Season8_Shiny_Schedule). The offers' texts are Core's again, in Season
+// 7's form, from what AthenaSeason8's pass and its first 25 tiers give.
 // The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4,
-// .season5, .season6, .season7).
+// .season5, .season6, .season7, .season8).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
@@ -80,7 +87,8 @@ export const bundleTiers = 25;
 export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
 // Each season's default prices: Season 3's, Season 4's, Season 5's, Season 6's and Season 7's are Season 2's.
 export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 },
-  5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 }, 7: { battlePassPrice: 950, bundlePrice: 2800 } };
+  5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 }, 7: { battlePassPrice: 950, bundlePrice: 2800 },
+  8: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -200,13 +208,32 @@ const season7BundleDescription = [
   "  • Exclusive Weekly Challenges", "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to The Ice King at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season8PassDescription = [
+  "Season 8: Feb 28 - May 8", "",
+  "Instantly get these items:",
+  "  • Blackheart Outfit", "  • Hybrid Outfit", "  • 50% Bonus Season Match XP", "  • 10% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • Luxe plus 4 other outfits", "  • Progressive Blackheart and Hybrid challenges", "  • 6 Wraps", "  • 2 Music Tracks",
+  "  • 3 Gliders", "  • 3 Back Blings", "  • 4 Contrails", "  • 8 Loading Screens", "  • 1300 V-Bucks",
+  "  • 120% Bonus Season Match XP", "  • 40% Bonus Season Friend Match XP", "  • Toys, Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season8BundleDescription = [
+  "Season 8: Feb 28 - May 8", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • Blackheart Outfit", "  • Hybrid Outfit", "  • Sidewinder Outfit", "  • Cobra Back Bling", "  • Woodsy Pet",
+  "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges",
+  "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to Luxe at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
   3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
   4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" },
   5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" },
   6: { passOfferId: "core_br_season6_battlepass", pass: season6PassDescription, bundle: season6BundleDescription, bundleAsset: "BattlePassWithLevels" },
-  7: { passOfferId: "core_br_season7_battlepass", pass: season7PassDescription, bundle: season7BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  7: { passOfferId: "core_br_season7_battlepass", pass: season7PassDescription, bundle: season7BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  8: { passOfferId: "core_br_season8_battlepass", pass: season8PassDescription, bundle: season8BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
 // The season's tier offer id: AthenaSeason3's (and AthenaSeason4's, 5's, 6's and 7's) BattlePassLevelOfferID from Season 3, else the modal's.
