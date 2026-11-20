@@ -57,6 +57,7 @@ body:
         - "7.20"
         - "7.30"
         - "7.40"
+        - "8.00"
         - Not about a build (admin panel, launcher sign-in...)
         - Other (say which below)
     validations:
