@@ -2007,6 +2007,7 @@
             <option value="5">Season 5</option>
             <option value="6">Season 6</option>
             <option value="7">Season 7</option>
+            <option value="8">Season 8</option>
           </select>
         </div>
         <a href="#/seasons" data-view="seasons" title="Season Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2182,7 +2183,8 @@
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
       { id: "6", label: "Season 6 (6.00 – 6.31)", from: "6.00+", days: 70 },
-      { id: "7", label: "Season 7 (7.00 – 7.40)", from: "7.00+", days: 84 }
+      { id: "7", label: "Season 7 (7.00 – 7.40)", from: "7.00+", days: 84 },
+      { id: "8", label: "Season 8 (8.00)", from: "8.00+", days: 70 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -8657,7 +8659,7 @@ Each starts active; quests the account already has are left as they are.`, {
         onchange: (e) => { form.mode = e.target.value; customFlagsContainer.style.display = form.mode === "custom" ? "block" : "none"; } },
         ...eventModeOptions.map(([value, text]) => el("option", { value, text, selected: form.mode === value })));
       // A build's season by its changelist (the sidebar's seasons), for the players' line.
-      const seasonFirstCl = { 1: 0, 2: 3807424, 3: 3901517, 4: 4039451, 5: 4204761, 6: 4395664 };
+      const seasonFirstCl = { 1: 0, 2: 3807424, 3: 3901517, 4: 4039451, 5: 4204761, 6: 4395664, 7: 4629139, 8: 5203069 };
       const seasonOfCl = (cl) => Number(Object.entries(seasonFirstCl).filter(([, first]) => cl >= first).at(-1)[0]);
 
       // Section 2: STW Modifiers & Gates Inputs

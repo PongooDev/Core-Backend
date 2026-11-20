@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { get, post, startBackend } from "./helpers.js";
-import { eventCards, eventSchedules, scheduleEventPatch } from "../src/admin/eventschedules.js";
+import { buildsNow, eventCards, eventSchedules, scheduleEventPatch } from "../src/admin/eventschedules.js";
 import { datedEvent } from "../src/events/datedflags.js";
 import { originalRocketLaunch, replayRocketLaunch, rocketLaunchStatus, rocketLaunchTimes, sanitizeRocketLaunch } from "../src/events/rocketlaunch.js";
 import { seasonMoment, withoutSeasonStartRecording } from "../src/store/itemshop.js";
@@ -105,6 +105,18 @@ test("plain-words states: the event mode and the Seasonal Events switch come fir
   assert.ok(eventCards.every((entry) => entry.seasons.length && entry.ranges.length && entry.builds));
 });
 
+test("Season 8's lobby: 8.00's card and flag, and what 8.00's players see", () => {
+  const lobby = eventCards.find((entry) => entry.id === "season8Lobby");
+  assert.deepEqual([lobby.seasons, lobby.builds, lobby.ranges, lobby.flags], [[8], "8.00", [[5203069, 5203069]], ["EventFlag.LobbySeason8"]]);
+  const base = { now: new Date(), config: { mode: "auto" }, seasonalEvents: true, rocket: { mode: "off", phase: "unscheduled" }, dated: { events: [] },
+    season4: { oddities: "off", rifts: [] }, storm: { mode: "dates", percent: 10, inDates: false, builds: {} } };
+  const schedules = eventSchedules(base);
+  const entry = schedules.find((item) => item.id === "season8Lobby");
+  assert.deepEqual([entry.kind, entry.state.tone, entry.state.nowLabel], ["build", "dates", "on"]);
+  assert.equal(buildsNow([{ version: "8.00", cl: 5203069 }], schedules, base.storm)[0].sees, "Season 8 lobby");
+  assert.equal(eventSchedules({ ...base, seasonalEvents: false }).find((item) => item.id === "season8Lobby").state.tone, "off");
+});
+
 test("the Events page's API: the overview's plain words, the one control and what each build's players see now", async () => {
   const backend = await startBackend();
   try {
@@ -115,6 +127,7 @@ test("the Events page's API: the overview's plain words, the one control and wha
     assert.equal(card(overview, "blockbuster2018").state.tone, "dates");
     assert.match(sees(overview, "4.5"), /^Blockbuster/);
     assert.equal(sees(overview, "1.7.2"), "No event: the base game");
+    assert.equal(sees(overview, "8.00"), "Season 8 lobby");
     // The Birthday Challenges as 5.10 ran them: 5.10's players get them, 5.21's don't.
     assert.match(sees(overview, "5.10"), /Birthday Challenges/);
     assert.doesNotMatch(sees(overview, "5.21"), /Birthday Challenges/);

@@ -150,7 +150,12 @@ export const eventCards = [
   { id: "s8Heat", kind: "dated", dated: "s8Heat", seasons: [7], name: "The Wailing Woods drying up", builds: "7.40", ranges: [[5046157, 5046157]],
     key: "heat", endStep: "burnt", startLabel: "The woods start drying", endLabel: "The woods are burnt brown",
     about: "The heat before the volcano: the Wailing Woods' grass browns from 24 February 2019 (the west first) and the forest, the Block and parts of Tomato Temple and Lonely Lodge are all brown by 27 February, to the season's end. A match keeps the colour it started with. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC).",
-    flags: ["HP", "HP1"] }
+    flags: ["HP", "HP1"] },
+  // 8.00's (events/events.js): Season 8's lobby, its only event flag (8.00 has no Save the World seasonal event; its other
+  // new flag, EventFlag.Spring2019, is Save the World's quest map and isn't served).
+  { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00", ranges: [[5203069, 5203069]],
+    about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 carries no Save the World seasonal event flag.",
+    flags: ["EventFlag.LobbySeason8"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
