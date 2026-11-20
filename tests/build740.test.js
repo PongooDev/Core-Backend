@@ -192,7 +192,8 @@ test("7.40's modes: Love Shot, Sword Fight, Catch! and Driftin' on by default, o
   for (const id of ["loveShotSolo", "loveShotSquads", "swordFightSolo", "swordFightDuos", "driftin40", "driftin20s"]) assert.equal(ltmOn(id, v740, defaults), false, `${id}: its switch`);
   for (const id of ["partyAtPleasantPark", "nflRumble", "wildWestDuos730"]) assert.equal(hasLtm(id, v740), false, `${id} is 7.30's`);
   for (const id of ["loveShotDuos", "driftin"]) assert.equal(hasLtm(id, v730), false, `${id} is 7.40's`);
-  for (const id of ["unvaultedSolo", "siphonDuos", "closeEncountersSeason7Solo", "scavengerSolo", "showdownSolo"]) assert.equal(hasLtm(id, v740), true, id);
+  for (const id of ["unvaultedSolo", "siphonDuos", "closeEncountersSeason7Solo", "scavengerSolo", "showdownSolo", "oneShotSquads720"]) assert.equal(hasLtm(id, v740), true, id);
+  assert.equal(ltmOfPlaylist(252, v740).id, "oneShotSquads720", "7.40 keeps 7.20's One Shot playlist");
   assert.equal(ltmOfPlaylist(326, v740).id, "driftin");
   assert.equal(ltmOfPlaylist(346, v740).id, "loveShotDuos");
   assert.deepEqual(playlistTeamsOf(`${v740}:0:NAE:playlist_hover_64`, v740), { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 });

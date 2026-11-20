@@ -186,12 +186,15 @@ test("7.30's event flags: 7.20's own and Frostnite; its paks' only new flag is t
   assert.equal(season4Flag("EventFlag.SupplyDropGift").builds[1], 5046157);
 });
 
-test("7.30's modes: Party at Pleasant Park, NFL Rumble and Wild West Duos on by default, on their dates; 7.20's own stay 7.20's", () => {
+test("7.30's modes: Party at Pleasant Park, NFL Rumble and Wild West Duos on by default, on their dates; 7.20's One Shot runs on, its Ice Storm and Sniper stay 7.20's", () => {
   const defaults = createSettingsStore(null).get();
-  for (const id of ["partyAtPleasantPark", "nflRumble", "wildWestDuos730", "fiftyFiftySeason7", "playgroundV2", "creative", "teamRumble"]) {
+  for (const id of ["partyAtPleasantPark", "nflRumble", "wildWestDuos730", "fiftyFiftySeason7", "playgroundV2", "creative", "teamRumble", "oneShotSquads720"]) {
     assert.equal(ltmOn(id, v730, defaults), true, id);
   }
-  for (const id of ["iceStormSolo", "oneShotSquads720", "sniperShootoutDuos720", "iceStormShowSolo"]) assert.equal(hasLtm(id, v730), false, `${id} is 7.20's`);
+  for (const id of ["iceStormSolo", "sniperShootoutDuos720", "iceStormShowSolo"]) assert.equal(hasLtm(id, v730), false, `${id} is 7.20's`);
+  // 7.30's paks keep 7.20's Playlist_Low_Squads, so One Shot is offered on 7.30 too (Core-Backend #397).
+  assert.equal(hasLtm("oneShotSquads720", v730), true);
+  assert.equal(ltmOfPlaylist(252, v730).id, "oneShotSquads720");
   for (const id of ["partyAtPleasantPark", "nflRumble", "wildWestDuos730"]) assert.equal(hasLtm(id, v720), false, `${id} is 7.30's`);
   for (const id of ["unvaultedSolo", "siphonDuos", "closeEncountersSeason7Solo", "scavengerSolo", "showdownSolo"]) assert.equal(hasLtm(id, v730), true, id);
   assert.equal(ltmOfPlaylist(285, v730).id, "nflRumble");

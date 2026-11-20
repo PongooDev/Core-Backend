@@ -671,8 +671,8 @@ const build720 = 4727874;
 // each by its Original dates: Party at Pleasant Park from 2 February to the encore's end (07:10 UTC on the 3rd; 🟡 the
 // playlist's own hours aren't recorded; Playlist_Music_Highest, the 100-player one, as no source says which of the five Epic ran), NFL Rumble from 3
 // to 5 February and Wild West Duos from 5 to 7 February (🟡 the ends are the next rotation's day, as Content Update v7.30
-// put it; no source gives them). 7.20's own modes stay 7.20's (Update v7.30 vaulted the Ice Legion); 7.00's to 7.20's
-// other modes run to 7.30 with their switches.
+// put it; no source gives them). 7.20's Ice Storm modes stay 7.20's (Update v7.30 vaulted the Ice Legion); 7.20's One
+// Shot, and 7.00's to 7.10's other modes, run to 7.30 with their switches.
 const build730 = 4834550;
 // 7.40 (CL-5046157, Update v7.40, 14 February 2019), Season 7's last. Its Athena/Playlists (every playlist asset of its paks,
 // all but the keyed pakchunk1000, 1001 and 1002) are 7.30's and 21 more: Playlist_Love_Solo, _Duos and _Squads (345 to 347,
@@ -1282,10 +1282,11 @@ export const ltms = [
     teams: "100 Teams × 4", description: "Low gravity, 50 health, sniper rifles only and Bandages the only healing: the 14 Days of Fortnite's day 14 (Playlist_Low_Squads, 7.10's)." },
   // 7.20's (CL-4727874; above): One Shot, the Ice Storm's Solo, Duos and Squads (in place of the default ones while they are
   // on) and Content Update v7.20's Sniper Shootout, on by default, each by its Original dates when those are on; the Ice
-  // Storm's tournament playlists.
-  { id: "oneShotSquads720", name: "One Shot (Squads; 7.20)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build720, build720], seasons: [7],
+  // Storm's tournament playlists. 7.30's paks are 7.20's plus six and 7.40's are 7.30's plus 21, so Playlist_Low_Squads stays
+  // in both: One Shot runs on 7.30 and 7.40 too, by its switch (Core-Backend #397).
+  { id: "oneShotSquads720", name: "One Shot (Squads; 7.20)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build720, build740], seasons: [7],
     advertise: "New", defaultOn: true, original: oneShot720Window,
-    teams: "100 Teams × 4", description: "Low gravity, 50 health, sniper rifles only and Bandages the only healing, the storm's waits much shorter: Update v7.20's limited time mode (Playlist_Low_Squads)." },
+    teams: "100 Teams × 4", description: "Low gravity, 50 health, sniper rifles only and Bandages the only healing, the storm's waits much shorter: Update v7.20's limited time mode (Playlist_Low_Squads, kept by 7.30's and 7.40's paks)." },
   { id: "iceStormSolo", name: "Ice Storm (Solo)", playlistId: 282, playlistName: "Playlist_Deimos_Solo_Winter", eventFlag: null, builds: [build720, build720], seasons: [7],
     advertise: "New", defaultOn: true, original: iceStormWindow, fromIceStorm: true, replaces: "Playlist_DefaultSolo",
     teams: "100 Teams × 1", description: "Battle Royale with the Ice Legion, Ice Fiends and Brutes across the island after the Ice Storm (Playlist_Deimos_Solo_Winter, 7.20's)." },
