@@ -1354,7 +1354,7 @@ export const ltms = [
   { id: "driftin20s", name: "Driftin' 20's", playlistId: 348, playlistName: "Playlist_Hover_48", eventFlag: null, builds: [build740, build740], seasons: [7],
     teams: "2 Teams × 24", description: "Driftin' with two teams of 24 (Playlist_Hover_48, 7.40's)." },
   // 8.00 (CL-5203069, Update v8.00, 28 February 2019), Season 8's first build. Its Athena/Playlists (every playlist asset of
-  // its paks, all but the keyed pakchunk1000, 1001 and 1002) are 7.40's less Gun Game's Playlist_Gungame_Solo and _Reverse
+  // its paks, all but the keyed pakchunk1000 and 1002; 1001's key is in the keychain) are 7.40's less Gun Game's Playlist_Gungame_Solo and _Reverse
   // (999, 1000) and Playlist_Playground16 (35): no mode is new in its paks. Its shipped DefaultGame.ini's lobby is the
   // default Solo, Duo and Squad, Playlist_50v50, Playlist_Playground (AdvertiseType Updated), Playlist_PlaygroundV2
   // (bDisplayAsNew) and Playlist_Creative_TDM_v1, so 50v50, Playground and Creative are on as 7.00's were and no other mode
