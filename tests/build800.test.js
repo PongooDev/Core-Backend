@@ -7,7 +7,7 @@ import { battlePassOffers } from "../src/battlepass/season2.js";
 import { allowedBuildList } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
-import { configureEvents } from "../src/events/events.js";
+import { activeEventFlags, configureEvents } from "../src/events/events.js";
 import { hasLtm, ltmFrontEndPlaylists, ltmOn, ltms } from "../src/events/ltms.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
@@ -172,6 +172,12 @@ test("Season 8's LTMs: 8.00's lobby, Close Encounters, Team Rumble and Buccaneer
     for (const name of ["Playlist_50v50", "Playlist_Playground", "Playlist_PlaygroundV2", "Playlist_Respawn_24"]) assert.ok(frontEnd.includes(name), name);
     assert.equal(frontEnd.includes("Playlist_Gungame_Solo"), false);
   });
+});
+
+test("8.00's lobby: the Season 8 background flag, which 7.40 doesn't serve", () => {
+  assert.ok(activeEventFlags(v800).includes("EventFlag.LobbySeason8"));
+  assert.equal(activeEventFlags(v740).includes("EventFlag.LobbySeason8"), false);
+  assert.ok(activeEventFlags(v740).includes("EventFlag.LobbySeason7"));
 });
 
 test("8.00's Party Assist pins and clears athena's party_assist_quest", async () => {

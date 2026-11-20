@@ -505,6 +505,16 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // v7.40 ends none of them); the 14 Days of Fortnite, the Ice Storm Challenges and the Showtime Challenges are its switches
 // only. Its map's other events are plain calendar names (below): the Block's slab1 and slab2, the earthquakes' EQ, EQ2
 // and EQH and the Wailing Woods' heat, HP and HP1 (events/s8leadup.js).
+//
+// 8.00 (CL-5203069, Update v8.00, 28 February 2019), Season 8's first. Every EventFlag.* in its paks (the same byte
+// scan, the 498,353 files its paks mount; pakchunk1000's and 1002's keys aren't in the keychain): 7.40's and two more,
+// EventFlag.LobbySeason8 (Items/Events/Shared/LobbyBG_Season8, the lobby background takeover that puts the frontend
+// lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all) and
+// EventFlag.Spring2019 (Save the World's Spring 2019 quest map: QuestMap2's Spring2019QuestMap). 8.00 serves
+// LobbySeason8 and nothing of 7.40's season: the Season 7 lobby, the Season 7 Warmup's alerts, Frostnite, the 14 Days
+// of Fortnite, the Ice Storm and Showtime Challenges and the Overtime Challenges all end with 7.40 (their flags are
+// still cooked into 8.00's paks, unused). Its map's plain calendar names are 7.40's (the Block's slabs, the
+// earthquakes' EQ, EQ2 and EQH, the Wailing Woods' HP and HP1).
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
@@ -520,6 +530,7 @@ export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
 export const lobbySeason6 = "EventFlag.LobbySeason6";
 export const lobbySeason7 = "EventFlag.LobbySeason7";
+export const lobbySeason8 = "EventFlag.LobbySeason8";
 // 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
 export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
@@ -650,6 +661,7 @@ const build710 = 4667333;
 const build720 = 4727874;
 const build730 = 4834550;
 const build740 = 5046157;
+const build800 = 5203069;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -702,6 +714,8 @@ const events = [
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
   // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's to 7.40's too, and their Frostnite.
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
+  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8).
+  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build800 },
   { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build740 },
   { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build740 },
   { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build740 },
