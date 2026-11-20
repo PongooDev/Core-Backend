@@ -188,10 +188,12 @@ test("8.00's Party Assist pins and clears athena's party_assist_quest", async ()
     }, JSON.stringify(body));
     const attributes = async () => (await command("QueryProfile", "athena", {})).body.profileChanges[0].profile.stats.attributes;
     assert.equal((await attributes()).party_assist_quest, "", "none pinned yet");
-    const pinned = await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: "Quest:s8_week_001" });
+    // The client pins the athena quest item's id (an items key), not its "Quest:<template>" templateId.
+    const questItemId = "5b0c6f2a-3e5d-4c8f-9a71-2d4b6e8c1f30";
+    const pinned = await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: questItemId });
     assert.equal(pinned.status, 200);
-    assert.equal(pinned.body.profileChanges[0].profile.stats.attributes.party_assist_quest, "Quest:s8_week_001");
-    assert.equal((await attributes()).party_assist_quest, "Quest:s8_week_001");
+    assert.equal(pinned.body.profileChanges[0].profile.stats.attributes.party_assist_quest, questItemId);
+    assert.equal((await attributes()).party_assist_quest, questItemId);
     await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: "" });
     assert.equal((await attributes()).party_assist_quest, "");
   } finally {
