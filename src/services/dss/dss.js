@@ -106,6 +106,19 @@ function writeAtomic(file, data) {
 // (<file>.prev). Shared with the admin panel's island tools (admin/creative.js).
 export const islandInfoFile = (dataDir, island) => `${islandFileOf(dataDir, island)}.json`;
 export const islandPreviousFile = (dataDir, island) => `${islandFileOf(dataDir, island)}.prev`;
+// The island's last real save: its file, or the version before its last write when an older backend let a 0-byte
+// upload replace the file (Core-Backend #395). Null when neither has bytes.
+export function readIslandSave(dataDir, island) {
+  for (const file of [islandFileOf(dataDir, island), islandPreviousFile(dataDir, island)]) {
+    try {
+      const data = fs.readFileSync(file);
+      if (data.length) return data;
+    } catch {
+      // Try the previous version.
+    }
+  }
+  return null;
+}
 export function readIslandInfo(dataDir, island) {
   try {
     return JSON.parse(fs.readFileSync(islandInfoFile(dataDir, island), "utf8"));
@@ -203,8 +216,11 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
   }
 
   const sendFile = (res, island, info) => {
-    for (const [key, value] of Object.entries(info.meta ?? {})) res.set(`X-Epic-Meta-${key}`, value);
-    res.type("application/octet-stream").send(fs.readFileSync(fileOf(island)));
+    // A 0-byte current file is an old empty upload; serve the version before it (Core-Backend #395).
+    const currentSize = fs.existsSync(fileOf(island)) ? fs.statSync(fileOf(island)).size : 0;
+    const meta = currentSize ? info.meta ?? {} : info.previousMeta ?? {};
+    for (const [key, value] of Object.entries(meta)) res.set(`X-Epic-Meta-${key}`, value);
+    res.type("application/octet-stream").send(readIslandSave(dataDir, island) ?? Buffer.alloc(0));
   };
 
   const store = (island, info, data, meta, build = currentBuild()) => storeIsland(dataDir, island, info, data, meta, build);
@@ -242,6 +258,16 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
     if (!autolock && !held) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
     if (autolock && !island.checkpoint && lockFresh(info.lock)) return dssError(res, 409, "file_checked_out", `${dssApp}/${filePath} is checked out by ${info.lock.pid}`, [dssApp, filePath]);
     const data = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    // An empty body isn't an island: the 7.40 client sends one after a real save, and writing it over the save left
+    // the island with a 0-byte file that could no longer be published or exported (Core-Backend #395). Keep the save,
+    // and end or refresh the lock as any other upload does.
+    if (!data.length) {
+      if (autolock) delete info.lock;
+      else if (info.lock) info.lock.at = Date.now();
+      saveInfo(island, info);
+      log("DSS", `${island.owner}'s island ${island.plotItemId} ignored an empty upload${autolock ? ", autolock" : ""}`);
+      return res.status(204).end();
+    }
     store(island, info, data, metaOf(req));
     // An autolock upload over a checkout nobody has used for lockIdleMs ends it.
     if (autolock) delete info.lock;

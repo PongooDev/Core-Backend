@@ -69,7 +69,11 @@ test("codes, paths and the link's shape", () => {
 test("a creator's server publishes their island; its code, its file, its author's list, favorites and the featured rifts follow", async () => {
   const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(20) } } });
   try {
-    const { player, plotItemId, server } = await savedIsland(backend, "IslandCreator", "the creator's island");
+    const { player, plotItemId, server, file, raw } = await savedIsland(backend, "IslandCreator", "the creator's island");
+    // The 7.40 client's empty save after a real one must not replace the island (#395): publishing below uses the
+    // real save, not a 0-byte file.
+    assert.equal((await raw("PUT", `${file}?autolock=false`, Buffer.alloc(0))).status, 204);
+    assert.equal((await raw("GET", file)).body, "the creator's island");
     const create = (token, metadata) => json(backend.port, token, "POST", `/links/api/fn/author/${player.accountId}`,
       { linkType: "Creative:Island", metadata: { title: "Edit Course", tagline: "Practice edits", locale: "en", islandType: "CreativePlot:temperate_medium",
         _sourcePath: `islands/personal/${player.accountId}/${plotItemId}.island`, ...metadata } });
@@ -137,6 +141,28 @@ test("a creator's server publishes their island; its code, its file, its author'
     assert.equal((await as(backend.port, other.token, "GET", `/links/api/fn/mnemonic/${code}`)).status, 404);
     assert.deepEqual((await admin(backend, "/creative")).body.featured, []);
     assert.equal(fs.existsSync(path.join(backend.dataDir, "creative", "public", player.accountId, code)), false);
+  } finally {
+    await backend.close();
+  }
+});
+
+test("an island left with a 0-byte save by an older backend exports and publishes its previous save (#395)", async () => {
+  const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(20) } } });
+  try {
+    const { player, plotItemId, server } = await savedIsland(backend, "IslandRepair", "the real island");
+    const file = path.join(backend.dataDir, "accounts", player.accountId, "creative", "islands", `${plotItemId}.island`);
+    // What the old DSS left behind after the 7.40 client's empty PUT: a 0-byte file and the real save in .prev.
+    fs.writeFileSync(`${file}.prev`, "the real island");
+    fs.writeFileSync(file, Buffer.alloc(0));
+    const exported = await as(backend.port, player.token, "GET", `/core/api/creative/islands/${plotItemId}/export`);
+    assert.equal(exported.status, 200, JSON.stringify(exported.body));
+    assert.equal(exported.body.save.size, "the real island".length);
+    assert.equal((await admin(backend, "/creators", { account: "IslandRepair", code: "RepairKing" })).status, 200);
+    const made = await json(backend.port, server, "POST", `/links/api/fn/author/${player.accountId}`,
+      { linkType: "Creative:Island", metadata: { title: "Repair Test", islandType: "CreativePlot:temperate_medium",
+        _sourcePath: `islands/personal/${player.accountId}/${plotItemId}.island` } });
+    assert.equal(made.status, 200, JSON.stringify(made.body));
+    assert.equal((await as(backend.port, server, "GET", `/api/dss/v1/creative/${made.body.metadata._filePath}`)).body, "the real island");
   } finally {
     await backend.close();
   }

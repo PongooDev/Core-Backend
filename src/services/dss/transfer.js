@@ -10,7 +10,7 @@ import { creativeProfileBuild } from "../../profiles/ids.js";
 import { openSession } from "../../profiles/session.js";
 import { maxTagline, maxTitle } from "../links/islands.js";
 import { creativeChangelist, islandFileOf, islandFolder, islandInfoFile, islandPreviousFile, lockIdleMs, maxIslandBytes, readIslandInfo,
-  saveIslandInfo, storeIsland } from "./dss.js";
+  readIslandSave, saveIslandInfo, storeIsland } from "./dss.js";
 
 // 🟡 Core's own: a player's Creative island as one portable file, to take it from one Core backend to another
 // (Core-Launcher #21). Islands on the same backend are shared with island codes (services/links/islands.js); a file moves
@@ -153,7 +153,9 @@ export function exportIsland(context, account, plotItemId) {
   const state = islandState(context, account.id, plotItemId, item);
   const name = typeName(type, item.attributes?.islandIndex);
   if (!state.saved) throw refuse(404, "island_not_saved", `${name} has never been saved: build on it in game first, then export it`);
-  const save = fs.readFileSync(islandFileOf(dataDir, state.island));
+  // A 0-byte current file is an old empty upload; export the version before it (Core-Backend #395).
+  const save = readIslandSave(dataDir, state.island);
+  if (!save) throw refuse(404, "island_not_saved", `${name} has never been saved: build on it in game first, then export it`);
   const source = sourceBuildOf(state.info, account, type);
   const compressed = zlib.gzipSync(save, { level: 9 });
   const document = {

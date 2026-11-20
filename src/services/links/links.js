@@ -7,6 +7,7 @@ import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { plotItem } from "../../profiles/creative.js";
 import { enabledCreators } from "../../store/creators.js";
+import { readIslandSave } from "../dss/dss.js";
 import { islandLinkType, linkJson, maxTagline, maxTitle, normalizeMnemonic } from "./islands.js";
 
 // The links service (OnlineSubsystemMcp.OnlineLinksServiceMcp: ServiceName "links", Namespace fn, Prod's
@@ -72,15 +73,15 @@ export function linksRoutes({ tokens, settings, profiles, islandLinks, dataDir }
     const owner = source?.[1]?.toLowerCase();
     const plot = owner === accountId && profiles?.exists?.(owner, "creative") ? plotItem(profiles.load(owner, "creative"), source[2]) : null;
     if (!plot) return sendError(res, 400, "errors.com.epicgames.links.invalid_source", "The island to publish isn't one of the author's");
-    const file = path.join(dataDir, "accounts", owner, "creative", "islands", `${source[2]}.island`);
-    if (!fs.existsSync(file)) return sendError(res, 404, "errors.com.epicgames.links.island_not_saved", "The island has no save to publish yet");
+    const contents = readIslandSave(dataDir, { owner, plotItemId: source[2] });
+    if (!contents) return sendError(res, 404, "errors.com.epicgames.links.island_not_saved", "The island has no save to publish yet");
     const title = String(metadata.title ?? "").trim();
     if (title.length < 3 || title.length > maxTitle) {
       return sendError(res, 400, "errors.com.epicgames.validation.validation_failed", `An island's title is 3 to ${maxTitle} characters`);
     }
     const link = islandLinks.publish({
       accountId, creatorName: publisher.code, plotItemId: source[2], islandType: String(metadata.islandType || plot.templateId),
-      title, tagline: String(metadata.tagline ?? "").slice(0, maxTagline), locale: String(metadata.locale ?? ""), contents: fs.readFileSync(file)
+      title, tagline: String(metadata.tagline ?? "").slice(0, maxTagline), locale: String(metadata.locale ?? ""), contents
     });
     res.json(linkJson(link));
   });
