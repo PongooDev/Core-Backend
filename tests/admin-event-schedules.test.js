@@ -75,6 +75,10 @@ test("one control per event: Off, Epic's dates, Custom start and end, Start now"
   // A one-step event's start and end are its own.
   const stakes = scheduleEventPatch({ event: "highStakes", mode: "custom", startAt: "2026-11-15T10:00:00Z", endAt: "2026-11-16T10:00:00Z" }, {}, now).patch.datedFlags.highStakes.schedule;
   assert.deepEqual(stakes, [{ step: "challenges", startAt: "2026-11-15T10:00:00.000Z", endAt: "2026-11-16T10:00:00.000Z" }]);
+  // The Overtime Challenges end with Season 7 (28 February 2019): their end picker is a real end, not a start-only event.
+  const overtime = scheduleEventPatch({ event: "overtime", mode: "custom", startAt: "2026-11-20T00:00:00Z", endAt: "2026-11-27T00:00:00Z" }, {}, now).patch.datedFlags.overtime;
+  assert.equal(overtime.mode, "custom");
+  assert.deepEqual(overtime.schedule, [{ step: "challenges", startAt: "2026-11-20T00:00:00.000Z", endAt: "2026-11-27T00:00:00.000Z" }]);
   // The rifts: the first forming at the start, the last object going at the end, eight spacings on.
   const rifts = scheduleEventPatch({ event: "oddities", mode: "custom", startAt: "2026-11-14T00:00:00Z", endAt: "2026-11-15T00:00:00Z" }, {}, now).patch.season4Flags;
   assert.equal(rifts.oddities, "custom");

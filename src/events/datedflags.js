@@ -338,7 +338,7 @@ export const datedEvents = [
   // 7.40's Overtime Challenges (events/overtime.js): one step, the challenges' flag and the bundle's calendar event.
   { id: "overtime", name: "the Overtime Challenges (7.40)", season: 7, flag: lteS7Overtime, anchor: "challenges", parts: 1,
     challenges: "Season7_OT_Schedule", steps: [
-      step("challenges", "The Overtime Challenges", [lteS7Overtime, overtimeCalendarEvent], overtimeChallengesAt, null)
+      step("challenges", "The Overtime Challenges", [lteS7Overtime, overtimeCalendarEvent], overtimeChallengesAt, season7EndDay)
     ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [
