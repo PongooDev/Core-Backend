@@ -418,10 +418,6 @@ export function shopDay(now = new Date(), overrideConfig = null, season = season
   const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
   const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
   const days = Math.floor((adjustedTime - firstDay) / dayMs);
-  // A season with no recorded history has no recorded day; its own day, with nothing on it.
-  if (!history.length) {
-    return { date: new Date(firstDay + Math.max(0, days) * dayMs).toISOString().slice(0, 10), featured: [], daily: [] };
-  }
   return history[((days % history.length) + history.length) % history.length];
 }
 
@@ -445,14 +441,14 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season =
   const dayNumber = Math.floor((now.getTime() - rotationMs) / dayMs);
   const dayStart = (day) => new Date(day * dayMs + rotationMs);
 
-  const { days: history } = historyOf(season);
-  // Away from history mode, and for a season with no recorded history (always the random shop): the end of the period
-  // the featured pair is seeded by.
-  if (config.mode === "custom" || config.mode === "random" || !history.length) {
+  // Away from history mode: the end of the period the featured pair is seeded by.
+  if (config.mode === "custom" || config.mode === "random") {
     const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
     const weekNumber = Math.floor((dayNumber + 4) / weeklyDays);
     return dayStart((weekNumber + 1) * weeklyDays - 4);
   }
+
+  const { days: history } = historyOf(season);
   const today = featuredOf(shopDay(now, config, season));
   for (let days = 1; days < history.length; days++) {
     if (featuredOf(shopDay(dayStart(dayNumber + days), config, season)) !== today) return dayStart(dayNumber + days);
@@ -479,13 +475,6 @@ export function seasonEnd(now = new Date(), overrideConfig = null, season = seas
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
   const { days: history } = historyOf(season);
   const firstDay = seasonStart(season, now, config);
-  // A season with no recorded history replays its own length, one day, so its countdown runs to the end of the cycle it is
-  // in, as the seasons with a history do.
-  if (!history.length) {
-    const cycle = cycleOf(season);
-    const cycles = Math.floor((now.getTime() - rotationMs - firstDay) / cycle);
-    return new Date(firstDay + (Math.max(0, cycles) + 1) * cycle + rotationMs);
-  }
   const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
   const cycle = Math.floor(days / history.length);
   return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);
@@ -746,11 +735,6 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
 
   // 2.2's Battle Pass tier sale, on its days (battlepass/season2.js).
   const day = shopDay(now, config);
-  // A season with no recorded history has no day to replay: its own cosmetics, the random shop's.
-  if (!historyOf(seasonOfBuild()).days.length) {
-    const random = generateRandomShop(now, config);
-    return { BRWeeklyStorefront: toOffers(random.featured, true), BRDailyStorefront: toOffers(random.daily) };
-  }
   const sale = starSaleOffer(day.date);
   return {
     BRWeeklyStorefront: [...toOffers(day.featured, true), ...(sale ? [sale] : [])],
