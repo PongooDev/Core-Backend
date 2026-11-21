@@ -207,10 +207,21 @@ test("8.00's Party Assist pins and clears athena's party_assist_quest", async ()
       headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-8.00-CL-5203069",
         Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
     }, JSON.stringify(body));
-    const attributes = async () => (await command("QueryProfile", "athena", {})).body.profileChanges[0].profile.stats.attributes;
+    const athena = async () => (await command("QueryProfile", "athena", {})).body.profileChanges[0].profile;
+    const attributes = async () => (await athena()).stats.attributes;
     assert.equal((await attributes()).party_assist_quest, "", "none pinned yet");
     // The client pins the athena quest item's id (an items key), not its "Quest:<template>" templateId.
-    const questItemId = "5b0c6f2a-3e5d-4c8f-9a71-2d4b6e8c1f30";
+    await command("ClientQuestLogin", "athena", {});
+    const items = (await athena()).items;
+    const questItemId = Object.keys(items).find((id) => items[id].templateId.startsWith("Quest:"));
+    const otherItemId = Object.keys(items).find((id) => !items[id].templateId.startsWith("Quest:"));
+    assert.ok(questItemId, "week 1's quests");
+    // Anything else (an unknown id, another item, a templateId) is refused and pins nothing.
+    for (const id of ["5b0c6f2a-3e5d-4c8f-9a71-2d4b6e8c1f30", otherItemId, items[questItemId].templateId]) {
+      const refused = await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: id });
+      assert.equal(refused.body.errorCode, "errors.com.epicgames.fortnite.item_not_found", id);
+    }
+    assert.equal((await attributes()).party_assist_quest, "");
     const pinned = await command("SetPartyAssistQuest", "athena", { questToPinAsPartyAssist: questItemId });
     assert.equal(pinned.status, 200);
     assert.equal(pinned.body.profileChanges[0].profile.stats.attributes.party_assist_quest, questItemId);
