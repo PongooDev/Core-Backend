@@ -16,6 +16,7 @@ import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { send, startBackend, userLogin } from "./helpers.js";
+import { storefronts } from "../src/store/catalog.js";
 import { hasGifting } from "../src/store/gifting.js";
 import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 
@@ -321,4 +322,54 @@ test("7.40 is unchanged by 8.00: its own data, Season 7's pass, no Season 8 chal
   const season = inBuild(v740, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront], [7, "BRSeason7"]);
   assert.deepEqual(season.challengeSchedulesAlwaysShown, ["season7_free_schedule", "season7_paid_schedule"]);
+});
+
+// Core-Backend #403: 8.00 finishes a V-Bucks purchase from the receipts service, verifying each receipt not yet in
+// in_app_purchases.receipts.
+test("8.00's V-Bucks purchase: the receipts service lists it, VerifyRealMoneyPurchase records it once", async () => {
+  const backend = await startBackend();
+  const agent = (cl) => `Fortnite/++Fortnite+Release-x-CL-${cl} Windows/10.0.19041.1.256.64bit`;
+  const as = (path, token, cl, method = "GET", body) => send({ host: "127.0.0.1", port: backend.port, method, path,
+    headers: { "User-Agent": agent(cl), ...(token ? { Authorization: `bearer ${token}` } : {}),
+      ...(body ? { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(JSON.stringify(body)) } : {}) } },
+  body ? JSON.stringify(body) : undefined);
+  try {
+    const player = await userLogin(backend.port, "XrayBuyer");
+    const catalog = (await as("/fortnite/api/storefront/v2/catalog", player.token, v800)).body;
+    const appStoreId = catalog.storefronts.find(({ name }) => name === "CurrencyStorefront").catalogEntries[0].appStoreId[1];
+    const page = await as(`/purchase?showNavigation=true&namespace=fn&offers=${appStoreId}`, undefined, v800);
+    const purchaseId = /name="purchaseId" value="([^"]+)"/.exec(page.body)[1];
+    const form = `purchaseId=${encodeURIComponent(purchaseId)}`;
+    const done = await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/purchase/complete",
+      headers: { "Content-Type": "application/x-www-form-urlencoded", "Content-Length": Buffer.byteLength(form), Origin: `http://127.0.0.1:${backend.port}` } }, form);
+    const receiptId = done.body.receipt.TransactionId;
+    const profile = async () => (await as(`/fortnite/api/game/v2/profile/${player.accountId}/client/QueryProfile?profileId=common_core&rvn=-1`,
+      player.token, v800, "POST", {})).body.profileChanges[0].profile.stats.attributes.in_app_purchases;
+    assert.deepEqual((await profile()).receipts, []);
+    assert.deepEqual((await profile()).fulfillmentCounts, { core_mtx_1000: 1 });
+
+    const receipts = (cl) => as(`/fortnite/api/receipts/v1/account/${player.accountId}/receipts`, player.token, cl).then((r) => r.body);
+    assert.deepEqual(await receipts(v800), [{ appStore: "EpicPurchasingService", appStoreId, receiptId, receiptInfo: receiptId }]);
+    assert.equal((await receipts(v740)).length, 1);
+    assert.deepEqual(await receipts("4573279"), []);
+
+    const verify = (id) => as(`/fortnite/api/game/v2/profile/${player.accountId}/client/VerifyRealMoneyPurchase?profileId=common_core&rvn=-1`,
+      player.token, v800, "POST", { appStore: "EpicPurchasingService", appStoreId, receiptId: id, receiptInfo: id });
+    assert.equal((await verify("made-up")).status, 200);
+    assert.deepEqual((await profile()).receipts, []);
+    assert.equal((await verify(receiptId)).status, 200);
+    await verify(receiptId);
+    assert.deepEqual((await profile()).receipts, [`EPIC:${receiptId}`]);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #404: from 7.10 the Loot tab's LOOT page reads CardPackStoreGameplay.
+test("the llama offers are on CardPackStoreGameplay from 7.10, and only CardPackStore before", () => {
+  const names = (cl) => inBuild(cl, () => storefronts(null)).map(({ name }) => name);
+  const offers = (cl, name) => inBuild(cl, () => storefronts(null)).find((front) => front.name === name)?.catalogEntries.map(({ offerId }) => offerId);
+  for (const cl of [v800, v740, "4667333"]) assert.deepEqual(offers(cl, "CardPackStoreGameplay"), offers(cl, "CardPackStore"), cl);
+  assert.ok(offers(v800, "CardPackStoreGameplay").includes("core_cardpack_bronze"));
+  assert.ok(!names("4629139").includes("CardPackStoreGameplay"));
 });

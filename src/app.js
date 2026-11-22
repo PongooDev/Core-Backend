@@ -18,6 +18,7 @@ import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
+import { createReceiptStore } from "./store/receipts.js";
 import { botsOn, createTournamentStore } from "./tournaments/store.js";
 import { botModeFor, matchBots } from "./matchmaking/botmodes.js";
 import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
@@ -158,6 +159,7 @@ export function createContext(config) {
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     purchaseCodes: createPurchaseCodeStore(config.dataDir),
+    receipts: createReceiptStore(config.dataDir),
     // Support-A-Creator's payouts (Core-Backend #349).
     creatorPayouts: createCreatorPayoutStore(config.dataDir),
     // Published Creative islands and their codes (services/links/islands.js, PongooDev/CoreV2#488).

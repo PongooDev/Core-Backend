@@ -243,6 +243,14 @@ function offerJson(offer, sortPriority) {
   };
 }
 
+// From 7.10 (UFortLlamaStoreBase) the Loot tab's LOOT page is LlamaStoreRoot, whose StorefrontNames are
+// ["CardPackStoreGameplay"] (7.30's, 7.40's and 8.00's paks); StoreRoot, which reads CardPackStore, is a hidden tab
+// there. Its offers are grouped by category: up to five uncategorized, one "Shared" and one "Upgrade". The X-RAY page
+// (PrerolledLlamaStoreRoot, "CardPackStorePreroll") is shown only while the ShowPrerollLlamas feature is on, which Core
+// doesn't turn on (Core-Backend #404).
+const llamaStoreBuild = 4667333;
+const llamaStorefront = "CardPackStoreGameplay";
+
 const holds = (profile, templateId) => Object.values(profile?.items ?? {})
   .some((item) => item.templateId.toLowerCase() === templateId.toLowerCase() && item.quantity > 0);
 
@@ -266,9 +274,11 @@ export function storefronts(profile, now = new Date(), { athena, accountId, vbuc
   const currency = { name: currencyStorefront, catalogEntries: (vbuckPacks ? currencyOffers(accountId, profile) : []).map((offer, index) => offerJson(offer, -index)) };
   // 5.0's Founder's Packs sale (store/currency.js), bought through the same purchase flow.
   const founders = { name: foundersStorefront, catalogEntries: (vbuckPacks ? foundersOffers(accountId, profile) : []).map((offer, index) => offerJson(offer, -index)) };
+  const cardPacks = shown.map((offer, index) => offerJson(offer, -index));
   return [
-    { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
+    { name: "CardPackStore", catalogEntries: cardPacks },
     { name: "CardPackStorePromo", catalogEntries: [] },
+    ...(Number(currentBuild()) >= llamaStoreBuild ? [{ name: llamaStorefront, catalogEntries: cardPacks }] : []),
     ...[...itemShop, seasonShop, ...eventStore, ...battlePass, founders, currency].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }

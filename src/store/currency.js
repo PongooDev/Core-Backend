@@ -333,12 +333,12 @@ export function catalogServiceOffer(appStoreId, { offer }) {
   };
 }
 
-// Gives the account the offer's grants, recording the purchase in profile0's in_app_purchases (Epic's: receipts and
-// how many times each offer was fulfilled). Returns what was granted. The purchase page names no build: the offer's data
+// Gives the account the offer's grants, counting the purchase in profile0's in_app_purchases.fulfillmentCounts. Its
+// receipt goes in in_app_purchases.receipts only when the client verifies it (VerifyRealMoneyPurchase, Core-Backend #403). Returns what was granted. The purchase page names no build: the offer's data
 // builds leave the profiles' season as it is (builds/context.js onTheServer).
-export const grantRealMoneyOffer = (session, offer, transactionId) => onTheServer(() => giveRealMoneyOffer(session, offer, transactionId));
+export const grantRealMoneyOffer = (session, offer) => onTheServer(() => giveRealMoneyOffer(session, offer));
 
-function giveRealMoneyOffer(session, offer, transactionId) {
+function giveRealMoneyOffer(session, offer) {
   const granted = offer.grants.flatMap(({ templateId, quantity }) => grantItem(session, templateId, quantity));
   // A founder's pack raises the account's edition, with 5.0's founders quests.
   if (offer.foundersEdition) {
@@ -360,7 +360,7 @@ function giveRealMoneyOffer(session, offer, transactionId) {
   const fulfillmentCounts = { ...(current.fulfillmentCounts ?? {}) };
   fulfillmentCounts[offer.offerId] = (fulfillmentCounts[offer.offerId] ?? 0) + 1;
   tracker.setStat("in_app_purchases", {
-    receipts: [...(current.receipts ?? []), `EPIC:${transactionId}`],
+    receipts: current.receipts ?? [],
     ignoredReceipts: current.ignoredReceipts ?? [],
     fulfillmentCounts
   });

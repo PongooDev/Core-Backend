@@ -360,16 +360,18 @@ ${purchase}
     const session = openSession(profiles, entry.accountId);
     let granted;
     try {
-      granted = grantRealMoneyOffer(session, parsed.offer, transactionId);
+      granted = grantRealMoneyOffer(session, parsed.offer);
       session.commit();
     } catch (error) {
       if (claimed) context.purchaseCodes.release(claimed, entry.accountId);
       throw error;
     }
+    context.receipts?.add(entry.accountId, { appStore: "EpicPurchasingService", appStoreId: entry.appStoreId, receiptId: transactionId,
+      receiptInfo: transactionId });
     notifyProfiles(context, session);
     log("Store", `${entry.accountId} bought ${parsed.offer.offerId}${claimed ? ` with a code (${claimed})` : ""} (${granted.map(({ templateId, quantity }) => `${quantity} ${templateId}`).join(", ")}), transaction ${transactionId}`);
     // The purchase flow's receipt (FPurchaseFlowReceiptParam): the client checks it out and sends it to MCP
-    // (VerifyRealMoneyPurchase), which has nothing left to give.
+    // (VerifyRealMoneyPurchase), which records it in the profile.
     res.set("Cache-Control", "no-store").json({
       receipt: {
         TransactionState: "Purchased",
