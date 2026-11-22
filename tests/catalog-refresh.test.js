@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { clientToken, send, startBackend, userLogin } from "./helpers.js";
 import { keychain } from "../src/services/fortnite/storefront.js";
 
@@ -90,4 +91,14 @@ test("5.21 downloads its asset keychain at login: LawinServer's keys, each as th
   } finally {
     backend.close();
   }
+});
+
+test("8.20's pakchunk1000 gets the one keychain key that opens it, and no GUID is served twice", () => {
+  // The client crashed at login on the first of the two keys LawinServer's list had for 8.20's pakchunk1000 (GUID
+  // 0F810ABB...); the Bandage Ninja glider's entry is the one that matches the pak's index hash.
+  const published = JSON.parse(fs.readFileSync(new URL("../src/store/keychain.json", import.meta.url), "utf8"));
+  const guids = keychain.map((entry) => entry.split(":")[0].toUpperCase());
+  assert.equal(new Set(guids).size, guids.length);
+  const bandageNinja = published.find((entry) => entry.endsWith(":Glider_ID_133_BandageNinja")).split(":").slice(0, 2).join(":");
+  assert.deepEqual(keychain.filter((entry) => entry.startsWith("0F810ABB0DB8672A438B14169C048145:")), [bandageNinja]);
 });

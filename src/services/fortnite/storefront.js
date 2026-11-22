@@ -16,12 +16,19 @@ const refreshIntervalHrs = 24;
 // (store/keychain.json, from Lawin0129/LawinServer responses/keychain.json). Entries are "<pak guid>:<base64 key>", later
 // ones with ":<item id>" after. 5.21's handler (UFortMcpProfileCommonCore::OnNewDataEncryptionKeyAdded) takes exactly two
 // parts and only logs the rest as bad strings, so each entry goes out as its GUID and key alone; a malformed one is left out.
+// The client mounts a deferred pak as soon as its GUID's first key arrives, and a wrong key is fatal ("Corrupted index in
+// pak file (CRC mismatch)"): LawinServer's list had a second, wrong key for 8.20's pakchunk1000 (0F810ABB..., removed from
+// store/keychain.json after checking both against the pak's index hash). A GUID still listed with two different keys is
+// left out, so its pak stays unmounted instead of crashing the client.
 const keychainEntry = /^([0-9A-Fa-f]{32}):([A-Za-z0-9+/]{43}=)(?::.*)?$/;
-export const keychain = [...new Set(JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),
-  "../../store/keychain.json"), "utf8"))
-  .map((entry) => keychainEntry.exec(entry))
-  .filter(Boolean)
-  .map(([, guid, key]) => `${guid}:${key}`))];
+const keychainKeys = new Map();
+for (const [, guid, key] of JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),
+  "../../store/keychain.json"), "utf8")).map((entry) => keychainEntry.exec(entry)).filter(Boolean)) {
+  const keys = keychainKeys.get(guid.toUpperCase()) ?? keychainKeys.set(guid.toUpperCase(), new Map()).get(guid.toUpperCase());
+  if (!keys.has(key)) keys.set(key, guid);
+}
+export const keychain = [...keychainKeys.values()].filter((keys) => keys.size === 1)
+  .map((keys) => { const [[key, guid]] = keys; return `${guid}:${key}`; });
 
 export function storefrontRoutes({ tokens, profiles, settings }) {
   const router = express.Router();
