@@ -112,7 +112,7 @@ test("the Events page's two cards: always on, Start now lands the Block now, a c
   assert.equal(cards.find(({ id }) => id === "season7Warmup2018").state.tone, "off");
 });
 
-test("a 7.00, a 7.10, a 7.20, a 7.30 and a 7.40 gameserver's calendar timeline carries the Block's names", async () => {
+test("a 7.00, a 7.10, a 7.20, a 7.30, a 7.40 and an 8.00 gameserver's calendar timeline carries the Block's names", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "TheBlock");
@@ -121,7 +121,7 @@ test("a 7.00, a 7.10, a 7.20, a 7.30 and a 7.40 gameserver's calendar timeline c
       .body.channels["client-events"].states[0];
     const names = (state) => state.activeEvents.map(({ eventType }) => eventType).filter((eventType) => /^(R[01]|slab\d)$/.test(eventType));
     // On a replay that starts today: Risky Reels on 7.00, Grimy Greens on 7.10, Looming Llama on 7.20, CoLLAMAsseum on 7.30,
-    // Oily Oaks on 7.40, none on 6.31.
+    // Oily Oaks on 7.40, Cryptic Castle on 8.00 (CoreV2 #550), none on 6.31.
     const reels = await timeline(v700, "7.00");
     assert.deepEqual(names(reels), ["R0"]);
     assert.ok(reels.state.activeEventFlags.includes("R0"));
@@ -129,6 +129,7 @@ test("a 7.00, a 7.10, a 7.20, a 7.30 and a 7.40 gameserver's calendar timeline c
     assert.deepEqual(names(await timeline("4727874", "7.20")), ["slab1"]);
     assert.deepEqual(names(await timeline("4834550", "7.30")), ["slab1"]);
     assert.deepEqual(names(await timeline("5046157", "7.40")), ["slab1"], "Oily Oaks");
+    assert.deepEqual(names(await timeline("5203069", "8.00")), ["slab1"], "Cryptic Castle");
     assert.deepEqual(names(await timeline(v631, "6.31")), []);
 
     // Start now on 7.00's card lands the Block; no card takes "off".
@@ -139,7 +140,7 @@ test("a 7.00, a 7.10, a 7.20, a 7.30 and a 7.40 gameserver's calendar timeline c
 
     const overview = (await get(backend.port, "/admin/api/events/overview")).body;
     assert.deepEqual(overview.datedFlags.events.filter(({ id }) => id.startsWith("block")).map(({ id, mode }) => [id, mode]),
-      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"]]);
+      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"], ["block800", "dates"]]);
   } finally {
     await backend.close();
   }

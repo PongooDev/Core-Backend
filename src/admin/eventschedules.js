@@ -153,6 +153,10 @@ export const eventCards = [
     flags: ["HP", "HP1"] },
   // 8.00's (events/events.js): Season 8's lobby, its only event flag (8.00 has no Save the World seasonal event; its other
   // new flag, EventFlag.Spring2019, is Save the World's quest map and isn't served).
+  // 8.00's Block (events/block.js): its two builds on their dates.
+  { id: "block800", kind: "dated", dated: "block800", seasons: [8], name: "The Block's community builds", builds: "8.00", ranges: [[5203069, 5203069]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Cryptic Castle goes up", endLabel: "Turtle Temple goes up",
+    about: "8.00's two community-built islands on the Block, each a level in its paks: Cryptic Castle (HellraiserGaming; 8.00 shipped with it on 28 February 2019, so it is up from the replay's first day) and Turtle Temple (BOTIMUS-PRIME, v8.01, 6 March, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
   { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00", ranges: [[5203069, 5203069]],
     about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 carries no Save the World seasonal event flag.",
     flags: ["EventFlag.LobbySeason8"] }

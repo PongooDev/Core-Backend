@@ -42,7 +42,12 @@ export const season6EndDay = Date.parse("2018-12-06T00:00:00.000Z");
 // are The Block's (events/block.js); its Polar Peak thaw and Prisoner are later updates', its Ice Storm 7.20's.
 export const season7FirstDay = Date.parse("2018-12-06T00:00:00.000Z");
 export const season7EndDay = Date.parse("2019-02-28T00:00:00.000Z");
-const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay] };
+// Season 8's replay: its 70 days, 28 February to 8 May 2019 (store/itemshop-season8.json). Its dated map event is 8.00's
+// Block (events/block.js).
+export const season8FirstDay = Date.parse("2019-02-28T00:00:00.000Z");
+export const season8EndDay = Date.parse("2019-05-09T00:00:00.000Z");
+const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay],
+  8: [season8FirstDay, season8EndDay] };
 export const datedSeasonOf = (event) => event.season ?? 5;
 const daysOf = (event) => seasonDays[datedSeasonOf(event)];
 // The replay's moment now for an event's season: momentNowMs is that moment (ms), or a function of the season that gives it.
@@ -122,7 +127,10 @@ const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
 // Athena/Maps/Block/7_30's Block_25x25_OilyOaks: 7.40 shipped with it, 14 February, so from the lap's first day) and
 // Colossal Compound (Aril_lian1, SLAB_2, 7_40's Block_25x25_ColossalCompound, 19 February, Content Update v7.40's day), on
 // to the season's end (the Fortnite Wiki's Season 7 map history; 🟡 its days, 00:00 UTC); its slab3 is the blank Block
-// again, not served.
+// again, not served. 8.00 (CoreV2 #550): its two, Cryptic Castle (HellraiserGaming, SLAB_1, Athena/Maps/Block/8_00's
+// Block_25x25_CrypticCastle: 8.00 shipped with it, 28 February 2019, so from the lap's first day) and Turtle Temple
+// (BOTIMUS-PRIME, SLAB_2, 8_00's Block_25x25_TurtleTemple, the Fortnite Wiki's v8.01 day, 6 March), on to the season's end
+// (8.10's jungle temple of 12 March isn't in 8.00's paks; 🟡 the days', 00:00 UTC); slab3 the blank Block, not served.
 const blockLandsAt = Date.parse("2018-12-07T01:30:00.000Z");
 const at7 = (date) => Date.parse(`${date}T00:00:00.000Z`);
 const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23", "Risky Runways, by AKE"],
@@ -130,6 +138,7 @@ const blockBuilds = [["2018-12-06", "Grimy Greens, by KAANCITAK"], ["2018-12-23"
 const blockBuilds720 = [["2018-12-06", "Looming Llama, by Stormhawk"], ["2019-01-22", "Omega Pyramid, by Directingpete"]];
 const blockBuilds730 = [["2018-12-06", "CoLLAMAsseum, by Zarbot"], ["2019-02-05", "Streat Festival, by NIBLL"]];
 const blockBuilds740 = [["2018-12-06", "Oily Oaks, by MrSlickWillyz"], ["2019-02-19", "Colossal Compound, by Aril_lian1"]];
+const blockBuilds800 = [["2019-02-28", "Cryptic Castle, by HellraiserGaming"], ["2019-03-06", "Turtle Temple, by BOTIMUS-PRIME"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -294,6 +303,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds730) },
   { id: "block740", name: "The Block's community builds (7.40)", season: 7, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds740) },
+  { id: "block800", name: "The Block's community builds (8.00)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds800) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
