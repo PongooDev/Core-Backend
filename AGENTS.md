@@ -38,6 +38,9 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
   change would fix it, say so on the issue. Behaviour that is the build's own (the game did it that way then) is
   rejected, not fixed.
 - **Report honestly.** Tests passing is static. Say what was seen with a real client or server and what wasn't.
+- **Accuracy first.** Serve each build what Epic served it then; keep the build's own behaviour. From 8.30 the player bots are Epic's own (Phoebe).
+- **Doubtful reports get little effort.** Build behaviour, things never in the game, and things not confirmed broken get a short comment asking the reporter to confirm on Core with the build and logs, or are closed as the build's own behaviour.
+- **Comments only where they help the next agent.** No explanations written for the owner.
 
 ## 2. Operating rules on the owner's PC
 
