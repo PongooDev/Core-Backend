@@ -13,6 +13,7 @@ import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, foundersTokensNeedSetUp, setUpFounders, setUpFoundersTokens } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
+import { heroLoadoutsNeedSetUp, setUpHeroLoadouts } from "./heroloadouts.js";
 import { giveLootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
 import { respecTokensNeedSetUp, setUpRespecTokens } from "./respec.js";
 import { setUpSkillTreeUnlocks, skillTreeUnlocksNeedSetUp } from "./skilltree.js";
@@ -68,6 +69,8 @@ import { levelStartXp, settleLevel, switchXpScale, xpScaleNeedsSwitch } from "./
 //   voucher or llama to open (profiles/lootllamas.js): the Loot tab otherwise shows nothing and the UI stays locked.
 // - From 6.30, one Upgrades and one Research respec token, once per account (profiles/respec.js, Core's choice: nothing
 //   in the game's data grants them).
+// - From 8.00, the Hero Loadout's loadouts (profiles/heroloadouts.js): one to start with and those its claimed quests
+//   name, the first led by the lead hero, and the active one in selected_hero_loadout, which the Command screen shows.
 // - From 6.30, the quest reward nodes (build levels, squad slots, Transformation, Evolution...) that stand for the skill
 //   tree nodes the account bought before 6.30, once, in a gift box (profiles/skilltree.js, CoreV2 #469).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
@@ -110,7 +113,7 @@ export function needsSetUp(profile, settings = {}) {
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
     || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile)
     || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile) || respecTokensNeedSetUp(profile)
-    || skillTreeUnlocksNeedSetUp(profile);
+    || skillTreeUnlocksNeedSetUp(profile) || heroLoadoutsNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -195,4 +198,7 @@ export function setUpProfile(session, profileId = "profile0") {
   setUpRespecTokens(session);
   // 6.30's quest reward unlocks for the skill tree nodes the account bought before 6.30, once (profiles/skilltree.js).
   setUpSkillTreeUnlocks(session);
+  // From 8.00, the Hero Loadout's loadouts and the active one, with the lead hero as the first one's commander, once
+  // (profiles/heroloadouts.js, Core-Backend #399).
+  setUpHeroLoadouts(session);
 }

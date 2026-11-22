@@ -20,6 +20,7 @@ import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlot
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { giftCatalogEntry } from "./GiftCatalogEntry.js";
+import { assignGadgetToLoadoutCommand, assignHeroToLoadoutCommand, assignTeamPerkToLoadoutCommand, clearHeroLoadoutCommand, setActiveHeroLoadoutCommand, setLoadoutNameCommand } from "./HeroLoadouts.js";
 import { incrementNamedCounterStat } from "./IncrementNamedCounterStat.js";
 import { issueFriendCode } from "./IssueFriendCode.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
@@ -91,8 +92,8 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 // - ClearHeroLoadout (7.30's, CL-4834550, UFortMcpProfileCampaign, beside SetActiveHeroLoadout): the new Hero Loadout's
 //   (Content Update v7.30: "Most Heroes will become unique once the new Hero Loadout launches"), behind UFortGlobals'
 //   bEnableHeroLoadoutSystem, which 7.30's DefaultGame.ini doesn't set (false) and Core's hotfix doesn't either, so 7.30
-//   keeps the old squads screen (🟡 read from the switch, not from the commands' callers). What clearing a loadout did was
-//   Epic's service's.
+//   keeps the old squads screen (🟡 read from the switch, not from the commands' callers). 8.00 launches the Hero Loadout:
+//   it and the other loadout commands are answered there (HeroLoadouts.js) and still refused on 7.30 and 7.40.
 // - CreateNewIsland {templateId}, DeleteIsland {plotItemId}, RestoreDeletedIsland {plotItemId}, SetCreativePlotMetadata
 //   {plotItemId, locale, title, tagline, youtubeVideoId, introduction} (in SetCreativePlotIslandName's place) and
 //   UpdatePlotPublishInfo {plotItemId, linkCode, linkVersion} (7.40's, CL-5046157, UFortMcpProfileCreative, dedicated
@@ -103,6 +104,9 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 export const clientCommands = {
   AbandonExpedition: abandonExpeditionCommand,
   ActivateConsumable: activateConsumable,
+  AssignGadgetToLoadout: assignGadgetToLoadoutCommand,
+  AssignHeroToLoadout: assignHeroToLoadoutCommand,
+  AssignTeamPerkToLoadout: assignTeamPerkToLoadoutCommand,
   AssignWorkerToSquad: assignWorkerToSquad,
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
   BulkEquipBattleRoyaleCustomization: bulkEquipBattleRoyaleCustomization,
@@ -115,6 +119,7 @@ export const clientCommands = {
   ClaimMfaEnabled: claimMfaEnabled,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,
+  ClearHeroLoadout: clearHeroLoadoutCommand,
   ClientQuestLogin: clientQuestLoginFromClient,
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
@@ -156,6 +161,7 @@ export const clientCommands = {
   RespecUpgrades: respecUpgrades,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
+  SetActiveHeroLoadout: setActiveHeroLoadoutCommand,
   SetAffiliateName: setAffiliateName,
   SetBansViewed: setBansViewed,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
@@ -167,6 +173,7 @@ export const clientCommands = {
   SetHomebaseName: setHomebaseName,
   SetItemFavoriteStatus: setItemFavoriteStatus,
   SetItemFavoriteStatusBatch: setItemFavoriteStatusBatch,
+  SetLoadoutName: setLoadoutNameCommand,
   SetModeLoadout: setModeLoadout,
   SetMtxPlatform: setMtxPlatform,
   SetPartyAssistQuest: setPartyAssistQuest,

@@ -10,6 +10,7 @@ import { log } from "../log.js";
 import { newSchematicAlterations } from "./alterations.js";
 import { wireItemProfile } from "./common.js";
 import { heroAttributes } from "./heroes.js";
+import { loadoutAttributes, nextLoadoutIndex } from "./heroloadouts.js";
 import { grantQuest } from "./quests.js";
 import { settleBackpack, worldStackCap } from "./vault.js";
 import { rollWorkerAttributes } from "./workers.js";
@@ -84,6 +85,8 @@ function addItem(tracker, templateId, quantity, info, options) {
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
   if (info.class === "FortHeroType") Object.assign(attributes, heroAttributes(templateId));
+  // From 8.00 a hero loadout comes empty, after the account's others (profiles/heroloadouts.js).
+  if (info.class === "FortCampaignHeroLoadoutItemDefinition") Object.assign(attributes, loadoutAttributes(nextLoadoutIndex(tracker.profile)));
   // From 4.2 a weapon or trap schematic comes with its perks (profiles/alterations.js).
   if (info.class === "FortSchematicItemDefinition") Object.assign(attributes, newSchematicAlterations(templateId));
   if (isMtxCurrency(templateId)) attributes.platform = mtxPlatform;

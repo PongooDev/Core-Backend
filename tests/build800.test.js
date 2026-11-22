@@ -233,6 +233,87 @@ test("8.00's Party Assist pins and clears athena's party_assist_quest", async ()
   }
 });
 
+test("8.00's Hero Loadout (#399): a loadout led by the lead hero, the active one in selected_hero_loadout, and its commands", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Loadout8");
+    const command = (name, body, build = "8.00-CL-5203069") => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=campaign&rvn=-1`,
+      headers: { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-${build}`,
+        Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
+    }, JSON.stringify(body));
+    const campaign = async () => (await command("QueryProfile", {})).body.profileChanges[0].profile;
+    let profile = await campaign();
+    const loadouts = Object.entries(profile.items).filter(([, item]) => item.templateId === "CampaignHeroLoadout:defaultloadout");
+    assert.equal(loadouts.length, 1, "a new account starts with one loadout");
+    const [loadoutId, loadout] = loadouts[0];
+    assert.equal(profile.stats.attributes.selected_hero_loadout, loadoutId);
+    const hero = Object.keys(profile.items).find((id) => profile.items[id].templateId === "Hero:hid_commando_grenadegun_uc_t01");
+    assert.ok(hero, "the default hero");
+    assert.deepEqual(loadout.attributes.crew_members, { commanderslot: hero, followerslot1: "", followerslot2: "", followerslot3: "",
+      followerslot4: "", followerslot5: "" });
+    assert.deepEqual(loadout.attributes.gadgets, [{ gadget: "", slot_index: 0 }, { gadget: "", slot_index: 1 }]);
+    assert.deepEqual([loadout.attributes.loadout_index, loadout.attributes.loadout_name, loadout.attributes.team_perk], [0, "", ""]);
+    assert.equal((await campaign()).stats.attributes.selected_hero_loadout, loadoutId, "set up once");
+
+    // A follower slot opens with its quest reward node; the team perk slot with QuestReward_TeamPerk_Slot1.
+    const locked = await command("AssignHeroToLoadout", { heroId: hero, loadoutId, slotName: "FollowerSlot1" });
+    assert.equal(locked.body.errorCode, "errors.com.epicgames.fortnite.invalid_parameter");
+    assert.equal((await command("AssignTeamPerkToLoadout", { teamPerkId: "", loadoutId })).body.errorCode,
+      "errors.com.epicgames.fortnite.invalid_parameter");
+    assert.equal((await command("AssignHeroToLoadout", { heroId: "nope", loadoutId, slotName: "CommanderSlot" })).body.errorCode,
+      "errors.com.epicgames.fortnite.item_not_found");
+    const cleared = await command("AssignHeroToLoadout", { heroId: "", loadoutId, slotName: "CommanderSlot" });
+    assert.equal(cleared.status, 200);
+    await command("AssignHeroToLoadout", { heroId: hero, loadoutId, slotName: "CommanderSlot" });
+    await command("AssignGadgetToLoadout", { gadgetId: "Gadget:g_commando_goincommando", loadoutId, slotIndex: 1 });
+    assert.equal((await command("AssignGadgetToLoadout", { gadgetId: "Hero:hid_commando_grenadegun_uc_t01", loadoutId, slotIndex: 0 }))
+      .body.errorCode, "errors.com.epicgames.fortnite.invalid_parameter");
+    await command("SetLoadoutName", { loadoutName: "Mine", loadoutId });
+    profile = await campaign();
+    assert.equal(profile.items[loadoutId].attributes.crew_members.commanderslot, hero);
+    assert.deepEqual(profile.items[loadoutId].attributes.gadgets,
+      [{ gadget: "", slot_index: 0 }, { gadget: "Gadget:g_commando_goincommando", slot_index: 1 }]);
+    assert.equal(profile.items[loadoutId].attributes.loadout_name, "Mine");
+    assert.equal((await command("SetActiveHeroLoadout", { selectedLoadout: hero })).body.errorCode,
+      "errors.com.epicgames.fortnite.item_not_found");
+    await command("ClearHeroLoadout", { loadoutId });
+    profile = await campaign();
+    assert.equal(profile.items[loadoutId].attributes.crew_members.commanderslot, "");
+    assert.equal(profile.items[loadoutId].attributes.loadout_name, "Mine");
+
+    // 7.40 has no Hero Loadout screen: the commands stay unknown there.
+    assert.equal((await command("SetActiveHeroLoadout", { selectedLoadout: loadoutId }, "7.40-CL-5046157")).body.errorCode,
+      "errors.com.epicgames.fortnite.operation_not_found");
+  } finally {
+    backend.close();
+  }
+});
+
+test("8.00's Hero Loadout: the loadouts quests claimed before 8.00 name; 7.40 gets none", () => {
+  for (const [build, expected] of [[v800, 2], [v740, 0]]) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "core-800-"));
+    try {
+      const store = createProfileStore(dir);
+      inBuild(v740, () => {
+        const session = openSession(store, "quests");
+        session.profile("profile0").addItem("claimed-ssd", { templateId: "Quest:outpostquest_t2_l2", attributes: { quest_state: "Claimed" }, quantity: 1 });
+        session.commit();
+      });
+      const profile = inBuild(build, () => openSession(store, "quests").profile("profile0").profile);
+      const held = Object.values(profile.items).filter((item) => item.templateId === "CampaignHeroLoadout:defaultloadout");
+      assert.equal(held.length, expected, build);
+      assert.deepEqual(held.map((item) => item.attributes.loadout_index).sort(), expected ? [0, 1] : []);
+      assert.equal(profile.stats.attributes.selected_hero_loadout === undefined, !expected, build);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    }
+  }
+});
+
 test("7.40 is unchanged by 8.00: its own data, Season 7's pass, no Season 8 challenges", () => {
   assert.equal(dataBuild(v740), v740);
   assert.equal(buildOfSeason(7), v740);
