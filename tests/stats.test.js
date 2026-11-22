@@ -294,6 +294,15 @@ test("7.40's stats v2 account and query answer the recorded career stats", async
 
     // An unknown account's account route is Epic's not-found; the query leaves its stats empty instead of failing.
     assert.equal((await getV2("0123456789abcdef0123456789abcdef", player.token)).status, 404);
+
+    // Core-Backend #402: 8.00's Global Wins tab is the v2 leaderboard of the career wins, accounts without one left out.
+    assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", dedicated,
+      { playlistId: 2, accountIds: [player.accountId] })).status, 204);
+    const board = await send({ host: "127.0.0.1", port: backend.port,
+      path: "/fortnite/api/statsv2/leaderboards/br_placetop1_keyboardmouse_m0_playlist_defaultsolo",
+      headers: { "User-Agent": agent, Authorization: `bearer ${player.token}` } });
+    assert.equal(board.status, 200);
+    assert.deepEqual(board.body, { entries: [{ account: player.accountId, value: 1 }], maxSize: 1000 });
   } finally {
     backend.close();
   }

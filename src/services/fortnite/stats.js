@@ -149,5 +149,20 @@ export function statsRoutes({ tokens, stats, accounts }) {
     })));
   });
 
+  // 8.00's leaderboard Global Wins tab (Core-Backend #402) asks GET /fortnite/api/statsv2/leaderboards/<stat>
+  // (br_placetop1_keyboardmouse_m0_playlist_defaultsolo/duo/squad). Epic's answer (FortniteEndpointsDocumentation
+  // StatsProxyService/Stats/Leaderboard.md) is {entries: [{account, value}], maxSize: 1000}, the best first. Core's is
+  // the accounts with more than 0 of the stat in their career, the same values the query above answers.
+  router.get("/fortnite/api/statsv2/leaderboards/:leaderboardName", requireAuth(tokens), (req, res) => {
+    const { leaderboardName } = req.params;
+    const maxSize = 1000;
+    const entries = accounts.list()
+      .map(({ id }) => ({ account: id, value: statsV2(id, [leaderboardName])[leaderboardName] ?? 0 }))
+      .filter(({ value }) => value > 0)
+      .sort((a, b) => b.value - a.value || a.account.localeCompare(b.account))
+      .slice(0, maxSize);
+    res.json({ entries, maxSize });
+  });
+
   return router;
 }
