@@ -292,6 +292,30 @@ test("the server's Creative commands keep the last island and who may build; Set
   }
 });
 
+test("7.40's SetCreativePlotMetadata (the server's, PongooDev/CoreV2#545) writes the island's title and description into its plot item", async () => {
+  const backend = await startBackend({ events: { seasonStarts: { 7: startForDay(20) } } });
+  try {
+    const player = await userLogin(backend.port, "CreativeMetadata");
+    const plots = Object.keys(profileOf(await mcp(backend.port, player, "QueryProfile", "creative")).items);
+    const server = { token: await dedicatedServerToken(backend.port), accountId: player.accountId };
+    const body = { plotItemId: plots[1], locale: "en", title: "My Island", tagline: "", youtubeVideoId: "", introduction: "Line one\nLine two" };
+    const saved = await mcp(backend.port, server, "SetCreativePlotMetadata", "creative", body, "dedicated_server");
+    assert.equal(saved.status, 200, JSON.stringify(saved.body));
+    assert.ok((saved.body.profileChanges ?? []).length, "the server's copy of the profile hears the change");
+    const attributes = profileOf(await mcp(backend.port, player, "QueryProfile", "creative")).items[plots[1]].attributes;
+    assert.deepEqual([attributes.title, attributes.locale, attributes.introduction, attributes.tagline, attributes.youtube_video_id],
+      ["My Island", "en", "Line one\nLine two", "", ""]);
+    const short = await mcp(backend.port, server, "SetCreativePlotMetadata", "creative", { ...body, title: "ab" }, "dedicated_server");
+    assert.deepEqual([short.status, short.body.errorCode], [400, "errors.com.epicgames.validation.validation_failed"]);
+    const unknownPlot = await mcp(backend.port, server, "SetCreativePlotMetadata", "creative", { ...body, plotItemId: "nope" }, "dedicated_server");
+    assert.deepEqual([unknownPlot.status, unknownPlot.body.errorCode], [400, "errors.com.epicgames.fortnite.item_not_found"]);
+    const fromClient = await mcp(backend.port, player, "SetCreativePlotMetadata", "creative", body);
+    assert.equal(fromClient.status, 400, "a server's command");
+  } finally {
+    await backend.close();
+  }
+});
+
 test("the DSS keeps an owner's islands: checkout, upload with its meta, checkin, download and restore, only for the server or the owner", async () => {
   assert.deepEqual(parseIslandPath("islands/personal/0123456789ABCDEF0123456789abcdef/7f1c-ab.island"),
     { owner: "0123456789abcdef0123456789abcdef", plotItemId: "7f1c-ab" });

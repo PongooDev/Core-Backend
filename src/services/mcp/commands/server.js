@@ -6,7 +6,7 @@ import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { addDifficultyIncreaseRewards } from "../../../profiles/difficultyincrease.js";
 import { advanceAthenaObjectives } from "../../../profiles/athena.js";
 import { clearEndedFrostniteRun, noteFrostniteRunEnded } from "../../../events/frostnite2018.js";
-import { modifyPlotPermissions, setLastUsedPlot } from "../../../profiles/creative.js";
+import { modifyPlotPermissions, setLastUsedPlot, setPlotMetadata } from "../../../profiles/creative.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { grantItemCacheRewards } from "../../../profiles/itemcaches.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
@@ -234,6 +234,8 @@ export const serverCommands = {
   // may build on the owner's island (stat creative_plot_permissions, FFortCreativePlotPermissionData {permission, whiteList}).
   SetLastUsedCreativePlot: setLastUsedPlot,
   ModifyCreativePlotPermissions: modifyPlotPermissions,
+  // 7.40's (CL-5046157) SetCreativePlotMetadata, an island's title and description (PongooDev/CoreV2#545).
+  SetCreativePlotMetadata: setPlotMetadata,
   // A player's first time in a theater: the server sends it while theater0's player_loadout still says bPlayerIsNew, and
   // won't save that profile until it doesn't (UFortMcpProfileWorld::IsSafeToSave checks CachedPlayerLoadout).
   InitializeTheater({ tracker, profileId }) {

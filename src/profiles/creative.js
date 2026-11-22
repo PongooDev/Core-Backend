@@ -217,5 +217,30 @@ export function modifyPlotPermissions({ req, tracker }) {
   const whiteList = [...new Set(given.map(String).filter((id) => accountIdPattern.test(id)))].slice(0, maxWhiteList);
   tracker.setStat("creative_plot_permissions", { permission, whiteList });
 }
+// SetCreativePlotMetadata {plotItemId, locale, title, tagline, youtubeVideoId, introduction} (dedicated server; 7.40,
+// CL-5046157: the island menu's Description tab, through AFortPlayerControllerAthena::UpdateCreativePlotData, whose body
+// Core's gameserver restores; PongooDev/CoreV2#545): the island's description, in the plot item's attributes the client's
+// item loader (0x118B0A0) reads into IslandInfoLocale, IslandTitle, IslandTagline, YoutubeVideoId and IslandIntroduction.
+// The game's _Validate (0xDB4340) has checked the lengths the player sent (a title of 3 to 40, an introduction up to
+// 1024, a locale up to 10), which are the limits here; the tagline and video are the plot's own, which the server sends
+// back unchanged.
+const metadataLimits = { locale: [0, 10], title: [3, 40], tagline: [0, 1024], youtubeVideoId: [0, 64], introduction: [0, 1024] };
+const metadataAttributes = { locale: "locale", title: "title", tagline: "tagline", youtubeVideoId: "youtube_video_id", introduction: "introduction" };
+export function setPlotMetadata({ req, tracker }) {
+  const plotItemId = String(req.body?.plotItemId ?? "");
+  const plot = plotItem(tracker.profile, plotItemId);
+  if (!plot) throw plotNotFound(plotItemId);
+  const values = {};
+  for (const [field, [min, max]] of Object.entries(metadataLimits)) {
+    const value = String(req.body?.[field] ?? "");
+    if (value.length < min || value.length > max) {
+      throw new McpError("errors.com.epicgames.validation.validation_failed", `${field} is ${min} to ${max} characters`, [field]);
+    }
+    values[metadataAttributes[field]] = value;
+  }
+  for (const [attribute, value] of Object.entries(values)) {
+    if (plot.attributes?.[attribute] !== value) tracker.setItemAttribute(plotItemId, attribute, value);
+  }
+}
 // The profile's third command, SetCreativePlotIslandName {plotItemId, islandName} (client), has no sender in 7.00 (only its
 // FName's initialiser references it: services/mcp/commands/index.js), so it stays unknown and islandName stays "".
