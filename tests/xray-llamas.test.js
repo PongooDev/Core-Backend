@@ -31,10 +31,13 @@ test("a llama offer's display asset is its card pack from 7.10, which gives each
   for (const offer of front("4629139", "CardPackStore")) assert.equal(offer.displayAssetPath, "", "7.00 has no LlamaStoreRoot");
 });
 
-test("from 7.30 the Upgrade Llamas are X-Ray llamas on CardPackStorePreroll, one Upgrade and one Shared", () => {
+test("from 7.30 the Upgrade Llamas are X-Ray llamas on CardPackStorePreroll, in the Upgrade and Shared groups", () => {
   const xray = front(v820, "CardPackStorePreroll");
-  assert.deepEqual(xray.map(({ offerId, categories }) => [offerId, categories]),
-    [["core_xray_cardpack_bronze", ["Upgrade"]], ["core_xray_voucher_cardpack_bronze", ["Shared"]]]);
+  // The page's groups match catalogGroup, not categories (Core-Backend #412).
+  assert.deepEqual(xray.map(({ offerId, catalogGroup }) => [offerId, catalogGroup]),
+    [["core_xray_cardpack_bronze", "Upgrade"], ["core_xray_voucher_cardpack_bronze", "Shared"]]);
+  // The LOOT page shows up to five offers of no group.
+  for (const offer of front(v820, "CardPackStoreGameplay")) assert.equal(offer.catalogGroup, "", offer.offerId);
   for (const offer of xray) {
     assert.deepEqual(offer.metaInfo, [{ key: "Preroll", value: "true" }]);
     assert.equal(offer.displayAssetPath, "/Game/Items/CardPacks/CardPack_Bronze.CardPack_Bronze");

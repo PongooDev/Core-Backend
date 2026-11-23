@@ -222,7 +222,8 @@ function offerJson(offer, sortPriority) {
     weeklyLimit: -1,
     // An item shop offer's tile, shared with the other offers of its category (store/itemshop.js tileOf).
     categories: offer.category ? [offer.category] : [],
-    catalogGroup: "",
+    // A llama offer's group on the Loot tab's pages (xrayOffers).
+    catalogGroup: offer.catalogGroup ?? "",
     catalogGroupPriority: 0,
     sortPriority,
     title,
@@ -262,23 +263,25 @@ function llamaDisplayAsset(offer) {
 
 // From 7.10 (UFortLlamaStoreBase) the Loot tab's LOOT page is LlamaStoreRoot, whose StorefrontNames are
 // ["CardPackStoreGameplay"] (7.30's, 7.40's and 8.00's paks); StoreRoot, which reads CardPackStore, is a hidden tab
-// there. Its offers are grouped by category: up to five uncategorized, one "Shared" and one "Upgrade".
+// there. Its offers are grouped by catalogGroup (below): up to five with none, one "Shared" and one "Upgrade".
 const llamaStoreBuild = 4667333;
 const llamaStorefront = "CardPackStoreGameplay";
 
 // 7.30's X-Ray llamas (Core-Backend #406): "V-Buck Llamas" became X-Ray Llamas, "Mini Llamas and Event Llamas" did not,
 // and they can no longer be bought several at once (Epic's announcement, January 2019). The X-RAY page,
-// PrerolledLlamaStoreRoot, reads "CardPackStorePreroll", one "Upgrade" and one "Shared" offer. So from 7.30 the Upgrade
-// Llama for 50 V-Bucks ("Upgrade") and for an Upgrade Llama Token ("Shared", 🟡 Core's reading of the category) are
+// PrerolledLlamaStoreRoot, reads "CardPackStorePreroll", one "Upgrade" and one "Shared" offer: UFortLlamaStoreBase's
+// OfferCategoriesToDisplay are matched against each offer's catalogGroup (FCatalogOffer +0x98; 8.20 0x350ECF0), not its
+// categories, so an offer in no listed group is never shown (Core-Backend #412). So from 7.30 the Upgrade Llama for 50
+// V-Bucks (group "Upgrade") and for an Upgrade Llama Token ("Shared", 🟡 Core's reading of the group) are
 // sold there, each with its preview (store/preroll.js), and leave the LOOT page with the ten-llama offer.
 export const xrayBuild = 4834550;
 const prerollStorefront = "CardPackStorePreroll";
 const xrayOffers = [
   { offerId: "core_xray_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency",
-    currencySubType: "", price: 50, preroll: true, category: "Upgrade",
+    currencySubType: "", price: 50, preroll: true, catalogGroup: "Upgrade",
     dailyLimit: upgradeLlamaDailyLimit.limit, dailyLimitFirstBuild: upgradeLlamaDailyLimit.firstBuild },
   { offerId: "core_xray_voucher_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "GameItem",
-    currencySubType: "AccountResource:voucher_cardpack_bronze", price: 1, preroll: true, category: "Shared" }
+    currencySubType: "AccountResource:voucher_cardpack_bronze", price: 1, preroll: true, catalogGroup: "Shared" }
 ];
 const hasXray = () => Number(currentBuild()) >= xrayBuild;
 // The X-Ray offers the requesting build sells.
