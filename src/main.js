@@ -1,4 +1,5 @@
 import { loadConfig } from "./config.js";
+import { prepareForeignTemplates } from "./gamedata/templates.js";
 import { describeHost, listen } from "./listen.js";
 import { log } from "./log.js";
 import { startQosPingServer } from "./matchmaking/qos.js";
@@ -42,6 +43,9 @@ const { remoteAccess, publicAddress } = network.settings();
 log("Core", remoteAccess
   ? `Remote access is on: listening on ${describeHost(network.bindAddress())}, friends can connect${publicAddress ? ` (public address ${publicAddress})` : ""}`
   : "Remote access is off: only this PC can connect (turn it on in the admin panel to play with friends)");
+// What every build's game data has, which the first profile sent needs (gamedata/templates.js, Core-Backend #417): read
+// now, a build at a time, so a game that logs in right after the launcher started the backend isn't kept waiting.
+prepareForeignTemplates();
 
 // Every write is a temp file plus rename, so a hard kill is safe too; this just closes sockets politely.
 function shutdown(signal) {
