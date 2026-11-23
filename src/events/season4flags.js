@@ -62,6 +62,8 @@ import { currentEventsConfig } from "./events.js";
 // (events/highstakes2019.js); 7.40's season's flags end with 7.40.
 // 8.30's (CL-5793395) are 8.20's and one more, LTE_BootyBay, the Buccaneer's Bounty Challenges, served by their dates
 // (events/buccaneersbounty.js); High Stakes runs to 8.30.
+// 8.40's (CL-6005771) are 8.30's and one more, LTM_Goose, the Air Royale Challenges, served by their dates
+// (events/airroyale.js); High Stakes and Buccaneer's Bounty run to 8.40.
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -95,6 +97,7 @@ const b730 = 4834550;
 const b740 = 5046157;
 const b820 = 5625478;
 const b830 = 5793395;
+const b840 = 6005771;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -279,12 +282,17 @@ export const season4FlagGroups = [
   // 8.20's High Stakes Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist_V2, events/highstakes2019.js):
   // served by their dates on Season 8's replay, or always or never by their switch.
   { id: "highStakes2019", name: "Battle Royale: the High Stakes Challenges (8.20)", flags: [
-    flag("LTM_HighStakes", [b820, b830], "The High Stakes Challenges of Season 8 (Schedule_LTM_Heist_V2: play the Getaway, win it, use a Grappler; the Heist back bling and its styles; 14 to 19 March 2019)")
+    flag("LTM_HighStakes", [b820, b840], "The High Stakes Challenges of Season 8 (Schedule_LTM_Heist_V2: play the Getaway, win it, use a Grappler; the Heist back bling and its styles; 14 to 19 March 2019)")
   ] },
   // 8.30's Buccaneer's Bounty Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_PirateParty,
   // events/buccaneersbounty.js): served by their dates on Season 8's replay, or always or never by their switch.
   { id: "buccaneersBounty", name: "Battle Royale: the Buccaneer's Bounty Challenges (8.30)", flags: [
-    flag("LTE_BootyBay", [b830, b830], "The Buccaneer's Bounty Challenges (Schedule_PirateParty: visit pirate camps for the Plunder glider, then one more a day: Buried Treasure for the Pirate Parrot spray, top 10s in squads with a friend, be the cannonball; all four for the Boobytrapped emote; from 10 to 16 April 2019)")
+    flag("LTE_BootyBay", [b830, b840], "The Buccaneer's Bounty Challenges (Schedule_PirateParty: visit pirate camps for the Plunder glider, then one more a day: Buried Treasure for the Pirate Parrot spray, top 10s in squads with a friend, be the cannonball; all four for the Boobytrapped emote; from 10 to 16 April 2019)")
+  ] },
+  // 8.40's Air Royale Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Goose, events/airroyale.js):
+  // served by their dates on Season 8's replay, or always or never by their switch.
+  { id: "airRoyale", name: "Battle Royale: the Air Royale Challenges (8.40)", flags: [
+    flag("LTM_Goose", [b840, b840], "The Air Royale Challenges (Schedule_LTM_Goose: play Air Royale, Stormwing damage with SMGs, pistols and assault rifles, sky chests, destroy Stormwings, outlast, a top 5; three more on each of the third and fifth days; the Callsign Skull, Falcon, Wolf and Hornet wraps; from 17 to 24 April 2019)")
   ] },
   { id: "rocket", name: "Battle Royale map: Blast Off (the rocket launch)", managedBy: "rocketLaunch", flags: [
     { flag: geodeCountdown, builds: [b450, b45], description: "The hologram counts down to the launch" },

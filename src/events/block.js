@@ -44,6 +44,8 @@ import { currentEventsConfig } from "./events.js";
 // - 8.30 (CL-5793395) the same way: SLAB_1 streams Athena/Maps/Block/8_30's Block_25x25_LlamaSphinx ("Llama Sphinx",
 //   Prudiz), SLAB_2 Block_25x25_CordialCourtyard ("Cordial Courtyard", GonzoTheWizard), SLAB_3 POI_Block_Blank (not
 //   served); BP_SlabScripting watches slab1 to slab3 as 8.20's. 8.30's paks no longer have 8.20's two.
+// - 8.40 (CL-6005771): 8.30's Block exactly (the same two 8_30 levels on the same slabs, the same BP_SlabScripting), so it
+//   plays block830's dates, the Fortnite Wiki's Cordial Courtyard from its own day, 17 April.
 // So this serves each build its own names by Epic's dates on Season 7's replay (events/datedflags.js block700 and
 // block710, block720, block730, block740, block800, block820 and block830; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
 // match's playlist before it takes the hotfix (7.00's: the playlist's data at frame 393, the hotfix at 506, the calendar
@@ -59,9 +61,10 @@ export const block740Build = 5046157;
 export const block800Build = 5203069;
 export const block820Build = 5625478;
 export const block830Build = 5793395;
+export const block840Build = 6005771;
 const blockEvents = { [block700Build]: "block700", [block710Build]: "block710", [block720Build]: "block720", [block730Build]: "block730",
   [block740Build]: "block740", [block800Build]: "block800", [block820Build]: "block820",
-  [block830Build]: "block830" };
+  [block830Build]: "block830", [block840Build]: "block830" };
 
 export const block700Event = datedEvent("block700");
 export const block710Event = datedEvent("block710");

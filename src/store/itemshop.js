@@ -176,7 +176,12 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // (CL-5625478) has, each build serving the ones it has itself (8.20 adds 49 of 8.10's to 8.20's, from Kuno, Kenji, Psion,
 // Axiom, Lucky Rider and Marino to the pirates, Sea Wolf and Buccaneer, which the wiki lists later in the season), and
 // 8.30's (CL-5793395) 14 more days' items of 11 April to 8 May (Birdie and Driver, Peely Pick, Relax Axe, the Bandage,
-// Digital Grayscale and Infernal wraps, Dream Feet, Bunny Hop, Switchstep and Marathon); the ones none has (Aura, Guild, Pastel, Supersonic, Nitehare, the Black Widow's and Star-Lord's sets...) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
+// Digital Grayscale and Infernal wraps, Dream Feet, Bunny Hop, Switchstep and Marathon), and 8.40's (CL-6005771) items of
+// 17 to 24 April (Supersonic, Surefire, the Stealth Black and Dogfight wraps, Pastel, Hopper, Nitehare, Splode, their
+// pickaxes, the Spring Party, Pastel Print, Dino and Triassic wraps, Electro-fied!), and by 8.40's names two the earlier
+// builds' data names otherwise, sold on every Season 8 build: the Divine wrap (Blessed) and Ragnarok's Mauler pickaxe
+// (pickaxe_id_127_rhino, Uni-horn); the ones none has (Aura, Guild, Luminos, the Black Widow's and
+// Star-Lord's sets...) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
 // shop's items after the first's, as 14 February's were for 7.40. Battle Pass Tiers, bundles, free (0 V-Bucks) items
 // and real-money offers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

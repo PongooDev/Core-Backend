@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteBootyBay, lteS7Overtime, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -16,6 +16,8 @@ export const overtimeCalendarEvent = "CalendarEvent_Season7_OverTime";
 export const highStakes2019CalendarEvent = "CalendarEvent_Season8_HighStakes";
 // 8.30's Schedule_PirateParty (the Buccaneer's Bounty Challenges) the same way.
 export const buccaneersBountyCalendarEvent = "CalendarEvent_Season8_BootyBay";
+// 8.40's Schedule_LTM_Goose (the Air Royale Challenges) the same way.
+export const airRoyaleCalendarEvent = "CalendarEvent_Season8_AirRoyale";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -159,7 +161,8 @@ const blockSteps820 = [
 // ("Llama Sphinx", Prudiz), SLAB_2 Block_25x25_CordialCourtyard ("Cordial Courtyard", GonzoTheWizard), SLAB_3 the blank
 // Block (not served). The Fortnite Wiki: Llama Sphinx on Update v8.30's day, Cordial Courtyard on 17 April (Update
 // v8.40's day; 8.30's paks already have it), on to the season's end. 8.30 came out mid-season, so its first build is up
-// from the lap's first day, as 8.20's.
+// from the lap's first day, as 8.20's. 8.40 (CL-6005771) streams the same two from the same slabs (its POI_Foundations and
+// BP_SlabScripting are 8.30's), so it plays 8.30's dates (events/block.js).
 const blockBuilds830 = [["2019-02-28", "Llama Sphinx, by Prudiz"], ["2019-04-17", "Cordial Courtyard, by GonzoTheWizard"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
@@ -200,6 +203,11 @@ const highStakes2019End = Date.parse("2019-03-20T00:00:00.000Z");
 // 16th 2019" (🟡 00:00 UTC, to the last day's end). The bundle opens one more challenge each day itself (DaysFromEventStart).
 const buccaneersBountyAt = Date.parse("2019-04-10T00:00:00.000Z");
 const buccaneersBountyEnd = Date.parse("2019-04-17T00:00:00.000Z");
+// 8.40's Air Royale Challenges (events/airroyale.js): the Fortnite Wiki's "available from April 17th 2019 to April 24th
+// 2019" (🟡 00:00 UTC, to the last day's end). The bundle opens three more challenges on its third and fifth days itself
+// (DaysFromEventStart 2 and 4).
+const airRoyaleAt = Date.parse("2019-04-17T00:00:00.000Z");
+const airRoyaleEnd = Date.parse("2019-04-25T00:00:00.000Z");
 // The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
 // - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
 //   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
@@ -395,6 +403,11 @@ export const datedEvents = [
   { id: "buccaneersBounty", name: "the Buccaneer's Bounty Challenges (8.30)", season: 8, flag: lteBootyBay, anchor: "challenges", parts: 1,
     challenges: "Schedule_PirateParty", steps: [
       step("challenges", "The Buccaneer's Bounty Challenges", [lteBootyBay, buccaneersBountyCalendarEvent], buccaneersBountyAt, buccaneersBountyEnd)
+    ] },
+  // 8.40's Air Royale Challenges (events/airroyale.js): one step, the flag and the schedule's calendar event.
+  { id: "airRoyale", name: "the Air Royale Challenges (8.40)", season: 8, flag: ltmGoose, anchor: "challenges", parts: 1,
+    challenges: "Schedule_LTM_Goose", steps: [
+      step("challenges", "The Air Royale Challenges", [ltmGoose, airRoyaleCalendarEvent], airRoyaleAt, airRoyaleEnd)
     ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [

@@ -9,6 +9,7 @@ import { showtimeFlagsNow } from "../events/festivus.js";
 import { overtimeFlagsNow } from "../events/overtime.js";
 import { highStakes2019FlagsNow } from "../events/highstakes2019.js";
 import { buccaneersBountyFlagsNow } from "../events/buccaneersbounty.js";
+import { airRoyaleFlagsNow } from "../events/airroyale.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
@@ -1474,12 +1475,13 @@ function settleSeasonGrants(session) {
 // 7.30's Schedule_Festivus (EventFlag.LTE_Festivus, the Showtime Challenges) while its dates do (events/festivus.js), and
 // 7.40's Season7_OT_Schedule (EventFlag.LTE_S7_OverTime, the Overtime Challenges) while its dates do (events/overtime.js),
 // 8.20's Schedule_LTM_Heist_V2 (EventFlag.LTM_HighStakes) while its dates do (events/highstakes2019.js), and 8.30's
-// Schedule_PirateParty (EventFlag.LTE_BootyBay) while its dates do (events/buccaneersbounty.js).
+// Schedule_PirateParty (EventFlag.LTE_BootyBay) while its dates do (events/buccaneersbounty.js), and 8.40's
+// Schedule_LTM_Goose (EventFlag.LTM_Goose, the Air Royale Challenges) while its dates do (events/airroyale.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

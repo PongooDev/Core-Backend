@@ -552,6 +552,18 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   Bounty and Inferno Challenges), `items.json`, `characters.json` (BombSquad Kyle), `banners.json`, `fabricator.json`,
   `alterations.json`, `collectionbook.json`, `upgrades.json`, `quests.json` (20 achievement and filler quests' rewards) and
   `world.json` (Lost in Transit's mission generator and primary mission, MissionGen_EliminateAndCollect_WR).
+  8.40's (CL-6005771, Update v8.40) is `4.23.0-6005771+++Fortnite+Release-8.40` (no `Build.version`; its exe's
+  FEngineVersion is 4.23.0-6005771; the build folder is `8.40-CL-6005771\8.40-CL-6005771\Fortnite`) with 8.30's full data
+  (Cert's files with `gamedata/5793395` applied) as the fifth argument and the main key FModel's settings hold for its
+  build folder. A full install in 8.30's layout with the keyed pakchunk1000 to 1009, of which the keychain opens all but
+  1002. Its mission alerts are still the fifth argument's. No extractor change. Against 8.30 ten files change:
+  `athena.json` (30 cosmetics: Air Royale's Supersonic, Gauge, Surefire and Callsign wraps, the Easter outfits Hopper,
+  Pastel, Nitehare and Gemini with their back blings and pickaxes, Splode, Globetrotter, Electro-fied!...; the Air Royale
+  Challenges (Schedule_LTM_Goose), the Ruin Challenges (Season8_Ruin_Schedule, always shown) and Gemini's styles; week 8's
+  challenges; the Battle Pass's friend XP boosts raised), `characters.json` and `items.json` (their heroes, Save the World's
+  Bunny Brawler Luna and Dashing Hare Ken, the Air Royale Stormwing weapons, the Egg Launcher, two perks), `banners.json`,
+  `collectionbook.json`, `alterations.json`, `fabricator.json`, `upgrades.json`, `objectivestats.json` (Air Royale's
+  stats, the endless outposts') and `world.json`.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

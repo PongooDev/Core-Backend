@@ -54,8 +54,8 @@ test("8.00 is known, on its own data, Season 8's first build", () => {
   assert.equal(dataBuild("5150000"), v740, "a build between 7.40 and 8.00 plays on 7.40's");
   assert.equal(dataBuild("5300000"), v800, "a build between 8.00 and 8.20 plays on 8.00's");
   assert.equal(releasedOn(v800), Date.UTC(2019, 1, 28));
-  assert.equal(buildOfSeason(8), "5793395", "8.30 is Season 8's newest (tests/build830.test.js)");
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.30)");
+  assert.equal(buildOfSeason(8), "6005771", "8.40 is Season 8's newest (tests/build840.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.40)");
   const season = inBuild(v800, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels, season.numSeasonLevels], [8, "BRSeason8", 100, 100]);
   assert.equal(inBuild(v800, seasonOfBuild), 8);
@@ -178,7 +178,7 @@ test("Season 8's LTMs: 8.00's lobby, Close Encounters, Team Rumble and Buccaneer
     assert.equal(ltmOn("solidGoldSeason8Squads", v800, dated, at("2019-04-11T12:00:00Z")), false);
     assert.equal(ltmOn("classicSeason8Squads", v800, dated, at("2019-04-11T12:00:00Z")), false);
     // Nothing Season 8's later builds brought is served: no Getaway, lava or plane mode is one of 8.00's playlists.
-    assert.equal(ltms.filter(({ seasons }) => seasons?.includes(8)).some(({ playlistName }) => /heist|lava|airroyale/i.test(playlistName ?? "")), false);
+    assert.equal(ltms.filter(({ id, seasons }) => seasons?.includes(8) && hasLtm(id, v800)).some(({ playlistName }) => /heist|lava|goose/i.test(playlistName ?? "")), false);
     // 8.00's entries are 8.00's alone, and 7.40's modes aren't 8.00's.
     for (const id of ["fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads"])
       assert.deepEqual([hasLtm(id, v800), hasLtm(id, v740)], [true, false], id);

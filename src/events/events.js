@@ -520,12 +520,18 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // keychain opens all its keyed paks but 1001): 8.20's and one more, EventFlag.LTE_BootyBay, Buccaneer's Bounty's
 // challenges (events/buccaneersbounty.js). It serves 8.20's: LobbySeason8, Spring 2019's Love Storm and Yarrr!, and High
 // Stakes by its dates. Its Block watches slab1 to slab3 as 8.20's (events/block.js).
+//
+// 8.40 (CL-6005771, Update v8.40, 17 April 2019). Every EventFlag.* in its paks (the same byte scan, 515,808 files; the
+// keychain opens all its keyed paks but 1002): 8.30's and two more, EventFlag.LTM_Goose, the Air Royale Challenges
+// (events/airroyale.js), and EventFlag.BR_S5_RiskyReels_Event, which only a new Risky Reels poster deco names (the Block's
+// Season 5 flag, not an 8.40 event; not served). It serves 8.30's: LobbySeason8, Spring 2019's Love Storm and Yarrr!, and
+// High Stakes and Buccaneer's Bounty by their dates. Its Block is 8.30's (events/block.js).
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
 export const lteS7Overtime = "EventFlag.LTE_S7_OverTime";
-// Save the World's Spring 2019 (events/spring2019.js): EventFlag.Spring2019 and Love Storm's Phase1 on 8.00 to 8.30,
-// Yarrr!'s Phase2 on 8.20 and 8.30, each from its update's day on Season 8's replay.
+// Save the World's Spring 2019 (events/spring2019.js): EventFlag.Spring2019 and Love Storm's Phase1 on 8.00 to 8.40,
+// Yarrr!'s Phase2 on 8.20 to 8.40, each from its update's day on Season 8's replay.
 export const spring2019 = "Spring2019";
 export const spring2019Flag = "EventFlag.Spring2019";
 export const spring2019Phase1 = "EventFlag.Spring2019.Phase1";
@@ -534,6 +540,8 @@ export const spring2019Phase2 = "EventFlag.Spring2019.Phase2";
 export const ltmHighStakes = "EventFlag.LTM_HighStakes";
 // 8.30's Buccaneer's Bounty Challenges (events/buccaneersbounty.js).
 export const lteBootyBay = "EventFlag.LTE_BootyBay";
+// 8.40's Air Royale Challenges (events/airroyale.js).
+export const ltmGoose = "EventFlag.LTM_Goose";
 export const frostnite = "EventFlag.Frostnite";
 export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
@@ -678,7 +686,7 @@ const build730 = 4834550;
 const build740 = 5046157;
 const build800 = 5203069;
 const build820 = 5625478;
-const build830 = 5793395;
+const build840 = 6005771;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -731,11 +739,11 @@ const events = [
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
   // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's to 7.40's too, and their Frostnite.
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
-  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's and 8.30's too.
-  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build830 },
-  { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build830 },
-  { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build830 },
-  { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build830 },
+  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.40's too.
+  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build840 },
+  { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build840 },
+  { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build840 },
+  { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build840 },
   { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build740 },
   { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build740 },
   { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build740 },

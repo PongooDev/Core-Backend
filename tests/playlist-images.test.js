@@ -140,8 +140,10 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // below). 7.00's Creative (Playlist_PlaygroundV2) and 7.30's NFL Rumble (Playlist_Omaha) have the tiles Epic's later page
   // names for them (below). 7.30's Party at Pleasant Park (Playlist_Music_Highest) has none: that page names its playlist only
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
-  assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
-    "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
+  // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have none: no copy of
+  // Epic's page Core has names them (🟡 the same).
+  assert.deepEqual(without, ["Playlist_Barrier_16_B_Lava", "Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
+    "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Goose_Duos", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
@@ -327,12 +329,13 @@ const tileFrom710Of = {
 };
 const expectedTile = (name, build) => (Number(build) >= 4667333 ? tileFrom710Of[name] : undefined) ?? tileOf[name];
 // No tile of Epic's: Sky Supply and Impact never ran, 6.10's glider redeploy defaults no page names, the tournaments' playlists
-// take their tile from tournamentinformation, and 7.30's Party at Pleasant Park's only tile on Epic's pages is a later event's.
+// take their tile from tournamentinformation, 7.30's Party at Pleasant Park's only tile on Epic's pages is a later event's, and
+// no copy of Epic's page names 8.40's Air Royale or Food Fight: Deep Fried tile.
 const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads", "Playlist_Impact_Solo", "Playlist_Impact_Duos",
   "Playlist_Impact_Squads", "Playlist_GRD_Solo", "Playlist_GRD_Duos", "Playlist_GRD_Squads", "Playlist_Showdown_Solo", "Playlist_Showdown_Duos",
   "Playlist_Showdown_Squads", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Squads", "Playlist_Deimos_SoloShow",
   "Playlist_Deimos_DuoShow", "Playlist_Deimos_SquadShow", "Playlist_Deimos_Solo_WinterShow", "Playlist_Deimos_Duo_WinterShow",
-  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest"];
+  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest", "Playlist_Goose_Duos", "Playlist_Barrier_16_B_Lava"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);
@@ -342,8 +345,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 8.30 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "5793395"]);
+test("every build from 4.0 to 8.40 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6005771"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

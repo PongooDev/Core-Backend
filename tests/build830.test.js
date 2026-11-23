@@ -53,15 +53,15 @@ const withSession = (build, name, run) => {
 };
 const templatesOf = (session) => Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId);
 
-test("8.30 is known, on its own data, Season 8's newest build", () => {
+test("8.30 is known, on its own data", () => {
   assert.equal(versionOf(v830), "8.30");
   assert.equal(allowedBuildList(["8.30"]).join(), v830);
   assert.equal(dataBuild(v830), v830);
   assert.equal(dataBuild("5700000"), v820, "a build between 8.20 and 8.30 plays on 8.20's");
-  assert.equal(dataBuild("5800000"), v830, "a later build Core doesn't know plays on 8.30's");
+  assert.equal(dataBuild("5800000"), v830, "a build between 8.30 and 8.40 plays on 8.30's");
   assert.equal(releasedOn(v830), Date.UTC(2019, 3, 10));
-  assert.equal(buildOfSeason(8), v830);
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.30)");
+  assert.equal(buildOfSeason(8), "6005771", "8.40 is Season 8's newest (tests/build840.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.40)");
   const season = inBuild(v830, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [8, "BRSeason8", 100]);
 });
@@ -108,9 +108,9 @@ test("the Buccaneer's Bounty Challenges' flag: 10 to 16 April 2019 on 8.30 only;
   withConfig({ ...season8, datedFlags: { buccaneersBounty: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v830, () => buccaneersBountyFlagsNow(at("2019-04-12T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 5793395]);
-  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 5793395]);
-  assert.deepEqual(eventCard("buccaneersBounty").ranges, [[5793395, 5793395]]);
+  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6005771]);
+  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6005771]);
+  assert.deepEqual(eventCard("buccaneersBounty").ranges, [[5793395, 6005771]]);
 });
 
 test("an 8.30 player gets the Buccaneer's Bounty Challenges while they run, a challenge more each day", () => {

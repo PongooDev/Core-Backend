@@ -509,6 +509,15 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // Season 8's builds tag these ChallengeCategory.Style instead of a CategoryID (the extractor writes the tag), which the
 // seasons' progressive schedules share, so only the schedules named below are given as an outfit's. 8.00's and 8.20's
 // overlays predate the extractor reading the tag and have none of these schedules.
+// 8.40 (CL-6005771) adds Season8_Ruin_Schedule, the Ruin Challenges (ChallengeCategory.Style, in AthenaSeason8's
+// ChallengeSchedulesAlwaysShown): destroy trees, rocks and cars, damage structures, outlast, complete daily challenges
+// (each RequiresBattlePass), 3 for Ruin's Dying Light back bling (BID_242_FurnaceFace) and all 6 for the Dread pickaxe
+// (Pickaxe_ID_187_FurnaceFace). 8.40's Quest_BR_S8_Cumulative_Complete_WeeklyChallenges_01, which gives Ruin
+// (CID_378_Athena_Commando_M_FurnaceFace) for 55 weekly challenges, gives the schedule beside it (8.30's gave a mystery
+// token there), so it comes with Ruin from 8.40 on; given here as an outfit's, Ruin's owners from an earlier build get it
+// too, as the Fortnite Wiki has the challenges "for all Battle Pass owners who unlocked Ruin" (🟡 from 28 April 2019 there;
+// here from 8.40's first day). 8.40's BundleSchedule_Styles_SpaceBunny is Gemini's (CID_389), an outfit Epic never released
+// (the wiki: scrapped and recycled into Astro Assassin), so no one is given it.
 export const isStylesCategory = (category) => category === "Styles" || category === "ChallengeCategory.Style" || String(category ?? "").startsWith("Styles_");
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
@@ -516,7 +525,8 @@ export const styleSchedules = {
   bundleschedule_styles_skullbrite: "AthenaCharacter:cid_341_athena_commando_f_skullbrite",
   bundleschedule_styles_icequeen: "AthenaCharacter:cid_330_athena_commando_f_icequeen",
   bundleschedule_styles_cupiddark: "AthenaCharacter:cid_343_athena_commando_m_cupiddark",
-  bundleschedule_styles_redsuitguy: "AthenaCharacter:cid_370_athena_commando_m_evilsuit"
+  bundleschedule_styles_redsuitguy: "AthenaCharacter:cid_370_athena_commando_m_evilsuit",
+  season8_ruin_schedule: "AthenaCharacter:cid_378_athena_commando_m_furnaceface"
 };
 export function settleStyleSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules() ?? {};

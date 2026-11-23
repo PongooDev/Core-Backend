@@ -28,7 +28,8 @@ import { currentEventsConfig } from "./events.js";
 //   Epic did it isn't recorded, so they stay as the paks have them.
 // - 8.30 (CL-5793395) ships the revert itself (Siphon.Enabled 0, the Drop*OnKill rows 0, GE_DefaultResourceCap's rows
 //   999, the base rates; its new Siphon.InitialHealAmount and HoT rows replace HealAmount for Arena), so it is served
-//   nothing and isn't one of the switch's builds.
+//   nothing and isn't one of the switch's builds. 8.40 (CL-6005771) the same: its AthenaGameData only adds the Smoke
+//   Bomb's rows, and its AthenaResourceRates is 8.30's.
 // The events config's siphon: "build" (the default: as Epic ran each build), "on" (the change on 7.40, 8.00 and 8.20) or
 // "off" (none on 7.40; on 8.00 and 8.20 the rows that reach the core modes alone, as for 8.20 above). Not a seasonal event: the seasonal events switch leaves it alone. Served by the [AssetHotfix]
 // RowUpdate lines (events/contentupdates.js curveRowHotfixLine); a gameserver takes them when it starts.
