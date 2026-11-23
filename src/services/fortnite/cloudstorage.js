@@ -4,6 +4,7 @@ import path from "node:path";
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
+import { isServerAccountName } from "../../accounts/password.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
@@ -22,6 +23,7 @@ import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
 import { creativeRuntimeOptions } from "../links/islands.js";
 import { createNetwork, httpsProxied, sentToHost } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
+import { keychain } from "./storefront.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
@@ -275,11 +277,20 @@ const stompSection = (build, address, port, proxied) => (Number(build) >= pinned
   ? []
   : ["[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""]);
 const defaultNetwork = createNetwork();
+// A gameserver's keys for the encrypted cosmetic paks, 5.21 (CL-4288479) on (PongooDev/CoreV2#547). A player gets them from
+// the keychain at login (storefront.js); a dedicated server doesn't log in that way and reads them from its hotfix:
+// UFortHotfixManager's handler (8.00 0x12BB020) takes the game ini's (GGameIni's) [HotfixedEncryptionKeys] Keys as
+// "<guid>,<base64 key>" and merges them into the content encryption manager, which mounts the paks. Only a gameserver's
+// DefaultGame.ini carries them. Quoted: the ini cuts an unquoted value at "//", which 17 of the keys have.
+const firstKeychainBuild = 4288479;
+const hotfixedKeysSection = (build, gameserver) => (gameserver && Number(build) >= firstKeychainBuild && keychain.length
+  ? ["[HotfixedEncryptionKeys]", ...keychain.map((entry) => `+Keys="${entry.replace(":", ",")}"`), ""].join("\r\n")
+  : "");
 // 5.10's (CL-4225813) and later builds' Vivox voice chat (vivox/service.js gameSection): FVivox::Connect (7.00 0x999130)
 // reads [Vivox] ServerUrl and Domain from the game ini each time it connects, so this file, merged at start-up, points
 // the game's own Vivox at Core's emulator. Nothing for older builds (their URL is in the exe) or while the admin panel's
 // Voice chat (Vivox) switch is off, which leaves the file as it was.
-function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null) {
+function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null, gameserver = false) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
@@ -295,7 +306,8 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
     + forcedQueueSection(build) + chatSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + (vivox?.gameSection?.(req, build) ?? "")
-    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build), ...siphonRows(build)], build);
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build), ...siphonRows(build)], build)
+    + hotfixedKeysSection(build, gameserver);
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
   // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
   // region and first region pick pings.
@@ -315,15 +327,18 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens, network, settings, vivox, islandLinks }) {
+export function cloudStorageRoutes({ tokens, accounts, network, settings, vivox, islandLinks }) {
   const router = express.Router();
+  // A gameserver logs in as its server account (CoreServer{n}) or takes the dedicated server client's token.
+  const isGameserver = (session) => isDedicatedServerToken(session)
+    || Boolean(session?.accountId && isServerAccountName(accounts?.get?.(session.accountId)?.displayName));
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req, network, settings, vivox, islandLinks)).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session))).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req, network, settings, vivox, islandLinks)[req.params.filename];
+    const data = systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session))[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });

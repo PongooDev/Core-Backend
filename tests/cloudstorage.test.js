@@ -661,3 +661,33 @@ test("a large ClientSettings.Sav, sent chunked or sized, is stored whole and lis
     backend.close();
   }
 });
+
+// PongooDev/CoreV2#547: a 5.21+ gameserver (its server account or the dedicated server client) gets the keychain's cosmetic
+// pak keys in its DefaultGame.ini hotfix as [HotfixedEncryptionKeys] Keys="<guid>,<base64 key>"; a player's hotfix and an
+// older build's don't carry them.
+test("a 5.21+ gameserver's DefaultGame.ini hotfix carries the keychain as HotfixedEncryptionKeys", async () => {
+  const backend = await startBackend();
+  try {
+    const { keychain } = await import("../src/services/fortnite/storefront.js");
+    const build800 = "Fortnite/++Fortnite+Release-8.00-CL-5203069 Windows/10.0.22631.1.256.64bit";
+    const engineOf = async (token, userAgent = build800) => (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined, userAgent)).body.toString("utf8");
+    const keysOf = (engine) => {
+      const lines = engine.split("\r\n");
+      const section = lines.indexOf("[HotfixedEncryptionKeys]");
+      return section < 0 ? [] : lines.slice(section + 1).filter((line) => line.startsWith("+Keys="));
+    };
+
+    const dedicated = keysOf(await engineOf(await dedicatedServerToken(backend.port)));
+    assert.equal(dedicated.length, keychain.length);
+    assert.ok(dedicated.length > 0 && dedicated.every((line) => /^\+Keys="[0-9A-F]{32},[A-Za-z0-9+/]{43}="$/i.test(line)));
+
+    const server = await userLogin(backend.port, "CoreServer3");
+    assert.equal(keysOf(await engineOf(server.token)).length, keychain.length);
+    assert.equal(keysOf(await engineOf(server.token, certUserAgent)).length, 0);
+
+    const player = await userLogin(backend.port, "CoreTest");
+    assert.ok(!(await engineOf(player.token)).includes("HotfixedEncryptionKeys"));
+  } finally {
+    backend.close();
+  }
+});
