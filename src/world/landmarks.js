@@ -1,3 +1,4 @@
+import { spring2019Landmarks } from "../events/spring2019.js";
 import { difficultyOf, missionMeets, missionObjectives, questPath } from "./quests.js";
 
 // 5.10's (CL-4240749) Canny Valley Act 1 (Core-Backend #339). Its main quests start at the first Storm Shield Defense
@@ -125,6 +126,13 @@ export const plankertonLandmarks = [
 ];
 
 const landmarksByTheater = { 1: stonewoodLandmarks, 2: plankertonLandmarks, 3: landmarkMissions };
+// 8.00's and 8.20's Spring 2019 landmarks (events/spring2019.js: Love Storm's trebuchet, Yarrr!'s Pirate Cove and Walk the
+// Plank). Their objectives ask for no zone or theater, and a player is in one campaign theater or another, so each goes in
+// every one of the four, after the theater's own landmarks, at its first zone with a free tile (🟡 Core's: where Epic's
+// world info put them isn't kept). Only a holder of the quest sees the tile, and only while the event's quest is held.
+// They never take a tile with a fixed mission: Stonewood's first zones are its story's fixed tiles (the onboarding
+// missions), so there they go in zones 3 to 5.
+const eventLandmarks = spring2019Landmarks.map((landmark) => ({ ...landmark, randomTileOnly: true }));
 // A main theater's number (Stat.Theater.PvE0<n>), 0 for the others.
 const theaterOf = (data) => (data.runtimeInfo.theaterType === "Standard" ? Number((data.runtimeInfo.theaterTags?.gameplayTags ?? [])
   .map(({ tagName }) => /^Stat\.Theater\.PvE0(\d)$/.exec(tagName)?.[1]).find(Boolean) ?? 0) : 0);
@@ -140,23 +148,25 @@ const zoneOf = (region, theater) => Number((region.regionTags?.gameplayTags ?? [
 // theater as it was.
 export function placeLandmarks(data, world) {
   const theater = theaterOf(data);
-  const landmarks = landmarksByTheater[theater];
-  if (!landmarks) return;
+  if (!theater) return;
+  const landmarks = [...(landmarksByTheater[theater] ?? []), ...eventLandmarks];
   // A zone's regions by zone, then by difficulty (Stonewood's zone 3 is Theater_Start_Zone3 and a harder Start_Zone4 region).
   const rowOf = (region) => region.missionData.difficultyWeights[0].difficultyInfo.rowName;
   const zones = data.regions.filter((region) => zoneOf(region, theater) && region.missionData?.difficultyWeights?.length === 1)
     .sort((a, b) => zoneOf(a, theater) - zoneOf(b, theater) || difficultyOf(rowOf(a)) - difficultyOf(rowOf(b)));
   const taken = new Set();
   // A Normal tile of the zone; Stonewood's zones have none (every one of their tiles is AlwaysActive), so there one of those.
-  const freeTile = (region) => ["Normal", "AlwaysActive"].map((type) => region.tileIndices
-    .find((index) => data.tiles[index].tileType === type && !data.tiles[index].requirements?.activeQuestDefinition && !taken.has(index)))
+  const freeTile = (region, randomTileOnly = false) => ["Normal", "AlwaysActive"].map((type) => region.tileIndices
+    .find((index) => data.tiles[index].tileType === type && !data.tiles[index].requirements?.activeQuestDefinition && !taken.has(index)
+      && !(randomTileOnly && data.tiles[index].missionWeightOverrides?.length)))
     .find((index) => index !== undefined);
   for (const landmark of landmarks) {
     const quest = questPath(landmark.questId);
     const [objective] = missionObjectives(landmark.questId);
     if (!quest || !objective || !world.missionGenerators?.[landmark.missionGenerator] || !world.zoneThemes?.[landmark.zoneTheme]) continue;
-    const zone = zones.find((region) => missionMeets(objective, landmark.missionGenerator, rowOf(region)) && freeTile(region) !== undefined);
-    const tileIndex = zone && freeTile(zone);
+    const zone = zones.find((region) => missionMeets(objective, landmark.missionGenerator, rowOf(region))
+      && freeTile(region, landmark.randomTileOnly) !== undefined);
+    const tileIndex = zone && freeTile(zone, landmark.randomTileOnly);
     if (tileIndex === undefined) continue;
     taken.add(tileIndex);
     const tile = data.tiles[tileIndex];

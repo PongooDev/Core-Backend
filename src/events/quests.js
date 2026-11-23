@@ -10,6 +10,7 @@ import { roadTripLineQuests } from "./roadtrip2018.js";
 import { birthdayQuests } from "./birthday2018.js";
 import { mutantStorms2018Quests, mutantStormsQuests } from "./mutantstorms.js";
 import { luckOfTheStormQuests, springQuests } from "./spring2018.js";
+import { loveStormQuests, spring2019Phase1, spring2019Phase2, yarrrQuests } from "./spring2019.js";
 import { intoTheStormQuests } from "./storm2018.js";
 import { winterQuests } from "./winter2017.js";
 
@@ -30,14 +31,16 @@ import { winterQuests } from "./winter2017.js";
 // 5.0's Road Trip the HordeQuest progression and its hidden zone gates (and 5.21's to 5.41's Weekly Horde Challenges', events/roadtrip2018.js); 5.10's Birthday its two
 // AnniversaryQuest_2018 quests (events/birthday2018.js); 6.00's Cram Session its four AutumnQuest lines and its five
 // repeatable GenericQuests (events/cramsession2018.js); 7.10's Frostnite its WinterQuest_2018 quests and every week's
-// challenge pair (events/frostnite2018.js).
+// challenge pair (events/frostnite2018.js); 8.00's and 8.20's Spring 2019 a line per chapter, keyed on the chapter's flag
+// (Love Storm's LoveQuest_2019, Yarrr!'s PirateQuest_2019, events/spring2019.js), as each chapter's days are its own.
 // A function: roadtrip2018.js reads Season 5's replay clock (store/itemshop.js), whose imports come back here.
 const questLines = () => [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
   { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests },
   { flag: spring2018, starting: [...springQuests, ...luckOfTheStormQuests] }, { flag: storm2018, starting: intoTheStormQuests },
   { flag: blockbuster2018, starting: blockbusterQuests }, { flag: roadTrip2018, starting: roadTripLineQuests },
   { flag: birthday2018, starting: birthdayQuests }, { flag: cramSession2018, starting: cramSessionQuests },
-  { flag: frostnite2018, starting: frostniteLineQuests }];
+  { flag: frostnite2018, starting: frostniteLineQuests }, { flag: spring2019Phase1, starting: loveStormQuests },
+  { flag: spring2019Phase2, starting: yarrrQuests }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))

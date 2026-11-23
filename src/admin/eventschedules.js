@@ -155,8 +155,8 @@ export const eventCards = [
   { id: "siphon", kind: "choice", choice: "siphon", seasons: [7, 8], name: "Siphon and material changes (Solo, Duos, Squads)", builds: "7.40 – 8.20", ranges: [[5046157, 5625478]], always: true,
     about: "Update v7.40's Pop-up Cup rules in the core modes: 50 health or shield and 50 of each material per elimination, a 500 cap on each material and 40% more from harvesting. On in 7.40 and 8.00, as Epic ran them; Update v8.20 took it out of the core modes (Arena kept it), so 8.20 has it off. Restart the game and the server after a change. On 8.20 off leaves its paks' 500 cap and the materials dropped on elimination, which no hotfix row can take out of the core modes alone.",
     flags: ["AthenaGameData Default.Siphon.* (hotfix)"] },
-  // 8.00's (events/events.js): Season 8's lobby, its only event flag (8.00 has no Save the World seasonal event; its other
-  // new flag, EventFlag.Spring2019, is Save the World's quest map and isn't served).
+  // 8.00's (events/events.js): Season 8's lobby; its other new flag, EventFlag.Spring2019, is Save the World's (the
+  // spring2019 card).
   // 8.00's Block (events/block.js): its two builds on their dates.
   { id: "block800", kind: "dated", dated: "block800", seasons: [8], name: "The Block's community builds", builds: "8.00", ranges: [[5203069, 5203069]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Cryptic Castle goes up", endLabel: "Turtle Temple goes up",
@@ -170,6 +170,10 @@ export const eventCards = [
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Season 8's High Stakes Challenges, with the Getaway back (Schedule_LTM_Heist_V2: play and win the Getaway, use a Grappler; the Heist back bling and its styles), 14 to 19 March 2019 by the Fortnite Wiki. 8.20 came out on 27 March, after them, so on Season 8's replay they run before 8.20's day; the admin's times or the switch serve them whenever. 🟡 00:00 UTC, to the last day's end.",
     flags: ["EventFlag.LTM_HighStakes", "CalendarEvent_Season8_HighStakes"] },
+  // 8.00's and 8.20's Save the World Spring 2019 (events/spring2019.js, Core-Backend #408).
+  { id: "spring2019", kind: "choice", choice: "spring2019", seasons: [8], name: "Love Storm and Yarrr! (Save the World)", builds: "8.00 – 8.20", ranges: [[5203069, 5625478]],
+    about: "Save the World's spring event of 2019 on the quest map's event pages. Love Storm (Update v8.00, 28 February 2019): the LoveQuest_2019 line with its trebuchet landmark, on 8.00 and 8.20. Yarrr! (Update v8.20, 27 March 2019): the PirateQuest_2019 line with the Pirate Cove and Walk the Plank landmarks, Corsair, Jack's Revenge and Blakebeard the Blackhearted, on 8.20 only. The quests pay Spring Tickets and Gold; each landmark mission is on a tile in every campaign theater that only a player holding its quest sees. Epic's dates follow Season 8's replay, so Yarrr! is on from its 27 March to the season's end. 🟡 No hours (00:00 UTC) and no recorded end (both run to the season's end).",
+    flags: ["EventFlag.Spring2019", "EventFlag.Spring2019.Phase1", "EventFlag.Spring2019.Phase2 (8.20)"] },
   { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00 – 8.20", ranges: [[5203069, 5625478]],
     about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 and 8.20 carry no other Battle Royale lobby flag.",
     flags: ["EventFlag.LobbySeason8"] }
@@ -181,9 +185,10 @@ const modeLabels = { off: "Off", before: "Before the event", dates: "Epic's date
 export const meteorStrikePhases = [["none", "Comet only"], ["broadcast", "TVs show static"], ["meteors", "Meteors"], ["impact", "Meteors at their most"]];
 export const iceKingSnowPhases = [["event", "Follows the storm"], ["none", "Season 7's own snow"], ["full", "Island under snow"]];
 export const siphonPhases = [["build", "As Epic ran it"], ["on", "On"], ["off", "Off"]];
+export const spring2019Phases = [["dates", "Epic's dates"], ["on", "On"], ["off", "Off"]];
 // The choice cards' settings: the events config's key, its phases and its default.
 const choices = { meteorStrike: { phases: meteorStrikePhases, fallback: "meteors" }, iceKingSnow: { phases: iceKingSnowPhases, fallback: "event" },
-  siphon: { phases: siphonPhases, fallback: "build" } };
+  siphon: { phases: siphonPhases, fallback: "build" }, spring2019: { phases: spring2019Phases, fallback: "dates" } };
 const choiceOf = (card) => choices[card.choice ?? "meteorStrike"];
 const eventModeNames = { force_fortnitemares: "forces Fortnitemares 2017", force_mutantstorms: "forces the Mutant Storms", force_winter2017: "forces Survive the Holidays",
   custom: "serves only the flags listed under Advanced" };
@@ -233,6 +238,11 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
       if (key === "siphon") {
         return phase[0] === "build" ? { tone: "dates", nowLabel: "on", onRanges: [[5046157, 5203069]], text: "Follows Epic's: on in 7.40 and 8.00, off in 8.20 (Update v8.20 took it out of the core modes)" }
           : phase[0] === "on" ? { tone: "on", nowLabel: "on", text: "On now: on 7.40, 8.00 and 8.20" } : { tone: "off", text: "Off" };
+      }
+      if (key === "spring2019") {
+        if (phase[0] === "off") return { tone: "off", text: "Off" };
+        if (phase[0] === "on") return { tone: "on", nowLabel: "on", text: "On now: Love Storm on 8.00 and 8.20, Yarrr! on 8.20" };
+        return { tone: "dates", nowLabel: "on", text: "Follows Epic's dates on Season 8's replay: Love Storm all season (8.00 and 8.20), Yarrr! from 27 March (8.20)" };
       }
       if (key === "iceKingSnow") {
         return phase[0] === "event" ? { tone: "dates", text: "Follows the storm: Season 7's own snow before it, the island under snow after it" }

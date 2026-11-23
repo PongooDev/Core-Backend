@@ -117,7 +117,7 @@ test("Season 8's lobby: 8.00's and 8.20's card and flag, and what their players 
   const schedules = eventSchedules(base);
   const entry = schedules.find((item) => item.id === "season8Lobby");
   assert.deepEqual([entry.kind, entry.state.tone, entry.state.nowLabel], ["build", "dates", "on"]);
-  assert.equal(buildsNow([{ version: "8.00", cl: 5203069 }], schedules, base.storm)[0].sees, "Siphon and material changes (Solo, Duos, Squads) · Season 8 lobby");
+  assert.equal(buildsNow([{ version: "8.00", cl: 5203069 }], schedules, base.storm)[0].sees, "Siphon and material changes (Solo, Duos, Squads) · Love Storm and Yarrr! (Save the World) · Season 8 lobby");
   assert.equal(eventSchedules({ ...base, seasonalEvents: false }).find((item) => item.id === "season8Lobby").state.tone, "off");
 });
 
@@ -131,7 +131,7 @@ test("the Events page's API: the overview's plain words, the one control and wha
     assert.equal(card(overview, "blockbuster2018").state.tone, "dates");
     assert.match(sees(overview, "4.5"), /^Blockbuster/);
     assert.equal(sees(overview, "1.7.2"), "No event: the base game");
-    assert.equal(sees(overview, "8.00"), "Siphon and material changes (Solo, Duos, Squads) · The Block's community builds: Cryptic Castle, by HellraiserGaming · Season 8 lobby");
+    assert.equal(sees(overview, "8.00"), "Siphon and material changes (Solo, Duos, Squads) · The Block's community builds: Cryptic Castle, by HellraiserGaming · Love Storm and Yarrr! (Save the World) · Season 8 lobby");
     // The Birthday Challenges as 5.10 ran them: 5.10's players get them, 5.21's don't.
     assert.match(sees(overview, "5.10"), /Birthday Challenges/);
     assert.doesNotMatch(sees(overview, "5.21"), /Birthday Challenges/);

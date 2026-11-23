@@ -8,6 +8,7 @@ import { roadTripEventQuests } from "./roadtrip2018.js";
 import { birthdayEventQuests } from "./birthday2018.js";
 import { cramSessionEventQuests } from "./cramsession2018.js";
 import { frostniteEventQuests } from "./frostnite2018.js";
+import { spring2019EventQuests } from "./spring2019.js";
 import { stormEventQuests } from "./storm2018.js";
 import { winterBookPages, winterEventQuests } from "./winter2017.js";
 
@@ -42,7 +43,8 @@ export const candy = "AccountResource:eventcurrency_candy";
 export function eventQuests() {
   return [...(isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : []), ...mutantStormsEventQuests(),
     ...winterEventQuests(), ...mutantStorms2018EventQuests(), ...springEventQuests(), ...stormEventQuests(),
-    ...blockbusterEventQuests(), ...roadTripEventQuests(), ...birthdayEventQuests(), ...cramSessionEventQuests(), ...frostniteEventQuests()];
+    ...blockbusterEventQuests(), ...roadTripEventQuests(), ...birthdayEventQuests(), ...cramSessionEventQuests(), ...frostniteEventQuests(),
+    ...spring2019EventQuests()];
 }
 
 // The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its

@@ -511,14 +511,20 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // EventFlag.LobbySeason8 (Items/Events/Shared/LobbyBG_Season8, the lobby background takeover that puts the frontend
 // lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all) and
 // EventFlag.Spring2019 (Save the World's Spring 2019 quest map: QuestMap2's Spring2019QuestMap). 8.00 serves
-// LobbySeason8 and nothing of 7.40's season: the Season 7 lobby, the Season 7 Warmup's alerts, Frostnite, the 14 Days
-// of Fortnite, the Ice Storm and Showtime Challenges and the Overtime Challenges all end with 7.40 (their flags are
-// still cooked into 8.00's paks, unused). Its map's plain calendar names are 7.40's (the Block's slabs, the
-// earthquakes' EQ, EQ2 and EQH, the Wailing Woods' HP and HP1).
+// LobbySeason8, Spring 2019's Love Storm (events/spring2019.js) and nothing of 7.40's season: the Season 7 lobby, the
+// Season 7 Warmup's alerts, Frostnite, the 14 Days of Fortnite, the Ice Storm and Showtime Challenges and the Overtime
+// Challenges all end with 7.40 (their flags are still cooked into 8.00's paks, unused). Its map's plain calendar names
+// are 7.40's (the Block's slabs, the earthquakes' EQ, EQ2 and EQH, the Wailing Woods' HP and HP1).
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
 export const lteS7Overtime = "EventFlag.LTE_S7_OverTime";
+// Save the World's Spring 2019 (events/spring2019.js): EventFlag.Spring2019 and Love Storm's Phase1 on 8.00 and 8.20,
+// Yarrr!'s Phase2 on 8.20, each from its update's day on Season 8's replay.
+export const spring2019 = "Spring2019";
+export const spring2019Flag = "EventFlag.Spring2019";
+export const spring2019Phase1 = "EventFlag.Spring2019.Phase1";
+export const spring2019Phase2 = "EventFlag.Spring2019.Phase2";
 // 8.20's Season 8 High Stakes Challenges (events/highstakes2019.js).
 export const ltmHighStakes = "EventFlag.LTM_HighStakes";
 export const frostnite = "EventFlag.Frostnite";
@@ -719,6 +725,9 @@ const events = [
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
   // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's too.
   { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build820 },
+  { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build820 },
+  { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build820 },
+  { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build820 },
   { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build740 },
   { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build740 },
   { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build740 },
@@ -749,6 +758,13 @@ const birthdayDatedModes = ["dates", "custom", "off"];
 // 6.21's Butterfly on a schedule (events/butterfly.js; "off", its default, and "before" leave POI0 the build's own): POI0
 // is then one of its steps, served until the Butterfly, not the build's own for good.
 const butterflyScheduledModes = ["dates", "custom"];
+
+// An event whose flags come on by date within its builds registers when each is served (events/spring2019.js): that
+// module reads the season's replay clock (store/itemshop.js), whose imports lead back here, so it can't be imported here.
+const flagSchedules = new Map();
+export function scheduleEventFlags(name, served) {
+  flagSchedules.set(name, served);
+}
 
 let eventsConfigProvider = null;
 
@@ -799,7 +815,8 @@ export function activeEventFlags(changelist = currentBuild()) {
   const birthdayDated = birthdayDatedModes.includes(config?.datedFlags?.birthday?.mode);
   const butterflyScheduled = number === build621 && butterflyScheduledModes.includes(config?.datedFlags?.butterfly?.mode);
   const own = events.filter((event) => runsOn(event, number) && !(birthdayDated && event.flag === anniversary2018BR)
-    && !(butterflyScheduled && event.flag === islandPoi(0))).map((event) => event.flag);
+    && !(butterflyScheduled && event.flag === islandPoi(0)) && (flagSchedules.get(event.name)?.(event.flag, number) ?? true))
+    .map((event) => event.flag);
   // 6.21's Butterfly held before the event (Core-Backend #354, events/butterfly.js): the map's pre-event state over the
   // switches, POI0 served and none of what comes after it.
   const butterflyHeld = number === build621 && config?.datedFlags?.butterfly?.mode === "before";
