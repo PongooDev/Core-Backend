@@ -47,9 +47,9 @@ test("every event flag of Season 4's paks is in the catalog, in a group", () => 
     // drain (CL-4526925's server-assets pak),
     "BR_S6_Island_Crack", "LTM_LilKevin", "Fortnitemares_Part4", "BR_S6_Island_Drain",
     // and 7.00's two (events/events.js), and 7.10's two, and 7.20's one, and 7.30's one, and 7.40's one, and 8.20's High
-    // Stakes Challenges (8.00's LobbySeason8 and Spring2019 aren't switched),
+    // Stakes Challenges and 8.30's Buccaneer's Bounty Challenges (8.00's LobbySeason8 and Spring2019 aren't switched),
     "LobbySeason7", "WinterBattleBus", "LTM_14DaysOfFortnite", "Frostnite", "LTM_WinterDeimos", "LTE_Festivus", "LTE_S7_OverTime",
-    "LTM_HighStakes"].map((name) => `EventFlag.${name}`)
+    "LTM_HighStakes", "LTE_BootyBay"].map((name) => `EventFlag.${name}`)
     // and that scripting's POI0 and POI1, which aren't EventFlag.* (events/events.js islandPoi).
     .concat(["POI0", "POI1"]);
   for (const flag of scanned) assert.ok(season4Flag(flag), flag);

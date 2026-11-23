@@ -54,8 +54,8 @@ test("8.00 is known, on its own data, Season 8's first build", () => {
   assert.equal(dataBuild("5150000"), v740, "a build between 7.40 and 8.00 plays on 7.40's");
   assert.equal(dataBuild("5300000"), v800, "a build between 8.00 and 8.20 plays on 8.00's");
   assert.equal(releasedOn(v800), Date.UTC(2019, 1, 28));
-  assert.equal(buildOfSeason(8), "5625478", "8.20 is Season 8's newest (tests/build820.test.js)");
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.20)");
+  assert.equal(buildOfSeason(8), "5793395", "8.30 is Season 8's newest (tests/build830.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.30)");
   const season = inBuild(v800, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels, season.numSeasonLevels], [8, "BRSeason8", 100, 100]);
   assert.equal(inBuild(v800, seasonOfBuild), 8);

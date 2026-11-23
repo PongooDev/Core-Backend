@@ -204,6 +204,10 @@ export function purchaseRoutes(context) {
   };
   router.get("/catalog/api/shared/bulk/offers", requireAuth(tokens), bulkOffers);
   router.get("/api/shared/bulk/offers", requireAuth(tokens), bulkOffers);
+  // 8.30 (CL-5793395) adds the namespaced form beside it, /api/shared/namespace/`namespace/bulk/offers (FOnlineCatalog
+  // ServiceMcp's routes, 0x4624D0); which one it asks isn't known without a live login, so both answer the same.
+  router.get("/catalog/api/shared/namespace/:namespace/bulk/offers", requireAuth(tokens), bulkOffers);
+  router.get("/api/shared/namespace/:namespace/bulk/offers", requireAuth(tokens), bulkOffers);
 
   // The price engine's promotions for those offers (IOnlinePriceEngineService::QueryOfferPromotions, POST
   // <priceengine>/api/shared/offers/price, 3.3 0x4B60A0): {lineOffers: [{offerId, price, appliedRules}]}, each a sale on

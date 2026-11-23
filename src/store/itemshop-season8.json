@@ -1,5 +1,5 @@
 {
- "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.fandom.com, MediaWiki API; February 28th 2019 - May 8th 2019, Season 8's whole run, 70 days; February 28th 2019 from its Part 1 and Part 2 (the pages are titled \"... - Part 1\" and \"... - Part 2\"), Part 2's items after Part 1's, as 7.40's 14 February was; the shop at UTC midnight), read 2026-11-20, the items and prices as charged that day (featured = the wiki's featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki's ImageCycler) listed; the items of one tile carry {tile: n}, the same n for the day's items that shared the tile, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back; other callouts (New!, \"Selectable Styles!\", \"Select your Team!\", \"Unlockable Styles!\") are left out). fnbr.co was not cross-checked. Each item is matched to 8.00's (CL-5203069) data by its display name and type (the wiki's <small> markup stripped), then to 8.20's (CL-5625478) for the names 8.00 lacks (re-read 2026-11-23 from the same cached pages); a build serves the ones its own data has. Items neither has are left out (Aura, Guild, Pastel, Supersonic, Nitehare, the Black Widow's and Star-Lord's sets, the music...); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too. 28 February's Part 1 is 7.40's last shop, before Update v8.00, and Part 2 Season 8's launch shop: both are in, as the day had two shops.",
+ "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.fandom.com, MediaWiki API; February 28th 2019 - May 8th 2019, Season 8's whole run, 70 days; February 28th 2019 from its Part 1 and Part 2 (the pages are titled \"... - Part 1\" and \"... - Part 2\"), Part 2's items after Part 1's, as 7.40's 14 February was; the shop at UTC midnight), read 2026-11-20, the items and prices as charged that day (featured = the wiki's featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki's ImageCycler) listed; the items of one tile carry {tile: n}, the same n for the day's items that shared the tile, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back; other callouts (New!, \"Selectable Styles!\", \"Select your Team!\", \"Unlockable Styles!\") are left out). fnbr.co was not cross-checked. Each item is matched to 8.00's (CL-5203069) data by its display name and type (the wiki's <small> markup stripped), then to 8.20's (CL-5625478) and 8.30's (CL-5793395) for the names 8.00 lacks (re-read 2026-11-23 from the same cached pages); a build serves the ones its own data has. Items none of them has are left out (Aura, Guild, Pastel, Supersonic, Nitehare, the Black Widow's and Star-Lord's sets, the music...); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too. 28 February's Part 1 is 7.40's last shop, before Update v8.00, and Part 2 Season 8's launch shop: both are in, as the day had two shops.",
  "days": [
   {
    "date": "2019-02-28",
@@ -3116,6 +3116,10 @@
       "tile": 2,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_191_banana",
+     800
     ]
    ],
    "daily": [
@@ -3217,6 +3221,10 @@
     [
      "AthenaDance:eid_jazzdance",
      500
+    ],
+    [
+     "AthenaItemWrap:wrap_042_bandageninja",
+     300
     ]
    ]
   },
@@ -3287,6 +3295,10 @@
      800
     ],
     [
+     "AthenaDance:eid_dreamfeet",
+     500
+    ],
+    [
      "AthenaGlider:glider_id_010_storm",
      1200
     ],
@@ -3304,24 +3316,39 @@
    "date": "2019-04-14",
    "featured": [
     [
+     "AthenaCharacter:cid_387_athena_commando_f_golf",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_190_golfclub",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
      "AthenaCharacter:cid_359_athena_commando_f_aztec",
      1200,
      {
-      "tile": 1
+      "tile": 2
      }
     ],
     [
      "AthenaCharacter:cid_358_athena_commando_m_aztec",
      1200,
      {
-      "tile": 1
+      "tile": 2
      }
     ],
     [
      "AthenaPickaxe:pickaxe_id_170_aztec",
      800,
      {
-      "tile": 1,
+      "tile": 2,
       "banner": "CollectTheSet"
      }
     ],
@@ -3329,7 +3356,7 @@
      "AthenaGlider:glider_id_127_aztec",
      800,
      {
-      "tile": 1,
+      "tile": 2,
       "banner": "CollectTheSet"
      }
     ],
@@ -3431,6 +3458,10 @@
      1500
     ],
     [
+     "AthenaMusicPack:musicpack_010_runningman",
+     200
+    ],
+    [
      "AthenaPickaxe:pickaxe_id_134_snowman",
      500
     ],
@@ -3441,6 +3472,10 @@
     [
      "AthenaCharacter:cid_124_athena_commando_f_auroraglow",
      800
+    ],
+    [
+     "AthenaItemWrap:wrap_043_bandolette",
+     300
     ]
    ]
   },
@@ -3541,6 +3576,10 @@
      800
     ],
     [
+     "AthenaDance:eid_breakboy",
+     500
+    ],
+    [
      "AthenaBackpack:bid_220_farmerfemale",
      200
     ]
@@ -3593,6 +3632,10 @@
     [
      "AthenaCharacter:cid_366_athena_commando_m_tropical",
      1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_192_palmtree",
+     800
     ],
     [
      "AthenaPickaxe:pickaxe_id_175_tropical",
@@ -3713,6 +3756,10 @@
      800
     ],
     [
+     "AthenaDance:eid_bunnyhop",
+     500
+    ],
+    [
      "AthenaGlider:glider_id_098_sup",
      500
     ]
@@ -3740,6 +3787,10 @@
     [
      "AthenaCharacter:cid_269_athena_commando_m_wizard",
      1500
+    ],
+    [
+     "AthenaDance:eid_bunnyhop",
+     500
     ],
     [
      "AthenaPickaxe:pickaxe_id_038_carrot",
@@ -4359,6 +4410,10 @@
     [
      "AthenaPickaxe:sicklebatpickaxe",
      800
+    ],
+    [
+     "AthenaItemWrap:wrap_036_evilsuit",
+     300
     ]
    ]
   },
@@ -4597,8 +4652,16 @@
      800
     ],
     [
+     "AthenaDance:eid_dreamfeet",
+     500
+    ],
+    [
      "AthenaCharacter:cid_357_athena_commando_m_orangecamo",
      1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_191_banana",
+     800
     ],
     [
      "AthenaDance:eid_scorecard",

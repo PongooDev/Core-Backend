@@ -503,13 +503,20 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 //   15 February 2019 as the Fallen Love Ranger Pack: "the outfit, backbling, and V-Buck Challenges", "earn up to 2,000
 //   V-Bucks"): complete 1, 3, 5, 7, 10 and 14 daily challenges for 100 to 500 V-Bucks each, 2,000 in all. 7.30's data
 //   already has it (not the outfit).
-export const isStylesCategory = (category) => category === "Styles" || String(category ?? "").startsWith("Styles_");
+// 8.30 (CL-5793395) adds BundleSchedule_Styles_RedSuitGuy, "Inferno Challenges", "Additional challenges for Inferno."
+// (CID_370_Athena_Commando_M_EvilSuit, new in 8.30's data): complete 1, 3, 5 and 7 daily challenges for 100 to 400
+// V-Bucks, 10 for the Crimson Scythe pickaxe (Pickaxe_ID_177_EvilSuit) and 14 for the Burnmark wrap (Wrap_037_EvilSuit2).
+// Season 8's builds tag these ChallengeCategory.Style instead of a CategoryID (the extractor writes the tag), which the
+// seasons' progressive schedules share, so only the schedules named below are given as an outfit's. 8.00's and 8.20's
+// overlays predate the extractor reading the tag and have none of these schedules.
+export const isStylesCategory = (category) => category === "Styles" || category === "ChallengeCategory.Style" || String(category ?? "").startsWith("Styles_");
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
   bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween",
   bundleschedule_styles_skullbrite: "AthenaCharacter:cid_341_athena_commando_f_skullbrite",
   bundleschedule_styles_icequeen: "AthenaCharacter:cid_330_athena_commando_f_icequeen",
-  bundleschedule_styles_cupiddark: "AthenaCharacter:cid_343_athena_commando_m_cupiddark"
+  bundleschedule_styles_cupiddark: "AthenaCharacter:cid_343_athena_commando_m_cupiddark",
+  bundleschedule_styles_redsuitguy: "AthenaCharacter:cid_370_athena_commando_m_evilsuit"
 };
 export function settleStyleSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules() ?? {};

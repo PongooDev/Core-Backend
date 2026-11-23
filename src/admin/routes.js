@@ -203,7 +203,8 @@ const eventBuilds = [
   { version: "7.30", cl: 4834550, event: "Showtime, Frostnite" },
   { version: "7.40", cl: 5046157, event: "Share the Love's Overtime, the earthquakes, Frostnite" },
   { version: "8.00", cl: 5203069, event: "Season 8 lobby" },
-  { version: "8.20", cl: 5625478, event: "Season 8 lobby, High Stakes" }
+  { version: "8.20", cl: 5625478, event: "Season 8 lobby, High Stakes" },
+  { version: "8.30", cl: 5793395, event: "Season 8 lobby, Buccaneer's Bounty" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin

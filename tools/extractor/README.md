@@ -538,6 +538,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `alterations.json`, `collectionbook.json`,
   `homebasenodes.json`, `upgrades.json`, `quests.json`, `objectivestats.json` and `world.json` (Save the World's Yarrr!
   quests, the Pirate Llama and Blakebeard's hero quest among them).
+  8.30's (CL-5793395, Update v8.30) is `4.23.0-5793395+++Fortnite+Release-8.30` (no `Build.version`; FModel reads its paks
+  as UE 4.23, and a 4.22 run gave the same data; the build folder is `windows-8.30\8.30`) with 8.20's full data (Cert's
+  files with `gamedata/5625478` applied) as the fifth argument and the main key FModel's settings hold for its build
+  folder. A full install: pakchunk10 and its s1 to s8, pakchunk11 and pakchunk11_s1 (8.30's names for chunks 0 and 1), the
+  language paks and the keyed pakchunk1000 to 1004, of which the keychain opens all but 1001. Its mission alerts are still
+  the fifth argument's. One extractor change: Season 8's challenge schedules name their category as CategoryTag (a
+  gameplay tag: the outfits' BundleSchedule_Styles_* and the progressive schedules are ChallengeCategory.Style) instead of
+  CategoryID; the tag is written as `category`, and ChallengeCategory.Style schedules are kept as the Styles ones were, so
+  8.30's data has the outfits' challenges again (8.00's and 8.20's overlays, made before, have none). Against 8.20 ten
+  files change: `athena.json` (26 cosmetics: Inferno, Ruin, Birdie, Stealth Reflex, Buccaneer's Bounty's rewards...; 8.00's
+  Wild Streak and Rose Glow back, in a pak the keychain opens; Fierce Cloudpuff's loading screen gone; the Buccaneer's
+  Bounty and Inferno Challenges), `items.json`, `characters.json` (BombSquad Kyle), `banners.json`, `fabricator.json`,
+  `alterations.json`, `collectionbook.json`, `upgrades.json`, `quests.json` (20 achievement and filler quests' rewards) and
+  `world.json` (Lost in Transit's mission generator and primary mission, MissionGen_EliminateAndCollect_WR).
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

@@ -48,6 +48,8 @@ var game = engine switch
     // and its curve tables are 4.22's (ECurveTableMode: read as 4.21, the Research page's ResearchSystemUpgradesTable and the
     // upgrade level costs, ratings and recycle XP came out empty).
     "4.22" => EGame.GAME_UE4_22,
+    // 8.30 (CL 5793395) is UE 4.23, as FModel reads its paks.
+    "4.23" => EGame.GAME_UE4_23,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
@@ -1350,7 +1352,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     {
         var schedule = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
-            ["category"] = properties["CategoryID"]?.GetValue<string>() ?? "",
+            // Season 8's builds name it CategoryTag instead, a gameplay tag written as is (8.20's and 8.30's
+            // BundleSchedule_Styles_* and the seasons' progressive schedules: ChallengeCategory.Style); 8.00's and 8.20's
+            // overlays were made before this, so they have "".
+            ["category"] = properties["CategoryID"]?.GetValue<string>() ?? properties["CategoryTag"]?["TagName"]?.GetValue<string>() ?? "",
             ["bundles"] = (properties["ScheduleEntries"]?.AsArray() ?? []).Select(entry => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
             {
                 ["bundle"] = AssetName(AssetPath(entry!["ChallengeBundle"])).ToLowerInvariant(),
@@ -1775,9 +1780,10 @@ if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwa
         .Concat(challengeSchedules.Where(entry => ((SortedDictionary<string, object>)entry.Value).ContainsKey("eventName")).Select(entry => entry.Key))
         // and an outfit's own challenges (CategoryID "Styles": 5.30's BundleSchedule_Styles_Tomatohead and 6.02's
         // BundleSchedule_Styles_SkullTrooper, "Earn additional styles for Skull Trooper"), which the outfit's owners get.
-        // 6.20 (CL-4497486) gives each its own CategoryID, "Styles_SkullTrooper" and "Styles_Tomatohead".
+        // 6.20 (CL-4497486) gives each its own CategoryID, "Styles_SkullTrooper" and "Styles_Tomatohead"; Season 8 the
+        // tag ChallengeCategory.Style, which the seasons' progressive schedules share (kept anyway as the season's).
         .Concat(challengeSchedules.Where(entry => (string)((SortedDictionary<string, object>)entry.Value)["category"] is var category
-            && (category == "Styles" || category.StartsWith("Styles_", StringComparison.Ordinal))).Select(entry => entry.Key))
+            && (category == "Styles" || category == "ChallengeCategory.Style" || category.StartsWith("Styles_", StringComparison.Ordinal))).Select(entry => entry.Key))
         // and the earlier seasons' schedules their end doesn't take (6.01's and 6.02's files: Season 5's ProgressiveA and
         // B, Drift's and Ragnarok's), each marked with the season that gave it.
         .Concat(keptSchedules.Keys)

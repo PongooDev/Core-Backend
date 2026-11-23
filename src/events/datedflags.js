@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteS7Overtime, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteBootyBay, lteS7Overtime, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -14,6 +14,8 @@ export const showtimeCalendarEvent = "CalendarEvent_Season7_Festivus";
 export const overtimeCalendarEvent = "CalendarEvent_Season7_OverTime";
 // 8.20's Schedule_LTM_Heist_V2 names its calendar event beside its flag (CalendarEventName).
 export const highStakes2019CalendarEvent = "CalendarEvent_Season8_HighStakes";
+// 8.30's Schedule_PirateParty (the Buccaneer's Bounty Challenges) the same way.
+export const buccaneersBountyCalendarEvent = "CalendarEvent_Season8_BootyBay";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -153,6 +155,12 @@ const blockSteps820 = [
   step("slab2", "Mysterious Mansion, by FurryNenja", [blockSlab(2)], at7("2019-04-02"), at7("2019-04-03")),
   step("slab1Again", "Tropical Treetops again, by GingerJay91", [blockSlab(1)], at7("2019-04-03"), null)
 ];
+// 8.30 (CL-5793395, Update v8.30, 10 April 2019): SLAB_1 streams Athena/Maps/Block/8_30's Block_25x25_LlamaSphinx
+// ("Llama Sphinx", Prudiz), SLAB_2 Block_25x25_CordialCourtyard ("Cordial Courtyard", GonzoTheWizard), SLAB_3 the blank
+// Block (not served). The Fortnite Wiki: Llama Sphinx on Update v8.30's day, Cordial Courtyard on 17 April (Update
+// v8.40's day; 8.30's paks already have it), on to the season's end. 8.30 came out mid-season, so its first build is up
+// from the lap's first day, as 8.20's.
+const blockBuilds830 = [["2019-02-28", "Llama Sphinx, by Prudiz"], ["2019-04-17", "Cordial Courtyard, by GonzoTheWizard"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -188,6 +196,10 @@ const overtimeChallengesAt = Date.parse("2019-02-14T00:00:00.000Z");
 // UTC, the last day's end).
 const highStakes2019At = Date.parse("2019-03-14T00:00:00.000Z");
 const highStakes2019End = Date.parse("2019-03-20T00:00:00.000Z");
+// 8.30's Buccaneer's Bounty Challenges (events/buccaneersbounty.js): the Fortnite Wiki's event "April 10th 2019" to "April
+// 16th 2019" (🟡 00:00 UTC, to the last day's end). The bundle opens one more challenge each day itself (DaysFromEventStart).
+const buccaneersBountyAt = Date.parse("2019-04-10T00:00:00.000Z");
+const buccaneersBountyEnd = Date.parse("2019-04-17T00:00:00.000Z");
 // The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
 // - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
 //   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
@@ -326,6 +338,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds800) },
   { id: "block820", name: "The Block's community builds (8.20)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 3, modes: blockModes,
     steps: blockSteps820 },
+  { id: "block830", name: "The Block's community builds (8.30)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds830) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -376,6 +390,11 @@ export const datedEvents = [
   { id: "highStakes2019", name: "the High Stakes Challenges (8.20)", season: 8, flag: ltmHighStakes, anchor: "challenges", parts: 1,
     challenges: "Schedule_LTM_Heist_V2", steps: [
       step("challenges", "The High Stakes Challenges", [ltmHighStakes, highStakes2019CalendarEvent], highStakes2019At, highStakes2019End)
+    ] },
+  // 8.30's Buccaneer's Bounty Challenges (events/buccaneersbounty.js): one step, the flag and the schedule's calendar event.
+  { id: "buccaneersBounty", name: "the Buccaneer's Bounty Challenges (8.30)", season: 8, flag: lteBootyBay, anchor: "challenges", parts: 1,
+    challenges: "Schedule_PirateParty", steps: [
+      step("challenges", "The Buccaneer's Bounty Challenges", [lteBootyBay, buccaneersBountyCalendarEvent], buccaneersBountyAt, buccaneersBountyEnd)
     ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [

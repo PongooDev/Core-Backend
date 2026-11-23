@@ -49,6 +49,8 @@ test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalo
     const priced = (await as(backend.port, query, player.token)).body;
     assert.deepEqual(Object.values(priced).map((offer) => [offer.price, offer.currencyCode]), [[999, "USD"], [2499, "USD"], [5999, "USD"], [9999, "USD"], [499, "USD"]]);
     assert.equal(priced[ids[1]].id, ids[1]);
+    // 8.30's namespaced form answers the same.
+    assert.deepEqual((await as(backend.port, query.replace("/api/shared/bulk/", "/api/shared/namespace/fn/bulk/"), player.token)).body, priced);
     const forged = [ids[0].replace(/.$/, (c) => (c === "A" ? "B" : "A")), ids[0].replace(player.accountId, other.accountId), "core_mtx_1000"];
     assert.deepEqual((await as(backend.port, `/catalog/api/shared/bulk/offers?${forged.map((id) => `id=${id}`).join("&")}`, player.token)).body, {});
     assert.equal((await as(backend.port, query)).status, 401);
