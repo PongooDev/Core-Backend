@@ -24,13 +24,16 @@ const v631 = "4573279";
 // 5.10 and 7.00, for the GB_VictoryRoyale box (Core-Backend #373): 5.21 is the first build with it.
 const v510 = "4240749";
 const v700 = "4629139";
+// 8.20, Season 8 (Core-Backend #373): its umbrella is AthenaSeason8's SeasonFirstWinRewards.
+const v820 = "5625478";
 const agents = {
   [v111]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3807424",
   [v110]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3790078",
   [v45]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.5-CL-4166199",
   [v631]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.31-CL-4573279",
   [v510]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-5.10-CL-4240749",
-  [v700]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-7.00-CL-4629139"
+  [v700]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-7.00-CL-4629139",
+  [v820]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-8.20-CL-5625478"
 };
 
 function as(build, port, method, urlPath, token, body) {
@@ -494,7 +497,7 @@ test("each build's end-of-match screen gets its own ERewardSource numbers", () =
   // and Placement.
   const dedicated = await dedicatedServerToken(backend.port);
   const victoryBoxes = (profile) => Object.values(profile.items).filter((item) => item.templateId.toLowerCase() === "giftbox:gb_victoryroyale");
-  for (const [build, numbers, box] of [[v45, [6, 1, 3, 4], false], [v510, [8, 1, 3, 6], false], [v631, [8, 1, 3, 6], true], [v700, [8, 1, 3, 6], true]]) {
+  for (const [build, numbers, box] of [[v45, [6, 1, 3, 4], false], [v510, [8, 1, 3, 6], false], [v631, [8, 1, 3, 6], true], [v700, [8, 1, 3, 6], true], [v820, [8, 1, 3, 6], true]]) {
     const winner = await userLogin(backend.port, `winner${build}`);
     await profileOf(backend.port, winner, "athena", build);
     const answer = await as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
@@ -503,13 +506,15 @@ test("each build's end-of-match screen gets its own ERewardSource numbers", () =
     const [result] = answer.body.results;
     assert.deepEqual(result.rewards.map(({ rewardSource }) => rewardSource), numbers, build);
     assert.ok(result.rewards[0].items.length > 0, build);
+    // Each season's own umbrella is its season definition's SeasonFirstWinRewards: Season 8's from AthenaSeason8.
+    if (build === v820) assert.ok(result.rewards[0].items.some(({ itemType }) => itemType === "AthenaGlider:umbrella_season_08"), build);
     // From 5.21 the umbrellas also come in a GB_VictoryRoyale box, the lobby's "You earned a Victory Royale!" screen: one
     // box, listing what the end-of-match screen's FirstWin group lists. 4.5 and 5.10 have no such box.
     const boxes = victoryBoxes(await profileOf(backend.port, winner, "common_core", build));
     assert.equal(boxes.length, box ? 1 : 0, build);
     if (box) {
       assert.deepEqual(boxes[0].attributes.lootList.map(({ itemType }) => itemType).sort(), result.rewards[0].items.map(({ itemType }) => itemType).sort(), build);
-      assert.ok(boxes[0].attributes.lootList.some(({ itemType }) => /umbrella_season_0[67]$/.test(itemType)), build);
+      assert.ok(boxes[0].attributes.lootList.some(({ itemType }) => /umbrella_season_0[678]$/.test(itemType)), build);
     }
     // A second win gives nothing new: no group of items and no box.
     const again = await as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
