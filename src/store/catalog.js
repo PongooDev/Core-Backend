@@ -2,13 +2,14 @@ import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
 import { dailyLimitOf, upgradeLlamaDailyLimit } from "./dailylimit.js";
 import { blockbuster2018, blockbusterLlama, blockbusterTickets } from "../events/blockbuster2018.js";
-import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, spring2019Phase2, storm2018, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { roadTrip2018, roadTripLlama, roadTripTickets } from "../events/roadtrip2018.js";
 import { birthday2018, birthdayLlama, birthdayLlamaPrice } from "../events/birthday2018.js";
 import { frostnite2018, winterLlama2018 } from "../events/frostnite2018.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
+import { springTickets } from "../events/spring2019.js";
 import { intoTheStormLlama } from "../events/storm2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
@@ -134,6 +135,7 @@ const voucherOffers = perBuild(() => itemIds()
 // Holiday Hero!") is bought with Snowflake Tickets again while Frostnite runs (7.10, events/frostnite2018.js): "The longer
 // you survive the more Snowflake Tickets you will earn! Tickets can be spent on the new Winter Llama." The notes give no
 // price: the Holiday Survival Llama's 1,000 (🟡), the admin panel's snowflakePerLlama as that one's.
+const pirateLlama2019 = "CardPack:cardpack_event_2019_pirate";
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -161,7 +163,10 @@ const eventOffers = [
   { offerId: "core_event_birthday_llama", templateId: birthdayLlama, title: "Birthday Llama",
     currencyType: "GameItem", currencySubType: roadTripTickets, price: birthdayLlamaPrice, always: true, event: birthday2018 },
   { offerId: "core_event_winter2018_llama", templateId: winterLlama2018, title: "Winter Llama",
-    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: frostnite2018 }
+    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: frostnite2018 },
+  // 8.20's Yarrr! (events/spring2019.js): "Pirate Llama is now available ... Cost: 500 Spring Tickets" (Update v8.20).
+  { offerId: "core_event_pirate2019_llama", templateId: pirateLlama2019, title: "Pirate Llama",
+    currencyType: "GameItem", currencySubType: springTickets, price: 500, always: true, event: spring2019Phase2 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama, but not one a later
@@ -204,7 +209,9 @@ function offerJson(offer, sortPriority) {
       saleType: (offer.regularPrice ?? price) > price ? "PercentOff" : "NotOnSale", saleExpiration: "9999-12-31T23:59:59.999Z" }],
     // A Season Shop offer's season level (store/seasonshop.js); an Event Store offer's purchase limit and the tracker
     // that counts it (store/eventstore.js).
-    metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }]
+    // An X-Ray llama's (store/preroll.js): the store previews its PrerollData.
+    metaInfo: offer.preroll ? [{ key: "Preroll", value: "true" }]
+      : offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }]
       : offer.eventLimit ? [{ key: "EventLimit", value: String(offer.eventLimit) }, { key: "PurchaseLimitingEventId", value: offer.purchaseLimitingEventId }]
         // An item shop offer's tile callout (store/itemshop.js tileOf).
         : offer.banner ? [{ key: "BannerOverride", value: offer.banner }]
@@ -224,7 +231,7 @@ function offerJson(offer, sortPriority) {
     // A real-money offer's id at each app store (EAppStore order; store/currency.js).
     appStoreId: offer.appStoreId ?? "",
     metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena || offer.battlePass || offer.realMoney ? "" : getCardPack(templateId)?.path ?? "" } },
-    displayAssetPath: offer.displayAssetPath ?? "",
+    displayAssetPath: offer.displayAssetPath ?? llamaDisplayAsset(offer),
     itemGrants: offer.itemGrants ?? [{ templateId, quantity: offer.quantity ?? 1 }],
     // A one-per-account real-money offer's (store/currency.js catalogEntry), which the client checks against the profile.
     requirements: offer.requirements ?? [],
@@ -243,13 +250,40 @@ function offerJson(offer, sortPriority) {
   };
 }
 
+// From 7.10 a llama tile's art is its offer's display asset: UFortLlamaStoreBase loads every offer's DisplayAssetPath and
+// keeps the object whose path name matches it, cast to UFortCardPackItemDefinition, as the offer info's
+// LlamaOfferDisplayAsset (8.20 0x34F1A00), which GetDisplayAssetImage, GetDisplayAssetIcon (its PackImage),
+// GetDisplayAssetXrayImage and GetDisplayAssetPersonality read. With none every tile kept the widget's default llama
+// (Core-Backend #407), so a llama offer's display asset is its card pack.
+function llamaDisplayAsset(offer) {
+  if (Number(currentBuild()) < llamaStoreBuild || offer.athena || offer.battlePass || offer.realMoney) return "";
+  return getCardPack(offer.templateId)?.path ?? "";
+}
+
 // From 7.10 (UFortLlamaStoreBase) the Loot tab's LOOT page is LlamaStoreRoot, whose StorefrontNames are
 // ["CardPackStoreGameplay"] (7.30's, 7.40's and 8.00's paks); StoreRoot, which reads CardPackStore, is a hidden tab
-// there. Its offers are grouped by category: up to five uncategorized, one "Shared" and one "Upgrade". The X-RAY page
-// (PrerolledLlamaStoreRoot, "CardPackStorePreroll") is shown only while the ShowPrerollLlamas feature is on, which Core
-// doesn't turn on (Core-Backend #404).
+// there. Its offers are grouped by category: up to five uncategorized, one "Shared" and one "Upgrade".
 const llamaStoreBuild = 4667333;
 const llamaStorefront = "CardPackStoreGameplay";
+
+// 7.30's X-Ray llamas (Core-Backend #406): "V-Buck Llamas" became X-Ray Llamas, "Mini Llamas and Event Llamas" did not,
+// and they can no longer be bought several at once (Epic's announcement, January 2019). The X-RAY page,
+// PrerolledLlamaStoreRoot, reads "CardPackStorePreroll", one "Upgrade" and one "Shared" offer. So from 7.30 the Upgrade
+// Llama for 50 V-Bucks ("Upgrade") and for an Upgrade Llama Token ("Shared", 🟡 Core's reading of the category) are
+// sold there, each with its preview (store/preroll.js), and leave the LOOT page with the ten-llama offer.
+export const xrayBuild = 4834550;
+const prerollStorefront = "CardPackStorePreroll";
+const xrayOffers = [
+  { offerId: "core_xray_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency",
+    currencySubType: "", price: 50, preroll: true, category: "Upgrade",
+    dailyLimit: upgradeLlamaDailyLimit.limit, dailyLimitFirstBuild: upgradeLlamaDailyLimit.firstBuild },
+  { offerId: "core_xray_voucher_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "GameItem",
+    currencySubType: "AccountResource:voucher_cardpack_bronze", price: 1, preroll: true, category: "Shared" }
+];
+const hasXray = () => Number(currentBuild()) >= xrayBuild;
+// The X-Ray offers the requesting build sells.
+export const prerollOffers = () => (hasXray() ? xrayOffers.filter((offer) => getCardPack(offer.templateId)) : []);
+const soldAsXray = new Set(["core_cardpack_bronze", "core_cardpack_bronze_x10", "core_voucher_cardpack_bronze"]);
 
 const holds = (profile, templateId) => Object.values(profile?.items ?? {})
   .some((item) => item.templateId.toLowerCase() === templateId.toLowerCase() && item.quantity > 0);
@@ -278,12 +312,14 @@ export function storefronts(profile, now = new Date(), { athena, accountId, vbuc
   return [
     { name: "CardPackStore", catalogEntries: cardPacks },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...(Number(currentBuild()) >= llamaStoreBuild ? [{ name: llamaStorefront, catalogEntries: cardPacks }] : []),
+    ...(Number(currentBuild()) >= llamaStoreBuild ? [{ name: llamaStorefront,
+      catalogEntries: hasXray() ? shown.filter((offer) => !soldAsXray.has(offer.offerId)).map((offer, index) => offerJson(offer, -index)) : cardPacks }] : []),
+    ...(hasXray() ? [{ name: prerollStorefront, catalogEntries: prerollOffers().map((offer, index) => offerJson(offer, -index)) }] : []),
     ...[...itemShop, seasonShop, ...eventStore, ...battlePass, founders, currency].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
 // An offer on sale now: the llama store's, one of the item shop's of the day, the Season Shop's, the Event Store's or the
 // Battle Pass's.
-export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers(),
+export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...prerollOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers(),
   ...Object.values(eventStoreOffers(now)).flat()].find((offer) => offer.offerId === offerId) ?? anyBattlePassOffer(offerId);

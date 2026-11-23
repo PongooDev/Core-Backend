@@ -369,7 +369,12 @@ test("8.00's V-Bucks purchase: the receipts service lists it, VerifyRealMoneyPur
 test("the llama offers are on CardPackStoreGameplay from 7.10, and only CardPackStore before", () => {
   const names = (cl) => inBuild(cl, () => storefronts(null)).map(({ name }) => name);
   const offers = (cl, name) => inBuild(cl, () => storefronts(null)).find((front) => front.name === name)?.catalogEntries.map(({ offerId }) => offerId);
-  for (const cl of [v800, v740, "4667333"]) assert.deepEqual(offers(cl, "CardPackStoreGameplay"), offers(cl, "CardPackStore"), cl);
-  assert.ok(offers(v800, "CardPackStoreGameplay").includes("core_cardpack_bronze"));
+  for (const cl of ["4727874", "4667333"]) assert.deepEqual(offers(cl, "CardPackStoreGameplay"), offers(cl, "CardPackStore"), cl);
+  // From 7.30 the V-Bucks and token Upgrade Llamas are X-Ray llamas (Core-Backend #406, tests/xray-llamas.test.js).
+  for (const cl of [v800, v740, "4834550"]) {
+    const moved = ["core_cardpack_bronze", "core_cardpack_bronze_x10", "core_voucher_cardpack_bronze"];
+    assert.deepEqual(offers(cl, "CardPackStoreGameplay"), offers(cl, "CardPackStore").filter((offerId) => !moved.includes(offerId)), cl);
+  }
+  assert.ok(offers("4727874", "CardPackStoreGameplay").includes("core_cardpack_bronze"));
   assert.ok(!names("4629139").includes("CardPackStoreGameplay"));
 });

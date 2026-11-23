@@ -60,6 +60,7 @@ import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
 import { verifyRealMoneyPurchase } from "./VerifyRealMoneyPurchase.js";
 import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand, upgradeItemRarityCommand } from "./Upgrades.js";
+import { populatePrerolledOffers } from "../../../store/preroll.js";
 
 // Client commands the builds register (their SDKs list the UFunction) that Core doesn't answer, because no player can
 // send them and what Epic's service did with them isn't in the client. A command's generated wrapper reads a static FName
@@ -140,12 +141,9 @@ export const clientCommands = {
   ModifyQuickbar: modifyQuickbar,
   OpenCardPack: openCardPack,
   OpenCardPackBatch: openCardPackBatch,
-  // 7.00's (CL-4629139) UFortMcpProfileCampaign::PopulatePrerolledOffers (no parameters; sent by sub_32032B0 through its
-  // wrapper 0x15AB630, the Loot tab's llamas): Epic's service rolled each llama offer's contents ahead
-  // (UFortPrerollDataItem {FulfillmentId, Expiration, Items}, an account item new in 7.00) for the store to preview. Core
-  // rolls a llama when it is bought (cardpacks), so there is nothing to roll ahead: the profile as it is, without an
-  // error, and the store shows its llamas as before.
-  PopulatePrerolledOffers: () => {},
+  // 7.00's (CL-4629139) UFortMcpProfileCampaign::PopulatePrerolledOffers (no parameters): the X-RAY page asks for its
+  // offers' rolls (store/preroll.js). Builds without X-Ray offers get the profile as it is.
+  PopulatePrerolledOffers: ({ session }) => populatePrerolledOffers(session.profile("profile0")),
   PurchaseCatalogEntry: purchaseCatalogEntry,
   PurchaseHomebaseNode: purchaseHomebaseNode,
   PurchaseOrUpgradeHomebaseNode: purchaseOrUpgradeHomebaseNode,

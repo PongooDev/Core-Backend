@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { getCardPack } from "../../../gamedata/items.js";
 import { heldOwnedOnce, lootEntry } from "../../../profiles/items.js";
 import { grant, itemEvent, statEvent } from "../../../profiles/progress.js";
+import { prerolledContents } from "../../../store/preroll.js";
 
 // Opens one pack: a choice pack gives the option picked (selectionIdx), any other pack rolls its contents (in the
 // store, those of the silver or gold llama it may turn into). Granted packs keep the opened pack's source. Returns the
@@ -19,6 +20,9 @@ export function openPack(session, packId, selectionIdx, { upgrade = false } = {}
     const option = (pack.attributes.options ?? [])[selectionIdx];
     if (!Number.isInteger(selectionIdx) || !option) throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `No option ${selectionIdx}`);
     contents = [{ templateId: option.itemType, quantity: option.quantity ?? 1 }];
+  } else if (prerolledContents(pack)) {
+    // An X-Ray llama holds what its tile showed (store/preroll.js).
+    ({ info: rolled, contents } = prerolledContents(pack));
   } else {
     if (upgrade) rolled = upgradedPack(pack.templateId);
     contents = rollContents(rolled.templateId);

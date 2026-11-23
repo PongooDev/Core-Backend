@@ -11,6 +11,7 @@ import { payCreator } from "../../../store/creatorpayouts.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
 import { dailyLimitOf, dailyPurchases, recordDailyPurchase } from "../../../store/dailylimit.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
+import { currentPreroll, takePreroll } from "../../../store/preroll.js";
 import { blockbusterTickets, upgradeLlamaBlockbusterTickets } from "../../../events/blockbuster2018.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
 import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
@@ -131,13 +132,19 @@ export function purchaseCatalogEntry({ req, session, notifications, sessionFor, 
         `${offerId} sells ${dailyLimit} a day and you have bought ${today} today`);
     }
   }
+  // An X-Ray llama (store/preroll.js) is bought one at a time, as the roll its tile shows.
+  if (offer.preroll && purchaseQuantity !== 1) throw new McpError("errors.com.epicgames.common.invalid_parameter", `X-Ray llamas are bought one at a time`);
+  if (offer.preroll && !currentPreroll(tracker, offerId)) {
+    throw new McpError("errors.com.epicgames.modules.gamesubcatalog.catalog_out_of_date", `${offerId} has no X-Ray roll; populate the prerolled offers first`);
+  }
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
   if (offer.eventLimit) recordEventPurchase(tracker, offer, purchaseQuantity);
   if (dailyLimit > 0) recordDailyPurchase(tracker, offer, purchaseQuantity);
+  const preroll = offer.preroll ? takePreroll(tracker, offer) : undefined;
   // An offer of several (1.10's ten Upgrade Llamas, store/catalog.js) grants its quantity for each one bought.
   const count = purchaseQuantity * (offer.quantity ?? 1);
-  const items = grant(session, offer.templateId, count, { packSource: "Store" }).map(lootEntry);
+  const items = grant(session, offer.templateId, count, { packSource: "Store", attributes: preroll }).map(lootEntry);
   if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, count);
   const tickets = upgradeLlamaTickets(offer, count);
   if (tickets) items.push(...grant(session, stormTickets, tickets).map(lootEntry));

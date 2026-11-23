@@ -290,6 +290,20 @@ function winterLlama2018() {
   return [...llama(llamas.cardpack_bronze), ...pickOne(winterLlama2018Items(weighted([["vr", 75], ["sr", 25]])))];
 }
 
+// The Pirate Llama (CardPack_Event_2019_Pirate, 8.20), sold for Spring Tickets during Yarrr! (store/catalog.js). Update
+// v8.20: "May contain Pirate Heroes, Steampunk Weapon schematics, and Broadside Trap schematics", the four Pirate Heroes
+// "obtained in the Pirate Llama" (Crossbones Barret, Buccaneer Jonesy, Swashbuckler Keelhaul, Privateer Hype) and the
+// Steampunk set (The Baron, Steam Thrasher, Steam Piston, Steamroller, Bon Voyage). An Upgrade Llama's items and one of
+// them, Epic or (a quarter of the time) Legendary, as the Winter Llama's (🟡 the odds are Core's).
+const pirateLlama2019Items = (rarity) => [`Hero:hid_outlander_025_pirateoutlander_${rarity}_t01`, `Hero:hid_commando_027_piratesoldier_${rarity}_t01`,
+  `Hero:hid_ninja_025_pirateninja_${rarity}_t01`, `Hero:hid_constructor_024_pirateconstructor_${rarity}_t01`,
+  `Schematic:sid_blunt_hammer_steampunk_${rarity}_ore_t01`, `Schematic:sid_edged_scythe_steampunk_${rarity}_ore_t01`,
+  `Schematic:sid_assault_semiauto_steampunk_${rarity}_ore_t01`, `Schematic:sid_pistol_steampunk_${rarity}_ore_t01`,
+  `Schematic:sid_sniper_steampunk_${rarity}_ore_t01`, `Schematic:sid_wall_cannons_${rarity}_t01`].filter(hasItem);
+function pirateLlama2019() {
+  return [...llama(llamas.cardpack_bronze), ...pickOne(pirateLlama2019Items(weighted([["vr", 75], ["sr", 25]])))];
+}
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -319,6 +333,7 @@ export function rollContents(templateId) {
   if (group === "cardpack_event_2017_vindertech") return vindertechLlama();
   if (group === "cardpack_event_2017_firststorm") return stormLlama();
   if (group === "cardpack_event_2018_winter") return winterLlama2018();
+  if (group === "cardpack_event_2019_pirate") return pirateLlama2019();
   const vindertechWeapon = vindertechPack(group);
   if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);
@@ -346,21 +361,28 @@ export function rollContents(templateId) {
 // Epic upgraded one is server data that doesn't ship; these chances are Core's.
 export const upgradeChances = { gold: 0.05, silver: 0.2 };
 
-export function upgradedPack(templateId, roll = Math.random()) {
+// A store llama's base, silver and gold definitions (undefined where it has none).
+function upgradeFamily(templateId) {
   const info = getCardPack(templateId);
-  if (!info || info.choice) return info;
+  if (!info || info.choice) return { base: info };
   const group = info.lootTierGroup.toLowerCase();
-  let silver;
-  let gold;
-  if (group === "cardpack_basic") silver = getCardPack("CardPack:cardpack_basic_silver");
-  else if (group.startsWith("cardpack_bronze")) {
-    const family = group.slice("cardpack_bronze".length);
-    silver = getCardPack(`CardPack:cardpack_silver${family}`);
-    gold = getCardPack(`CardPack:cardpack_gold${family}`);
-  }
+  if (group === "cardpack_basic") return { base: info, silver: getCardPack("CardPack:cardpack_basic_silver") };
+  if (!group.startsWith("cardpack_bronze")) return { base: info };
+  const family = group.slice("cardpack_bronze".length);
+  return { base: info, silver: getCardPack(`CardPack:cardpack_silver${family}`), gold: getCardPack(`CardPack:cardpack_gold${family}`) };
+}
+
+export function upgradedPack(templateId, roll = Math.random()) {
+  const { base, silver, gold } = upgradeFamily(templateId);
   if (gold && roll < upgradeChances.gold) return gold;
   if (silver && roll < upgradeChances.gold + upgradeChances.silver) return silver;
-  return info;
+  return base;
+}
+
+// The llama templateId becomes at displayLevel (0 itself, 1 silver, 2 gold): a prerolled llama's (store/preroll.js).
+export function packAtLevel(templateId, level) {
+  const { base, silver, gold } = upgradeFamily(templateId);
+  return (level === 2 ? gold : level === 1 ? silver : undefined) ?? base;
 }
 
 // A choice pack's two options, chosen when the pack is granted (UFortCardPackItem.Options, FMcpLootEntry shape).
