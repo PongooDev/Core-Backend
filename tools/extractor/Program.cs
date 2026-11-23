@@ -1361,6 +1361,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         // 5.10 (CL 4240749) adds an event's schedule, Schedule_Birthday2018_BR, which no tier gives: it names the event
         // flag it runs with (EventName, EventFlag.Anniversary2018_BR), written as eventName.
         if (properties["EventName"]?.GetValue<string>() is { Length: > 0 } eventName and not "None") schedule["eventName"] = eventName;
+        // 8.20 (CL 5625478) names it CalendarEventTag, a gameplay tag (Schedule_LTM_Heist_V2: EventFlag.LTM_HighStakes),
+        // with CalendarEventName beside it (CalendarEvent_Season8_HighStakes).
+        else if (properties["CalendarEventTag"]?.GetValue<string>() is { Length: > 0 } eventTag and not "None") schedule["eventName"] = eventTag;
         // CleanUpOnBundleCompletion (the MCP template's static_cleanup_on_bundle_completion): a schedule that leaves the
         // profile once its bundle is completed, written as cleanUpOnBundleCompletion when set (5.40's Schedule_LTM_Heist,
         // the seasons' ProgressiveA and B schedules from Season 5, the Styles schedules).

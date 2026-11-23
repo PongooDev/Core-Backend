@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteS7Overtime, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteS7Overtime, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -12,6 +12,8 @@ export const iceStormCalendarEvent = "CalendarEvent_Season7_WinterDeimos";
 export const showtimeCalendarEvent = "CalendarEvent_Season7_Festivus";
 // 7.40's Overtime Challenges bundle's (QuestBundle_S7_Overtime, and Season7_OT_Schedule's).
 export const overtimeCalendarEvent = "CalendarEvent_Season7_OverTime";
+// 8.20's Schedule_LTM_Heist_V2 names its calendar event beside its flag (CalendarEventName).
+export const highStakes2019CalendarEvent = "CalendarEvent_Season8_HighStakes";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -139,6 +141,18 @@ const blockBuilds720 = [["2018-12-06", "Looming Llama, by Stormhawk"], ["2019-01
 const blockBuilds730 = [["2018-12-06", "CoLLAMAsseum, by Zarbot"], ["2019-02-05", "Streat Festival, by NIBLL"]];
 const blockBuilds740 = [["2018-12-06", "Oily Oaks, by MrSlickWillyz"], ["2019-02-19", "Colossal Compound, by Aril_lian1"]];
 const blockBuilds800 = [["2019-02-28", "Cryptic Castle, by HellraiserGaming"], ["2019-03-06", "Turtle Temple, by BOTIMUS-PRIME"]];
+// 8.20 (CL-5625478, Update v8.20, 27 March 2019): SLAB_1 Tropical Treetops (GingerJay91, Athena/Maps/Block/8_20's
+// Block_25x25_TropicalTreetops), SLAB_2 Mysterious Mansion (FurryNenja, Block_25x25_MysteriousMansion), SLAB_3 the blank
+// Block (not served); its paks also have 8_10's Block_25x25_HarmonyHotel, which no slab streams, and no Skull Island. The
+// Fortnite Wiki's Season 8 history: Tropical Treetops from Update v8.20's day, Mysterious Mansion on 2 April ("It was
+// quickly replaced by the previous creation"; its note: removed on 2 April 2019), so Tropical Treetops again from 3 April
+// to the season's end (🟡 the days, 00:00 UTC; how long the Mansion stood isn't recorded). 8.20 came out mid-season, so its
+// first build is up from the lap's first day, as 7.40's Oily Oaks.
+const blockSteps820 = [
+  step("slab1", "Tropical Treetops, by GingerJay91", [blockSlab(1)], at7("2019-02-28"), at7("2019-04-02")),
+  step("slab2", "Mysterious Mansion, by FurryNenja", [blockSlab(2)], at7("2019-04-02"), at7("2019-04-03")),
+  step("slab1Again", "Tropical Treetops again, by GingerJay91", [blockSlab(1)], at7("2019-04-03"), null)
+];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -169,6 +183,11 @@ const showtimeChallengesEnd = Date.parse("2019-02-03T00:00:00.000Z");
 // 2019", Update v7.40's day to the season's end (🟡 00:00 UTC; Epic's free Season 8 Battle Pass went to those with 13 done
 // "by February 27").
 const overtimeChallengesAt = Date.parse("2019-02-14T00:00:00.000Z");
+// 8.20's High Stakes Challenges (events/highstakes2019.js): the Fortnite Wiki's "available from March 14th 2019 to March 19th
+// 2019" (Limited-Time Events: "The High Stakes event returns, along with its LTM, challenges, and free cosmetics"; 🟡 00:00
+// UTC, the last day's end).
+const highStakes2019At = Date.parse("2019-03-14T00:00:00.000Z");
+const highStakes2019End = Date.parse("2019-03-20T00:00:00.000Z");
 // The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
 // - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
 //   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
@@ -305,6 +324,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds740) },
   { id: "block800", name: "The Block's community builds (8.00)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds800) },
+  { id: "block820", name: "The Block's community builds (8.20)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 3, modes: blockModes,
+    steps: blockSteps820 },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -350,6 +371,11 @@ export const datedEvents = [
   { id: "overtime", name: "the Overtime Challenges (7.40)", season: 7, flag: lteS7Overtime, anchor: "challenges", parts: 1,
     challenges: "Season7_OT_Schedule", steps: [
       step("challenges", "The Overtime Challenges", [lteS7Overtime, overtimeCalendarEvent], overtimeChallengesAt, season7EndDay)
+    ] },
+  // 8.20's High Stakes Challenges (events/highstakes2019.js): one step, the challenges' flag and the schedule's calendar event.
+  { id: "highStakes2019", name: "the High Stakes Challenges (8.20)", season: 8, flag: ltmHighStakes, anchor: "challenges", parts: 1,
+    challenges: "Schedule_LTM_Heist_V2", steps: [
+      step("challenges", "The High Stakes Challenges", [ltmHighStakes, highStakes2019CalendarEvent], highStakes2019At, highStakes2019End)
     ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [

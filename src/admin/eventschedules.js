@@ -157,8 +157,17 @@ export const eventCards = [
   { id: "block800", kind: "dated", dated: "block800", seasons: [8], name: "The Block's community builds", builds: "8.00", ranges: [[5203069, 5203069]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Cryptic Castle goes up", endLabel: "Turtle Temple goes up",
     about: "8.00's two community-built islands on the Block, each a level in its paks: Cryptic Castle (HellraiserGaming; 8.00 shipped with it on 28 February 2019, so it is up from the replay's first day) and Turtle Temple (BOTIMUS-PRIME, v8.01, 6 March, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
-  { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00", ranges: [[5203069, 5203069]],
-    about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 carries no Save the World seasonal event flag.",
+  // 8.20's Block (events/block.js): its two builds on their dates, Tropical Treetops coming back after the Mansion's day.
+  { id: "block820", kind: "dated", dated: "block820", seasons: [8], name: "The Block's community builds (8.20)", builds: "8.20", ranges: [[5625478, 5625478]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Tropical Treetops goes up", endLabel: "Mysterious Mansion goes up",
+    about: "8.20's two community-built islands on the Block, each a level in its paks: Tropical Treetops (GingerJay91; Update v8.20, 27 March 2019; 8.20 came out mid-season, so it is up from the replay's first day) and Mysterious Mansion (FurryNenja, 2 April, which Epic quickly took down for Tropical Treetops again: back from 3 April to the season's end). Harmony Hotel is in 8.20's paks too, but no slab streams it, so it can't be shown. A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC); how long the Mansion stood isn't recorded." },
+  // 8.20's High Stakes Challenges (events/highstakes2019.js).
+  { id: "highStakes2019", kind: "dated", dated: "highStakes2019", seasons: [8], name: "High Stakes (Season 8)", builds: "8.20", ranges: [[5625478, 5625478]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "Season 8's High Stakes Challenges, with the Getaway back (Schedule_LTM_Heist_V2: play and win the Getaway, use a Grappler; the Heist back bling and its styles), 14 to 19 March 2019 by the Fortnite Wiki. 8.20 came out on 27 March, after them, so on Season 8's replay they run before 8.20's day; the admin's times or the switch serve them whenever. 🟡 00:00 UTC, to the last day's end.",
+    flags: ["EventFlag.LTM_HighStakes", "CalendarEvent_Season8_HighStakes"] },
+  { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00 – 8.20", ranges: [[5203069, 5625478]],
+    about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 and 8.20 carry no other Battle Royale lobby flag.",
     flags: ["EventFlag.LobbySeason8"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);

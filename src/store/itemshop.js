@@ -172,10 +172,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 //
 // 8.00 (CL-5203069) is Season 8, with its own shop the same way: Epic's of Season 8, day by day from its first day, 28
 // February 2019, to its last, 8 May 2019 (itemshop-season8.json, the same wiki pages, 28 February from its Part 1 and
-// Part 2), replayed in a 70-day cycle from the day 8.00 is first served. Only the cosmetics 8.00's data has are in, so
-// Season 8's later updates' (8.10's to 8.50's: Kuno, Kenji, Aura, Guild, Pastel, Psion, Supersonic, Nitehare, the Black
-// Widow's and Star-Lord's sets, the wraps and the emotes) are left out, and 13 of the 70 days have an empty featured
-// section. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
+// Part 2), replayed in a 70-day cycle from the day 8.00 is first served. Its items are those 8.00's or 8.20's data
+// (CL-5625478) has, each build serving the ones it has itself (8.20 adds 49 of 8.10's to 8.20's, from Kuno, Kenji, Psion,
+// Axiom, Lucky Rider and Marino to the pirates, Sea Wolf and Buccaneer, which the wiki lists later in the season); the
+// ones neither has (Aura, Guild, Pastel, Supersonic, Nitehare, the Black Widow's and Star-Lord's sets...) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
 // shop's items after the first's, as 14 February's were for 7.40. Battle Pass Tiers, bundles, free (0 V-Bucks) items
 // and real-money offers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

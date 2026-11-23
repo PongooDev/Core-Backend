@@ -519,6 +519,8 @@ export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
 export const lteS7Overtime = "EventFlag.LTE_S7_OverTime";
+// 8.20's Season 8 High Stakes Challenges (events/highstakes2019.js).
+export const ltmHighStakes = "EventFlag.LTM_HighStakes";
 export const frostnite = "EventFlag.Frostnite";
 export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
@@ -662,6 +664,7 @@ const build720 = 4727874;
 const build730 = 4834550;
 const build740 = 5046157;
 const build800 = 5203069;
+const build820 = 5625478;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -714,8 +717,8 @@ const events = [
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
   // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's to 7.40's too, and their Frostnite.
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
-  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8).
-  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build800 },
+  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's too.
+  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build820 },
   { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build740 },
   { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build740 },
   { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build740 },

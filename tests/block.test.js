@@ -140,7 +140,7 @@ test("a 7.00, a 7.10, a 7.20, a 7.30, a 7.40 and an 8.00 gameserver's calendar t
 
     const overview = (await get(backend.port, "/admin/api/events/overview")).body;
     assert.deepEqual(overview.datedFlags.events.filter(({ id }) => id.startsWith("block")).map(({ id, mode }) => [id, mode]),
-      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"], ["block800", "dates"]]);
+      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"], ["block800", "dates"], ["block820", "dates"]]);
   } finally {
     await backend.close();
   }

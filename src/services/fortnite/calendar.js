@@ -22,6 +22,7 @@ import { fourteenDaysStates } from "../../events/fourteendays.js";
 import { iceKingStates, iceStormMeltStates, iceStormStates } from "../../events/icestorm.js";
 import { festivusStates, showtimeStates } from "../../events/festivus.js";
 import { overtimeStates } from "../../events/overtime.js";
+import { highStakes2019States } from "../../events/highstakes2019.js";
 import { earthquakesStates, s8HeatStates } from "../../events/s8leadup.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
@@ -119,7 +120,7 @@ export function calendarRoutes({ tokens, settings }) {
     // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
       islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
-      iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now),
+      iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now), highStakes2019States(now),
       earthquakesStates(now), s8HeatStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,

@@ -525,6 +525,19 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `fabricator.json`, `alterations.json`, `collectionbook.json`, `upgrades.json`, `quests.json`, `objectivestats.json`,
   `world.json`, `banners.json`, `cardpacks.json`, the skill tree's, the daily rewards', the collection book's and
   Save the World's; the other five are Cert's, unchanged.
+  8.20's (CL-5625478, Update v8.20) is `4.22.0-5625478+++Fortnite+Release-8.20` (no `Build.version`; the build folder is
+  `8.20-CL-5625478\8.20`) with 8.00's full data (Cert's files with `gamedata/5203069` applied) as the fifth argument, and
+  the main key FModel's settings hold for its build folder. A full install: pakchunk0 and its s1 to s8, pakchunk1 and
+  pakchunk1_s1, the language paks and the keyed pakchunk1000 to 1002, of which only pakchunk1000 is read on the backend's
+  keychain. Its mission alerts are still the fifth argument's. One extractor change: 8.20's challenge schedules name their
+  event flag as CalendarEventTag (Schedule_LTM_Heist_V2: EventFlag.LTM_HighStakes) where earlier builds had EventName, and
+  it is written as eventName the same way; earlier builds' committed overlays weren't re-extracted. Against 8.00 twelve
+  files change: `athena.json` (78 cosmetics: Kuno, Kenji, Psion, Axiom, Lucky Rider, Marino, the pirates, the Heist back
+  bling and wraps...; three of 8.00's pakchunk1001 ones gone, Warpaint, Rose Leader's pickaxe and Stars and Stripes, as
+  8.20 has no key for their pak; 26 quests, the High Stakes Challenges' schedule and bundle and 11 variant tokens),
+  `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `alterations.json`, `collectionbook.json`,
+  `homebasenodes.json`, `upgrades.json`, `quests.json`, `objectivestats.json` and `world.json` (Save the World's Yarrr!
+  quests, the Pirate Llama and Blakebeard's hero quest among them).
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

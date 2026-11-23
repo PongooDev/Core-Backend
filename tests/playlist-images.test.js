@@ -297,7 +297,7 @@ const tileFiles = [
   [["Playlist_Vamp_Solo", "Playlist_Vamp_Duo", "Playlist_Vamp_Squad"], "playlistinformation/BR_LTM_Siphon-1024x512-66cb27084be50387682989b50a01dbc9e42f5a5d.jpg"],
   [["Playlist_33"], "playlistinformation/BR07_14-DoF_Social-1024x512-5fa7dd4752d1f0cc1a101f09cb170d0f5b2a31cf.jpg"],
   [["Playlist_Hard_Squads"], "playlistinformation/BR_LTM_Barebones-1024x512-4a29337febb04e9043d57c9e61afe849f8a9e9c7.jpg"],
-  [["Playlist_Slide_Solo"], "playlistinformation/BR_LTM_Slide-1024x512-189625349e80dc81e225691aa952ffd280996058.jpg"],
+  [["Playlist_Slide_Solo", "Playlist_Slide_Duos"], "playlistinformation/BR_LTM_Slide-1024x512-189625349e80dc81e225691aa952ffd280996058.jpg"],
   [["Playlist_Ground_Squads"], "playlistinformation/BR_LTM_GroundGame-1024x512-37a4d1d335b4c9427bdc672db0f335f4df813874.jpg"],
   [["Playlist_Sneaky_Solo"], "playlistinformation/BR_LTM_SneakySilencers-1024x512-1669e2eeddca63b61e9b94cc19c3ec502fd33f29.jpg"],
   [["Playlist_Low_Squads"], "playlistinformation/BR_LTM_OneShot-1024x512-9914c2c88b21f72f9628681e0cbcd20bb7311a3f.jpg"],
@@ -314,7 +314,10 @@ const tileFiles = [
   [["Playlist_Hover", "Playlist_Hover_64", "Playlist_Hover_48"],
     "playlistinformation/BR07_ModeTile_LTM_Drifting50s_Powder-1024x512-5fb24cfd4d83e4cd3a3589b126313beba9cc69a7.jpg"],
   [["Playlist_PlaygroundV2"], "playlistinformation/CM_LobbyTileArt-1024x512-fbcd48db36552ccb1ab4021b722ea29d515377cc.jpg"],
-  [["Playlist_Omaha"], "playlistinformation/BR07_ModeTile_NFL_TeamRumble-1024x512-6facfc07214965dc2211d703904607a30c68d08a.jpg"]
+  [["Playlist_Omaha"], "playlistinformation/BR07_ModeTile_NFL_TeamRumble-1024x512-6facfc07214965dc2211d703904607a30c68d08a.jpg"],
+  [["Playlist_Fill_Solo", "Playlist_Fill_Duos", "Playlist_Fill_Squads"],
+    "playlistinformation/08BR_LTM_FloorIsLava_ModeTile-1024x512-f1af4cd98c7ff0ce4058f4e3b65a853641d0a35e.jpg"],
+  [["Playlist_Green_Squad"], "playlistinformation/08BR_LTM_SolidGreen_ModeTile_Squads-1024x512-f0d931472907d54ffaa52ef81f78bf9d5fcfaa2d.jpg"]
 ];
 const tileOf = Object.fromEntries(tileFiles.flatMap(([names, file]) => names.map((name) => [name, epicTile(file)])));
 // 7.10 on: the 14 Days of Fortnite's own tiles for two playlists the earlier pages show with another.
@@ -339,8 +342,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 8.00 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "5203069"]);
+test("every build from 4.0 to 8.20 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "5625478"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

@@ -58,6 +58,8 @@ import { currentEventsConfig } from "./events.js";
 // 7.40's (CL-5046157) are 7.30's and one more, LTE_S7_OverTime (events/events.js): every flag that runs to 7.30 runs to 7.40.
 // 7.40 serves by itself 7.30's four, and the Overtime Challenges by their dates (events/overtime.js); the 14 Days of
 // Fortnite, the Ice Storm Challenges and the Showtime Challenges are its switches only.
+// 8.20's (CL-5625478) new one is LTM_HighStakes, Season 8's High Stakes Challenges, served by their dates
+// (events/highstakes2019.js); 7.40's season's flags end with 7.40.
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -89,6 +91,7 @@ const b710 = 4667333;
 const b720 = 4727874;
 const b730 = 4834550;
 const b740 = 5046157;
+const b820 = 5625478;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -269,6 +272,11 @@ export const season4FlagGroups = [
   // by their dates on Season 7's replay, or always or never by their switch.
   { id: "overtime", name: "Battle Royale: the Overtime Challenges (7.40)", flags: [
     flag("LTE_S7_OverTime", [b740, b740], "The Overtime Challenges (Season7_OT_Schedule: 13 of the free ones for the Season 8 Battle Pass token, the Valentine wrap, the True Form and Season 7 loading screens, the Vines contrail; the Battle Pass's Powder, Trog and Onesie styles; more on the 3rd, 6th and 9th day; from 14 to 28 February 2019)")
+  ] },
+  // 8.20's High Stakes Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist_V2, events/highstakes2019.js):
+  // served by their dates on Season 8's replay, or always or never by their switch.
+  { id: "highStakes2019", name: "Battle Royale: the High Stakes Challenges (8.20)", flags: [
+    flag("LTM_HighStakes", [b820, b820], "The High Stakes Challenges of Season 8 (Schedule_LTM_Heist_V2: play the Getaway, win it, use a Grappler; the Heist back bling and its styles; 14 to 19 March 2019)")
   ] },
   { id: "rocket", name: "Battle Royale map: Blast Off (the rocket launch)", managedBy: "rocketLaunch", flags: [
     { flag: geodeCountdown, builds: [b450, b45], description: "The hologram counts down to the launch" },

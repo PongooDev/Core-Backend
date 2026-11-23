@@ -77,8 +77,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // Shot, the Ice Storm's three and Sniper Shootout's three; its three tournament playlists the Tournaments tab's), and
     // 7.30's three (Party at Pleasant Park, NFL Rumble, Wild West Duos), 7.40's twelve (Love Shot's, Sword Fight's,
     // Catch!'s and Driftin's three each), and 8.00's seven (Season 8's 50v50, Close Encounters, Team Rumble, Fly Explosives,
-    // One Shot, Solid Gold and Classic). 7.00's Creative is a game mode always on, with no switch (#375).
-    assert.equal(ov.playlists.length, 172);
+    // One Shot, Solid Gold and Classic), and 8.20's nine (Slide, the Getaway's two, Floor is Lava's three, Sniper
+    // Shootout's two and Going Green). 7.00's Creative is a game mode always on, with no switch (#375).
+    assert.equal(ov.playlists.length, 181);
     assert.equal(ov.playlists.some((p) => p.id === "creative"), false);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
@@ -107,7 +108,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "loveShotDuos", "loveShotSolo", "loveShotSquads", "swordFightSquads", "swordFightSolo", "swordFightDuos", "catchSolo", "catchDuos",
       "catchSquads", "driftin", "driftin40", "driftin20s",
       "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
-      "solidGoldSeason8Squads", "classicSeason8Squads"]);
+      "solidGoldSeason8Squads", "classicSeason8Squads", "slideSeason8Duos", "getawaySeason8Squads", "getawaySeason8Duos",
+      "floorIsLavaSquads", "floorIsLavaDuos", "floorIsLavaSolo", "sniperShootoutSeason8Duos", "sniperShootoutSeason8Squads", "goingGreenSquads"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);

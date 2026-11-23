@@ -144,6 +144,11 @@ const slideTile = `${cdn}/playlistinformation/BR_LTM_Slide-1024x512-189625349e80
 const groundGameTile = `${cdn}/playlistinformation/BR_LTM_GroundGame-1024x512-37a4d1d335b4c9427bdc672db0f335f4df813874.jpg`;
 const sneakySilencersTile = `${cdn}/playlistinformation/BR_LTM_SneakySilencers-1024x512-1669e2eeddca63b61e9b94cc19c3ec502fd33f29.jpg`;
 const oneShotTile = `${cdn}/playlistinformation/BR_LTM_OneShot-1024x512-9914c2c88b21f72f9628681e0cbcd20bb7311a3f.jpg`;
+// 8.20's (CL-5625478) Floor is Lava and Going Green, the tiles Epic's later page (the same copy) names for them, each on
+// Epic's CDN (checked 2026-11-23: 200, image/jpeg, the hash in each name the file's SHA-1; 548,342 and 296,023 bytes).
+// That page names Slide's tile for Slide's duos too.
+const floorIsLavaTile = `${cdn}/playlistinformation/08BR_LTM_FloorIsLava_ModeTile-1024x512-f1af4cd98c7ff0ce4058f4e3b65a853641d0a35e.jpg`;
+const goingGreenTile = `${cdn}/playlistinformation/08BR_LTM_SolidGreen_ModeTile_Squads-1024x512-f0d931472907d54ffaa52ef81f78bf9d5fcfaa2d.jpg`;
 const highExplosives50sTile = `${cdn}/playlistinformation/BR_LTM_HighExplosives50s-1024x512-3a8d44af3c2718b5aaaaebbd4627258a657bf0bf.jpg`;
 const closeEncounters50sTile = `${cdn}/playlistinformation/BR_LTM_CloseEncounters50s-1024x512-03dcc058e1bec3e853b3ee20594128805223b5a3.jpg`;
 const foodFight16Tile = `${cdn}/playlistinformation/BR_LTM_FoodFight16-1024x512-309538a1b961b5ab0c22417ab34170cc302bbab8.jpg`;
@@ -272,6 +277,12 @@ export const epicPlaylistImages = {
   Playlist_Hover: driftinTile,
   Playlist_Hover_64: driftinTile,
   Playlist_Hover_48: driftinTile,
+  // 8.20's (above): Floor is Lava's three, Going Green's squads (Playlist_Green_Squads' PlaylistName) and Slide's duos.
+  Playlist_Fill_Solo: floorIsLavaTile,
+  Playlist_Fill_Duos: floorIsLavaTile,
+  Playlist_Fill_Squads: floorIsLavaTile,
+  Playlist_Green_Squad: goingGreenTile,
+  Playlist_Slide_Duos: slideTile,
   // 7.00's to 7.40's Creative and 7.30's NFL Rumble (above): only the pages of the builds that have them list them.
   Playlist_PlaygroundV2: creativeTile,
   Playlist_Omaha: nflRumbleTile

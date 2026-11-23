@@ -109,9 +109,9 @@ test("plain-words states: the event mode and the Seasonal Events switch come fir
   assert.ok(eventCards.every((entry) => entry.seasons.length && entry.ranges.length && entry.builds));
 });
 
-test("Season 8's lobby: 8.00's card and flag, and what 8.00's players see", () => {
+test("Season 8's lobby: 8.00's and 8.20's card and flag, and what their players see", () => {
   const lobby = eventCards.find((entry) => entry.id === "season8Lobby");
-  assert.deepEqual([lobby.seasons, lobby.builds, lobby.ranges, lobby.flags], [[8], "8.00", [[5203069, 5203069]], ["EventFlag.LobbySeason8"]]);
+  assert.deepEqual([lobby.seasons, lobby.builds, lobby.ranges, lobby.flags], [[8], "8.00 – 8.20", [[5203069, 5625478]], ["EventFlag.LobbySeason8"]]);
   const base = { now: new Date(), config: { mode: "auto" }, seasonalEvents: true, rocket: { mode: "off", phase: "unscheduled" }, dated: { events: [] },
     season4: { oddities: "off", rifts: [] }, storm: { mode: "dates", percent: 10, inDates: false, builds: {} } };
   const schedules = eventSchedules(base);
