@@ -57,8 +57,8 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
   (`node_modules`), binaries, game files and agent-local files, and syntax-checks the staged `.js`/`.mjs` files.
   **Never** bypass it (`--no-verify`); fix what it flags.
 - **Never** launch a Fortnite client and **never** run a full match. Headless gameserver boots follow CoreV2's
-  `docs/agents/headless-server-testing.md` (one at a time, test port, only while no `FortniteClient` you didn't
-  start is running).
+  `docs/agents/headless-server-testing.md` (one test server at a time, test port; booting while the owner plays
+  is allowed).
 - **Never** modify, copy, hard-link or overlay anything in `F:\Builds` or `D:\Fortnite Builds`.
 - **Never** kill a process you didn't start, except the 5595 Core-Backend restart above. Stop everything you started
   before you finish.
