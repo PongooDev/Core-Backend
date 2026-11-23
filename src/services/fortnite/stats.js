@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
+import { playlistNameOfId } from "../../events/ltms.js";
 import { seasonNumber } from "../../profiles/seasons.js";
 import { windowEnd, windows } from "../../stats/store.js";
 
@@ -98,19 +99,25 @@ export function statsRoutes({ tokens, stats, accounts }) {
   // {owners, stats: ["br_score_keyboardmouse_m0_playlist_defaultsolo"]}. Epic's StatsProxy UserStats answer is
   // {startTime, endTime, stats: {<stat>: <value>}, accountId} (the example in FortniteEndpointsDocumentation's
   // StatsProxyService/Stats/UserStats.md, whose names have the input type and the playlist's name instead of pc/p<id>),
-  // and the query answers one such object per owner. Core records the three main playlists' career stats
-  // (src/stats/store.js), so those are the names it can answer; an input type or playlist Core has no record of is
+  // and the query answers one such object per owner. Core records each playlist's career stats (src/stats/store.js) by
+  // PlaylistId, each named here by its playlist's PlaylistName, lowercased (playlist_defaultsolo; an LTM's the requesting
+  // build's, events/ltms.js playlistNameOfId); a playlist Core has no name for, or an input type it has no record of, is
   // left out, which the client reads as 0 like the pre-v2 screen's absent stat. The clients ask for the all-time window (0 and
   // 9223372036854775807); Core's store keeps days, not arbitrary ranges, so a custom window is answered with the career.
+  // 8.20's stats screen (UAthenaStatsScreenBase, Core-Backend #415) keys each stat "GameplayStat." + its name with "_"
+  // made "." (0xBA6C60), its Solo, Duo and Squad tabs sum their playlists' (SoloPlaylistNames...: 0x31D3500), and its
+  // LTM tab every stat of the kind whose name has none of LTM_ExclusionPlaylistNames (0x31D53C0), so an LTM's matches
+  // reach that tab only under their own playlist's name.
   const allTimeEnd = 9223372036854775807;
-  const statsV2Playlists = { 2: "playlist_defaultsolo", 10: "playlist_defaultduo", 9: "playlist_defaultsquad" };
 
   // The recorded career stats in v2 names, limited to the names asked for when requested is given.
   function statsV2(accountId, requested = null) {
     const recorded = stats.playlists(accountId);
     const answer = {};
-    for (const [playlistId, playlistName] of Object.entries(statsV2Playlists)) {
-      for (const [name, value] of Object.entries(recorded[playlistId] ?? {})) {
+    for (const [playlistId, counts] of Object.entries(recorded)) {
+      const playlistName = playlistNameOfId(playlistId);
+      if (!playlistName) continue;
+      for (const [name, value] of Object.entries(counts)) {
         const statName = `br_${name === "secondsplayed" ? "minutesplayed" : name}_keyboardmouse_m0_${playlistName}`;
         if (requested && !requested.includes(statName)) continue;
         answer[statName] = name === "secondsplayed" ? Math.floor(value / 60) : value;

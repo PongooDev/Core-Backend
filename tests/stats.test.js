@@ -292,6 +292,23 @@ test("7.40's stats v2 account and query answer the recorded career stats", async
       { startTime: 0, endTime: 9223372036854776000, accountId: friend.accountId, stats: {} }
     ]);
 
+    // Core-Backend #415: an LTM's matches are named by its playlist (8.20's LTM tab sums every playlist but its
+    // excluded ones), here Close Encounters Solo's (PlaylistId 44, Playlist_Close_Solo); a playlist Core has no name for is left out.
+    assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, {
+      playlistId: 44, countWins: true, results: [{ accountId: player.accountId, place: 1, kills: 3, secondsAlive: 300, score: 200 }]
+    })).status, 200);
+    assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, {
+      playlistId: 987654, results: [{ accountId: player.accountId, place: 2, kills: 1, secondsAlive: 60, score: 10 }]
+    })).status, 200);
+    const ltm = (await send({ host: "127.0.0.1", port: backend.port, path: `/fortnite/api/statsv2/account/${player.accountId}`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-8.20-CL-5625478", Authorization: `bearer ${player.token}` } })).body.stats;
+    assert.equal(ltm.br_placetop1_keyboardmouse_m0_playlist_close_solo, 1);
+    assert.equal(ltm.br_kills_keyboardmouse_m0_playlist_close_solo, 3);
+    assert.equal(ltm.br_matchesplayed_keyboardmouse_m0_playlist_close_solo, 1);
+    assert.equal(ltm.br_score_keyboardmouse_m0_playlist_close_solo, 200);
+    assert.equal(ltm.br_kills_keyboardmouse_m0_playlist_defaultsolo, 2);
+    assert.ok(!Object.keys(ltm).some((name) => name.includes("987654") || name.endsWith("_null")));
+
     // An unknown account's account route is Epic's not-found; the query leaves its stats empty instead of failing.
     assert.equal((await getV2("0123456789abcdef0123456789abcdef", player.token)).status, 404);
 

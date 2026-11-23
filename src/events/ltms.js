@@ -1499,6 +1499,18 @@ export const playlistIdOfName = (name, build = currentBuild()) => {
   const of = ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === key);
   return (of.find((ltm) => inRange(ltm.builds, build)) ?? of[0])?.playlistId ?? null;
 };
+// A playlist's PlaylistName by its id, lowercased as the stats v2 names have it (services/fortnite/stats.js), or null for
+// an id Core has no name for: the default playlists', else the requesting build's LTM, else the latest LTM with the id
+// from before the build (8.20 has Close Encounters Solo, 44, from Season 7, where 3.5.1 gave 44 to Impact), else any.
+export const playlistNameOfId = (playlistId, build = currentBuild()) => {
+  const id = Number(playlistId);
+  const named = Object.entries(defaultPlaylistIds).find(([, defaultId]) => defaultId === id);
+  if (named) return named[0];
+  const of = ltms.filter((ltm) => ltm.playlistId === id && ltm.playlistName);
+  const earlier = of.filter((ltm) => compareToBound(build, ltm.builds[0]) >= 0);
+  const ltm = of.find((entry) => inRange(entry.builds, build)) ?? earlier[earlier.length - 1] ?? of[0];
+  return ltm?.playlistName.toLowerCase() ?? null;
+};
 // The event queue's number of each event playlist ({12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8}, and 3.0's
 // N: N from 22 on): the matchmaking button's AthenaEvent<N> → playlist switch read backwards, so the N of the playlist's
 // Athena.Playlist.Event.<N> and complete_athena_event_<N>; 3.1's Blitz children (36, 37) take Blitz's, 8 (tagQueue).
