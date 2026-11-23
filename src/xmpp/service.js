@@ -348,6 +348,18 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
       }
     },
 
+    // A party service notification (services/party/parties.js): the same message from xmpp-admin, but its body is the
+    // notification itself, {type, sent, ns, party_id, ...}, which FOnlinePartySystemMcpV2 reads (8.30 0x5E6D70 takes
+    // the type from it and handles com.epicgames.social.party.* ones). Returns whether a resource got it.
+    notifyRaw(accountId, body) {
+      const text = JSON.stringify(body);
+      const recipients = bound(accountId);
+      for (const connection of recipients) {
+        connection.send(xml("message", { from: `xmpp-admin@${connection.domain}`, to: connection.jid }, xml("body", {}, text)));
+      }
+      return recipients.length > 0;
+    },
+
     // Two accounts became contacts (each gets the other's presence) or stopped being contacts (an unavailable one).
     contactsChanged(a, b, linked) {
       for (const [from, to] of [[a, b], [b, a]]) {
