@@ -211,6 +211,8 @@ const defaults = {
   // Season 3's Twitch Prime pack (Core-Backend #229, profiles/athena.js twitchPrimeCosmetics): the Sub Commander outfit and
   // the Slipstream glider, given to a player whose athena profile loads on a 3.x build. Off by default.
   twitchPrimePack: false,
+  // 7.00's Creative early access (Core-Backend #410, profiles/creative.js inCreativeEarlyAccess): on, Epic's dates.
+  creativeEarlyAccess: true,
   // The server regions (Core-Backend #142, matchmaking/regions.js servedRegions): a server whose region (its -McpRegion)
   // is one of these takes the players of all of them, each match still in its own region. [] (or one region): every
   // server takes only its own region's. A single region's code, as a string, is taken as that one region.
@@ -792,6 +794,7 @@ export function createSettingsStore(dataDir) {
       settings.giftingFriendDays = giftingFriendDaysValue(loaded.giftingFriendDays) ?? defaultGiftingFriendDays;
       settings.purchaseMode = loaded.purchaseMode === "code" ? "code" : "free";
       settings.twitchPrimePack = loaded.twitchPrimePack === true;
+      settings.creativeEarlyAccess = loaded.creativeEarlyAccess !== false;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
       settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
@@ -981,6 +984,7 @@ export function createSettingsStore(dataDir) {
       if (giftingFriendDaysValue(partial.giftingFriendDays) !== undefined) settings.giftingFriendDays = giftingFriendDaysValue(partial.giftingFriendDays);
       if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;
       if (typeof partial.twitchPrimePack === "boolean") settings.twitchPrimePack = partial.twitchPrimePack;
+      if (typeof partial.creativeEarlyAccess === "boolean") settings.creativeEarlyAccess = partial.creativeEarlyAccess;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;
       settings.serverRegions = regionList(partial.serverRegions ?? partial.serverRegion) ?? settings.serverRegions;

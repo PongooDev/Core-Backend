@@ -9889,7 +9889,17 @@ Each starts active; quests the account already has are left as they are.`, {
           el("option", { value: "", text: index === 0 ? "None (the week's suggested islands)" : "None" }),
           view.links.map((link) => el("option", { value: link.mnemonic, selected: link.mnemonic === current, text: `${link.mnemonic} · ${link.title}${link.active ? "" : " (off)"}` })));
       });
-      const featuredSection = el("section", { class: "panel" },
+      // 7.00's early access (Core-Backend #410, profiles/creative.js inCreativeEarlyAccess).
+      const early = view.earlyAccess;
+      const earlyAccessSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Creative early access (7.00)" }),
+            early.on ? chip(early.daysLeft > 0 ? `Battle Pass owners only, ${early.daysLeft} day${early.daysLeft === 1 ? "" : "s"} left` : "Over: open to everyone", early.daysLeft > 0 ? "sky" : "good") : chip("Off")),
+          toggleSwitch(early.on, (checked) => rerender(api("/admin/api/settings", { creativeEarlyAccess: checked }),
+            checked ? "Creative early access follows Epic's dates" : "Creative early access is off: everyone can start a server"))),
+        el("p", { class: "note", style: "margin:0;", text: `On 7.00 Epic let only Season 7 Battle Pass owners start a Creative server for a week; everyone else got it on 13 December 2018. On, 7.00 follows those dates on Season 7's replay (now ${early.replayDay}): until then the server select page shows "Upgrade your Battle Pass to get early access now!" to players without the pass. Off, nobody waits. 7.10 and later, Season 8 included, never had early access, so they never show it. A player's game picks up a change when it next returns to the lobby.` }));
+      const featuredSection = el("section", { class: "panel", style: "margin-top:16px;" },
         el("div", { class: "panel-head" }, el("h2", { text: "Featured rifts" }),
           view.featured.length ? chip(`${view.featured.length} of ${view.maxFeatured} set`, "sky") : chip("The week's suggested islands")),
         el("p", { class: "note", style: "margin:0;", text: "From 7.10 the Creative hub's four featured rifts each load an island by its code (the hotfix's CuratedLinkCodes, in rift order). Pick a published island for each, in order; an empty slot ends the list. With none set, the rifts load the week's suggested islands (below). A rift with no island stays shut and can't be used, so players can only enter a code at a rift that has one. A gameserver reads the list as it starts, so the change reaches servers started after you save." }),
@@ -9995,7 +10005,7 @@ Each starts active; quests the account already has are left as they are.`, {
           el("div", {}, el("h1", { text: "Creative" }),
             el("div", { class: "muted", text: "Published islands, their codes and the hub's featured rifts (7.10 and later). A player's own islands, saves and backups are on their page, Creative tab." })),
           el("div", { class: "actions" }, btn("Refresh", showCreative, "ghost"))),
-        featuredSection, suggestionSection, publishSection, linksSection);
+        earlyAccessSection, featuredSection, suggestionSection, publishSection, linksSection);
     }
 
     // A player's Creative islands (the Players page's Creative tab): saves, the in-game backup, the admin's backups.

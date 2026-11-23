@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
+import { releasedOn } from "../builds/detect.js";
 import { McpError } from "../errors.js";
 import { log } from "../log.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
@@ -53,8 +54,29 @@ export function ownsCreativeBattlePass(session) {
 // Whether everyone has islands now: Season 7's replay is at or past 13 December 2018.
 export const islandsForEveryone = (now = new Date()) => seasonMoment(now, null, creativeSeason).getTime() >= allIslandsDay;
 
+// The admin panel's Creative early access switch (settings creativeEarlyAccess, Core-Backend #410): on (the default),
+// a build Epic shipped during the early access week follows Epic's dates; off, it has no early access.
+let earlyAccessSetting = () => true;
+export function configureCreativeEarlyAccess(provider) {
+  earlyAccessSetting = typeof provider === "function" ? provider : () => provider !== false;
+}
+
+// Whether the build had Update v7.00's early access (Core-Backend #410): only a build Epic released before 13 December
+// 2018, which is 7.00 (6 December). 7.10 came out on 18 December, after everyone had islands, and Season 8 never had it,
+// so their lobbies never show the notice (the client locks the tile by the calendar season's book_purchased, so a Season
+// 8 player without Season 8's Battle Pass saw it while Season 7's replay was before 13 December).
+const earlyAccessBuild = (build) => {
+  const released = releasedOn(String(build));
+  return hasCreative(build) && released !== null && released < allIslandsDay;
+};
+
+// Whether the build is in early access now: its own, the panel's switch on, and Season 7's replay before 13 December.
+export const inCreativeEarlyAccess = (build = currentBuild(), now = new Date()) =>
+  earlyAccessBuild(build) && earlyAccessSetting() !== false && !islandsForEveryone(now);
+
 // Whether the account may have islands and play Creative now (Update v7.00's early access).
-export const creativeEntitled = (session, now = new Date()) => ownsCreativeBattlePass(session) || islandsForEveryone(now);
+export const creativeEntitled = (session, now = new Date(), build = currentBuild()) =>
+  ownsCreativeBattlePass(session) || !inCreativeEarlyAccess(build, now);
 
 // The lobby's own early access notice (Core-Backend #379). 7.00's Creative server list (UFortCreativeServersView) shows its
 // "Start a server" tile (CreativeServerOptionsTile, InitServerInfo) locked, its LimitedAccessServerContent ("Available on
@@ -68,12 +90,13 @@ export const creativeEntitled = (session, now = new Date()) => ownsCreativeBattl
 // hotfix turned them on. So the lobby hotfix (services/fortnite/cloudstorage.js) gives 7.00 on the three while Season 7's
 // replay is before 13 December: limited access on, founders not let in (Update v7.00 names Battle Pass owners only), and the
 // end time the moment the replay reaches 13 December on the host's clock (the replay's own date is 2018's; the tile shows
-// when it opens here). From 13 December it turns limited access off. The client asks for the hotfix at start-up and again on
+// when it opens here). From 13 December, on builds Epic shipped after it (7.10 and Season 8) and with the admin panel's
+// switch off it turns limited access off (inCreativeEarlyAccess). The client asks for the hotfix at start-up and again on
 // coming back to the lobby and before matchmaking, so the tile opens on the next of those. The matchmaking refusal stays
 // behind it (services/matchmaking/ticket.js).
 export function creativeAccessGlobals(build, now = new Date()) {
   if (!hasCreative(build)) return [];
-  if (islandsForEveryone(now)) return ["bEnableCreativeModeLimitedAccess=false"];
+  if (!inCreativeEarlyAccess(build, now)) return ["bEnableCreativeModeLimitedAccess=false"];
   const opens = nextReplayOf(allIslandsDay, now, null, creativeSeason);
   return ["bEnableCreativeModeLimitedAccess=true", "bEnableCreativeModeLimitedAccessForFounders=false",
     `CreativeModeLimitedAccessEndTime=${opens.toISOString()}`];
@@ -123,7 +146,7 @@ export function earlyAccessMessage(now = new Date()) {
     `replay is on ${creativeReplayDay(now)}, ${days} day${days === 1 ? "" : "s"} before it. Buy the Season 7 Battle Pass in the ` +
     "lobby's Battle Pass tab, play in a party whose leader has it, or wait until the replay reaches 13 December; a host " +
     "can move it there with the admin panel's " +
-    "Season 7 events page, Season start (day 1), set at least 7 days back";
+    "Season 7 events page, Season start (day 1), set at least 7 days back, or turn off Creative early access on its Creative page";
 }
 
 export const plotsOf = (profile) => Object.entries(profile.items).filter(([, item]) => isPlot(item));
@@ -177,7 +200,7 @@ export function settleCreativePlots(session, now = new Date()) {
     }
     given += added;
   }
-  if (given) log("Creative", `${session.accountId}: ${given} Creative island${given === 1 ? "" : "s"} given (${ownsCreativeBattlePass(session) ? "Season 7 Battle Pass" : "13 December 2018 on Season 7's replay"})`);
+  if (given) log("Creative", `${session.accountId}: ${given} Creative island${given === 1 ? "" : "s"} given (${ownsCreativeBattlePass(session) ? "Season 7 Battle Pass" : "no early access now"})`);
   return given;
 }
 

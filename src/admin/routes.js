@@ -1428,6 +1428,7 @@ export function adminRoutes(context) {
       giftingOriginalDates: req.body?.giftingOriginalDates,
       purchaseMode: req.body?.purchaseMode,
       twitchPrimePack: req.body?.twitchPrimePack,
+      creativeEarlyAccess: req.body?.creativeEarlyAccess,
       matchStartCountdown: req.body?.matchStartCountdown,
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
       serverRegions: req.body?.serverRegions,

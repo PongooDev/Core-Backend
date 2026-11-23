@@ -5,7 +5,7 @@ import express from "express";
 import { versionOf } from "../builds/detect.js";
 import { sendError } from "../errors.js";
 import { log } from "../log.js";
-import { plotItem, plotsOf } from "../profiles/creative.js";
+import { creativeReplayDay, daysUntilIslandsForEveryone, plotItem, plotsOf } from "../profiles/creative.js";
 import { islandFileOf, islandFolder, lockIdleMs, maxIslandBytes, readIslandInfo, saveIslandInfo, storeIsland } from "../services/dss/dss.js";
 import { exportIsland, importIsland, IslandTransferError, maxIslandFileBytes } from "../services/dss/transfer.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
@@ -54,6 +54,8 @@ export function creativeAdminRoutes(context) {
     }),
     links: islandLinks.list().map(linkView),
     suggestion: suggestionView(),
+    // 7.00's early access switch (Core-Backend #410) and where Season 7's replay stands.
+    earlyAccess: { on: settings.get().creativeEarlyAccess !== false, replayDay: creativeReplayDay(), daysLeft: daysUntilIslandsForEveryone() },
     publishers: enabledCreators(settings.get()).filter((creator) => creator.accountId)
       .map((creator) => ({ accountId: creator.accountId, code: creator.code, displayName: nameOf(creator.accountId) }))
   });

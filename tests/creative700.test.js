@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { ltmFrontEndPlaylists, ltmIds, ltmOfBucketPlaylist, ltmOn, ltmSchedule, playlistIdOfName } from "../src/events/ltms.js";
 import { botModeCandidates, botModeIds, botsForMode, defaultBotModes, sanitizeBotModes } from "../src/matchmaking/botmodes.js";
 import { isPartyOnlyBucket, parseBucket } from "../src/matchmaking/service.js";
-import { creativeAccessGlobals, creativeEntitled, creativePartyHosts, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
+import { configureCreativeEarlyAccess, creativeAccessGlobals, creativeEntitled, creativePartyHosts, inCreativeEarlyAccess, earlyAccessMessage, islandsForEveryone, plotsOf, plotTemplateId, settleCreativePlots } from "../src/profiles/creative.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { contentPage, creativeAdsFor } from "../src/services/content/pages.js";
@@ -164,6 +164,31 @@ test("early access: four islands for a Season 7 Battle Pass owner, for everyone 
       assert.equal(creativeEntitled(session, new Date("2018-12-07T12:00:00Z")), true, "Season 7's record kept aside");
     });
   } finally {
+    configureItemShop(null);
+  }
+});
+
+test("early access is 7.00's alone and follows the admin panel's switch: 7.10 and Season 8 never lock the tile (#410)", () => {
+  configureItemShop({ mode: "fnbr", rotationHour: 0, seasonStarts: { 7: "2018-12-06" } });
+  const during = new Date("2018-12-08T12:00:00Z");
+  const limitedOff = ["bEnableCreativeModeLimitedAccess=false"];
+  try {
+    assert.equal(inCreativeEarlyAccess(v700, during), true);
+    assert.equal(creativeAccessGlobals(v700, during)[0], "bEnableCreativeModeLimitedAccess=true");
+    for (const build of ["4667333", "4727874", "5203069", "5625478"]) {
+      assert.equal(inCreativeEarlyAccess(build, during), false, build);
+      assert.deepEqual(creativeAccessGlobals(build, during), limitedOff, build);
+    }
+    withSession("s8nobp", (session) => assert.equal(creativeEntitled(session, during, "5625478"), true, "a Season 8 player may play"));
+    configureCreativeEarlyAccess(() => false);
+    assert.equal(inCreativeEarlyAccess(v700, during), false);
+    assert.deepEqual(creativeAccessGlobals(v700, during), limitedOff);
+    withSession("offnobp", (session) => {
+      assert.equal(creativeEntitled(session, during), true, "switch off: no early access");
+      assert.equal(settleCreativePlots(session, during), 4);
+    });
+  } finally {
+    configureCreativeEarlyAccess(() => true);
     configureItemShop(null);
   }
 });
