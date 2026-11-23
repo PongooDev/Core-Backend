@@ -59,7 +59,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       partyAtPleasantPark: true, nflRumble: true, wildWestDuos730: true,
       // 7.40's Love Shot (Duos), Sword Fight (Squads), Catch! and Driftin', on by default; their other playlists by their switches.
       loveShotDuos: true, loveShotSolo: false, loveShotSquads: false, swordFightSquads: true, swordFightSolo: false, swordFightDuos: false,
-      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false });
+      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
@@ -268,7 +268,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       partyAtPleasantPark: true, nflRumble: true, wildWestDuos730: true,
       // 7.40's Love Shot (Duos), Sword Fight (Squads), Catch! and Driftin', on by default; their other playlists by their switches.
       loveShotDuos: true, loveShotSolo: false, loveShotSquads: false, swordFightSquads: true, swordFightSolo: false, swordFightDuos: false,
-      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false });
+      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);
@@ -320,6 +320,39 @@ test("the player bots settings: defaults, sanitizing, the config round-trip and 
 
     res = await admin(backend, "/matchmaking/actions/reset-defaults", {});
     assert.deepEqual(plain(res.body.bots), defaults);
+  } finally {
+    backend.close();
+  }
+});
+
+test("every LTM the matchmaking tab lists has a name and readable windows, and its switch toggles (8.40's Air Royale)", async () => {
+  const backend = await startBackend();
+
+  try {
+    const { body: ov } = await admin(backend, "/matchmaking/overview");
+    for (const ltm of ov.ltms.list) {
+      const where = `${ltm.id}`;
+      assert.ok(ltm.name, `${where} has a name`);
+      // A switch the settings do not keep (settings/store.js playlistAssetLtms) is dropped on save: it cannot be turned on.
+      assert.ok(Object.hasOwn(ov.modes, ltm.id), `${where} has a stored switch`);
+      // The panel prints each window's builds as "on <builds>"; a build Core has no version name for read "undefined".
+      for (const window of ltm.windows) assert.doesNotMatch(window.builds, /undefined/, `${where}'s window builds`);
+      assert.doesNotMatch(ltm.builds, /undefined/, `${where}'s builds`);
+    }
+    const airRoyale = ov.ltms.list.find((ltm) => ltm.id === "airRoyaleDuos");
+    assert.equal(airRoyale.windows[0].builds, "8.40");
+    assert.equal(airRoyale.windows[0].start, "2019-04-17");
+    for (const id of ["airRoyaleDuos", "foodFightDeepFried"]) {
+      const listed = ov.playlists.find((p) => p.id === id);
+      assert.ok(listed.name && listed.code, `${id} is in the playlists with a name`);
+      assert.equal(listed.enabled, false);
+      const on = await admin(backend, "/matchmaking/config", { modes: { [id]: true } });
+      assert.equal(on.status, 200);
+      assert.equal(on.body.modes[id], true);
+      assert.equal((await admin(backend, "/matchmaking/overview")).body.playlists.find((p) => p.id === id).enabled, true);
+      const off = await admin(backend, "/matchmaking/config", { modes: { [id]: false } });
+      assert.equal(off.body.modes[id], false);
+    }
   } finally {
     backend.close();
   }

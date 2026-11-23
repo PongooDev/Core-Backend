@@ -1696,7 +1696,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
 const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02", [build6100]: "6.10.0", [build6101]: "6.10.1", [build610]: "6.10", [build620]: "6.20", [build621]: "6.21", [build622]: "6.22", [build630]: "6.30", [build631]: "6.31", [build700]: "7.00", [build710]: "7.10", [build720]: "7.20", [build730]: "7.30", [build740]: "7.40" };
-const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
+const boundName = (bound) => (typeof bound === "number" ? versions[bound] ?? buildVersions[bound] ?? String(bound) : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.
 const shownMoment = (ms) => (ms % 86400000 === 0 ? new Date(ms).toISOString().slice(0, 10) : new Date(ms).toISOString());
@@ -1719,7 +1719,7 @@ function originalOf(ltm, settingsValue, moments) {
 }
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};
-  const moments = Object.fromEntries([1, 2, 3, 4, 5, 6, 7].map((season) => [season, seasonMoment(now, null, season).getTime()]));
+  const moments = Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map((season) => [season, seasonMoment(now, null, season).getTime()]));
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
     // Close Encounters' day: the whole of it or one hour (#258).
@@ -1747,7 +1747,7 @@ export function ltmSchedule(settingsValue, now = new Date()) {
       description: ltm.description,
       enabled: ltm.defaultOn ? modes[ltm.id] !== false : modes[ltm.id] === true,
       // The builds it is new in, where it is on whatever its switch (null for none): "3.2", "3.5.1 and 3.5.2".
-      newIn: newInBuilds(ltm).map((build) => versions[build]).join(" and ") || null,
+      newIn: newInBuilds(ltm).map(boundName).join(" and ") || null,
       ...originalOf(ltm, settingsValue, moments)
     }))
   };

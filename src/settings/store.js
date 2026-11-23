@@ -83,7 +83,14 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "partyAtPleasantPark", "nflRumble", "wildWestDuos730",
   // 7.40's (CL-5046157): Love Shot, Sword Fight, Catch! and Content Update v7.40's Driftin'.
   "loveShotDuos", "loveShotSolo", "loveShotSquads", "swordFightSquads", "swordFightSolo", "swordFightDuos", "catchSolo", "catchDuos",
-  "catchSquads", "driftin", "driftin40", "driftin20s"];
+  "catchSquads", "driftin", "driftin40", "driftin20s",
+  // Season 8's (8.00 to 8.40; Core-Backend's admin panel dropped the switches of ones not listed here): 50v50, Close Encounters,
+  // Team Rumble, Fly Explosives, One Shot, Solid Gold, Classic, Slide, the Getaway, Floor is Lava, Sniper Shootout, Going Green,
+  // and 8.40's Air Royale (Duos) and Food Fight: Deep Fried.
+  "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
+  "solidGoldSeason8Squads", "classicSeason8Squads", "slideSeason8Duos", "getawaySeason8Squads", "getawaySeason8Duos",
+  "floorIsLavaSquads", "floorIsLavaDuos", "floorIsLavaSolo", "sniperShootoutSeason8Duos", "sniperShootoutSeason8Squads", "goingGreenSquads",
+  "airRoyaleDuos", "foodFightDeepFried"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
@@ -106,7 +113,9 @@ const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "
   // 7.30's (CL-4834550): Party at Pleasant Park, NFL Rumble and Content Update v7.30's Wild West Duos.
   "partyAtPleasantPark", "nflRumble", "wildWestDuos730",
   // 7.40's (CL-5046157): Love Shot (Duos), Sword Fight (Squads), Catch! and Content Update v7.40's Driftin'.
-  "loveShotDuos", "swordFightSquads", "catchSolo", "catchDuos", "catchSquads", "driftin"];
+  "loveShotDuos", "swordFightSquads", "catchSolo", "catchDuos", "catchSquads", "driftin",
+  // 8.00's 50v50, the mode its shipped lobby offers.
+  "fiftyFiftySeason8"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
