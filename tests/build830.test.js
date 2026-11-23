@@ -147,9 +147,9 @@ test("the Inferno Challenges: 8.30's data has them as an outfit's, given to an I
   assert.equal(schedules.bundleschedule_styles_redsuitguy.category, "ChallengeCategory.Style");
   assert.ok(isStylesCategory(schedules.bundleschedule_styles_redsuitguy.category));
   assert.equal(styleSchedules.bundleschedule_styles_redsuitguy, "AthenaCharacter:cid_370_athena_commando_m_evilsuit");
-  // The earlier outfits' come back with the tag read (8.20's overlay has none).
+  // The earlier outfits' have the tag read since 8.00's and 8.20's overlays were extracted again.
   for (const id of ["bundleschedule_styles_skulltrooper", "bundleschedule_styles_cupiddark"]) assert.ok(schedules[id], id);
-  assert.equal(inBuild(v820, athenaChallengeSchedules).bundleschedule_styles_skulltrooper, undefined);
+  assert.equal(inBuild(v820, athenaChallengeSchedules).bundleschedule_styles_skulltrooper.category, "ChallengeCategory.Style");
   withConfig(season8, () => withSession(v830, "inferno830", (session) => {
     setUpAthena(session);
     athenaQuestLogin(session);

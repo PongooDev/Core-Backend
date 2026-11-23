@@ -71,6 +71,10 @@ if (corePaks.Length > 0)
 }
 else provider.Initialize();
 provider.SubmitKeys([new KeyValuePair<FGuid, FAesKey>(new FGuid(), new FAesKey(aesKey))]);
+// The given key opens the build's main paks (guid zero). When none opens, the key is the wrong one for this build (not Core's
+// pak in the folder: a build's own paks are read the same with it), and the run would stop later at a missing file.
+var mainPaksUnread = provider.UnloadedVfs.Where(vfs => vfs.EncryptionKeyGuid == new FGuid()).Select(vfs => vfs.Name).ToList();
+if (mainPaksUnread.Count > 0) Console.Error.WriteLine($"The given AES key opens none of the build's main paks ({mainPaksUnread.Count} unread): it isn't this build's key.");
 // A pak on a key of its own is read when the backend's own keychain (src/store/keychain.json, "<pak guid>:<base64 key>"
 // entries, what the storefront's keychain route serves) has its key: the client is given that key at login and mounts the
 // pak (6.20's pakchunk1000, Bunnymoon), so its cosmetics are the build's. A pak whose key isn't in it stays unread, as

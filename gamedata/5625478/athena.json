@@ -1912,6 +1912,180 @@
       ],
       "visualStyle": ""
     },
+    "questbundle_styles_cupiddark": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "quantity": 1,
+              "templateId": "HomebaseBannerIcon:brcompletioncupiddark"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_03"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_04"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_05"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_cupiddark_complete_daily_challenges_06"
+        }
+      ],
+      "visualStyle": ""
+    },
+    "questbundle_styles_icequeen": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "quantity": 1,
+              "templateId": "HomebaseBannerIcon:brcompletionicequeen"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_icequeen_outlast_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_icequeen_outlast_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_icequeen_outlast_03"
+        }
+      ],
+      "visualStyle": ""
+    },
+    "questbundle_styles_skullbrite": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "quantity": 1,
+              "templateId": "CosmeticVariantToken:vtid_095_skullbrite_styleb"
+            },
+            {
+              "quantity": 1,
+              "templateId": "CosmeticVariantToken:vtid_118_skullbrite_backblingb"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skullbrite_play_matches_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skullbrite_outlast_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skullbrite_gainxp_01"
+        }
+      ],
+      "visualStyle": ""
+    },
+    "questbundle_styles_skulltrooper": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "quantity": 1,
+              "templateId": "AthenaBackpack:bid_105_ghostportal"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skulltrooper_complete_daily_challenges"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skulltrooper_play_matches"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skulltrooper_min1elimination"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skulltrooper_interact_chests_singlematch"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_skulltrooper_damage_singlematch"
+        }
+      ],
+      "visualStyle": ""
+    },
+    "questbundle_styles_tomatohead": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "quantity": 1,
+              "templateId": "CosmeticVariantToken:vtid_032_tomatohead_crown"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_play_matches_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_damage_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_gainxp_01"
+        }
+      ],
+      "visualStyle": ""
+    },
     "questbundle_winterdeimos": {
       "completionRewards": [],
       "completionSteps": [
@@ -2004,6 +2178,61 @@
     }
   },
   "challengeSchedules": {
+    "bundleschedule_styles_cupiddark": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_cupiddark",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "ChallengeCategory.Style",
+      "cleanUpOnBundleCompletion": true
+    },
+    "bundleschedule_styles_icequeen": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_icequeen",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "ChallengeCategory.Style",
+      "cleanUpOnBundleCompletion": true
+    },
+    "bundleschedule_styles_skullbrite": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_skullbrite",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "ChallengeCategory.Style",
+      "cleanUpOnBundleCompletion": true
+    },
+    "bundleschedule_styles_skulltrooper": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_skulltrooper",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "ChallengeCategory.Style",
+      "cleanUpOnBundleCompletion": true
+    },
+    "bundleschedule_styles_tomatohead": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_tomatohead",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "ChallengeCategory.Style",
+      "cleanUpOnBundleCompletion": true
+    },
     "schedule_14daysoffortnite": {
       "bundles": [
         {
@@ -2036,7 +2265,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Event",
       "cleanUpOnBundleCompletion": true,
       "eventName": "EventFlag.LTM_HighStakes"
     },
@@ -2060,7 +2289,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 5
     },
@@ -2072,7 +2301,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 5
     },
@@ -2084,7 +2313,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 6
     },
@@ -2096,7 +2325,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 6
     },
@@ -2108,7 +2337,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 7
     },
@@ -2125,7 +2354,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 7
     },
@@ -2137,7 +2366,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true,
       "keptPastSeason": 7
     },
@@ -2149,7 +2378,7 @@
           "unlockValue": 0
         }
       ],
-      "category": ""
+      "category": "ChallengeCategory.Event"
     },
     "season8_free_schedule": {
       "bundles": [
@@ -2204,7 +2433,7 @@
           "unlockValue": 65
         }
       ],
-      "category": ""
+      "category": "ChallengeCategory.Weekly"
     },
     "season8_paid_schedule": {
       "bundles": [
@@ -2219,7 +2448,7 @@
           "unlockValue": 0
         }
       ],
-      "category": ""
+      "category": "ChallengeCategory.Style"
     },
     "season8_shiny_schedule": {
       "bundles": [
@@ -2229,7 +2458,7 @@
           "unlockValue": 0
         }
       ],
-      "category": "",
+      "category": "ChallengeCategory.Style",
       "cleanUpOnBundleCompletion": true
     }
   },
