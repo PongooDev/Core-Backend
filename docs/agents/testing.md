@@ -8,7 +8,8 @@ Fallback, from your worktree, in PowerShell:
 
 ```
 node --test tests/build720.test.js tests/athena.test.js     # while iterating: only the files you touched or that cover your change
-npm.cmd test                                               # once, right before committing (node --test over ~230 files, about a minute)
+# No full local run: it slows the owner's PC. CI (npm run test:ci) runs the whole suite on every push;
+# check it with `gh run list -R PongooDev/Core-Backend -L 3` and fix a red run straight away.
 npm.cmd run test:stress                                    # only when you changed concurrency, locking or matchmaking load paths
 ```
 
@@ -16,7 +17,8 @@ npm.cmd run test:stress                                    # only when you chang
 - A full run can fail one unrelated file under load (`stacking`, `cloudstorage`, `quests` are known to be flaky).
   Rerun just that file; if it passes alone, note it in the commit message. If it fails alone, it isn't flaky:
   find out why.
-- Don't run the full suite repeatedly while iterating: it was the main reason agent tasks took too long.
+- Don't run the full suite locally at all. Run only the files covering your change (the area's file and the affected
+  builds' `build<ver>.test.js`); `npm test` exists for the owner and runs 2 files at a time.
 
 ## Conventions
 

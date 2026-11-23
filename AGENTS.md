@@ -99,7 +99,8 @@ the result. Fallback commands, from the worktree, in PowerShell (`npm.cmd`, beca
 
 ```
 node --test tests/<file>.test.js tests/<other>.test.js      # while iterating: only the touched files
-npm.cmd test                                                # once, right before committing (about a minute)
+# No full local run: CI (.github/workflows/test.yml) runs the whole suite on every push; check it with
+# `gh run list -R PongooDev/Core-Backend -L 3` after pushing and fix a red run straight away.
 node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-ping-port 0 --vivox-sip-port 0
 ```
 
@@ -125,7 +126,8 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 5. Find what the reporter's build sends and expects: its exe (IDA, read-only), its SDK, its paks (FModel). Check the
    reporter's build specifically, and every other build the code path serves.
 6. Make the change; add or update tests that pin the build's behaviour (`tests/build<ver>.test.js` or the area's file).
-7. Run the touched test files; then `npm.cmd test` once.
+7. Run only the test files that cover what you changed: the touched area's file and the affected builds'
+   `build<ver>.test.js`. Never the whole suite locally: it slows the owner's PC and CI runs it on push.
 8. Self-review with the `pre-commit-review` skill (or sections 6 and 8 by hand).
 9. Commit only your paths, with the message rules below. `git fetch origin`, `git rebase origin/main`, rerun the
    touched tests if the rebase brought changes, `git push origin HEAD:main`.
@@ -139,7 +141,7 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 - [ ] The reporter's build was checked, by its CL, and every other build the change touches still answers as before.
 - [ ] Facts in the code have their source in a comment (build, CL, address, asset, patch notes).
 - [ ] Tests pin the new behaviour for the build(s) it is for, and that other builds are unchanged where it matters.
-- [ ] The touched test files pass, and one full `npm.cmd test` passed (or an unrelated flaky file passed on rerun).
+- [ ] The test files covering the change pass locally, and the CI run for the push is green.
 - [ ] No test or run used port 5595 or the real `data` folder.
 - [ ] The commit message and issue comment say what was verified (tests, a test backend, a real client) and what not.
 - [ ] Rebased, pushed, issue commented, the 5595 backend restarted on the new main and listening again, worktree

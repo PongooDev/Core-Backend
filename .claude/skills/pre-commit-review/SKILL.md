@@ -26,7 +26,7 @@ explained in the message. Rules: AGENTS.md sections 1, 2 and 8.
 10. Nothing that only a client change could make work, presented as a fix?
 
 **Testing**
-11. Did the touched test files pass, and one full `npm.cmd test` (a single flaky file rerun alone is fine)?
+11. Did the test files covering the change pass? (No full local run; CI runs the suite on push, check it is green.)
 12. Did no test or test backend use port 5595 or the main checkout's `data` folder?
 13. Does the message say what was verified (tests, a test backend, a real client) and what not?
 

@@ -37,5 +37,5 @@ appearing in output, stop and write it in `H:\CoreWork\HANDOFF.md` for the owner
 11. Restart the owner's 5595 backend on the new main: `restart_backend` (core MCP), else the `restart-live-backend`
     skill.
 
-Done when: the new build's test file passes, the full suite passes once, 5595 runs the new main, and the report lists
+Done when: the new build's test file passes, the touched tests pass and the push's CI run is green, 5595 runs the new main, and the report lists
 which patch-note features are served, which aren't, and what was only checked statically.
