@@ -10,6 +10,7 @@ import { lootHotfixSection } from "../../events/contentupdates.js";
 import { defaultReplacements, lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
+import { siphonRows } from "../../events/siphon.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
 import { qosEngineLines } from "../../matchmaking/qos.js";
@@ -294,7 +295,7 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
     + forcedQueueSection(build) + chatSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + (vivox?.gameSection?.(req, build) ?? "")
-    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build), ...siphonRows(build)], build);
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
   // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
   // region and first region pick pings.

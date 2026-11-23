@@ -6,6 +6,7 @@ import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js"
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
 import { defaultIceKingSnow, sanitizeIceKingSnow } from "../events/icestorm.js";
+import { defaultSiphon, sanitizeSiphon } from "../events/siphon.js";
 import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
@@ -269,6 +270,9 @@ const defaults = {
     meteorStrike: defaultMeteorStrikePhase,
     // 7.20's Ice Storm snow (events/icestorm.js): "event" (SP by the Ice King's storm), "none" or "full".
     iceKingSnow: defaultIceKingSnow,
+    // 7.40 to 8.20's siphon and material changes in Solo, Duos and Squads (events/siphon.js, PongooDev/CoreV2#557): "build"
+    // (as Epic ran each build), "on" or "off".
+    siphon: defaultSiphon,
     // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its mode ("off", "dates": Epic's on the replay, "custom": its
     // launch time), the time and the countdown.
     rocketLaunch: defaultRocketLaunch,
@@ -488,6 +492,7 @@ function sanitizeEvents(input, current = defaults.events) {
 
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
   if (input.iceKingSnow !== undefined) result.iceKingSnow = sanitizeIceKingSnow(input.iceKingSnow, result.iceKingSnow ?? defaultIceKingSnow);
+  if (input.siphon !== undefined) result.siphon = sanitizeSiphon(input.siphon, result.siphon ?? defaultSiphon);
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
   if (input.season4Flags !== undefined) result.season4Flags = sanitizeSeason4Flags(input.season4Flags, result.season4Flags ?? defaultSeason4Flags);
   if (input.datedFlags !== undefined) result.datedFlags = sanitizeDatedFlags(input.datedFlags, result.datedFlags ?? defaultDatedFlags);

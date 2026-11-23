@@ -151,6 +151,10 @@ export const eventCards = [
     key: "heat", endStep: "burnt", startLabel: "The woods start drying", endLabel: "The woods are burnt brown",
     about: "The heat before the volcano: the Wailing Woods' grass browns from 24 February 2019 (the west first) and the forest, the Block and parts of Tomato Temple and Lonely Lodge are all brown by 27 February, to the season's end. A match keeps the colour it started with. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC).",
     flags: ["HP", "HP1"] },
+  // 7.40 to 8.20's (events/siphon.js, PongooDev/CoreV2#557): not an event flag, AthenaGameData and AthenaResourceRates rows.
+  { id: "siphon", kind: "choice", choice: "siphon", seasons: [7, 8], name: "Siphon and material changes (Solo, Duos, Squads)", builds: "7.40 – 8.20", ranges: [[5046157, 5625478]], always: true,
+    about: "Update v7.40's Pop-up Cup rules in the core modes: 50 health or shield and 50 of each material per elimination, a 500 cap on each material and 40% more from harvesting. On in 7.40 and 8.00, as Epic ran them; Update v8.20 took it out of the core modes (Arena kept it), so 8.20 has it off. Restart the game and the server after a change. On 8.20 off leaves its paks' 500 cap and the materials dropped on elimination, which no hotfix row can take out of the core modes alone.",
+    flags: ["AthenaGameData Default.Siphon.* (hotfix)"] },
   // 8.00's (events/events.js): Season 8's lobby, its only event flag (8.00 has no Save the World seasonal event; its other
   // new flag, EventFlag.Spring2019, is Save the World's quest map and isn't served).
   // 8.00's Block (events/block.js): its two builds on their dates.
@@ -176,8 +180,10 @@ const modeLabels = { off: "Off", before: "Before the event", dates: "Epic's date
   season: "Epic's dates", all: "All on" };
 export const meteorStrikePhases = [["none", "Comet only"], ["broadcast", "TVs show static"], ["meteors", "Meteors"], ["impact", "Meteors at their most"]];
 export const iceKingSnowPhases = [["event", "Follows the storm"], ["none", "Season 7's own snow"], ["full", "Island under snow"]];
+export const siphonPhases = [["build", "As Epic ran it"], ["on", "On"], ["off", "Off"]];
 // The choice cards' settings: the events config's key, its phases and its default.
-const choices = { meteorStrike: { phases: meteorStrikePhases, fallback: "meteors" }, iceKingSnow: { phases: iceKingSnowPhases, fallback: "event" } };
+const choices = { meteorStrike: { phases: meteorStrikePhases, fallback: "meteors" }, iceKingSnow: { phases: iceKingSnowPhases, fallback: "event" },
+  siphon: { phases: siphonPhases, fallback: "build" } };
 const choiceOf = (card) => choices[card.choice ?? "meteorStrike"];
 const eventModeNames = { force_fortnitemares: "forces Fortnitemares 2017", force_mutantstorms: "forces the Mutant Storms", force_winter2017: "forces Survive the Holidays",
   custom: "serves only the flags listed under Advanced" };
@@ -224,6 +230,10 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
       const { phases, fallback } = choiceOf(card);
       const key = card.choice ?? "meteorStrike";
       const phase = phases.find(([id]) => id === (config[key] ?? fallback)) ?? phases.find(([id]) => id === fallback);
+      if (key === "siphon") {
+        return phase[0] === "build" ? { tone: "dates", nowLabel: "on", onRanges: [[5046157, 5203069]], text: "Follows Epic's: on in 7.40 and 8.00, off in 8.20 (Update v8.20 took it out of the core modes)" }
+          : phase[0] === "on" ? { tone: "on", nowLabel: "on", text: "On now: on 7.40, 8.00 and 8.20" } : { tone: "off", text: "Off" };
+      }
       if (key === "iceKingSnow") {
         return phase[0] === "event" ? { tone: "dates", text: "Follows the storm: Season 7's own snow before it, the island under snow after it" }
           : { tone: "on", nowLabel: phase[1].toLowerCase(), text: `On now: ${phase[1]}, whatever the storm` };
