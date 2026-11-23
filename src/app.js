@@ -46,6 +46,7 @@ import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { portalRoutes } from "./services/portal/routes.js";
 import { contentRoutes } from "./services/content/pages.js";
+import { staticAssetsRoutes } from "./services/content/staticassets.js";
 import { coreIslandRoutes, islandImportPath } from "./services/core/islands.js";
 import { corePresenceRoutes } from "./services/core/presence.js";
 import { coreStatusRoutes } from "./services/core/status.js";
@@ -269,6 +270,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(publicAccountRoutes(context));
   app.use(lightswitchRoutes(context));
   app.use(contentRoutes(context, config));
+  app.use(staticAssetsRoutes(config));
   app.use(versionRoutes(context));
   app.use(calendarRoutes(context));
   app.use(waitingRoomRoutes(context));
