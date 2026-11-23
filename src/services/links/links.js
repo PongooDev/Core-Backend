@@ -172,5 +172,12 @@ export function linksRoutes({ tokens, settings, profiles, islandLinks, dataDir }
     }
     res.status(204).end();
   });
+  // 8.20's island history (FortMcpUtils' creative history url, "/api/game/v2/creative/history"): GET <url>/<accountId>?limit=<n>,
+  // answered like the favorites ({results: [{linkData, sortDate}], hasMore}), the islands the player played last. Core
+  // doesn't record the islands a player joins, so the list is empty (a missing route made the client log an error).
+  router.get("/fortnite/api/game/v2/creative/history/:accountId", requireAuth(tokens), (req, res) => {
+    if (!self(req, res, req.params.accountId)) return;
+    res.json({ results: [], hasMore: false });
+  });
   return router;
 }

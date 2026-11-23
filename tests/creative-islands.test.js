@@ -261,6 +261,13 @@ test("the week's suggested island leads the island code screen, and the featured
     listed = await as(backend.port, viewer.token, "GET", `${favorites}?limit=30`);
     assert.deepEqual(listed.body.results.map((entry) => entry.linkData.mnemonic), [week.suggested, other]);
 
+    // 8.20's island history: served as an empty list (no joins are recorded); only the account itself asks.
+    const history = `/fortnite/api/game/v2/creative/history/${viewer.accountId}?limit=30`;
+    const recent = await as(backend.port, viewer.token, "GET", history);
+    assert.equal(recent.status, 200);
+    assert.deepEqual(recent.body, { results: [], hasMore: false });
+    assert.equal((await as(backend.port, viewer.token, "GET", `/fortnite/api/game/v2/creative/history/${"0".repeat(32)}?limit=30`)).status, 403);
+
     // No featured codes: the featured rifts load the suggestions; the admin's codes take over once set.
     const server = await dedicatedServerToken(backend.port);
     assert.deepEqual((await get(backend.port, "/core/api/creative/featured", server)).body.codes, week.picks);
