@@ -11,8 +11,9 @@ import { prerollOffers } from "./catalog.js";
 // Highest_Rarity (StoreOffer_2's ShowRarity / UpgradeRarity: 1 silver, 2 gold).
 //
 // Epic's service rolled the preview and gave exactly it when the llama was bought. Here the llama is rolled the way an
-// opened one is (cardpacks/contents.js: its silver or gold upgrade, then its contents), and buying it grants a card pack
-// that holds that roll (prerolledPack), which OpenCardPack opens. Both offers of one llama (V-Bucks and token) show the
+// opened one is (cardpacks/contents.js: its silver or gold upgrade, then its contents), and buying it gives that roll's
+// items at once: the client's purchase handler (FortStorefront, 8.20 0x32D8310) takes a "Preroll" offer's lootResult
+// as the rewards it shows, and only a non-Preroll offer's card packs go on to OpenCardPack (Core-Backend #413). Both offers of one llama (V-Bucks and token) show the
 // same roll, each in its own item whose linked_offer names the other, and buying either rolls the next one for both.
 // "Your X-Ray Llamas refresh daily" (Epic): a roll expires at the next 00:00 UTC (🟡 the hour is Core's).
 export const prerollTemplate = "PrerollData:preroll_basic";
@@ -74,16 +75,17 @@ export function populatePrerolledOffers(tracker, now = new Date()) {
   }
 }
 
-// Buying an X-Ray offer: the roll it shows, as the card pack's attributes, and the next roll for its llama. Undefined
+// Buying an X-Ray offer: the items its roll shows, [{templateId, quantity}], and the next roll for its llama. Undefined
 // when the offer has no current roll (the client then populates again).
 export function takePreroll(tracker, offer, now = new Date()) {
   const preroll = currentPreroll(tracker, offer.offerId, now);
   if (!preroll) return undefined;
   rollGroup(tracker, groupOf(offer), now);
-  return { prerolled: { level: preroll.level, items: preroll.items.map(({ itemType, quantity }) => ({ templateId: itemType, quantity })) } };
+  return preroll.items.map(({ itemType, quantity }) => ({ templateId: itemType, quantity }));
 }
 
-// What a prerolled pack holds and the llama it turned into, for OpenCardPack.
+// A card pack bought as an X-Ray llama before Core-Backend #413 holds its roll as attributes.prerolled: what it holds and
+// the llama it turned into, for OpenCardPack.
 export function prerolledContents(pack) {
   const prerolled = pack.attributes?.prerolled;
   if (!prerolled?.items?.length) return undefined;

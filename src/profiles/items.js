@@ -90,8 +90,6 @@ function addItem(tracker, templateId, quantity, info, options) {
   // From 4.2 a weapon or trap schematic comes with its perks (profiles/alterations.js).
   if (info.class === "FortSchematicItemDefinition") Object.assign(attributes, newSchematicAlterations(templateId));
   if (isMtxCurrency(templateId)) attributes.platform = mtxPlatform;
-  // An X-Ray llama's roll (store/preroll.js takePreroll).
-  if (options.attributes) Object.assign(attributes, options.attributes);
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }
@@ -292,8 +290,10 @@ export function grantItem(session, templateId, quantity, options = {}) {
   // A card pack joins only a stack from the same source: the rewards screen opens "Mission" packs and takes its chest's
   // level from their pack_source (world/theaters.js missionPackSource), and the llama store opens the others.
   const packSource = options.packSource ?? "Store";
-  const existing = !options.attributes && Object.keys(tracker.profile.items).find((itemId) => sameTemplate(tracker.profile.items[itemId], templateId) &&
-    (info.class !== "FortCardPackItemDefinition" || tracker.profile.items[itemId].attributes?.pack_source === packSource));
+  // A pack bought as an X-Ray llama before Core-Backend #413 holds its roll (store/preroll.js) and stays apart.
+  const existing = Object.keys(tracker.profile.items).find((itemId) => sameTemplate(tracker.profile.items[itemId], templateId) &&
+    (info.class !== "FortCardPackItemDefinition" || (tracker.profile.items[itemId].attributes?.pack_source === packSource
+      && !tracker.profile.items[itemId].attributes?.prerolled)));
   if (!existing) {
     const amount = Math.min(quantity, limit);
     return [granted(addItem(tracker, templateId, amount, info, options), amount)];

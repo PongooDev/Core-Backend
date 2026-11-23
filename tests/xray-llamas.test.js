@@ -78,20 +78,18 @@ test("an X-Ray llama gives exactly what its tile showed, then shows a new roll",
     assert.equal((await buy(2)).status, 400, "X-Ray llamas are bought one at a time");
     const bought = await buy(1);
     assert.equal(bought.status, 200);
-    const [{ itemGuid }] = bought.body.notifications[0].lootResult.items;
+    // Core-Backend #413: a "Preroll" offer's lootResult is what the client shows as the llama's rewards (it sends no
+    // OpenCardPack), so it lists the roll's items, and no card pack is left in the profile.
+    const loot = bought.body.notifications[0].lootResult.items;
+    const shown = upgrade.attributes.items.map(({ itemType, quantity }) => `${itemType.toLowerCase()} ${quantity}`).sort();
+    const got = loot.map(({ itemType, quantity }) => `${itemType.toLowerCase()} ${quantity}`).sort();
+    assert.deepEqual(got, shown);
     const campaign = (await command("QueryProfile")).body.profileChanges[0].profile;
-    assert.equal(campaign.items[itemGuid].attributes.prerolled.level, upgrade.attributes.highest_rarity);
+    for (const { itemGuid, itemType } of loot) assert.ok(campaign.items[itemGuid], `${itemType} is in the profile`);
+    assert.ok(!Object.values(campaign.items).some(({ templateId }) => templateId.toLowerCase().startsWith("cardpack:")), "no card pack is granted");
     const next = prerolls(campaign);
     assert.equal(next.length, 2);
     assert.ok(next.every(([itemId]) => !rolls.some(([old]) => old === itemId)), "both offers are rolled again");
-
-    const opened = await command("OpenCardPack", { cardPackItemId: itemGuid, selectionIdx: 0 });
-    assert.equal(opened.status, 200);
-    const result = opened.body.notifications.find(({ type }) => type === "cardPackResult");
-    assert.equal(result.displayLevel, upgrade.attributes.highest_rarity);
-    const shown = upgrade.attributes.items.map(({ itemType, quantity }) => `${itemType.toLowerCase()} ${quantity}`).sort();
-    const got = result.lootGranted.items.map(({ itemType, quantity }) => `${itemType.toLowerCase()} ${quantity}`).sort();
-    assert.deepEqual(got, shown);
   } finally {
     backend.close();
   }

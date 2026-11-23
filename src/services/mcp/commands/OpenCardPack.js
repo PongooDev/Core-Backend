@@ -27,25 +27,29 @@ export function openPack(session, packId, selectionIdx, { upgrade = false } = {}
     if (upgrade) rolled = upgradedPack(pack.templateId);
     contents = rollContents(rolled.templateId);
   }
-  if (!contents.length) throw new McpError("errors.com.epicgames.fortnite.card_pack_empty", `Core has no contents for ${pack.templateId} yet`);
+  const granted = grantPackContents(session, pack.templateId, contents, pack.attributes.pack_source ?? "Store");
+  if (pack.quantity > 1) tracker.setQuantity(packId, pack.quantity - 1);
+  else tracker.removeItem(packId);
+  return { info: rolled, granted };
+}
 
+// Gives what a pack of templateId held and counts it as opened; the granted entries. Also used for an X-Ray llama, whose
+// roll is given as it is bought (PurchaseCatalogEntry).
+export function grantPackContents(session, templateId, contents, packSource = "Store") {
+  if (!contents.length) throw new McpError("errors.com.epicgames.fortnite.card_pack_empty", `Core has no contents for ${templateId} yet`);
   // The client shows an opened pack from what it reports, and one that reports nothing is an error there (#40). An
   // owned-once item the account already has (a second Founders Banners pack's banners) is reported as the one it holds.
   // A pack that gives nothing at all (its items unknown to this build) is refused before it is used up, and a grant
   // that gives nothing adds nothing, so a batch that goes on without it keeps the pack as it was.
-  const packSource = pack.attributes.pack_source ?? "Store";
-  const granted = contents.flatMap(({ templateId, quantity }) => {
-    const entries = grant(session, templateId, quantity, { packSource });
-    const held = entries.length ? undefined : heldOwnedOnce(session, templateId);
+  const granted = contents.flatMap(({ templateId: itemType, quantity }) => {
+    const entries = grant(session, itemType, quantity, { packSource });
+    const held = entries.length ? undefined : heldOwnedOnce(session, itemType);
     return held ? [held] : entries;
   });
-  if (!granted.length) throw new McpError("errors.com.epicgames.fortnite.card_pack_empty", `Nothing in ${pack.templateId} could be given`);
-
-  if (pack.quantity > 1) tracker.setQuantity(packId, pack.quantity - 1);
-  else tracker.removeItem(packId);
-  itemEvent(session, ["OpenCardPack"], pack.templateId, 1);
-  statEvent(session, "OpenCardPack", pack.templateId, 1);
-  return { info: rolled, granted };
+  if (!granted.length) throw new McpError("errors.com.epicgames.fortnite.card_pack_empty", `Nothing in ${templateId} could be given`);
+  itemEvent(session, ["OpenCardPack"], templateId, 1);
+  statEvent(session, "OpenCardPack", templateId, 1);
+  return granted;
 }
 
 // The llama store: {cardPackItemId, selectionIdx}. The client finds each card's item by itemGuid in profile0 and plays

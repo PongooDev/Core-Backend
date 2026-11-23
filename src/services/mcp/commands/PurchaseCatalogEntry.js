@@ -12,6 +12,7 @@ import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
 import { dailyLimitOf, dailyPurchases, recordDailyPurchase } from "../../../store/dailylimit.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
 import { currentPreroll, takePreroll } from "../../../store/preroll.js";
+import { grantPackContents } from "./OpenCardPack.js";
 import { blockbusterTickets, upgradeLlamaBlockbusterTickets } from "../../../events/blockbuster2018.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
 import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
@@ -141,10 +142,12 @@ export function purchaseCatalogEntry({ req, session, notifications, sessionFor, 
   else spendMtx(tracker, total);
   if (offer.eventLimit) recordEventPurchase(tracker, offer, purchaseQuantity);
   if (dailyLimit > 0) recordDailyPurchase(tracker, offer, purchaseQuantity);
-  const preroll = offer.preroll ? takePreroll(tracker, offer) : undefined;
   // An offer of several (1.10's ten Upgrade Llamas, store/catalog.js) grants its quantity for each one bought.
   const count = purchaseQuantity * (offer.quantity ?? 1);
-  const items = grant(session, offer.templateId, count, { packSource: "Store", attributes: preroll }).map(lootEntry);
+  // An X-Ray llama gives the items its tile showed, not a card pack: for a "Preroll" offer the client shows lootResult as
+  // the llama's rewards and never sends OpenCardPack (FortStorefront's purchase handler, 8.20 0x32D8310, 7.40 0x31C8F50).
+  const items = offer.preroll ? grantPackContents(session, offer.templateId, takePreroll(tracker, offer)).map(lootEntry)
+    : grant(session, offer.templateId, count, { packSource: "Store" }).map(lootEntry);
   if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, count);
   const tickets = upgradeLlamaTickets(offer, count);
   if (tickets) items.push(...grant(session, stormTickets, tickets).map(lootEntry));
