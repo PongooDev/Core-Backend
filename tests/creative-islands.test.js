@@ -261,15 +261,32 @@ test("the week's suggested island leads the island code screen, and the featured
     listed = await as(backend.port, viewer.token, "GET", `${favorites}?limit=30`);
     assert.deepEqual(listed.body.results.map((entry) => entry.linkData.mnemonic), [week.suggested, other]);
 
-    // 8.20's island history: served as an empty list (no joins are recorded); only the account itself asks.
-    const history = `/fortnite/api/game/v2/creative/history/${viewer.accountId}?limit=30`;
-    const recent = await as(backend.port, viewer.token, "GET", history);
+    // 8.20's island history: what the gameserver reports a player played, newest first, once per code, with limit and
+    // hasMore; the player may remove an entry; only a game server records, and only the account itself reads.
+    const history = `/fortnite/api/game/v2/creative/history/${viewer.accountId}`;
+    let recent = await as(backend.port, viewer.token, "GET", `${history}?limit=30`);
     assert.equal(recent.status, 200);
     assert.deepEqual(recent.body, { results: [], hasMore: false });
+    const server = await dedicatedServerToken(backend.port);
+    const played = (code, token = server) => as(backend.port, token, "POST", `/core/api/creative/history/${viewer.accountId}/${code}`);
+    assert.equal((await played(other, viewer.token)).status, 403, "a player can't record their own plays");
+    assert.equal((await played("0000-0000-0000")).status, 404, "an unpublished code isn't recorded");
+    assert.equal((await played(other)).status, 204);
+    assert.equal((await played(week.suggested)).status, 204);
+    assert.equal((await played(other)).status, 204);
+    recent = await as(backend.port, viewer.token, "GET", `${history}?limit=30`);
+    assert.deepEqual(recent.body.results.map((entry) => entry.linkData.mnemonic), [other, week.suggested]);
+    assert.ok(recent.body.results.every((entry) => !Number.isNaN(Date.parse(entry.sortDate))));
+    assert.equal(recent.body.hasMore, false);
+    recent = await as(backend.port, viewer.token, "GET", `${history}?limit=1`);
+    assert.deepEqual(recent.body.results.map((entry) => entry.linkData.mnemonic), [other]);
+    assert.equal(recent.body.hasMore, true);
+    assert.equal((await as(backend.port, viewer.token, "DELETE", `${history}/${other}`)).status, 204);
+    recent = await as(backend.port, viewer.token, "GET", `${history}?limit=30`);
+    assert.deepEqual(recent.body.results.map((entry) => entry.linkData.mnemonic), [week.suggested]);
     assert.equal((await as(backend.port, viewer.token, "GET", `/fortnite/api/game/v2/creative/history/${"0".repeat(32)}?limit=30`)).status, 403);
 
     // No featured codes: the featured rifts load the suggestions; the admin's codes take over once set.
-    const server = await dedicatedServerToken(backend.port);
     assert.deepEqual((await get(backend.port, "/core/api/creative/featured", server)).body.codes, week.picks);
     const hotfix = await as(backend.port, viewer.token, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini");
     for (const code of week.picks) assert.match(hotfix.body, new RegExp(`\\+CuratedLinkCodes=${code}`));

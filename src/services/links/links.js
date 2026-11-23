@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import express from "express";
-import { requireAuth } from "../../accounts/auth.js";
+import { requireAuth, requireDedicatedServer } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
@@ -172,12 +172,53 @@ export function linksRoutes({ tokens, settings, profiles, islandLinks, dataDir }
     }
     res.status(204).end();
   });
-  // 8.20's island history (FortMcpUtils' creative history url, "/api/game/v2/creative/history"): GET <url>/<accountId>?limit=<n>,
-  // answered like the favorites ({results: [{linkData, sortDate}], hasMore}), the islands the player played last. Core
-  // doesn't record the islands a player joins, so the list is empty (a missing route made the client log an error).
-  router.get("/fortnite/api/game/v2/creative/history/:accountId", requireAuth(tokens), (req, res) => {
+  // 8.20's (CL-5625478) island history, the island code screen's "recent" list (UFortCreativeIslandLinkScreen: "Island
+  // History List"), on FortMcpUtils' island url, the favorites' (IDA 13337):
+  // - GET <url>/history/<accountId>?limit=<n> (0x144CB90, the favorites' request with "history"), read as the favorites
+  //   are: {results: [{linkData, sortDate}], hasMore} (0x14597E0);
+  // - DELETE <url>/history/<accountId>/<mnemonic> (0x1457770: "Error removing island history '%s': %s").
+  // Nothing in 8.20's client or server adds to it: Epic's service learned the play server side, and the build keeps
+  // only that call's "history" and "%s/%s/%s/%s" strings, unreferenced. 🟡 So Core's gameserver reports it
+  // (POST /core/api/creative/history/<accountId>/<mnemonic>, DedicatedServer client only) as a player arrives on a
+  // published island (PongooDev/Core-Backend#414). Kept per account next to the favorites: newest first, one entry per
+  // code, at most 100; a code no longer published drops out of the answer.
+  const history = "/fortnite/api/game/v2/creative/history/:accountId";
+  const historyFile = (accountId) => path.join(dataDir, "accounts", accountId, "creative", "history.json");
+  const readHistory = (accountId) => {
+    try {
+      const list = JSON.parse(fs.readFileSync(historyFile(accountId), "utf8"));
+      return Array.isArray(list) ? list : [];
+    } catch {
+      return [];
+    }
+  };
+  const writeHistory = (accountId, list) => {
+    fs.mkdirSync(path.dirname(historyFile(accountId)), { recursive: true });
+    fs.writeFileSync(historyFile(accountId), JSON.stringify(list.slice(0, 100)));
+  };
+  router.get(history, requireAuth(tokens), (req, res) => {
+    if (!self(req, res, req.params.accountId) || !accountIdPattern.test(req.params.accountId)) return res.headersSent || res.json({ results: [], hasMore: false });
+    const limit = Math.max(1, Math.min(100, Number.parseInt(req.query.limit, 10) || 100));
+    const results = readHistory(req.params.accountId)
+      .map((entry) => ({ link: activeLink(entry.mnemonic), sortDate: entry.sortDate }))
+      .filter((entry) => entry.link).map((entry) => ({ linkData: linkJson(entry.link), sortDate: entry.sortDate }));
+    res.json({ results: results.slice(0, limit), hasMore: results.length > limit });
+  });
+  router.delete(`${history}/:mnemonic`, requireAuth(tokens), (req, res) => {
     if (!self(req, res, req.params.accountId)) return;
-    res.json({ results: [], hasMore: false });
+    const code = normalizeMnemonic(req.params.mnemonic);
+    if (accountIdPattern.test(req.params.accountId)) {
+      writeHistory(req.params.accountId, readHistory(req.params.accountId).filter((entry) => entry.mnemonic !== code));
+    }
+    res.status(204).end();
+  });
+  router.post("/core/api/creative/history/:accountId/:mnemonic", requireAuth(tokens), requireDedicatedServer, (req, res) => {
+    const link = activeLink(req.params.mnemonic);
+    if (!link || !accountIdPattern.test(req.params.accountId)) return noLink(res, req.params.mnemonic);
+    const list = readHistory(req.params.accountId).filter((entry) => entry.mnemonic !== link.mnemonic);
+    writeHistory(req.params.accountId, [{ mnemonic: link.mnemonic, sortDate: new Date().toISOString() }, ...list]);
+    log("Creative", `${req.params.accountId} played the island ${link.mnemonic}`);
+    res.status(204).end();
   });
   return router;
 }
