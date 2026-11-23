@@ -10093,7 +10093,7 @@ Each starts active; quests the account already has are left as they are.`, {
         holder.replaceChildren(
           el("p", { class: "note", style: "margin:0;", text: `${player.canPublish ? "This player has a Support-A-Creator code, so they can publish islands in game." : "No Support-A-Creator code: this player can't publish in game (you can from the Creative page)."} A restore is refused while a server has the island loaded; it takes effect the next time the island loads.` }),
           importBar,
-          player.islands.map(islandCard));
+          ...player.islands.map(islandCard));
       };
       act(api(`/admin/api/accounts/${a.id}/creative`)).then(render);
       return holder;

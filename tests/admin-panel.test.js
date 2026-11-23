@@ -252,3 +252,15 @@ test("the reorganised panel keeps each LTM's original dates, the sidebar's seaso
     backend.close();
   }
 });
+
+test("player Creative tab spreads island cards and does not stringify HTMLElement array", async () => {
+  const backend = await startBackend();
+  try {
+    const body = (await get(backend.port, "/admin")).body;
+    assert.match(body, /\.\.\.player\.islands\.map\(islandCard\)/);
+    assert.doesNotMatch(body, /holder\.replaceChildren\([^)]*player\.islands\.map\(islandCard\)\)/);
+  } finally {
+    backend.close();
+  }
+});
+
