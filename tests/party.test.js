@@ -81,7 +81,8 @@ test("a second player joins, the captain leaves and the other becomes captain, a
     const invite = await notification(two.client, "INITIAL_INVITE");
     assert.deepEqual([invite.inviter_id, invite.invitee_id, invite.party_id], [one.accountId, two.accountId, party.id]);
 
-    const joined = await post(backend.port, `${base}/parties/${party.id}/members/${two.accountId}/join`, two.token,
+    // 8.30 joins through the inviter: the URL names the party member, the token the joiner (#416).
+    const joined = await post(backend.port, `${base}/parties/${party.id}/members/${one.accountId}/join`, two.token,
       { connection: { id: two.jid, meta: {} }, meta: { "urn:epic:member:dn_s": "PartyGuest" } });
     assert.deepEqual(joined.body, { status: "JOINED", party_id: party.id });
     assert.equal((await notification(one.client, "MEMBER_JOINED")).account_id, two.accountId);

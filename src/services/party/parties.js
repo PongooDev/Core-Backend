@@ -247,9 +247,15 @@ export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore
     res.status(204).end();
   });
 
-  router.post(`${base}/parties/:partyId/members/:accountId/join`, auth, own, findParty, (req, res) => {
+  // The joiner is the token's account. 8.30's JoinParty puts the account whose party it joins through in the URL
+  // (its JoinInfo's SourceUserId: .../members/<the inviter or friend>/join, Core-Backend #416), so the URL's account
+  // only has to be the joiner or someone already in the party.
+  router.post(`${base}/parties/:partyId/members/:accountId/join`, auth, findParty, (req, res) => {
     const party = req.party;
-    const accountId = req.params.accountId;
+    const accountId = req.session.accountId;
+    if (req.params.accountId !== accountId && !memberOf(party, req.params.accountId)) {
+      return partyError(res, 403, "not_authorized", "This token cannot act for that account");
+    }
     if (!memberOf(party, accountId)) {
       const invited = party.invites.some((invite) => invite.sent_to === accountId);
       if (party.config.joinability === "INVITE_ONLY" && !invited) {
