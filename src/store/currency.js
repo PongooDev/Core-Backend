@@ -145,8 +145,28 @@ const cobaltPack = {
   description: "Cobalt outfit, Reinforced Backplate back bling and 600 V-Bucks",
   displayAssetPath: displayAsset("DA_Featured_CID_327_Athena_Commando_M_BlueMystery"),
   season: 7,
+  // Core-Backend #409: Epic sold it on into Season 8 until The Laguna Pack replaced it on 12 March 2019 (8.10's day), so a
+  // Season 8 build whose cosmetics lack the Laguna Pack's (8.00) offers it in that pack's place, as The Ace Pack's in Season 6.
+  sold: [{ season: 7 }, { season: 8, unlessOffered: "core_starter_br_s8" }],
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_327_Athena_Commando_M_BlueMystery", "AthenaBackpack:BID_203_BlueMystery"]
+};
+// The Laguna Pack (Core-Backend #409) is Season 8's: the Laguna outfit (CID_367_Athena_Commando_F_Tropical, Rare), the
+// Pineapple Strummer back bling (BID_231_TropicalFemale, Rare) and the Pineapple wrap (Wrap_033_TropicalGirl, Uncommon), all
+// of the Beach Battalion set, with 600 V-Bucks for $4.99, one per account (the Fortnite Wiki's The Laguna Pack: added in
+// Update v8.10, in the store from 12 March 2019, still in the news tab on 10 April, until The Wilde Pack on 4 June). 8.20's
+// paks (CL-5625478) have the three cosmetics and Laguna's featured display asset (DA_Featured_CID_367_Athena_Commando_F_Tropical);
+// 8.00's (CL-5203069) have none, so it is offered on a Season 8 build whose cosmetics have all three, for the whole season,
+// as the packs before it. 8.00 offers The Cobalt Pack, which Epic still sold until 12 March.
+const lagunaPack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s8",
+  title: "The Laguna Pack",
+  description: "Laguna outfit, Pineapple Strummer back bling, Pineapple wrap and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_367_Athena_Commando_F_Tropical"),
+  season: 8,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_367_Athena_Commando_F_Tropical", "AthenaBackpack:BID_231_TropicalFemale", "AthenaItemWrap:Wrap_033_TropicalGirl"]
 };
 // The Deep Freeze Bundle (Core-Backend #356) is a Season 6 real-money pack: the Frostbite outfit
 // (CID_261_Athena_Commando_M_RaptorArcticCamo), the Freezing Point back bling (BID_142_RaptorArcticCamo), the Chill-Axe
@@ -203,7 +223,7 @@ const foundersPackOffer = (from, to) => {
 const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
 
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack, acePack, summitStrikerPack, cobaltPack, deepFreezeBundle, ...foundersPackOffers];
+  wingmanPack, acePack, summitStrikerPack, cobaltPack, lagunaPack, deepFreezeBundle, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);
