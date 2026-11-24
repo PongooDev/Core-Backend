@@ -263,7 +263,7 @@ test("6.21's modes are 6.20's: Fortnitemares on by default to 4 November, the to
     assert.equal(inOriginalWindow("fortnitemares2018Solo", v621, at("2018-11-04T17:59:00Z"), dated), true);
     assert.equal(inOriginalWindow("fortnitemares2018Solo", v621, at("2018-11-04T18:00:00Z"), dated), false, "Update v6.21's end, the Butterfly");
   });
-  assert.deepEqual(tournamentPlaylists.slice(-9, -6).map(({ id, builds }) => [id, builds[1]]),
+  assert.deepEqual(tournamentPlaylists.slice(-12, -9).map(({ id, builds }) => [id, builds[1]]),
     [["fortnitemaresShowSolo", Number(v621)], ["fortnitemaresShowDuos", Number(v621)], ["fortnitemaresShowSquads", Number(v621)]]);
   assert.equal(hasShowdown(v621), true);
   const dir = tempDir();

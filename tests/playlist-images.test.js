@@ -146,6 +146,7 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Goose_Duos", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
+    "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
   for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]) assert.equal(epicPlaylistImages[name], score, name);
@@ -335,7 +336,9 @@ const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_S
   "Playlist_Impact_Squads", "Playlist_GRD_Solo", "Playlist_GRD_Duos", "Playlist_GRD_Squads", "Playlist_Showdown_Solo", "Playlist_Showdown_Duos",
   "Playlist_Showdown_Squads", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Squads", "Playlist_Deimos_SoloShow",
   "Playlist_Deimos_DuoShow", "Playlist_Deimos_SquadShow", "Playlist_Deimos_Solo_WinterShow", "Playlist_Deimos_Duo_WinterShow",
-  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest", "Playlist_Goose_Duos", "Playlist_Barrier_16_B_Lava"];
+  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest", "Playlist_Goose_Duos", "Playlist_Barrier_16_B_Lava",
+  // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
+  "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);
