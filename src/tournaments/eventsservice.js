@@ -253,3 +253,21 @@ export function eventsWindowHistory(accountId, eventId, windowId, build, now = n
   const event = listedEventOf(accountId, eventId, windowId, build, now, store);
   return event ? windowLeaderboardOf(event, windowId, gameId).filter((score) => score.teamAccountIds.includes(accountId)) : null;
 }
+
+// 8.20's (CL-5625478) and later account history routes (Core-Backend #427): GET /api/v1/events/<gameId>/<eventId>/history/
+// <accountId> and /api/v1/events/<gameId>/<eventId>/<eventWindowId>/history/<accountId> (FOnlineEventsServiceMcp's table).
+// The tournament details screen asks the first when it opens; RefreshEventHistory_HttpRequestComplete (0x419D40) reads a
+// JSON array, each entry an FEventsServiceTeamScore (serializer 0x424530: gameId, eventId, eventWindowId, teamId,
+// teamAccountIds, pointsEarned, rank, percentile, score, pointBreakdown, sessionHistory), and anything else as a failure,
+// which the screen asked again at once (the reporter's log: a 404 every 33 ms). The answer is the player's scores in each
+// of the event's windows (in the one named), as the download has them; an event the player's list has but they haven't
+// played is an empty array; the Arena's events (tournaments/arena.js) keep no scores, so theirs is empty too. null for an
+// event (or window) the player's list doesn't have.
+export function eventsAccountHistory(accountId, eventId, windowId, build, now = new Date(), store = undefined, gameId = eventsGameId) {
+  if (hasArena(build) && arenaEvents(build, { gameId }).events.some((event) => event.eventId === eventId
+    && (!windowId || event.eventWindows.some((window) => window.eventWindowId === windowId)))) return [];
+  const event = hasShowdown(build) ? showdownEvents(build, now, store, accountId).find((own) => tournamentIdOf(own) === eventId) : null;
+  if (!event) return null;
+  if (windowId && !eventWindowsOf(event).some(({ id }) => id === windowId)) return null;
+  return scoresOf(event, accountId, gameId).filter((score) => !windowId || score.eventWindowId === windowId);
+}

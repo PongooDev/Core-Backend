@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { currentBuild } from "../../builds/context.js";
 import { sendError } from "../../errors.js";
-import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory, isEventsServiceBuild } from "../../tournaments/eventsservice.js";
+import { eventsAccountHistory, eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory, isEventsServiceBuild } from "../../tournaments/eventsservice.js";
 
 // Epic's events service (OnlineSubsystemMcp.OnlineEventsServiceMcp: ServiceName "events", BasePath /api/v1,
 // events-public-service-live.ol.epicgames.com), which 7.30's (CL-4834550) and 7.40's (CL-5046157) Events tab asks in place
@@ -17,6 +17,8 @@ import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory,
 // - GET /api/v1/players/<gameId>/<accountId> (RefreshPlayerUrl, 7.40 on): the player, with 8.20 on its Arena tokens and Hype
 //   (Core-Backend #420, tournaments/arena.js).
 // - GET /api/v1/events/<gameId>/data/<accountId> (DataUrl, 8.20 on): as the download.
+// - GET /api/v1/events/<gameId>/<eventId>/history/<accountId> and .../<eventId>/<eventWindowId>/history/<accountId> (8.20
+//   on, Core-Backend #427): the player's scores in the event or the window, as an array; the details screen's.
 // Only for 7.30 and later (eventsServiceBuild): 7.20's and older builds' requests fall through to the unanswered routes as
 // before (they ask FortMcpUtils, services/fortnite/events.js). A window the player's list doesn't have is a 404 (🟡 the
 // error code is Core's: Epic's isn't known).
@@ -50,6 +52,16 @@ export function eventsServiceRoutes(context) {
     if (scores === null) return noWindow(req, res);
     res.json(scores);
   });
+
+  // 8.20's and later account history (Core-Backend #427): the player's scores in the event, or in one of its windows.
+  const accountHistory = (req, res) => {
+    const scores = eventsAccountHistory(req.params.accountId, req.params.eventId, req.params.eventWindowId ?? null, currentBuild(), new Date(),
+      context.tournaments, req.params.gameId);
+    if (scores === null) return sendError(res, 404, "errors.com.epicgames.events.event_not_found", `No event ${req.params.eventId}`);
+    res.json(scores);
+  };
+  router.get("/api/v1/events/:gameId/:eventId/history/:accountId", forBuild, auth, own, accountHistory);
+  router.get("/api/v1/events/:gameId/:eventId/:eventWindowId/history/:accountId", forBuild, auth, own, accountHistory);
 
   router.get("/api/v1/leaderboards/:gameId/:eventId/:eventWindowId/:accountId", forBuild, auth, own, (req, res) => {
     const leaderboard = eventsLeaderboard(req.params.accountId, req.params.eventId, req.params.eventWindowId, currentBuild(),
