@@ -162,10 +162,21 @@ export function parseSdp(text) {
 // What the emulator answers an offer's audio with: PCMU (payload 0, or any payload its rtpmap names PCMU/8000), which
 // the mixer (media.js) can decode and mix; else the offer's first format (not telephone-event) taken as it is, which
 // is only forwarded between the channel's members. Null when the offer has no audio.
+// A Vivox SDK's offer (VIVOXVANI/32000, then SIREN14-3D and PCMU) gets VIVOXVANI, forwarded as it is: the SDK's voice
+// processor has a codec type only for VIVOXVANI. vivoxsdk_x64 4.9's codec table (0x1800115C0) gives VIVOXVANI type 39
+// and SIREN14-3D and PCMU none, and on a PCMU answer the session starts without an encoder ("VivoxClient::
+// VoiceProcessor::SessionStarted - Assertion Failure - 'codecType != CodecTypeNone'", 8.40), so it never transmits.
+// The answer repeats the offer's fmtp and a=vx_payload_hdr_ver.
 export function chooseCodec(sdp) {
   const audio = sdp?.media?.find((media) => media.type === "audio" && media.port > 0);
   if (!audio) return null;
   const nameOf = (pt) => audio.rtpmap[pt] ?? (pt === "0" ? "PCMU/8000" : pt === "8" ? "PCMA/8000" : null);
+  const vivox = audio.formats.find((pt) => /^VIVOXVANI\//i.test(nameOf(pt) ?? ""));
+  if (vivox !== undefined) {
+    const rtpmap = nameOf(vivox);
+    return { audio, pt: Number(vivox), name: "VIVOXVANI", rate: Number(rtpmap.split("/")[1]) || 32000, rtpmap, fmtp: audio.fmtp[vivox] ?? null, mixable: false,
+      attributes: audio.attributes.filter((attribute) => /^vx_payload_hdr_ver:/i.test(attribute.trim())) };
+  }
   const pcmu = audio.formats.find((pt) => /^PCMU\/8000/i.test(nameOf(pt) ?? ""));
   if (pcmu !== undefined) return { audio, pt: Number(pcmu), name: "PCMU", rate: 8000, rtpmap: "PCMU/8000", fmtp: null, mixable: true };
   const first = audio.formats.find((pt) => !/^telephone-event/i.test(nameOf(pt) ?? ""));
@@ -180,6 +191,7 @@ export function buildSdpAnswer({ address, port, codec, sessionId = Date.now(), v
     `m=audio ${port} RTP/AVP ${codec.pt}`];
   if (codec.rtpmap) lines.push(`a=rtpmap:${codec.pt} ${codec.rtpmap}`);
   if (codec.fmtp) lines.push(`a=fmtp:${codec.pt} ${codec.fmtp}`);
+  for (const attribute of codec.attributes ?? []) lines.push(`a=${attribute.trim()}`);
   if (codec.mixable) lines.push("a=ptime:20");
   lines.push("a=sendrecv");
   return `${lines.join("\r\n")}\r\n`;

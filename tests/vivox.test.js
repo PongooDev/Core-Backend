@@ -411,23 +411,39 @@ async function udpClient() {
   };
 }
 
-test("SIP server: a Vivox SDK's call gets the stream at its SIP address and the offer's port, not at the offer's LAN c=", async () => {
+test("SIP server: Vivox SDK calls get VIVOXVANI, forwarded between them at their SIP address and the offer's port", async () => {
   const backend = await startVivoxBackend();
-  const client = await udpClient();
-  const rtp = await udpClient();
+  const clientA = await udpClient();
+  const clientB = await udpClient();
+  const rtpA = await udpClient();
+  const rtpB = await udpClient();
   try {
     // As 8.40's SDK offers from this PC: SIP over loopback, c= the PC's LAN address, a=setup:passive.
-    const body = ["v=0", "o=amsip 0 0 IN IP4 192.0.2.10", "s=-", "c=IN IP4 192.0.2.10", "t=0 0", `m=audio ${rtp.port} RTP/AVP 127 111 0 101`,
-      "a=rtpmap:127 VIVOXVANI/32000", "a=rtpmap:111 SIREN14-3D/32000", "a=rtpmap:0 PCMU/8000", "a=setup:passive", "a=vx_rtcp:0", ""].join("\r\n");
-    client.send(invite("call-sdk", rtp.port, { body }), backend.sipPort);
-    const answered = parseSip(await client.next((packet) => parseSip(packet)?.status === 200));
-    assert.equal(parseSdp(answered.body).media[0].connection, "127.0.0.1");
-    const first = parseRtp(await rtp.next((packet) => Boolean(parseRtp(packet))));
-    assert.equal(first.payloadType, 0);
+    const body = (port) => ["v=0", "o=amsip 0 0 IN IP4 192.0.2.10", "s=-", "c=IN IP4 192.0.2.10", "t=0 0", `m=audio ${port} RTP/AVP 127 111 0 101`,
+      "a=rtpmap:127 VIVOXVANI/32000", "a=fmtp:127 ver=3;mode=3;sub-types=5,7;codecs=0x1", "a=rtpmap:111 SIREN14-3D/32000", "a=fmtp:111 bitrate=32000",
+      "a=vx_payload_hdr_ver:2", "a=rtpmap:0 PCMU/8000", "a=vx_join_audio:1", "a=setup:passive", "a=vx_rtcp:0", ""].join("\r\n");
+    const join = async (client, callId, rtp, user) => {
+      client.send(invite(callId, rtp.port, { body: body(rtp.port), user, via: `SIP/2.0/UDP 127.0.0.1:${client.port};branch=z9hG4bK-${callId};rport` }), backend.sipPort);
+      return parseSdp(parseSip(await client.next((packet) => parseSip(packet)?.status === 200)).body).media[0];
+    };
+    const answerA = await join(clientA, "call-a", rtpA, "acc1");
+    assert.equal(answerA.connection, "127.0.0.1");
+    assert.deepEqual(answerA.formats, ["127"]);
+    assert.equal(answerA.rtpmap["127"], "VIVOXVANI/32000");
+    assert.equal(answerA.fmtp["127"], "ver=3;mode=3;sub-types=5,7;codecs=0x1");
+    assert.ok(answerA.attributes.includes("vx_payload_hdr_ver:2"));
+    const answerB = await join(clientB, "call-b", rtpB, "acc2");
+
+    // A speaks: its packet reaches B as it is, at B's SIP address (loopback), not at the offer's c=.
+    const payload = Buffer.from("vivox-frame");
+    rtpA.socket.send(buildRtp({ payloadType: 127, sequence: 1, timestamp: 640, ssrc: 77, payload }), answerA.port, "127.0.0.1");
+    const heard = parseRtp(await rtpB.next((packet) => parseRtp(packet)?.ssrc === 77));
+    assert.equal(heard.payloadType, 127);
+    assert.deepEqual(heard.payload, payload);
+    assert.ok(answerB.port !== answerA.port);
   } finally {
     backend.close();
-    client.close();
-    rtp.close();
+    for (const socket of [clientA, clientB, rtpA, rtpB]) socket.close();
   }
 });
 
