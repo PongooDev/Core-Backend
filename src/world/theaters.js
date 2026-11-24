@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, cramSession2018, currentEventsConfig, fortnitemares2018, isEventActive, passiveMiniBosses, season7Warmup2018, spring2018, storm2018 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, currentEventsConfig, fortnitemares2018, isEventActive, passiveMiniBosses, season7Warmup2018, spring2018, storm2018, withEventsHeld } from "../events/events.js";
 import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
 import { cramSessionMiniBossRewards } from "../events/cramsession2018.js";
 import { candy } from "../events/fortnitemares.js";
@@ -875,8 +875,13 @@ export function missionPackSource(missionPoints) {
 const wholePoints = (missionPoints) => (Number.isFinite(missionPoints) && missionPoints > 0 ? Math.floor(missionPoints) : 0);
 
 // Missions and alerts are the UTC day's; a Mutant Storm's spreads join its alerts as the day goes on, and the theater's
-// alerts' nextRefresh is the next spread, so the client asks again then.
+// alerts' nextRefresh is the next spread, so the client asks again then. The events config and flags are read once for
+// the whole roll (events/events.js withEventsHeld, Core-Backend #428).
 export function worldInfo(now = new Date()) {
+  return withEventsHeld(() => rollWorldInfo(now));
+}
+
+function rollWorldInfo(now) {
   const day = now.toISOString().slice(0, 10);
   const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;

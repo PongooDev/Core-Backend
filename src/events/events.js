@@ -789,8 +789,24 @@ export function configureEvents(provider) {
 }
 
 export function currentEventsConfig() {
-  return (eventsConfigProvider ? eventsConfigProvider() : null) ?? { mode: "auto" };
+  const held = heldEvents.getStore();
+  if (held?.has(heldConfig)) return held.get(heldConfig);
+  const config = (eventsConfigProvider ? eventsConfigProvider() : null) ?? { mode: "auto" };
+  held?.set(heldConfig, config);
+  return config;
 }
+
+// One computation's events config and event flags, read once (Core-Backend #428). The world info rolls every theater's
+// missions and alerts and asks for event flags per alert row (gamedata/world.js missionAlertTier): read afresh, that was
+// 128,000 settings copies and 12,000 flag lists on 8.40 (Spring 2019's chapters each read the season's clock), seconds
+// of blocked event loop per world/info and twice that per world/validate, which held up every other request.
+const heldEvents = new AsyncLocalStorage();
+const heldConfig = Symbol("config");
+export const withEventsHeld = (fn) => (heldEvents.getStore() ? fn() : heldEvents.run(new Map(), fn));
+// Every game request reads them once too: a profile command asks per quest and per item granted (QueryProfile and
+// ClientQuestLogin on an 8.40 campaign profile read them thousands of times). The admin panel, which changes them,
+// reads them afresh.
+export const holdEvents = (req, res, next) => (req.path.startsWith("/admin") ? next() : withEventsHeld(next));
 
 // Whether the host runs the seasonal events (settings.seasonalEvents, the admin panel's Seasonal Events switch,
 // Core-Backend #66), for everything a request does. Switched off, no build runs one: no event flags, quests, theater or
@@ -803,6 +819,14 @@ export const seasonalEventsOn = () => eventsSetting.getStore() !== false && curr
 
 // The event flags the requesting build runs (none outside a request).
 export function activeEventFlags(changelist = currentBuild()) {
+  const held = heldEvents.getStore();
+  if (!held) return eventFlagsOf(changelist);
+  const key = `flags:${changelist}`;
+  if (!held.has(key)) held.set(key, eventFlagsOf(changelist));
+  return [...held.get(key)];
+}
+
+function eventFlagsOf(changelist) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];

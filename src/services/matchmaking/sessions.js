@@ -132,14 +132,19 @@ export function sessionRoutes({ tokens, sessions, matchmaker, network, settings,
     res.json(sessions.rejoinable(req.params.accountId, withheld).map((session) => sessionJson(session, req, network)));
   });
 
+  // UpdateInternetSession: PUT, or POST for a FULL update (the whole session; FOnlineSessionMcp's update task picks the
+  // verb by its full flag, 8.40 0x662090 "Sending %sUpdateInternetSession"), which 8.40's servers send once the zone has
+  // loaded (Core-Backend #429: its 404s in the backend log).
+  const updateSession = asHost((session, req, res) => {
+    // The session's server is where it was registered from (sourceAddress), whoever sends the update.
+    const refused = regionRefused(settings, req.body, session.sourceAddress ?? requestAddress(req));
+    if (refused) return notRegionHost(res, session.sourceAddress ?? requestAddress(req), refused, `move session ${session.id}`);
+    res.json(sessionJson(sessions.update(session.id, req.body), req, network));
+  });
   router.route(`${base}/:sessionId`)
     .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req, network))))
-    .put(auth, asHost((session, req, res) => {
-      // The session's server is where it was registered from (sourceAddress), whoever sends the update.
-      const refused = regionRefused(settings, req.body, session.sourceAddress ?? requestAddress(req));
-      if (refused) return notRegionHost(res, session.sourceAddress ?? requestAddress(req), refused, `move session ${session.id}`);
-      res.json(sessionJson(sessions.update(session.id, req.body), req, network));
-    }))
+    .put(auth, updateSession)
+    .post(auth, updateSession)
     .delete(auth, asHost((session, req, res) => {
       sessions.remove(session.id);
       log("Matchmaking", `Session ${session.id} ended`);

@@ -132,7 +132,6 @@ test("only the Cert build's verbs reach the session routes", async () => {
   try {
     const server = await clientToken(backend.port);
     const { body: session } = await post(backend.port, base, server, certCreate);
-    assert.equal((await post(backend.port, `${base}/${session.id}`, server, certCreate)).status, 404, "updates are PUT");
     assert.equal((await get(backend.port, `${base}/${session.id}/heartbeat`, server)).status, 404, "heartbeats are POST");
     for (const action of ["heartbeat", "start", "stop", "join", "invite"]) {
       assert.equal((await post(backend.port, `${base}/${session.id}/${action}`, server)).status, 204, action);
@@ -168,6 +167,23 @@ test("RegisterPlayers adds, UnregisterPlayers removes, and the count follows the
     assert.deepEqual([current.publicPlayers, current.privatePlayers], [["b"], []]);
     await request(backend.port, "DELETE", players, server, ["b"]);
     assert.equal((await post(backend.port, `${base}/matchMakingRequest`, token, emptySearch)).body.length, 1);
+  } finally {
+    backend.close();
+  }
+});
+
+// 8.40's servers send a FULL update as a POST to the session (Core-Backend #429), the partial one as a PUT.
+test("a server's full session update (POST) updates the session as a PUT does", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await clientToken(backend.port);
+    const created = await post(backend.port, base, server, emptyServer);
+    const full = await post(backend.port, `${base}/${created.body.id}`, server,
+      { ...emptyServer, attributes: { ...emptyServer.attributes, GAMEMODE_s: "FORTPVE" } });
+    assert.equal(full.status, 200);
+    assert.equal(full.body.id, created.body.id);
+    assert.equal((await get(backend.port, `${base}/${created.body.id}`, server)).body.attributes.GAMEMODE_s, "FORTPVE");
+    assert.equal((await post(backend.port, `${base}/${"0".repeat(32)}`, server, emptyServer)).status, 404);
   } finally {
     backend.close();
   }

@@ -8,7 +8,7 @@ import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
 import { configureItemShop, configureSeasonStarts } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
-import { configureEvents, seasonalEvents } from "./events/events.js";
+import { configureEvents, holdEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
 import { affiliateRoutes, configureCreators, isEnabledCreator } from "./store/creators.js";
@@ -255,6 +255,7 @@ export function createApp(config, context = createContext(config)) {
   // Everything a request does uses its build's game data (src/builds/context.js, src/gamedata/read.js).
   app.use(requestBuild);
   app.use(seasonalEvents(() => context.settings.get().seasonalEvents !== false));
+  app.use(holdEvents);
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
   app.use(replayRoutes(context));
