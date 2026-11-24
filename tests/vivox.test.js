@@ -411,6 +411,26 @@ async function udpClient() {
   };
 }
 
+test("SIP server: a Vivox SDK's call gets the stream at its SIP address and the offer's port, not at the offer's LAN c=", async () => {
+  const backend = await startVivoxBackend();
+  const client = await udpClient();
+  const rtp = await udpClient();
+  try {
+    // As 8.40's SDK offers from this PC: SIP over loopback, c= the PC's LAN address, a=setup:passive.
+    const body = ["v=0", "o=amsip 0 0 IN IP4 192.0.2.10", "s=-", "c=IN IP4 192.0.2.10", "t=0 0", `m=audio ${rtp.port} RTP/AVP 127 111 0 101`,
+      "a=rtpmap:127 VIVOXVANI/32000", "a=rtpmap:111 SIREN14-3D/32000", "a=rtpmap:0 PCMU/8000", "a=setup:passive", "a=vx_rtcp:0", ""].join("\r\n");
+    client.send(invite("call-sdk", rtp.port, { body }), backend.sipPort);
+    const answered = parseSip(await client.next((packet) => parseSip(packet)?.status === 200));
+    assert.equal(parseSdp(answered.body).media[0].connection, "127.0.0.1");
+    const first = parseRtp(await rtp.next((packet) => Boolean(parseRtp(packet))));
+    assert.equal(first.payloadType, 0);
+  } finally {
+    backend.close();
+    client.close();
+    rtp.close();
+  }
+});
+
 test("SIP server: REGISTER, INVITE answered with PCMU on a port of the call's own, ACK, OPTIONS, BYE, over UDP and TCP", async () => {
   const backend = await startVivoxBackend();
   const client = await udpClient();

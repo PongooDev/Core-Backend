@@ -31,13 +31,11 @@ export async function startSipServer({ network, keys, port, media: mediaOptions 
   const media = createMedia({ ...mediaOptions, host: () => (net.isIPv4(network.bindAddress() ?? "") ? network.bindAddress() : undefined),
     allows: (address) => network.allows(address), say });
 
-  // Where the server's stream goes until the member's first packet says: the offer's c= for a client on this PC, else
-  // the address its SIP came from (a player behind a router or on a VPN offers its LAN address, which this PC can't
-  // reach). The SDK's RTP socket is bound to 0.0.0.0 (vivoxsdk 4.9's ortp rtp_session_set_local_addr), so either works.
-  function offerAddress(connection, sourceAddress) {
-    if (!connection || connection === "0.0.0.0" || !isLoopback(sourceAddress)) return sourceAddress;
-    return connection;
-  }
+  // Where the server's stream goes until the member's first packet says: the address the client's SIP came from, at
+  // the offer's port. The SDK's RTP socket is bound to 0.0.0.0 (vivoxsdk 4.9's ortp rtp_session_set_local_addr), so it
+  // gets it there; and the stream then comes from the address the answer names (mediaAddress), not from whichever
+  // interface reaches the offer's c= (a LAN address for a client on this PC, unreachable for one behind a router).
+  const offerAddress = (sourceAddress) => sourceAddress;
 
   // The address the SDP answer gives for media: what the prelogin told this client (by its IP), else the address the
   // Route header names (the proxy the client was given), else this PC's for this PC, else its public or LAN address.
@@ -169,7 +167,7 @@ export async function startSipServer({ network, keys, port, media: mediaOptions 
     let joined;
     try {
       joined = await media.join({ callId, channel, label: uriOf(header(request, "from")) || source.address, codec,
-        remote: { address: offerAddress(codec.audio.connection, source.address), port: codec.audio.port },
+        remote: { address: offerAddress(source.address), port: codec.audio.port },
         sendsFirst: codec.audio.attributes.some((attribute) => /^setup:passive$/i.test(attribute.trim())) });
     } catch (error) {
       calls.delete(callId);
