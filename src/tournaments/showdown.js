@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
-import { showsArena } from "./arena.js";
+import { arenaWindowHours, showsArena } from "./arena.js";
 import { newsImageUrl } from "../services/content/images.js";
 import { payoutLines, rewardTableOf } from "./payouts.js";
 import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windowsOf } from "./store.js";
@@ -542,12 +542,22 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
 //   at 0x15D1640; 7.30's shipped config files don't set it); 7.20's leaves it off (0x1582720). The cache line matters as much: 7.40's
 //   frontend (UFortUIStateWidget_Frontend's construct, 0x33D2C70 -> 0x135F3D0) and 7.30's download (0x1353D10) keep the
 //   events for ShowdownTournamentCacheExpirationHours.
+// - 8.20 (CL-5625478) and later: MaximumEventLengthHoursForCallout (Core-Backend #425). 8.20's lobby box above the mode
+//   select (AthenaMatchmakingPlay's ShowdownLobbyViolator, shown for the widget's NewModeStyleOverride 3) is no longer the
+//   current event's, as 6.10's: UFortAthenaMatchmakingWidget (0x3312BE0) sets style 3 and HighPriorityEventId only for the
+//   tournament manager's callout window (0x14B0060), live (countdownBeginTime <= now < endTime) with bEnableShowdown. The
+//   callout is, of every window not in CancelledEvents and not "locked", whose endTime hasn't passed and whose length
+//   (endTime - beginTime) is under MaximumEventLengthHoursForCallout hours, the one that begins first. An event without an
+//   end runs to FDateTime's last day, longer than any such limit, so it never had the box. 🟡 The limit served is the
+//   Arena windows' length less an hour (tournaments/arena.js arenaWindowHours): every admin event's window qualifies, as
+//   every running event had the box on 6.10 to 7.40, and the Arena's (#420), which begin first, never do.
+const calloutLengthBuild = 5625478;
 export function showdownRuntimeOptions(build, settingsValue, now = new Date(), store = storeProvider()) {
   if (!hasShowdown(build)) return [];
   // 8.20 to 8.40 keep it on: their Arena (tournaments/arena.js, #420) is a division event of the same manager, and the
   // Events tab lists no division event (8.20 CL-5625478 0x34B4F80).
   if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true && !showsArena(build, settingsValue)) return ["bEnableShowdown=false"];
-  return ["ShowdownTournamentCacheExpirationHours=0"];
+  return ["ShowdownTournamentCacheExpirationHours=0", ...(Number(build) >= calloutLengthBuild ? [`MaximumEventLengthHoursForCallout=${arenaWindowHours - 1}`] : [])];
 }
 
 // Keeps the lobbies of the builds with the Events tab in step with the events (Core-Backend #336). The client's tournament

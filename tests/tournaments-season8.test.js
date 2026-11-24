@@ -57,7 +57,7 @@ test("a Season 8 tournament ticket takes a full party; an empty Events tab isn't
   assert.equal(code(2), null);
   assert.equal(code(1), "errors.com.epicgames.fortnite.wrong_number_of_event_players");
   withStore((empty) => {
-    assert.deepEqual(showdownRuntimeOptions(v820, { hideEmptyEventsTab: true }, during, empty), ["ShowdownTournamentCacheExpirationHours=0"]);
+    assert.deepEqual(showdownRuntimeOptions(v820, { hideEmptyEventsTab: true }, during, empty).slice(0, 1), ["ShowdownTournamentCacheExpirationHours=0"]);
     assert.deepEqual(showdownRuntimeOptions(v740, { hideEmptyEventsTab: true }, during, empty), ["bEnableShowdown=false"]);
   });
 }));
@@ -102,3 +102,23 @@ test("8.20's account history over HTTP: 200 with an array for a listed event, 40
     backend.close();
   }
 });
+
+// Core-Backend #425: 8.20's lobby box above the mode select is the tournament manager's callout window (CL-5625478
+// 0x14B0060, read by UFortAthenaMatchmakingWidget 0x3312BE0), which must be shorter than MaximumEventLengthHoursForCallout
+// hours; an admin event without an end runs to FDateTime's last day. The hotfix's limit takes every admin event's window
+// and leaves out the Arena's, which begin first.
+test("8.20 on get MaximumEventLengthHoursForCallout: an open-ended admin event's window is under it, the Arena's isn't; 7.40 gets none", () => withStore((store) => {
+  const lines = showdownRuntimeOptions(v820, {}, during, store);
+  const limit = Number(lines.find((line) => line.startsWith("MaximumEventLengthHoursForCallout="))?.split("=")[1]);
+  assert.ok(Number.isInteger(limit) && limit < 2 ** 31, "an int32 of hours");
+  for (const build of [v830, v840]) assert.ok(showdownRuntimeOptions(build, {}, during, store).includes(`MaximumEventLengthHoursForCallout=${limit}`), build);
+  assert.ok(!showdownRuntimeOptions(v740, {}, during, store).some((line) => line.startsWith("MaximumEventLengthHoursForCallout")));
+  const hours = (window) => (Date.parse(window.endTime) - Date.parse(window.beginTime)) / 3600000;
+  const cup = store.create({ name: "Open Cup", playlist: "tournamentS8Solo" }, created);
+  const download = eventsDownload("ann", v820, {}, during, store);
+  const cupWindow = download.events.find((event) => event.eventId === cup.id).eventWindows[0];
+  assert.ok(hours(cupWindow) < limit, "the admin's open-ended window gets the box");
+  for (const arena of download.events.filter((event) => event.eventId.startsWith("epicgames_Arena_"))) {
+    for (const window of arena.eventWindows) assert.ok(hours(window) >= limit, window.eventWindowId);
+  }
+}));

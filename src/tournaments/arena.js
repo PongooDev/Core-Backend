@@ -79,6 +79,9 @@ export const matchPlayedStat = "MATCH_PLAYED_STAT";
 const eliminationTiers = 99;
 const arenaBegins = "2019-03-27T00:00:00.000Z";
 const noEnd = "9999-12-31T23:59:59.000Z";
+// The Arena windows' length in whole hours, from 8.20's release to FDateTime's last day: every event window Core serves is
+// shorter, as each begins later (tournaments/showdown.js showdownRuntimeOptions, #425).
+export const arenaWindowHours = Math.floor((Date.parse(noEnd) - Date.parse(arenaBegins)) / 3600000);
 
 export const arenaLtms = ltms.filter((ltm) => ltm.arena);
 // The mode of an Arena LTM ("Solo", "Duos"), by its playlist.
