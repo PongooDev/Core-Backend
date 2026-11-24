@@ -20,10 +20,11 @@ import { newsImageValue } from "../services/content/images.js";
 // 7.00's Explorer Pop-Up Cup (Update v7.00: "Material cap set to 700/500/300 ... Players receive 100/50/50 Wood/Stone/Metal
 // on elimination") on them too, its paks' Showdown and ShowdownAlt playlists being 6.31's. 7.20's Ice Storm ones
 // (Playlist_Deimos_Solo_WinterShow, _Duo_ and _Squad_, 58288 to 58290: the Showdown playlists with the Ice Legion) are
-// in-game ones too. A later build's tournament playlist goes here.
+// in-game ones too, and so are Season 8's (Playlist_ShowdownTournament_Solo, _Duos and _Squads, 58082 to 58084, 8.20 to
+// 8.40, #421). A later build's tournament playlist goes here.
 export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads",
   "fortnitemaresShowSolo", "fortnitemaresShowDuos", "fortnitemaresShowSquads", "scavengerSolo", "scavengerDuos", "scavengerSquads",
-  "iceStormShowSolo", "iceStormShowDuos", "iceStormShowSquads"].map((id) => {
+  "iceStormShowSolo", "iceStormShowDuos", "iceStormShowSquads", "tournamentS8Solo", "tournamentS8Duos", "tournamentS8Squads"].map((id) => {
   const ltm = ltms.find((entry) => entry.id === id);
   return { id, name: ltm.name, playlistId: ltm.playlistId, builds: ltm.builds, inGame: ltm.tournament === true };
 });

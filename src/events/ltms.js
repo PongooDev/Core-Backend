@@ -1457,6 +1457,18 @@ export const ltms = [
     teams: "100 Teams × 1", description: "Season 8's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League (Playlist_ShowdownAlt_Solo, 8.20's)." },
   { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true,
     teams: "100 Teams × 2", description: "Season 8's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
+  // Season 8's in-game tournaments (Core-Backend #421): 8.20's paks add Athena/Playlists/Showdown/Tournament's
+  // Playlist_ShowdownTournament_Solo, _Duos and _Squads (58082 to 58084, "Tournament": bIsTournament, MinPlayers 100,
+  // ShowdownLoading and ShowdownScoringHUD, full parties; 8.30's and 8.40's are 8.20's), the Season 8 cups' (Update v8.20's
+  // Luxe Cup, "Duos Game Mode"; Update v8.40's and v8.50's Fortnite World Cup Online Opens), while the Pop-Up Cups'
+  // ShowdownAlt playlists are the Arena's (above). In-game tournaments' as 6.10's Showdown ones (tournaments/store.js):
+  // an admin panel event of one is listed in the Events tab of 8.20 to 8.40 (tournaments/showdown.js).
+  { id: "tournamentS8Solo", name: "Tournament (Season 8, Solo)", playlistId: 58082, playlistName: "Playlist_ShowdownTournament_Solo", eventFlag: null, builds: [build820, build840], seasons: [8], tournament: true,
+    teams: "100 Teams × 1", description: "Season 8's in-game tournaments' Solo playlist (Playlist_ShowdownTournament_Solo, 8.20's)." },
+  { id: "tournamentS8Duos", name: "Tournament (Season 8, Duos)", playlistId: 58083, playlistName: "Playlist_ShowdownTournament_Duos", eventFlag: null, builds: [build820, build840], seasons: [8], tournament: true,
+    teams: "100 Teams × 2", description: "Season 8's in-game tournaments' Duos playlist, for full duos: the Luxe Cup's and the Online Opens' (Playlist_ShowdownTournament_Duos, 8.20's)." },
+  { id: "tournamentS8Squads", name: "Tournament (Season 8, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build820, build840], seasons: [8], tournament: true,
+    teams: "100 Teams × 4", description: "Season 8's in-game tournaments' Squads playlist, for full squads (Playlist_ShowdownTournament_Squads, 8.20's)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
   // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,

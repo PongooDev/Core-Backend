@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
+import { hasArena } from "./arena.js";
 import { newsImageUrl } from "../services/content/images.js";
 import { payoutLines, rewardTableOf } from "./payouts.js";
 import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windowsOf } from "./store.js";
@@ -441,7 +442,8 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     // 6.30 and 6.31's Pop-Up Cup playlists are Playlist_ShowdownAlt_Solo, _Duos and _Squads (events/ltms.js): their
     // mode is the suffix too, not the whole playlist name (Core-Backend #357). 7.20's Ice Storm ones are
     // Playlist_Deimos_Solo_WinterShow, _Duo_ and _Squad_.
-    const mode = ltm.playlistName.replace(/^Playlist_Showdown(?:Alt)?_/, "")
+    // Season 8's are Playlist_ShowdownTournament_Solo, _Duos and _Squads (#421).
+    const mode = ltm.playlistName.replace(/^Playlist_Showdown(?:Alt|Tournament)?_/, "")
       .replace(/^Playlist_Deimos_(Solo|Duo|Squad)_?(?:Winter)?Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
     const pinned = Number.isInteger(event.pinScore);
     const { pin_earned_text: pinEarnedText, ...display } = event.display ?? {};
@@ -519,7 +521,8 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
   if (named && windowId && runningWindowOf(event, now)?.id !== windowId) return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
   const ltm = showdownPlaylistOf(event);
   const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4,
-    scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4, iceStormShowSolo: 1, iceStormShowDuos: 2, iceStormShowSquads: 4 }[ltm.id];
+    scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4, iceStormShowSolo: 1, iceStormShowDuos: 2, iceStormShowSquads: 4,
+    tournamentS8Solo: 1, tournamentS8Duos: 2, tournamentS8Squads: 4 }[ltm.id];
   if (partySize !== teamSize) return refuse("wrong_number_of_event_players", "You need to be in a full party for this tournament.");
   return { event };
 }
@@ -541,7 +544,9 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
 //   events for ShowdownTournamentCacheExpirationHours.
 export function showdownRuntimeOptions(build, settingsValue, now = new Date(), store = storeProvider()) {
   if (!hasShowdown(build)) return [];
-  if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true) return ["bEnableShowdown=false"];
+  // 8.20 to 8.40 keep it on: their Arena (tournaments/arena.js, #420) is a division event of the same manager, and the
+  // Events tab lists no division event (8.20 CL-5625478 0x34B4F80).
+  if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true && !hasArena(build)) return ["bEnableShowdown=false"];
   return ["ShowdownTournamentCacheExpirationHours=0"];
 }
 
