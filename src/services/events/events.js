@@ -42,7 +42,7 @@ export function eventsServiceRoutes(context) {
 
   // DataUrl, GET /api/v1/events/<gameId>/data/<accountId> (8.20's to 8.40's table, CL-5625478 and CL-5793395's
   // FOnlineEventsServiceMcp constructor, 0x463250 on 8.30): 🟡 no caller of it was traced, so it is answered as the download.
-  // 8.50 (CL-6058028) asks it with ?region=&showPastEvents=, so its region is the download's.
+  // 8.50 (CL-6058028) and 8.51 ask it with ?region=&showPastEvents=, so its region is the download's.
   router.get("/api/v1/events/:gameId/data/:accountId", forBuild, auth, own, (req, res) => {
     res.json(eventsDownload(req.params.accountId, currentBuild(), { region: text(req.query.region) }, new Date(), context.tournaments, req.params.gameId));
   });

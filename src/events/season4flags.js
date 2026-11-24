@@ -66,6 +66,8 @@ import { currentEventsConfig } from "./events.js";
 // (events/airroyale.js); High Stakes and Buccaneer's Bounty run to 8.40.
 // 8.50's (CL-6058028) are 8.40's and one more, LTM_Ashton, the Endgame Challenges, served by their dates
 // (events/endgame.js); High Stakes, Buccaneer's Bounty and Air Royale run to 8.50 (its paks keep their schedules).
+// 8.51's (CL-6165369) are 8.50's: every one runs to 8.51, and LTE_S8_ExtraCredit, the Season 8 Overtime Challenges, is
+// served by their dates (events/extracredit.js; its schedule runs with its bundle's flag).
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -101,6 +103,7 @@ const b820 = 5625478;
 const b830 = 5793395;
 const b840 = 6005771;
 const b850 = 6058028;
+const b851 = 6165369;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -285,22 +288,27 @@ export const season4FlagGroups = [
   // 8.20's High Stakes Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist_V2, events/highstakes2019.js):
   // served by their dates on Season 8's replay, or always or never by their switch.
   { id: "highStakes2019", name: "Battle Royale: the High Stakes Challenges (8.20)", flags: [
-    flag("LTM_HighStakes", [b820, b850], "The High Stakes Challenges of Season 8 (Schedule_LTM_Heist_V2: play the Getaway, win it, use a Grappler; the Heist back bling and its styles; 14 to 19 March 2019)")
+    flag("LTM_HighStakes", [b820, b851], "The High Stakes Challenges of Season 8 (Schedule_LTM_Heist_V2: play the Getaway, win it, use a Grappler; the Heist back bling and its styles; 14 to 19 March 2019)")
   ] },
   // 8.30's Buccaneer's Bounty Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_PirateParty,
   // events/buccaneersbounty.js): served by their dates on Season 8's replay, or always or never by their switch.
   { id: "buccaneersBounty", name: "Battle Royale: the Buccaneer's Bounty Challenges (8.30)", flags: [
-    flag("LTE_BootyBay", [b830, b850], "The Buccaneer's Bounty Challenges (Schedule_PirateParty: visit pirate camps for the Plunder glider, then one more a day: Buried Treasure for the Pirate Parrot spray, top 10s in squads with a friend, be the cannonball; all four for the Boobytrapped emote; from 10 to 16 April 2019)")
+    flag("LTE_BootyBay", [b830, b851], "The Buccaneer's Bounty Challenges (Schedule_PirateParty: visit pirate camps for the Plunder glider, then one more a day: Buried Treasure for the Pirate Parrot spray, top 10s in squads with a friend, be the cannonball; all four for the Boobytrapped emote; from 10 to 16 April 2019)")
   ] },
   // 8.40's Air Royale Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Goose, events/airroyale.js):
   // served by their dates on Season 8's replay, or always or never by their switch.
   { id: "airRoyale", name: "Battle Royale: the Air Royale Challenges (8.40)", flags: [
-    flag("LTM_Goose", [b840, b850], "The Air Royale Challenges (Schedule_LTM_Goose: play Air Royale, Stormwing damage with SMGs, pistols and assault rifles, sky chests, destroy Stormwings, outlast, a top 5; three more on each of the third and fifth days; the Callsign Skull, Falcon, Wolf and Hornet wraps; from 17 to 24 April 2019)")
+    flag("LTM_Goose", [b840, b851], "The Air Royale Challenges (Schedule_LTM_Goose: play Air Royale, Stormwing damage with SMGs, pistols and assault rifles, sky chests, destroy Stormwings, outlast, a top 5; three more on each of the third and fifth days; the Callsign Skull, Falcon, Wolf and Hornet wraps; from 17 to 24 April 2019)")
   ] },
   // 8.50's Endgame Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Ashton, events/endgame.js): served by
   // their dates on Season 8's replay, or always or never by their switch.
   { id: "endgame", name: "Battle Royale: the Endgame Challenges (8.50)", flags: [
-    flag("LTM_Ashton", [b850, b850], "The Endgame Challenges (Schedule_LTM_Ashton: Iron Man's Repulsors, Infinity Stones, play Endgame, then three more on each of the third, fifth and seventh days: Stormbreaker, the Chitauri Jetpack, Captain America's Shield, the Chitauri weapons, Hawkeye's grapple, wins on each side; any 10 for the Avengers Quinjet glider; from 25 April to 5 May 2019)")
+    flag("LTM_Ashton", [b850, b851], "The Endgame Challenges (Schedule_LTM_Ashton: Iron Man's Repulsors, Infinity Stones, play Endgame, then three more on each of the third, fifth and seventh days: Stormbreaker, the Chitauri Jetpack, Captain America's Shield, the Chitauri weapons, Hawkeye's grapple, wins on each side; any 10 for the Avengers Quinjet glider; from 25 April to 5 May 2019)")
+  ] },
+  // 8.51's Season 8 Overtime Challenges (Athena/Items/ChallengeBundleSchedules/Season8/Season8_ExtraCredit_Schedule,
+  // events/extracredit.js): served by their dates on Season 8's replay, or always or never by their switch.
+  { id: "extraCredit", name: "Battle Royale: the Season 8 Overtime Challenges (8.51)", flags: [
+    flag("LTE_S8_ExtraCredit", [b851, b851], "The Season 8 Overtime Challenges (Season8_ExtraCredit_Schedule: collect coins in featured Creative islands and a top 10 in squads with a friend, then two more on each of the third and fifth days; the Battle Pass's two-stage styles for Sidewinder, Ember and Master Key; the Season 8 loading screen for 6; from 3 to 8 May 2019)")
   ] },
   { id: "rocket", name: "Battle Royale map: Blast Off (the rocket launch)", managedBy: "rocketLaunch", flags: [
     { flag: geodeCountdown, builds: [b450, b45], description: "The hologram counts down to the launch" },

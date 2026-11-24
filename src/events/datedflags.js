@@ -2,7 +2,8 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, ltmAshton, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
+  unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -20,6 +21,8 @@ export const buccaneersBountyCalendarEvent = "CalendarEvent_Season8_BootyBay";
 export const airRoyaleCalendarEvent = "CalendarEvent_Season8_AirRoyale";
 // 8.50's Schedule_LTM_Ashton (the Endgame Challenges) the same way.
 export const endgameCalendarEvent = "CalendarEvent_Season8_Ashton";
+// 8.51's Season8_ExtraCredit_Schedule (the Season 8 Overtime Challenges) the same way, its bundle's flag beside it.
+export const extraCreditCalendarEvent = "CalendarEvent_Season8_ExtraCredit";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -221,6 +224,31 @@ const airRoyaleEnd = Date.parse("2019-04-25T00:00:00.000Z");
 // (DaysFromEventStart 2, 4 and 6).
 const endgameAt = Date.parse("2019-04-25T00:00:00.000Z");
 const endgameEnd = Date.parse("2019-05-06T00:00:00.000Z");
+// 8.51's Season 8 Overtime Challenges (events/extracredit.js): the Fortnite Wiki's "available from May 3rd 2019 to May 8th
+// 2019" (🟡 00:00 UTC, to the last day's end, which is Season 8's). The bundle opens two more challenges on its third and
+// fifth days itself (DaysFromEventStart 2 and 4).
+const extraCreditAt = Date.parse("2019-05-03T00:00:00.000Z");
+const extraCreditEnd = Date.parse("2019-05-09T00:00:00.000Z");
+// 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it and the sources). The Fortnite Wiki's Unvaulting: 4 May 2019,
+// 2:00 to 2:05 PM ET (18:00 UTC); its Vault: "April 30th 2019: An orange hologram appeared above one of The Vault rune
+// slots. May 1st 2019: The fifth rune has appeared above the Volcano ... May 3rd 2019: The fifth and final rune has entered
+// The Vault. A 24 hour countdown timer has appeared above The Vault."
+// - GWW5 (the fifth rune's hologram) from 30 April to 1 May, GW5 (the rune over the volcano) from 1 May to the countdown
+//   (🟡 the days', 00:00 UTC; the rune's end is the countdown's start).
+// - GWS1, the countdown, its 24 hours to the event: BP_SnowScripting counts to its activeUntil, so it ends at the event.
+// - GWLevel (Next2, the sky above the vault) from the countdown's last 30 minutes (BP_SnowScripting's own 30-minute mark:
+//   the time of day, the final circle over the vault) to 15 minutes after the event (🟡 no source gives Epic's).
+// - GWS0, the event, from 18:00 for 10 minutes (BP_SnowScripting plays it from its TimeSinceBegin: the gateway's 60 s, the
+//   vote's 150 s at most, 35 s to the outro, its 60 s and the storm after; 🟡 the wiki's five minutes are the vote's end).
+// - PGW, after: the volcano's ash sky and its three hits (Retail Row, Polar Peak, Tilted Towers), from the event's end to the
+//   season's end.
+const unvaultingAt = Date.parse("2019-05-04T18:00:00.000Z");
+const unvaultingRuneWarmupAt = Date.parse("2019-04-30T00:00:00.000Z");
+const unvaultingRuneAt = Date.parse("2019-05-01T00:00:00.000Z");
+const unvaultingCountdownAt = unvaultingAt - 24 * 3600000;
+const unvaultingLevelAt = unvaultingAt - 30 * 60000;
+const unvaultingLevelEnd = unvaultingAt + 15 * 60000;
+const unvaultingEnd = unvaultingAt + 10 * 60000;
 // The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
 // - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
 //   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
@@ -429,6 +457,21 @@ export const datedEvents = [
     challenges: "Schedule_LTM_Ashton", steps: [
       step("challenges", "The Endgame Challenges", [ltmAshton, endgameCalendarEvent], endgameAt, endgameEnd)
     ] },
+  // 8.51's Season 8 Overtime Challenges (events/extracredit.js): one step, the flag and the schedule's calendar event.
+  { id: "extraCredit", name: "the Season 8 Overtime Challenges (8.51)", season: 8, flag: lteS8ExtraCredit, anchor: "challenges", parts: 1,
+    challenges: "Season8_ExtraCredit_Schedule", steps: [
+      step("challenges", "The Season 8 Overtime Challenges", [lteS8ExtraCredit, extraCreditCalendarEvent], extraCreditAt, extraCreditEnd)
+    ] },
+  // 8.51's Unvaulting (events/unvaulting.js): the fifth rune, the countdown, the event and the island after it. "Start now"
+  // (or any time on the event's step) plays it then, the steps before it at Epic's spacing.
+  { id: "unvaulting", name: "the Unvaulting (8.51)", season: 8, flag: unvaultingEvent, anchor: "event", parts: 6, steps: [
+    step("runeWarmup", "The fifth rune's hologram over its slot in the Vault", [unvaultingRuneWarmup], unvaultingRuneWarmupAt, unvaultingRuneAt),
+    step("rune", "The fifth rune over the volcano: drop items in to fill it", [unvaultingRune], unvaultingRuneAt, unvaultingCountdownAt),
+    step("countdown", "The 24-hour countdown over the Vault", [unvaultingCountdown], unvaultingCountdownAt, unvaultingAt),
+    step("level", "The sky above the Vault streamed in", [unvaultingLevel], unvaultingLevelAt, unvaultingLevelEnd),
+    step("event", "The Unvaulting: the Vault opens, the vote, the eruption", [unvaultingEvent], unvaultingAt, unvaultingEnd),
+    step("after", "After the eruption: the ash sky, Retail Row, Polar Peak and Tilted Towers hit", [unvaultingAfter], unvaultingEnd, null)
+  ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [
     step("tremors", "Tremors shake the island", [s8Tremors], s8TremorsAt, null),

@@ -62,8 +62,8 @@ test("8.40 is known, on its own data", () => {
   assert.equal(dataBuild("5900000"), v830, "a build between 8.30 and 8.40 plays on 8.30's");
   assert.equal(dataBuild("6030000"), v840, "a build between 8.40 and 8.50 plays on 8.40's");
   assert.equal(releasedOn(v840), Date.UTC(2019, 3, 17));
-  assert.equal(buildOfSeason(8), "6058028", "8.50 is Season 8's newest (tests/build850.test.js)");
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.50)");
+  assert.equal(buildOfSeason(8), "6165369", "8.51 is Season 8's newest (tests/build851.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.51)");
   const season = inBuild(v840, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [8, "BRSeason8", 100]);
   assert.ok(season.challengeSchedulesAlwaysShown.includes("season8_ruin_schedule"));
@@ -112,10 +112,10 @@ test("the Air Royale Challenges' flag: 17 to 24 April 2019 from 8.40; its days; 
   withConfig({ ...season8, datedFlags: { airRoyale: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v840, () => airRoyaleFlagsNow(at("2019-04-20T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6058028]);
-  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6058028]);
-  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6058028]);
-  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6058028]]);
+  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6165369]);
+  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6165369]);
+  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6165369]);
+  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6165369]]);
 });
 
 test("an 8.40 player gets the Air Royale Challenges while they run, three more on the third day", () => {
@@ -183,7 +183,7 @@ test("Air Royale (Duos) and Food Fight: Deep Fried from 17 April on 8.40; Season
     const spring = inBuild(v840, () => activeEventFlags(v840)).filter((flag) => flag.startsWith("EventFlag.Spring2019"));
     assert.deepEqual(spring, [spring2019Flag, spring2019Phase1, spring2019Phase2]);
   });
-  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6058028]]);
+  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6165369]]);
 });
 
 test("Save the World's Event Store sells the Springtime Heroes on 8.40 only", () => {

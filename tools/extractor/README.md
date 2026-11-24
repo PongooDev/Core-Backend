@@ -577,7 +577,17 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `cardpacks.json`, `collectionbook.json`, `upgrades.json`, `fabricator.json`, `banners.json`, `homebasenodes.json`,
   `objectivestats.json`, `quests.json`, `expeditions.json`, `squads.json`, `inventory.json` and `transmog.json`.
   Season8_ExtraCredit_Schedule (Season 8's Overtime Challenges, which name no CalendarEventTag and no tier gives) isn't
-  written.
+  written: 8.50's overlay was made before the change 8.51's brought (below).
+  8.51's (CL-6165369, Update v8.51) is `4.23.0-6165369+++Fortnite+Release-8.51` (no `Build.version`; the exe's branch is
+  ++Fortnite+Release-8.51, built 30 April 2019; the build folder is `windows-8.51\Fortnite 8.51`) with 8.50's full data
+  (Cert's files with `gamedata/6058028` applied) as the fifth argument and the main key FModel's settings hold for its build
+  folder. A full install in 8.50's layout with the keyed pakchunk1000 to 1009, of which the keychain opens all but 1002.
+  One extractor change: a schedule that names no flag of its own (no EventName or CalendarEventTag, only its
+  CalendarEventName) takes its bundles' CalendarEventTag as its `eventName` when they share one, so
+  Season8_ExtraCredit_Schedule is written with EventFlag.LTE_S8_ExtraCredit, and with it the season's event schedules
+  include Season7_OT_Schedule (8.51's names only its calendar event too; its flag, LTE_S7_OverTime, isn't served on 8.51).
+  No earlier overlay was redone. Against 8.50 only `athena.json` changes: the two schedules and their bundles, and
+  AthenaLootPackages_Client (a Minigun row and an SMG row's NamedWeightMult: the Unvaulting's GW.* loot weights).
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

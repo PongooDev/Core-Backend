@@ -20,7 +20,7 @@ export const endgameEvent = datedEvent("endgame");
 export const endgameBuild = 6058028;
 
 // The challenges' calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on: on 8.50 with the seasonal events on, in the Automatic mode. A flag the admin switched on is served
+// that holds now on: on 8.50 and 8.51 (its paks keep the schedule) with the seasonal events on, in the Automatic mode. A flag the admin switched on is served
 // always (season4Overrides) and one switched off never, so neither is scheduled here.
 export function endgameStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(endgameEvent.flag);

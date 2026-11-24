@@ -353,8 +353,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 8.50 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6058028"]);
+test("every build from 4.0 to 8.51 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6165369"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

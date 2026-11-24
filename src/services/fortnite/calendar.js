@@ -26,6 +26,8 @@ import { highStakes2019States } from "../../events/highstakes2019.js";
 import { buccaneersBountyStates } from "../../events/buccaneersbounty.js";
 import { airRoyaleStates } from "../../events/airroyale.js";
 import { endgameStates } from "../../events/endgame.js";
+import { extraCreditStates } from "../../events/extracredit.js";
+import { unvaultingStates } from "../../events/unvaulting.js";
 import { earthquakesStates, s8HeatStates } from "../../events/s8leadup.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
@@ -120,10 +122,12 @@ export function calendarRoutes({ tokens, settings }) {
     // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and 7.20's Ice Storm Challenges
     // (events/icestorm.js) and its Ice King and Ice Storm (events/icestorm.js iceKingStates), and 7.30's snow melting
     // (events/icestorm.js iceStormMeltStates), Showtime and its challenges (events/festivus.js), and 7.40's Overtime Challenges
-    // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too) as one schedule.
+    // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too), Season 8's event challenges,
+    // and 8.51's Overtime Challenges (events/extracredit.js) and the Unvaulting (events/unvaulting.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
       islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
       iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now), highStakes2019States(now), buccaneersBountyStates(now), airRoyaleStates(now), endgameStates(now),
+      extraCreditStates(now), unvaultingStates(now),
       earthquakesStates(now), s8HeatStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,

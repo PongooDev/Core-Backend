@@ -55,8 +55,8 @@ test("8.20 is known, on its own data", () => {
   assert.equal(dataBuild("5400000"), v800, "a build between 8.00 and 8.20 plays on 8.00's");
   assert.equal(dataBuild("5700000"), v820, "a later build Core doesn't know plays on 8.20's");
   assert.equal(releasedOn(v820), Date.UTC(2019, 2, 27));
-  assert.equal(buildOfSeason(8), "6058028", "8.50 is Season 8's newest (tests/build850.test.js)");
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.50)");
+  assert.equal(buildOfSeason(8), "6165369", "8.51 is Season 8's newest (tests/build851.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.51)");
   const season = inBuild(v820, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [8, "BRSeason8", 100]);
   assert.deepEqual(inBuild(v820, () => battlePassOffers()).map(({ offerId, price }) => [offerId, price]),
@@ -99,7 +99,7 @@ test("the High Stakes Challenges' flag: 14 to 19 March 2019 on 8.20 only; the sw
   withConfig({ ...season8, datedFlags: { highStakes2019: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v820, () => highStakes2019FlagsNow(at("2019-03-15T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6058028]);
+  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6165369]);
 });
 
 test("an 8.20 player gets the High Stakes Challenges while they run", () => {

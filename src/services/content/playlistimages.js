@@ -301,7 +301,8 @@ export const epicPlaylistImages = {
   // 8.40's Air Royale and Deep Fried (above).
   Playlist_Goose_Duos: airRoyaleTile,
   Playlist_Barrier_16_B_Lava: deepFriedTile,
-  // 8.50's Endgame (above).
+  // 8.50's Endgame (above), on 8.51 too. 8.51's Unvaulting (Playlist_Music_Highest) keeps the default picture: no Epic
+  // tile of it is recorded (the Wayback Machine's May 2019 captures of the CDN's fortnite-game folders have none).
   Playlist_Ashton_Sm: endgameTile,
   Playlist_Ashton_Md: endgameTile,
   Playlist_Ashton_Lg: endgameTile

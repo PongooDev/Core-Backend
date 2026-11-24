@@ -1298,6 +1298,8 @@ var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
 var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
+// A bundle's own event flag (CalendarEventTag), for a schedule that names only its calendar event (below).
+var bundleEventTags = new Dictionary<string, string>(StringComparer.Ordinal);
 // The earlier seasons' challenge schedules that their season's end doesn't take, by id, with that season's number.
 var keptSchedules = new SortedDictionary<string, int>(StringComparer.Ordinal);
 var variantTokens = new SortedDictionary<string, object>(StringComparer.Ordinal);
@@ -1430,6 +1432,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             }).Where(step => ((List<object>)((SortedDictionary<string, object>)step)["rewards"]).Count > 0).ToList();
         }
         challengeBundles[export.Name.ToLowerInvariant()] = bundle;
+        if (properties["CalendarEventTag"]?.GetValue<string>() is { Length: > 0 } bundleTag and not "None") bundleEventTags[export.Name.ToLowerInvariant()] = bundleTag;
         continue;
     }
     // 4.0's (CL 4039451) cosmetic variant tokens (Athena/Items/CosmeticVariantTokens, FortVariantTokenType): Carbide's
@@ -1770,6 +1773,17 @@ var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
 };
 if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
 if (variantTokens.Count > 0) athenaFile["variantTokens"] = variantTokens;
+// 8.50 (CL 6058028) has a schedule that names only its calendar event (Season8_ExtraCredit_Schedule, the Season 8 Overtime
+// Challenges: CalendarEventName CalendarEvent_Season8_ExtraCredit, no EventName or CalendarEventTag) and leaves the flag to
+// its bundle (QuestBundle_S8_ExtraCredit's CalendarEventTag, EventFlag.LTE_S8_ExtraCredit): such a schedule runs with its
+// bundles' flag, written as its eventName. Earlier builds have no such schedule.
+foreach (var (_, value) in challengeSchedules)
+{
+    var schedule = (SortedDictionary<string, object>)value;
+    if (schedule.ContainsKey("eventName")) continue;
+    var tags = ((List<object>)schedule["bundles"]).Select(entry => bundleEventTags.GetValueOrDefault((string)((SortedDictionary<string, object>)entry)["bundle"])).Distinct().ToList();
+    if (tags.Count == 1 && tags[0] is { } tag) schedule["eventName"] = tag;
+}
 // The challenge schedules the season grants (its rewards and the ones it names) and their bundles: 3.0's.
 if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwaysShown"))
 {

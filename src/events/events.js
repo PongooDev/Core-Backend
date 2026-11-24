@@ -533,12 +533,19 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // Season 8's Overtime Challenges of 3 to 8 May 2019, Update v8.51's days, names only CalendarEvent_Season8_ExtraCredit;
 // not served). It serves 8.40's: LobbySeason8, Spring 2019's Love Storm and Yarrr!, and High Stakes, Buccaneer's Bounty
 // and Air Royale by their dates. Its Block streams 8_50's two levels (events/block.js).
+//
+// 8.51 (CL-6165369, Update v8.51, 1 May 2019). Every EventFlag.* in its paks (the same byte scan, 522,988 files; the
+// keychain opens all its keyed paks, 1000 to 1009, but 1002) is 8.50's, and so are its CalendarEvent_* names. It serves
+// 8.50's: LobbySeason8, Spring 2019's Love Storm and Yarrr!, High Stakes, Buccaneer's Bounty, Air Royale and the Endgame
+// Challenges by their dates, and the Season 8 Overtime Challenges (EventFlag.LTE_S8_ExtraCredit, events/extracredit.js),
+// whose schedule 8.51 is the first to have when Season 8's replay reaches them. Its own event is the Unvaulting
+// (events/unvaulting.js), whose names are plain ones (below). Its Block is 8.50's (events/block.js).
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
 export const lteS7Overtime = "EventFlag.LTE_S7_OverTime";
-// Save the World's Spring 2019 (events/spring2019.js): EventFlag.Spring2019 and Love Storm's Phase1 on 8.00 to 8.50,
-// Yarrr!'s Phase2 on 8.20 to 8.50, each from its update's day on Season 8's replay.
+// Save the World's Spring 2019 (events/spring2019.js): EventFlag.Spring2019 and Love Storm's Phase1 on 8.00 to 8.51,
+// Yarrr!'s Phase2 on 8.20 to 8.51, each from its update's day on Season 8's replay.
 export const spring2019 = "Spring2019";
 export const spring2019Flag = "EventFlag.Spring2019";
 export const spring2019Phase1 = "EventFlag.Spring2019.Phase1";
@@ -551,6 +558,8 @@ export const lteBootyBay = "EventFlag.LTE_BootyBay";
 export const ltmGoose = "EventFlag.LTM_Goose";
 // 8.50's Endgame Challenges (events/endgame.js).
 export const ltmAshton = "EventFlag.LTM_Ashton";
+// 8.51's Season 8 Overtime Challenges (events/extracredit.js).
+export const lteS8ExtraCredit = "EventFlag.LTE_S8_ExtraCredit";
 export const frostnite = "EventFlag.Frostnite";
 export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
@@ -665,6 +674,17 @@ export const s8Cracks = "EQ2";
 export const s8Cracked = "EQH";
 export const s8Heat = "HP";
 export const s8Burnt = "HP1";
+// 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it), plain names: BP_SnowScripting (placed in
+// Athena_POI_Foundations) watches GWS1 (the countdown to the vault opening, which ends at the event), GWS0 (the event, from
+// its start), GWLevel (streams in Next2, the sky above the vault) and reads PGW (after the event: the volcano's ash sky);
+// BP_CalendarDynamicPOISelect reads PGW for the eruption's three foundation swaps; BP_SnowAlwaysRelevant streams HappyMap
+// (the fifth rune over the volcano) while GW5 is active, and the root's BP_SnowScripting watches GWW5 (its hologram).
+export const unvaultingRuneWarmup = "GWW5";
+export const unvaultingRune = "GW5";
+export const unvaultingCountdown = "GWS1";
+export const unvaultingLevel = "GWLevel";
+export const unvaultingEvent = "GWS0";
+export const unvaultingAfter = "PGW";
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;
@@ -696,6 +716,7 @@ const build740 = 5046157;
 const build800 = 5203069;
 const build820 = 5625478;
 const build850 = 6058028;
+const build851 = 6165369;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -748,11 +769,11 @@ const events = [
   { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build631 },
   // 7.00's (above): the Season 7 lobby and Save the World's Season 7 Warmup; 7.10's to 7.40's too, and their Frostnite.
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
-  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.50's too.
-  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build850 },
-  { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build850 },
-  { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build850 },
-  { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build850 },
+  // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.51's too.
+  { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build851 },
+  { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
+  { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
+  { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },
   { name: season7Warmup2018, flag: activeStorms, firstBuild: build700, lastBuild: build740 },
   { name: season7Warmup2018, flag: passiveMiniBosses, firstBuild: build700, lastBuild: build740 },
   { name: frostnite2018, flag: frostnite, firstBuild: build710, lastBuild: build740 },

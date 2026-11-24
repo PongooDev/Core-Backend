@@ -56,15 +56,15 @@ const withSession = (build, name, run) => {
 const templatesOf = (session) => Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId);
 const questOf = (session, templateId) => Object.values(session.profile("athena").profile.items).find((item) => item.templateId === templateId);
 
-test("8.50 is known, on its own data, Season 8's newest build", () => {
+test("8.50 is known, on its own data", () => {
   assert.equal(versionOf(v850), "8.50");
   assert.equal(allowedBuildList(["8.50"]).join(), v850);
   assert.equal(dataBuild(v850), v850);
   assert.equal(dataBuild("6030000"), v840, "a build between 8.40 and 8.50 plays on 8.40's");
   assert.equal(dataBuild("6100000"), v850, "a later build Core doesn't know plays on 8.50's");
   assert.equal(releasedOn(v850), Date.UTC(2019, 3, 25));
-  assert.equal(buildOfSeason(8), v850);
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.50)");
+  assert.equal(buildOfSeason(8), "6165369", "8.51 is Season 8's newest (tests/build851.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.51)");
   const season = inBuild(v850, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [8, "BRSeason8", 100]);
 });
@@ -92,7 +92,7 @@ test("the Endgame Challenges' data: Schedule_LTM_Ashton, three at the start and 
   assert.equal(inBuild(v840, athenaChallengeSchedules).schedule_ltm_ashton, undefined, "8.40 has no such schedule");
 }));
 
-test("the Endgame Challenges' flag: 25 April to 5 May 2019 on 8.50 only; its days; the switch and off", () => {
+test("the Endgame Challenges' flag: 25 April to 5 May 2019 from 8.50; its days; the switch and off", () => {
   withConfig(season8, () => {
     const types = (iso, build = v850) => typesOf(inBuild(build, () => endgameStates(at(iso))));
     assert.deepEqual(types("2019-04-24T23:59:00Z"), []);
@@ -111,12 +111,12 @@ test("the Endgame Challenges' flag: 25 April to 5 May 2019 on 8.50 only; its day
   withConfig({ ...season8, datedFlags: { endgame: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v850, () => endgameFlagsNow(at("2019-04-28T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltmAshton).builds, [6058028, 6058028]);
-  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6058028]);
-  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6058028]);
-  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6058028]);
-  assert.deepEqual(eventCard("endgame").ranges, [[6058028, 6058028]]);
-  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6058028]]);
+  assert.deepEqual(season4Flag(ltmAshton).builds, [6058028, 6165369]);
+  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6165369]);
+  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6165369]);
+  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6165369]);
+  assert.deepEqual(eventCard("endgame").ranges, [[6058028, 6165369]]);
+  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6165369]]);
 });
 
 test("an 8.50 player gets the Endgame Challenges while they run, and Endgame's matches count for them", () => {
@@ -199,14 +199,14 @@ test("8.50 keeps 8.40's modes: Air Royale, Deep Fried, the Arena and the tournam
     const spring = inBuild(v850, () => activeEventFlags(v850)).filter((flag) => flag.startsWith("EventFlag.Spring2019"));
     assert.deepEqual(spring, [spring2019Flag, spring2019Phase1, spring2019Phase2]);
   });
-  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6058028]]);
-  assert.deepEqual(eventCard("season8Lobby").ranges, [[5203069, 6058028]]);
+  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6165369]]);
+  assert.deepEqual(eventCard("season8Lobby").ranges, [[5203069, 6165369]]);
 });
 
 test("8.50's Block: Tricky Tracks, then Alien Sanctuary from 2 May", () => {
   assert.equal(blockEventOf(v850)?.id, "block850");
   assert.equal(blockEventOf(v840)?.id, "block830");
-  assert.deepEqual(eventCard("block850").ranges, [[6058028, 6058028]]);
+  assert.deepEqual(eventCard("block850").ranges, [[6058028, 6165369]]);
   withConfig(season8, () => {
     const types = (iso) => typesOf(inBuild(v850, () => blockStates(at(iso))));
     assert.deepEqual(types("2019-05-01T12:00:00Z"), [blockSlab(1)]);
