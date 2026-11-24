@@ -28,7 +28,7 @@ import { forgetOrigin } from "./origins.js";
 import { grant } from "./progress.js";
 import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantPanelVariantToken, grantVariantToken,
   itemsMissingVariants, missingVariantTokens, ownsTokenStyle, takeBackVariantToken } from "./variants.js";
-import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, originalOwnerStyles, originalOwnerTokens,
+import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantLinkedQuest, grantChallengeSchedule as grantSchedule, originalOwnerStyles, originalOwnerTokens,
   scheduleCleanedUp, settleChallengeSchedules, settleCompletedSchedules, settleOriginalOwnerStyles, settleStyleSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, isBattleStars, itemSeason, namesAthenaBuild, profileSeason, seasonNeedsSwitch,
   seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
@@ -1047,7 +1047,7 @@ export function claimAthenaQuest(session, itemId) {
     if (templateId.toLowerCase() === "accountresource:athenaseasonalxp") addSeasonXp(session, quantity);
     // Battle Stars (1.11's challenges give 5 or 10; AthenaBattleStar from 7.00, profiles/seasons.js isBattleStars).
     else if (isBattleStars(templateId)) giveChallengeStars(session, quantity);
-    else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
+    else if (typeOf(templateId) === "quest") grantLinkedQuest(tracker, itemId, templateId.split(":")[1], grantAthenaQuest);
     // 4.0's (CL-4039451) challenge rewards: Carbide's and Omega's styles (CosmeticVariantToken, profiles/variants.js), the
     // cumulative challenges' loading screens (and any cosmetic) to the locker, and the weekly challenge token
     // (Token:AthenaBattlePass_S4_WeeklyChallenge_Token, "S4 Weekly Challege Token", a week's CompleteAll reward), which the

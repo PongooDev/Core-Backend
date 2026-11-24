@@ -428,6 +428,7 @@ export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
   mergeDuplicateQuests(session);
+  linkStagedQuests(session);
   const plan = weekPlan(now);
   const weekOpen = new Map(plan.weeks.flatMap((week) => week.bundles.map((bundle) => [bundle, week.unlocked])));
   const eventOpen = (scheduleId, bundle) => eventPlan(scheduleId, now).parts.find((part) => part.bundle === bundle)?.unlocked === true;
@@ -659,6 +660,57 @@ export function settleCompletedSchedules(session) {
   }
 }
 
+// A staged challenge ("Stage 1 of 5", Quest_BR_Land_Chain_03a to _03e): each stage's rewards name the next stage's quest
+// (Quest:quest_br_land_chain_03b), which the claim of the stage gives (athena.js claimAthenaQuest). The bundle lists the
+// first stage only (QuestInfos) and counts the challenge once, as before the later stages were linked to it, so the
+// stages it is given later (challenge_linked_quest_parent) are not counted again.
+const nextStageOf = (questItem) => getAthenaQuest(idOf(questItem?.templateId) ?? "")?.rewards?.find(({ templateId }) => typeOf(templateId) === "quest");
+
+// The next stage of a challenge given with its bundle: the stage's quest item takes the bundle's challenge_bundle_id and
+// the bundle lists it (grantedquestinstanceids), as Epic's profile kept a linked quest (challenge_linked_quest_parent on
+// the stage, challenge_linked_quest_given on the one before). Without the bundle's id the challenges tab keeps showing the
+// stage done and never the next one. A stage held already (given before this link was made) is linked, not given twice.
+export function grantLinkedQuest(tracker, parentItemId, questId, grantQuest) {
+  const parent = tracker.profile.items[parentItemId];
+  const held = heldQuest(tracker.profile, questId);
+  const itemId = held?.[0] ?? grantQuest(tracker, questId);
+  if (!itemId || !parent) return itemId;
+  linkStage(tracker, parentItemId, itemId);
+  return itemId;
+}
+
+function linkStage(tracker, parentItemId, itemId) {
+  const parent = tracker.profile.items[parentItemId];
+  const stage = tracker.profile.items[itemId];
+  const bundleItemId = parent?.attributes.challenge_bundle_id;
+  const bundleItem = bundleItemId && tracker.profile.items[bundleItemId];
+  if (!stage || !bundleItem) return;
+  if (!stage.attributes.challenge_bundle_id) tracker.setItemAttribute(itemId, "challenge_bundle_id", bundleItemId);
+  tracker.setItemAttribute(itemId, "challenge_linked_quest_given", stage.attributes.challenge_linked_quest_given ?? "");
+  tracker.setItemAttribute(itemId, "challenge_linked_quest_parent", parent.templateId);
+  tracker.setItemAttribute(parentItemId, "challenge_linked_quest_given", stage.templateId);
+  const listed = bundleItem.attributes.grantedquestinstanceids ?? [];
+  if (listed.includes(itemId)) return;
+  tracker.setItemAttribute(bundleItemId, "grantedquestinstanceids", [...listed, itemId]);
+  tracker.setItemAttribute(bundleItemId, "num_granted_bundle_quests", listed.length + 1);
+}
+
+// A player who collected a stage before the link was made holds the next stage outside its bundle: it is linked at the
+// quest login (settleChallengeSchedules).
+function linkStagedQuests(session) {
+  const tracker = session.profile("athena");
+  for (const [parentItemId, parent] of heldOf(tracker.profile, "quest")) {
+    if (!parent.attributes.challenge_bundle_id || parent.attributes.quest_state !== "Claimed") continue;
+    const next = nextStageOf(parent);
+    const held = next && heldQuest(tracker.profile, idOf(next.templateId));
+    if (!held) continue;
+    const bundleItem = tracker.profile.items[parent.attributes.challenge_bundle_id];
+    if (bundleItem && (!(bundleItem.attributes.grantedquestinstanceids ?? []).includes(held[0]) || !held[1].attributes.challenge_bundle_id)) {
+      linkStage(tracker, parentItemId, held[0]);
+    }
+  }
+}
+
 // A bundle's quest done (athena.js completeQuest): the bundle counts it, and gives its CompletionRewards the time the
 // count reaches its CompletionThreshold. giveReward pays a reward (profiles/seasons.js). From 5.0 (CL-4214610) a bundle's
 // rewards come in steps (BundleCompletionRewards, athena.json completionSteps): each step pays the time the count
@@ -682,7 +734,7 @@ function countBundle(session, bundleItemId, giveReward) {
   if (!bundleItem) return [];
   const bundle = athenaChallengeBundles()[idOf(bundleItem.templateId)];
   const done = (bundleItem.attributes.grantedquestinstanceids ?? [])
-    .filter((id) => ["Completed", "Claimed"].includes(tracker.profile.items[id]?.attributes.quest_state)).length;
+    .filter((id) => ["Completed", "Claimed"].includes(tracker.profile.items[id]?.attributes.quest_state) && !tracker.profile.items[id].attributes.challenge_linked_quest_parent).length;
   const before = bundleItem.attributes.num_quests_completed ?? 0;
   if (done === before) return [];
   tracker.setItemAttribute(bundleItemId, "num_quests_completed", done);
