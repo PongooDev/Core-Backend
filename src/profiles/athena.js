@@ -1509,6 +1509,29 @@ function settleEventSchedules(session) {
 }
 
 // ClientQuestLogin / ServerQuestLogin on athena.
+// A challenge of a bundle (AthenaChallengeBundleQuest) has no Collect Rewards: it is collected as it completes
+// (completeQuest). One whose objectives are all met and that is still Active, or Completed and not collected (a request
+// that stopped between the two), shows its count full and never gives the next stage; it is finished at the quest login.
+function settleFinishedChallenges(session) {
+  const tracker = session.profile("athena");
+  for (const [itemId, item] of Object.entries(tracker.profile.items)) {
+    const quest = typeOf(item.templateId) === "quest" && athenaQuestOf(item);
+    if (!quest || quest.type !== "AthenaChallengeBundleQuest" || !quest.objectives.length) continue;
+    const state = item.attributes.quest_state;
+    const met = quest.objectives.filter((objective) => (item.attributes[`completion_${objective.name}`] ?? 0) >= objective.count).length
+      >= (quest.objectiveCompletionCount ?? quest.objectives.length);
+    if (state === "Active" && met) {
+      log("Battle Royale", `${session.accountId}: ${questIdOf(item)} has its objectives met and is finished now`);
+      completeQuest(session, itemId);
+    } else if (state === "Completed") {
+      log("Battle Royale", `${session.accountId}: ${questIdOf(item)} was completed and not collected, which is done now`);
+      claimAthenaQuest(session, itemId);
+      giveQuestGiftBox(session, itemId);
+      countBundleQuest(session, itemId, (rewardSession, reward) => giveSeasonReward(rewardSession, reward, seasonFunctions));
+    }
+  }
+}
+
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
@@ -1517,6 +1540,7 @@ export function athenaQuestLogin(session) {
   settleEventSchedules(session);
   settleStyleSchedules(session, seasonFunctions);
   settleChallengeSchedules(session, seasonFunctions);
+  settleFinishedChallenges(session);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);
   settleHeldItemObjectives(session);

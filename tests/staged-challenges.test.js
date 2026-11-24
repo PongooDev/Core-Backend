@@ -14,7 +14,7 @@ import { createProfileStore } from "../src/profiles/store.js";
 // Core-Backend #426: staged challenges ("Stage 1 of 5 - Land at Fatal Fields"). Completing a stage gives the next stage's
 // quest, which belongs to the challenge's bundle: the challenges tab lists a bundle's quests (grantedquestinstanceids), so a
 // next stage outside it was never shown and the stage done stayed on screen.
-const v840 = "6005771";
+const v840 = "6058028";
 const week6 = "questbundle_s8_week_006";
 const stages = ["a", "b", "c", "d", "e"].map((stage) => `quest_br_land_chain_03${stage}`);
 
@@ -42,7 +42,7 @@ const held = (session, questId) => Object.entries(items(session)).find(([, item]
 const bundleOf = (session) => Object.entries(items(session)).find(([, item]) => item.templateId === `ChallengeBundle:${week6}`);
 const complete = (session, questId) => advanceAthenaObjectives(session, getAthenaQuest(questId).objectives.map(({ name, count }) => ({ statName: name, count })));
 
-test("8.40's Fatal Fields stages: each stage's quest comes with the week's bundle, and the challenge counts once", () => {
+test("8.50's Fatal Fields stages: each stage's quest comes with the week's bundle, and the challenge counts once", () => {
   assert.deepEqual(inBuild(v840, () => getAthenaQuest(stages[0]).rewards.at(-1)), { quantity: 1, templateId: "Quest:quest_br_land_chain_03b" });
   withSession((session) => {
     const [bundleId, bundle] = bundleOf(session);
@@ -70,7 +70,7 @@ test("8.40's Fatal Fields stages: each stage's quest comes with the week's bundl
   });
 });
 
-test("8.40's stages: the next stage a player holds outside its bundle (collected before the link was made) is linked at the next login", () => {
+test("8.50's stages: the next stage a player holds outside its bundle (collected before the link was made) is linked at the next login", () => {
   withSession((session) => {
     const [bundleId] = bundleOf(session);
     complete(session, stages[0]);
@@ -85,4 +85,34 @@ test("8.40's stages: the next stage a player holds outside its bundle (collected
     claimAthenaQuest(session, held(session, stages[0])[0]);
     assert.equal(Object.values(items(session)).filter((item) => item.templateId.toLowerCase() === `quest:${stages[1]}`).length, 1, "no second item");
   });
+});
+
+test("8.50's stages: a stage left at 1/1 Active or Completed, or Claimed without its next stage, is finished at the quest login and gives the next one", () => {
+  const states = [
+    ["Active", (tracker, itemId) => tracker.setItemAttribute(itemId, "completion_battlepass_land_athena_location_fatal_03_a", 1)],
+    ["Completed", (tracker, itemId) => {
+      tracker.setItemAttribute(itemId, "completion_battlepass_land_athena_location_fatal_03_a", 1);
+      tracker.setItemAttribute(itemId, "quest_state", "Completed");
+    }],
+    ["Claimed", (tracker, itemId) => {
+      tracker.setItemAttribute(itemId, "completion_battlepass_land_athena_location_fatal_03_a", 1);
+      tracker.setItemAttribute(itemId, "quest_state", "Claimed");
+    }]
+  ];
+  for (const [state, leave] of states) {
+    withSession((session) => {
+      const tracker = session.profile("athena");
+      const [firstId] = held(session, stages[0]);
+      leave(tracker, firstId);
+      assert.equal(held(session, stages[1]), undefined, state);
+      athenaQuestLogin(session);
+      assert.equal(items(session)[firstId].attributes.quest_state, "Claimed", state);
+      const [nextId, next] = held(session, stages[1]) ?? [];
+      assert.ok(next, `${state}: the next stage is given`);
+      assert.equal(next.attributes.challenge_bundle_id, bundleOf(session)[0]);
+      assert.ok(bundleOf(session)[1].attributes.grantedquestinstanceids.includes(nextId));
+      athenaQuestLogin(session);
+      assert.equal(Object.values(items(session)).filter((item) => item.templateId.toLowerCase() === `quest:${stages[1]}`).length, 1, "given once");
+    });
+  }
 });

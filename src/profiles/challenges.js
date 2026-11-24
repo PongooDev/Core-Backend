@@ -428,7 +428,7 @@ export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
   mergeDuplicateQuests(session);
-  linkStagedQuests(session);
+  linkStagedQuests(session, athena);
   const plan = weekPlan(now);
   const weekOpen = new Map(plan.weeks.flatMap((week) => week.bundles.map((bundle) => [bundle, week.unlocked])));
   const eventOpen = (scheduleId, bundle) => eventPlan(scheduleId, now).parts.find((part) => part.bundle === bundle)?.unlocked === true;
@@ -695,17 +695,21 @@ function linkStage(tracker, parentItemId, itemId) {
   tracker.setItemAttribute(bundleItemId, "num_granted_bundle_quests", listed.length + 1);
 }
 
-// A player who collected a stage before the link was made holds the next stage outside its bundle: it is linked at the
-// quest login (settleChallengeSchedules).
-function linkStagedQuests(session) {
+// A player who collected a stage before the link was made holds the next stage outside its bundle, or (a claim that
+// stopped half way) not at all: it is linked, or given and linked, at the quest login (settleChallengeSchedules).
+function linkStagedQuests(session, athena) {
   const tracker = session.profile("athena");
   for (const [parentItemId, parent] of heldOf(tracker.profile, "quest")) {
     if (!parent.attributes.challenge_bundle_id || parent.attributes.quest_state !== "Claimed") continue;
     const next = nextStageOf(parent);
-    const held = next && heldQuest(tracker.profile, idOf(next.templateId));
-    if (!held) continue;
-    const bundleItem = tracker.profile.items[parent.attributes.challenge_bundle_id];
-    if (bundleItem && (!(bundleItem.attributes.grantedquestinstanceids ?? []).includes(held[0]) || !held[1].attributes.challenge_bundle_id)) {
+    const bundleItem = next && tracker.profile.items[parent.attributes.challenge_bundle_id];
+    if (!bundleItem) continue;
+    const questId = idOf(next.templateId);
+    const held = heldQuest(tracker.profile, questId);
+    if (!held) {
+      grantLinkedQuest(tracker, parentItemId, questId, athena.grantAthenaQuest);
+      log("Battle Royale", `${session.accountId}: ${idOf(parent.templateId)} was collected without ${questId}, which is given now`);
+    } else if (!(bundleItem.attributes.grantedquestinstanceids ?? []).includes(held[0]) || !held[1].attributes.challenge_bundle_id) {
       linkStage(tracker, parentItemId, held[0]);
     }
   }
