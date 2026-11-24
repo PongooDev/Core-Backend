@@ -137,6 +137,21 @@ test("an 8.50 player gets the Endgame Challenges while they run, and Endgame's m
     assert.equal(questOf(session, "Quest:quest_br_ashton_play_matches").attributes.completion_ltm_ashton_athena_play_matches, 1,
       "a Solo match doesn't count");
   }));
+  // The seventh day's: "Win as the heroes" (side a) and "Win as the Chitauri or Thanos" (side b) count only their side's wins.
+  withConfig({ mode: "auto", seasonStarts: { 8: replayDaysAgo(64) } }, () => withSession(v850, "ashtonsides850", (session) => {
+    setUpAthena(session);
+    athenaQuestLogin(session);
+    const heroWins = () => questOf(session, "Quest:quest_br_ashton_win_sidea")?.attributes.completion_ltm_ashton_athena_win_side_a ?? 0;
+    const villainWins = () => questOf(session, "Quest:quest_br_ashton_win_sideb")?.attributes.completion_ltm_ashton_athena_win_side_b ?? 0;
+    assert.ok(questOf(session, "Quest:quest_br_ashton_win_sidea") && questOf(session, "Quest:quest_br_ashton_win_sideb"), "both win challenges are open");
+    recordMatchProgress(session, 258, { place: 1, kills: 2, side: "hero" });
+    assert.deepEqual([heroWins(), villainWins()], [1, 0], "a heroes' win");
+    recordMatchProgress(session, 257, { place: 1, kills: 0, side: "villain" });
+    assert.deepEqual([heroWins(), villainWins()], [1, 1], "a villains' win");
+    recordMatchProgress(session, 256, { place: 2, kills: 0, side: "villain" });
+    recordMatchProgress(session, 256, { place: 1, kills: 0 });
+    assert.deepEqual([heroWins(), villainWins()], [1, 1], "a loss, or a win without a side, counts for neither");
+  }));
   withConfig({ mode: "auto", seasonStarts: { 8: replayDaysAgo(20) } }, () => withSession(v850, "noashton850", (session) => {
     setUpAthena(session);
     athenaQuestLogin(session);

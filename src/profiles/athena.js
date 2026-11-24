@@ -1287,17 +1287,27 @@ function conditionMet(condition, values) {
   return { "<=": value <= target, "==": value === target, ">=": value >= target, "<": value < target, ">": value > target }[match[2]];
 }
 
+// 8.50's Endgame wins of each side (win_athena_ashton_side_a, source Athena.LTM.Ashton.Hero; _side_b,
+// Athena.LTM.Ashton.Villain) name the winner's side by a source tag, which a place alone doesn't tell, so CoreV2 reports
+// each player's side ("hero" or "villain") and a row naming a side counts only that side's players. A result without
+// one (an older CoreV2) counts neither.
+const sideTags = { "athena.ltm.ashton.hero": "hero", "athena.ltm.ashton.villain": "villain" };
+function sideMatches(sourceTags, side) {
+  const sides = (sourceTags ?? "").toLowerCase().split(",").map((one) => sideTags[one.trim()]).filter(Boolean);
+  return sides.length === 0 || sides.includes(side);
+}
+
 // 3.0's "in a single match" challenges (singleMatch, bAthenaMustCompleteInSingleMatch: "Eliminate 5 players in a single
 // match") keep a match's progress only when the match completes them: the server's quest manager clears the rest
 // (UFortQuestManager::UpdateStatsForSingleMatchQuests, 3.0 0xED1EC0, before its progress is saved). The gameserver holds
 // theirs back the same way (CoreV2), and those counted from the match results here count only a match that reaches the
 // objective's count.
-export function recordMatchProgress(session, playlistId, { place, kills, squadFriends = 0 }) {
+export function recordMatchProgress(session, playlistId, { place, kills, squadFriends = 0, side = null }) {
   const tag = playlistTagOf(playlistId);
   for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
     for (const objective of quest.objectives) {
       const row = countedFromResults(objective.stat) && athenaObjectiveStat(objective.stat);
-      if (!row || !tagMatches(row.contextTags, tag)) continue;
+      if (!row || !tagMatches(row.contextTags, tag) || !sideMatches(row.sourceTags, side)) continue;
       let count = row.type === "AthenaRank" ? (conditionMet(row.condition, { place, kills, squadFriends }) ? 1 : 0) : kills;
       if (quest.singleMatch && count < objective.count) count = 0;
       if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
