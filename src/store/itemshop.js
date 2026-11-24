@@ -180,8 +180,9 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 17 to 24 April (Supersonic, Surefire, the Stealth Black and Dogfight wraps, Pastel, Hopper, Nitehare, Splode, their
 // pickaxes, the Spring Party, Pastel Print, Dino and Triassic wraps, Electro-fied!), and by 8.40's names two the earlier
 // builds' data names otherwise, sold on every Season 8 build: the Divine wrap (Blessed) and Ragnarok's Mauler pickaxe
-// (pickaxe_id_127_rhino, Uni-horn); the ones none has (Aura, Guild, Luminos, the Black Widow's and
-// Star-Lord's sets...) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
+// (pickaxe_id_127_rhino, Uni-horn), and 8.50's (CL-6058028) items of 25 April to 8 May, which its data is the first to
+// have (the Black Widow and Star-Lord outfits with their gear, Sterling, Daring Duelist, Dream with her glider and wrap,
+// Luminos, Aura, Guild, Cole, the Get Funky music and the Lavish emote); bundles (the Beastmode wraps) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
 // shop's items after the first's, as 14 February's were for 7.40. Battle Pass Tiers, bundles, free (0 V-Bucks) items
 // and real-money offers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

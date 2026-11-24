@@ -5,7 +5,7 @@ import { currentEventsConfig, isEventActive, scheduleEventFlags, spring2019, spr
 
 export { spring2019, spring2019Flag, spring2019Phase1, spring2019Phase2 };
 
-// Save the World's Spring 2019 (8.00, CL-5203069, 8.20, CL-5625478, 8.30, CL-5793395, and 8.40, CL-6005771; events.js spring2019). Two chapters on one quest
+// Save the World's Spring 2019 (8.00, CL-5203069, 8.20, CL-5625478, 8.30, CL-5793395, 8.40, CL-6005771, and 8.50, CL-6058028; events.js spring2019). Two chapters on one quest
 // map, QuestMap2's Spring2019QuestMap (8.20's FModel), each page shown while its row's QuestEventFlag is active:
 // - Love Storm, pages LoveStorm01-04, EventFlag.Spring2019.Phase1. Update v8.00 (28 February 2019): "Love is in the air -
 //   everybody run! Homebase has fallen victim to a virulent love outbreak". 15 LoveQuest_2019 quests from
@@ -24,8 +24,9 @@ export const springTickets = "AccountResource:eventcurrency_spring";
 // Season 8 notes, so both run to Season 8's end (Love Storm, from the season's first day, all season); the replay then
 // starts over without Yarrr! until its day comes round again.
 // 8.30 keeps both chapters' flags and quests (its paks' LoveQuest_2019 and PirateQuest_2019 are 8.20's) and runs them as 8.20 does;
-// 8.40 too (its quests are 8.30's), with two more Event Store heroes (store/eventstore.js).
-export const spring2019Builds = { v800: 5203069, v820: 5625478, v830: 5793395, v840: 6005771 };
+// 8.40 too (its quests are 8.30's), with two more Event Store heroes (store/eventstore.js), and 8.50 (its LoveQuest_2019 and
+// PirateQuest_2019 are 8.40's), with two more.
+export const spring2019Builds = { v800: 5203069, v820: 5625478, v830: 5793395, v840: 6005771, v850: 6058028 };
 export const spring2019Chapters = [
   { flag: spring2019Flag, from: "2019-02-28T00:00:00.000Z", firstBuild: spring2019Builds.v800 },
   { flag: spring2019Phase1, from: "2019-02-28T00:00:00.000Z", firstBuild: spring2019Builds.v800 },

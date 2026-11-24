@@ -523,10 +523,15 @@ const frostniteNow = () => storeEventNow() === frostnite2018;
 // (CL-6005771) adds the Springtime Heroes, Bunny Brawler Luna (Hero:HID_Commando_028_BunnyBrawler_SR_T01) and Dashing Hare
 // Ken (Hero:HID_Ninja_027_BunnyNinja_SR_T01), new in its data: the Fortnite Wiki has both in the Event Store from Update
 // v8.40's day, 17 April 2019, for 2,800 Gold each; its update notes for Save the World aren't recorded there, so 🟡 one
-// each, and on 8.40 from its first day, as Hybrid is on 8.20.
+// each, and on 8.40 from its first day, as Hybrid is on 8.20. 8.50 (CL-6058028) adds Cottontail Eagle Eye
+// (Hero:HID_Outlander_026_BunnyOutlander_SR_T01, new in its data) and brings back Miss Bunny Penny
+// (Hero:HID_Constructor_PlasmaDamage_Easter_SR_T01, Spring It On!'s): Update v8.50's "Available in the Event Store on April
+// 25 at 8 PM Eastern Time" for both, 2,800 Gold each by the Fortnite Wiki; 🟡 one each, and on 8.50 from its first day.
 export const yarrrEventItems = [{ templateId: "Hero:hid_ninja_026_reddragonninja_sr_t01", price: 2800, limit: 1 },
   { templateId: "Hero:hid_commando_028_bunnybrawler_sr_t01", price: 2800, limit: 1, fromBuild: 6005771 },
-  { templateId: "Hero:hid_ninja_027_bunnyninja_sr_t01", price: 2800, limit: 1, fromBuild: 6005771 }];
+  { templateId: "Hero:hid_ninja_027_bunnyninja_sr_t01", price: 2800, limit: 1, fromBuild: 6005771 },
+  { templateId: "Hero:hid_outlander_026_bunnyoutlander_sr_t01", price: 2800, limit: 1, fromBuild: 6058028 },
+  { templateId: "Hero:hid_constructor_plasmadamage_easter_sr_t01", price: 2800, limit: 1, fromBuild: 6058028 }];
 const yarrrItems = () => yarrrEventItems.filter(({ fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))).map(({ fromBuild, ...item }) => item);
 export const spring2019StoreEnd = "2019-05-09T00:00:00.000Z";
 const yarrrNow = () => storeEventNow() === spring2019;

@@ -169,27 +169,36 @@ export const eventCards = [
   { id: "block830", kind: "dated", dated: "block830", seasons: [8], name: "The Block's community builds (8.30, 8.40)", builds: "8.30 – 8.40", ranges: [[5793395, 6005771]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Llama Sphinx goes up", endLabel: "Cordial Courtyard goes up",
     about: "8.30's two community-built islands on the Block, each a level in its paks: Llama Sphinx (Prudiz; Update v8.30, 10 April 2019; 8.30 came out mid-season, so it is up from the replay's first day) and Cordial Courtyard (GonzoTheWizard, 17 April, Update v8.40's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
-  // 8.20's High Stakes Challenges (events/highstakes2019.js); 8.30's and 8.40's paks have them too.
-  { id: "highStakes2019", kind: "dated", dated: "highStakes2019", seasons: [8], name: "High Stakes (Season 8)", builds: "8.20 – 8.40", ranges: [[5625478, 6005771]],
+  // 8.50's Block (events/block.js): Tricky Tracks, then Alien Sanctuary on 8.51's day (both in 8.50's paks).
+  { id: "block850", kind: "dated", dated: "block850", seasons: [8], name: "The Block's community builds (8.50)", builds: "8.50", ranges: [[6058028, 6058028]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Tricky Tracks goes up", endLabel: "Alien Sanctuary goes up",
+    about: "8.50's two community-built islands on the Block, each a level in its paks: Tricky Tracks (Callum5tewart; Update v8.50, 25 April 2019; 8.50 came out mid-season, so it is up from the replay's first day) and Alien Sanctuary (Pr0Spartaner, 2 May, Update v8.51's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  // 8.20's High Stakes Challenges (events/highstakes2019.js); 8.30's to 8.50's paks have them too.
+  { id: "highStakes2019", kind: "dated", dated: "highStakes2019", seasons: [8], name: "High Stakes (Season 8)", builds: "8.20 – 8.50", ranges: [[5625478, 6058028]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Season 8's High Stakes Challenges, with the Getaway back (Schedule_LTM_Heist_V2: play and win the Getaway, use a Grappler; the Heist back bling and its styles), 14 to 19 March 2019 by the Fortnite Wiki. 8.20 came out on 27 March, after them, so on Season 8's replay they run before 8.20's day; the admin's times or the switch serve them whenever. 🟡 00:00 UTC, to the last day's end.",
     flags: ["EventFlag.LTM_HighStakes", "CalendarEvent_Season8_HighStakes"] },
-  // 8.30's Buccaneer's Bounty Challenges (events/buccaneersbounty.js); 8.40's paks have them too.
-  { id: "buccaneersBounty", kind: "dated", dated: "buccaneersBounty", seasons: [8], name: "Buccaneer's Bounty", builds: "8.30 – 8.40", ranges: [[5793395, 6005771]],
+  // 8.30's Buccaneer's Bounty Challenges (events/buccaneersbounty.js); 8.40's and 8.50's paks have them too.
+  { id: "buccaneersBounty", kind: "dated", dated: "buccaneersBounty", seasons: [8], name: "Buccaneer's Bounty", builds: "8.30 – 8.50", ranges: [[5793395, 6058028]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Update v8.30's Buccaneer's Bounty Challenges (Schedule_PirateParty): visit pirate camps for the Plunder glider, then one more each day: Buried Treasure for the Pirate Parrot spray, top 10s in squads with a friend, and be the cannonball; all four give the Boobytrapped emote. 10 to 16 April 2019 by the Fortnite Wiki; the day's mode is the Battle Royale Game Modes list's. 🟡 00:00 UTC, to the last day's end.",
     flags: ["EventFlag.LTE_BootyBay", "CalendarEvent_Season8_BootyBay"] },
-  // 8.40's Air Royale Challenges (events/airroyale.js).
-  { id: "airRoyale", kind: "dated", dated: "airRoyale", seasons: [8], name: "Air Royale Challenges", builds: "8.40", ranges: [[6005771, 6005771]],
+  // 8.40's Air Royale Challenges (events/airroyale.js); 8.50's paks have them too.
+  { id: "airRoyale", kind: "dated", dated: "airRoyale", seasons: [8], name: "Air Royale Challenges", builds: "8.40 – 8.50", ranges: [[6005771, 6058028]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Update v8.40's Air Royale Challenges (Schedule_LTM_Goose): play Air Royale, deal damage to Stormwings with SMGs, pistols and assault rifles, collect sky chests, destroy Stormwings, outlast, place top 5; three at the start and three more on the third and fifth days, for the Callsign Skull, Falcon and Wolf wraps, and Callsign Hornet for all nine. 17 to 24 April 2019 by the Fortnite Wiki; the mode itself is events/ltms.js's Air Royale. 🟡 00:00 UTC, to the last day's end.",
     flags: ["EventFlag.LTM_Goose", "CalendarEvent_Season8_AirRoyale"] },
-  // 8.00's to 8.40's Save the World Spring 2019 (events/spring2019.js, Core-Backend #408).
-  { id: "spring2019", kind: "choice", choice: "spring2019", seasons: [8], name: "Love Storm and Yarrr! (Save the World)", builds: "8.00 – 8.40", ranges: [[5203069, 6005771]],
-    about: "Save the World's spring event of 2019 on the quest map's event pages. Love Storm (Update v8.00, 28 February 2019): the LoveQuest_2019 line with its trebuchet landmark, on 8.00 to 8.40. Yarrr! (Update v8.20, 27 March 2019): the PirateQuest_2019 line with the Pirate Cove and Walk the Plank landmarks, Corsair, Jack's Revenge and Blakebeard the Blackhearted, on 8.20 to 8.40; 8.40 adds Bunny Brawler Luna and Dashing Hare Ken to the Event Store (17 April). The quests pay Spring Tickets and Gold; each landmark mission is on a tile in every campaign theater that only a player holding its quest sees. Epic's dates follow Season 8's replay, so Yarrr! is on from its 27 March to the season's end. 🟡 No hours (00:00 UTC) and no recorded end (both run to the season's end).",
-    flags: ["EventFlag.Spring2019", "EventFlag.Spring2019.Phase1", "EventFlag.Spring2019.Phase2 (8.20 – 8.40)"] },
-  { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00 – 8.40", ranges: [[5203069, 6005771]],
-    about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 to 8.40 carry no other Battle Royale lobby flag.",
+  // 8.50's Endgame Challenges (events/endgame.js).
+  { id: "endgame", kind: "dated", dated: "endgame", seasons: [8], name: "Endgame Challenges", builds: "8.50", ranges: [[6058028, 6058028]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "Update v8.50's Endgame Challenges (Schedule_LTM_Ashton): deal damage hovering with Iron Man's Repulsors, collect Infinity Stones and play Endgame at the start, then three more on each of the third, fifth and seventh days (Stormbreaker throws, the Chitauri Jetpack, eliminations in different matches, Captain America's Shield, the Chitauri Laser Rifle and Energy Launcher, Hawkeye's grapple, wins as the Chitauri or Thanos and as the heroes); the banners, sprays, emoticons and the Assemble loading screen, and any 10 for the Avengers Quinjet glider. 25 April to 5 May 2019 by the Fortnite Wiki; the mode itself is events/ltms.js's Endgame. 🟡 00:00 UTC, to the last day's end.",
+    flags: ["EventFlag.LTM_Ashton", "CalendarEvent_Season8_Ashton"] },
+  // 8.00's to 8.50's Save the World Spring 2019 (events/spring2019.js, Core-Backend #408).
+  { id: "spring2019", kind: "choice", choice: "spring2019", seasons: [8], name: "Love Storm and Yarrr! (Save the World)", builds: "8.00 – 8.50", ranges: [[5203069, 6058028]],
+    about: "Save the World's spring event of 2019 on the quest map's event pages. Love Storm (Update v8.00, 28 February 2019): the LoveQuest_2019 line with its trebuchet landmark, on 8.00 to 8.50. Yarrr! (Update v8.20, 27 March 2019): the PirateQuest_2019 line with the Pirate Cove and Walk the Plank landmarks, Corsair, Jack's Revenge and Blakebeard the Blackhearted, on 8.20 to 8.50; 8.40 adds Bunny Brawler Luna and Dashing Hare Ken to the Event Store (17 April), 8.50 Cottontail Eagle Eye and Miss Bunny Penny (25 April). The quests pay Spring Tickets and Gold; each landmark mission is on a tile in every campaign theater that only a player holding its quest sees. Epic's dates follow Season 8's replay, so Yarrr! is on from its 27 March to the season's end. 🟡 No hours (00:00 UTC) and no recorded end (both run to the season's end).",
+    flags: ["EventFlag.Spring2019", "EventFlag.Spring2019.Phase1", "EventFlag.Spring2019.Phase2 (8.20 – 8.50)"] },
+  { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00 – 8.50", ranges: [[5203069, 6058028]],
+    about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 to 8.50 carry no other Battle Royale lobby flag.",
     flags: ["EventFlag.LobbySeason8"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);

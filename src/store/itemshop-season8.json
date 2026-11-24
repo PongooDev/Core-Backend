@@ -1,5 +1,5 @@
 {
- "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.fandom.com, MediaWiki API; February 28th 2019 - May 8th 2019, Season 8's whole run, 70 days; February 28th 2019 from its Part 1 and Part 2 (the pages are titled \"... - Part 1\" and \"... - Part 2\"), Part 2's items after Part 1's, as 7.40's 14 February was; the shop at UTC midnight), read 2026-11-20, the items and prices as charged that day (featured = the wiki's featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki's ImageCycler) listed; the items of one tile carry {tile: n}, the same n for the day's items that shared the tile, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back; other callouts (New!, \"Selectable Styles!\", \"Select your Team!\", \"Unlockable Styles!\") are left out). fnbr.co was not cross-checked. Each item is matched to 8.00's (CL-5203069) data by its display name and type (the wiki's <small> markup stripped), then to 8.20's (CL-5625478) and 8.30's (CL-5793395) and 8.40's (CL-6005771) for the names 8.00 lacks or names otherwise (re-read 2026-11-23 from the same cached pages); a build serves the ones its own data has. Items none of them has are left out (Aura, Guild, Luminos, the Black Widow's and Star-Lord's sets, the music...); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too. 28 February's Part 1 is 7.40's last shop, before Update v8.00, and Part 2 Season 8's launch shop: both are in, as the day had two shops.",
+ "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.fandom.com, MediaWiki API; February 28th 2019 - May 8th 2019, Season 8's whole run, 70 days; February 28th 2019 from its Part 1 and Part 2 (the pages are titled \"... - Part 1\" and \"... - Part 2\"), Part 2's items after Part 1's, as 7.40's 14 February was; the shop at UTC midnight), read 2026-11-20, the items and prices as charged that day (featured = the wiki's featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki's ImageCycler) listed; the items of one tile carry {tile: n}, the same n for the day's items that shared the tile, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back; other callouts (New!, \"Selectable Styles!\", \"Select your Team!\", \"Unlockable Styles!\") are left out). fnbr.co was not cross-checked. Each item is matched to 8.00's (CL-5203069) data by its display name and type (the wiki's <small> markup stripped), then to 8.20's (CL-5625478) and 8.30's (CL-5793395) and 8.40's (CL-6005771) and 8.50's (CL-6058028) for the names 8.00 lacks or names otherwise (re-read 2026-11-24 from the same cached pages); a build serves the ones its own data has. Items none of them has are left out (Aura, Guild, Luminos, the music...); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too. 28 February's Part 1 is 7.40's last shop, before Update v8.00, and Part 2 Season 8's launch shop: both are in, as the day had two shops.",
  "days": [
   {
    "date": "2019-02-28",
@@ -4239,6 +4239,24 @@
       "tile": 3,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
+     800,
+     {
+      "tile": 4
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonboardwalk",
+     200,
+     {
+      "tile": 4
+     }
     ]
    ],
    "daily": [
@@ -4270,7 +4288,20 @@
   },
   {
    "date": "2019-04-26",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
+     800
+    ],
+    [
+     "AthenaDance:eid_ashtonboardwalk",
+     200
+    ]
+   ],
    "daily": [
     [
      "AthenaDance:eid_everytime",
@@ -4302,31 +4333,49 @@
    "date": "2019-04-27",
    "featured": [
     [
-     "AthenaCharacter:cid_248_athena_commando_m_blackwidow",
-     2000,
-     {
-      "tile": 1
-     }
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500
     ],
     [
-     "AthenaCharacter:cid_249_athena_commando_f_blackwidow",
-     2000,
-     {
-      "tile": 1
-     }
-    ],
-    [
-     "AthenaPickaxe:pickaxe_id_111_blackwidow",
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
      800,
      {
       "tile": 1
      }
     ],
     [
+     "AthenaDance:eid_ashtonboardwalk",
+     200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_248_athena_commando_m_blackwidow",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_249_athena_commando_f_blackwidow",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_111_blackwidow",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
      "AthenaGlider:glider_id_086_blackwidow",
      1200,
      {
-      "tile": 1
+      "tile": 2
      }
     ]
    ],
@@ -4516,7 +4565,30 @@
   },
   {
    "date": "2019-04-30",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_400_athena_commando_m_ashtonsaltlake",
+     1500
+    ],
+    [
+     "AthenaDance:eid_ashtonsaltlake",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_203_ashtonsaltlake",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_142_ashtonsaltlake",
+     1200
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_193_athena_commando_f_hippie",
@@ -4546,7 +4618,30 @@
   },
   {
    "date": "2019-05-01",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_400_athena_commando_m_ashtonsaltlake",
+     1500
+    ],
+    [
+     "AthenaDance:eid_ashtonsaltlake",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_203_ashtonsaltlake",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_142_ashtonsaltlake",
+     1200
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_154_athena_commando_m_gumshoe",
@@ -4577,6 +4672,17 @@
   {
    "date": "2019-05-02",
    "featured": [
+    [
+     "AthenaCharacter:cid_393_athena_commando_m_shiny",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_199_shinyhammer",
+     800,
+     {
+      "banner": "CollectTheSet"
+     }
+    ],
     [
      "AthenaCharacter:cid_310_athena_commando_f_streetgoth",
      1500,
@@ -4637,7 +4743,34 @@
   },
   {
    "date": "2019-05-03",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_396_athena_commando_f_swashbuckler",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_201_swashbuckler",
+     500,
+     {
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_393_athena_commando_m_shiny",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_199_shinyhammer",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
    "daily": [
     [
      "AthenaDance:eid_electroshuffle",
@@ -4663,7 +4796,92 @@
   },
   {
    "date": "2019-05-04",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_394_athena_commando_m_moonlightassassin",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_200_moonlightassassin",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_395_athena_commando_f_shatterfly",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_051_shatterfly",
+     500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_140_shatterfly",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_400_athena_commando_m_ashtonsaltlake",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonsaltlake",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_142_ashtonsaltlake",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_203_ashtonsaltlake",
+     500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
+     800,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonboardwalk",
+     200,
+     {
+      "tile": 3
+     }
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_180_athena_commando_m_scuba",
@@ -4689,11 +4907,94 @@
   },
   {
    "date": "2019-05-05",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaCharacter:cid_394_athena_commando_m_moonlightassassin",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_200_moonlightassassin",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_395_athena_commando_f_shatterfly",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_051_shatterfly",
+     500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_400_athena_commando_m_ashtonsaltlake",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonsaltlake",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_142_ashtonsaltlake",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_203_ashtonsaltlake",
+     500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
+     800,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonboardwalk",
+     200,
+     {
+      "tile": 3
+     }
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_182_athena_commando_m_modernmilitary",
      1500
+    ],
+    [
+     "AthenaMusicPack:musicpack_011_getfunky",
+     200
     ],
     [
      "AthenaDance:eid_glowstickdance",
@@ -4713,24 +5014,73 @@
    "date": "2019-05-06",
    "featured": [
     [
-     "AthenaCharacter:cid_188_athena_commando_f_streetracerwhite",
+     "AthenaCharacter:cid_400_athena_commando_m_ashtonsaltlake",
      1500,
      {
       "tile": 1
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonsaltlake",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_142_ashtonsaltlake",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_203_ashtonsaltlake",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_399_athena_commando_f_ashtonboardwalk",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_202_ashtonboardwalk",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaDance:eid_ashtonboardwalk",
+     200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_188_athena_commando_f_streetracerwhite",
+     1500,
+     {
+      "tile": 3
      }
     ],
     [
      "AthenaCharacter:cid_190_athena_commando_m_streetracerwhite",
      1500,
      {
-      "tile": 1
+      "tile": 3
      }
     ],
     [
      "AthenaGlider:glider_id_062_streetracerwhite",
      1200,
      {
-      "tile": 1,
+      "tile": 3,
       "banner": "CollectTheSet"
      }
     ]
@@ -4738,6 +5088,14 @@
    "daily": [
     [
      "AthenaDance:eid_popdance01",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_204_miner",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_401_athena_commando_m_miner",
      800
     ],
     [
@@ -4812,6 +5170,10 @@
     [
      "AthenaGlider:glider_id_112_techops",
      1200
+    ],
+    [
+     "AthenaDance:eid_indiandance",
+     500
     ]
    ]
   },
@@ -4819,17 +5181,31 @@
    "date": "2019-05-08",
    "featured": [
     [
+     "AthenaCharacter:cid_397_athena_commando_f_treasurehunterfashion",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_398_athena_commando_m_treasurehunterfashion",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
      "AthenaCharacter:cid_143_athena_commando_f_darkninja",
      2000,
      {
-      "tile": 1
+      "tile": 2
      }
     ],
     [
      "AthenaPickaxe:pickaxe_id_060_darkninja",
      800,
      {
-      "tile": 1,
+      "tile": 2,
       "banner": "CollectTheSet"
      }
     ],
@@ -4837,7 +5213,7 @@
      "AthenaGlider:glider_id_043_darkninja",
      1200,
      {
-      "tile": 1,
+      "tile": 2,
       "banner": "CollectTheSet"
      }
     ],
@@ -4845,14 +5221,14 @@
      "AthenaCharacter:cid_141_athena_commando_m_darkeagle",
      2000,
      {
-      "tile": 2
+      "tile": 3
      }
     ],
     [
      "AthenaPickaxe:pickaxe_id_059_darkeagle",
      1800,
      {
-      "tile": 2,
+      "tile": 3,
       "banner": "CollectTheSet"
      }
     ]

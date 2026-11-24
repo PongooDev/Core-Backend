@@ -564,6 +564,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   Bunny Brawler Luna and Dashing Hare Ken, the Air Royale Stormwing weapons, the Egg Launcher, two perks), `banners.json`,
   `collectionbook.json`, `alterations.json`, `fabricator.json`, `upgrades.json`, `objectivestats.json` (Air Royale's
   stats, the endless outposts') and `world.json`.
+  8.50's (CL-6058028, Update v8.50) is `4.23.0-6058028+++Fortnite+Release-8.50` (no `Build.version`; its exe's
+  FEngineVersion is 4.23.0, 0x170004 beside the ++Fortnite+Release-8.50 branch; the build folder is `8.50-CL-6058028\8.50`)
+  with 8.40's full data (Cert's files with `gamedata/6005771` applied) as the fifth argument and the main key FModel's
+  settings hold for its build folder. A full install in 8.40's layout with the keyed pakchunk1000 to 1011, of which the
+  keychain opens all but 1003. Its mission alerts are still the fifth argument's. No extractor change. Against 8.40
+  sixteen files change: `athena.json` (39 cosmetics: Endgame's Black Widow and Star-Lord with their gear, the Avengers
+  Quinjet and the Assemble loading screen, Sterling, Daring Duelist, Dream, Luminos, Aura, Guild, Cole, the Beastmode
+  wraps...; one gone, EID_RunningManV3; the Endgame Challenges (Schedule_LTM_Ashton) and their stats; weeks 9 and 10),
+  `items.json` and `characters.json` (their heroes, Cottontail Eagle Eye, the Duet, the Endgame items and Infinity Stones,
+  Twine Peaks' T21 to T25 card packs), `world.json` (five Theater_Endgame_Zone difficulties: Twine Peaks' harder top end),
+  `cardpacks.json`, `collectionbook.json`, `upgrades.json`, `fabricator.json`, `banners.json`, `homebasenodes.json`,
+  `objectivestats.json`, `quests.json`, `expeditions.json`, `squads.json`, `inventory.json` and `transmog.json`.
+  Season8_ExtraCredit_Schedule (Season 8's Overtime Challenges, which name no CalendarEventTag and no tier gives) isn't
+  written.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

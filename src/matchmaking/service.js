@@ -301,6 +301,14 @@ const playlistTeamsFrom820 = {
   58084: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams820Build = 5625478;
+// 8.50 (CL-6058028): Endgame's Playlist_Ashton_Sm, _Md and _Lg (256 to 258): two teams, the heroes and Thanos's side, of 20,
+// 24 and 32 in squads of 4 (bIsLargeTeamGame; which side is which is AshtonMutator's, on the server).
+const playlistTeamsFrom850 = {
+  256: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 },
+  257: { maxTeamCount: 2, maxTeamSize: 24, maxSquadSize: 4 },
+  258: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 }
+};
+const playlistTeams850Build = 6058028;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -506,6 +514,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams850Build && playlistTeamsFrom850[playlistId]) return playlistTeamsFrom850[playlistId];
   if (Number(build) >= playlistTeams820Build && playlistTeamsFrom820[playlistId]) return playlistTeamsFrom820[playlistId];
   if (Number(build) >= playlistTeams740Build && playlistTeamsFrom740[playlistId]) return playlistTeamsFrom740[playlistId];
   if (Number(build) >= playlistTeams730Build && playlistTeamsFrom730[playlistId]) return playlistTeamsFrom730[playlistId];

@@ -48,7 +48,7 @@ var game = engine switch
     // and its curve tables are 4.22's (ECurveTableMode: read as 4.21, the Research page's ResearchSystemUpgradesTable and the
     // upgrade level costs, ratings and recycle XP came out empty).
     "4.22" => EGame.GAME_UE4_22,
-    // 8.30 (CL 5793395) is UE 4.23, as FModel reads its paks; 8.40 (CL 6005771) too (its exe's FEngineVersion is 4.23.0-6005771).
+    // 8.30 (CL 5793395) is UE 4.23, as FModel reads its paks; 8.40 (CL 6005771) and 8.50 (CL 6058028) too (their exes' FEngineVersion is 4.23.0).
     "4.23" => EGame.GAME_UE4_23,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };

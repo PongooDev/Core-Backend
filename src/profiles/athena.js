@@ -10,9 +10,10 @@ import { overtimeFlagsNow } from "../events/overtime.js";
 import { highStakes2019FlagsNow } from "../events/highstakes2019.js";
 import { buccaneersBountyFlagsNow } from "../events/buccaneersbounty.js";
 import { airRoyaleFlagsNow } from "../events/airroyale.js";
+import { endgameFlagsNow } from "../events/endgame.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
-import { eventTagOfPlaylist } from "../events/ltms.js";
+import { eventTagOfPlaylist, ltmPlaylistTag } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
 import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, athenaVariantTokens, dailyWeight,
   getAthenaQuest, seasonLevels, splitOffBackpacks } from "../gamedata/athena.js";
@@ -1250,10 +1251,13 @@ function gainedXpObjectives(session, amount) {
 // complete_athena_50v50 asks for), and from 1.11 the event queues', Athena.Playlist.Event.<N> for the playlist of queue
 // AthenaEvent<N> (15 Event.1, 13 .2, 14 .3, 17 .4, 12 .5, 16 .6, 18 .7, 19 .8: events/ltms.js eventQueueOfPlaylist), which
 // the LTMs' complete_athena_event_<N> ask for (Core-Backend #195); 3.5.1's playlists are tagged by their own PlaylistId
-// (events/ltms.js eventTagOfPlaylist).
+// (events/ltms.js eventTagOfPlaylist). An LTM whose stats name its playlist asset's own tag (GameplayTagContainer:
+// 8.40's Air Royale, Athena.Playlist.Goose.Duos, for complete_athena_goose; 8.50's Endgame, Athena.Playlist.Ashton, for
+// complete_athena_ashton and the win rows) is counted by that tag on its builds (events/ltms.js ltmPlaylistTag), which the
+// Athena.Playlist rows match too.
 // (Looked up when a match is recorded: events/ltms.js imports this module's importers, so it isn't there at load.)
 const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad", 11: "athena.playlist.fiftyfifty" };
-const playlistTagOf = (playlistId) => playlistTags[playlistId]
+const playlistTagOf = (playlistId) => playlistTags[playlistId] ?? ltmPlaylistTag(playlistId)?.toLowerCase()
   ?? (eventTagOfPlaylist(playlistId) ? `athena.playlist.event.${eventTagOfPlaylist(playlistId)}` : "athena.playlist");
 const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((one) => one.trim())
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
@@ -1476,12 +1480,13 @@ function settleSeasonGrants(session) {
 // 7.40's Season7_OT_Schedule (EventFlag.LTE_S7_OverTime, the Overtime Challenges) while its dates do (events/overtime.js),
 // 8.20's Schedule_LTM_Heist_V2 (EventFlag.LTM_HighStakes) while its dates do (events/highstakes2019.js), and 8.30's
 // Schedule_PirateParty (EventFlag.LTE_BootyBay) while its dates do (events/buccaneersbounty.js), and 8.40's
-// Schedule_LTM_Goose (EventFlag.LTM_Goose, the Air Royale Challenges) while its dates do (events/airroyale.js).
+// Schedule_LTM_Goose (EventFlag.LTM_Goose, the Air Royale Challenges) while its dates do (events/airroyale.js), and 8.50's
+// Schedule_LTM_Ashton (EventFlag.LTM_Ashton, the Endgame Challenges) while its dates do (events/endgame.js).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow(), ...endgameFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

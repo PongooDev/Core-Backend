@@ -194,6 +194,10 @@ const nflRumbleTile = `${cdn}/playlistinformation/BR07_ModeTile_NFL_TeamRumble-1
 // file's SHA-1.
 const airRoyaleTile = `${cdn}/playlistinformation/08BR_AirRoyale_Mode-Tile-1024x512-e071f542b7e0ce2cfc34c208e14604815b76439c.jpg`;
 const deepFriedTile = `${cdn}/playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg`;
+// 8.50's (CL-6058028) Endgame: the same page names 08BR_LTM_Endgame_InGame_Mode-Tile for Playlist_Ashton_Sm, the one 8.50
+// serves; _Md and _Lg are the same mode, so they take it too. No border. On Epic's CDN, checked 2026-11-24: 200, image/jpeg,
+// 818,679 bytes, the hash in its name the file's SHA-1.
+const endgameTile = `${cdn}/playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -296,7 +300,11 @@ export const epicPlaylistImages = {
   Playlist_Omaha: nflRumbleTile,
   // 8.40's Air Royale and Deep Fried (above).
   Playlist_Goose_Duos: airRoyaleTile,
-  Playlist_Barrier_16_B_Lava: deepFriedTile
+  Playlist_Barrier_16_B_Lava: deepFriedTile,
+  // 8.50's Endgame (above).
+  Playlist_Ashton_Sm: endgameTile,
+  Playlist_Ashton_Md: endgameTile,
+  Playlist_Ashton_Lg: endgameTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads

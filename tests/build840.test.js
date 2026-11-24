@@ -55,15 +55,15 @@ const withSession = (build, name, run) => {
 };
 const templatesOf = (session) => Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId);
 
-test("8.40 is known, on its own data, Season 8's newest build", () => {
+test("8.40 is known, on its own data", () => {
   assert.equal(versionOf(v840), "8.40");
   assert.equal(allowedBuildList(["8.40"]).join(), v840);
   assert.equal(dataBuild(v840), v840);
   assert.equal(dataBuild("5900000"), v830, "a build between 8.30 and 8.40 plays on 8.30's");
-  assert.equal(dataBuild("6100000"), v840, "a later build Core doesn't know plays on 8.40's");
+  assert.equal(dataBuild("6030000"), v840, "a build between 8.40 and 8.50 plays on 8.40's");
   assert.equal(releasedOn(v840), Date.UTC(2019, 3, 17));
-  assert.equal(buildOfSeason(8), v840);
-  assert.equal(seasonName(8), "Season 8 (8.00 – 8.40)");
+  assert.equal(buildOfSeason(8), "6058028", "8.50 is Season 8's newest (tests/build850.test.js)");
+  assert.equal(seasonName(8), "Season 8 (8.00 – 8.50)");
   const season = inBuild(v840, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [8, "BRSeason8", 100]);
   assert.ok(season.challengeSchedulesAlwaysShown.includes("season8_ruin_schedule"));
@@ -93,7 +93,7 @@ test("the Air Royale Challenges' data: Schedule_LTM_Goose, three challenges at t
   assert.equal(inBuild(v830, athenaChallengeSchedules).schedule_ltm_goose, undefined, "8.30 has no such schedule");
 }));
 
-test("the Air Royale Challenges' flag: 17 to 24 April 2019 on 8.40 only; its days; the switch and off", () => {
+test("the Air Royale Challenges' flag: 17 to 24 April 2019 from 8.40; its days; the switch and off", () => {
   withConfig(season8, () => {
     const types = (iso, build = v840) => typesOf(inBuild(build, () => airRoyaleStates(at(iso))));
     assert.deepEqual(types("2019-04-16T23:59:00Z"), []);
@@ -112,10 +112,10 @@ test("the Air Royale Challenges' flag: 17 to 24 April 2019 on 8.40 only; its day
   withConfig({ ...season8, datedFlags: { airRoyale: { mode: "off" } } }, () => {
     assert.deepEqual(inBuild(v840, () => airRoyaleFlagsNow(at("2019-04-20T12:00:00Z"))), []);
   });
-  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6005771]);
-  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6005771]);
-  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6005771]);
-  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6005771]]);
+  assert.deepEqual(season4Flag(ltmGoose).builds, [6005771, 6058028]);
+  assert.deepEqual(season4Flag(lteBootyBay).builds, [5793395, 6058028]);
+  assert.deepEqual(season4Flag(ltmHighStakes).builds, [5625478, 6058028]);
+  assert.deepEqual(eventCard("airRoyale").ranges, [[6005771, 6058028]]);
 });
 
 test("an 8.40 player gets the Air Royale Challenges while they run, three more on the third day", () => {
@@ -183,7 +183,7 @@ test("Air Royale (Duos) and Food Fight: Deep Fried from 17 April on 8.40; Season
     const spring = inBuild(v840, () => activeEventFlags(v840)).filter((flag) => flag.startsWith("EventFlag.Spring2019"));
     assert.deepEqual(spring, [spring2019Flag, spring2019Phase1, spring2019Phase2]);
   });
-  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6005771]]);
+  assert.deepEqual(eventCard("spring2019").ranges, [[5203069, 6058028]]);
 });
 
 test("Save the World's Event Store sells the Springtime Heroes on 8.40 only", () => {

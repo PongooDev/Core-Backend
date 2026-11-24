@@ -26,7 +26,7 @@ import { createVivoxKeys, tokenPattern } from "./tokens.js";
 // Everything the emulator sees and says is logged under [Vivox], and kept in <data>/logs/vivox.log.
 
 export const vivoxIniBuild = 4225813;
-// 8.20 (CL-5625478) to 8.40 replaced FVivox with UE 4.23's VivoxVoiceChat and VoiceChatManager plugins (8.30 CL-5793395):
+// 8.20 (CL-5625478) to 8.50 replaced FVivox with UE 4.23's VivoxVoiceChat and VoiceChatManager plugins (8.30 CL-5793395):
 // - FVivoxVoiceChat::Initialize (8.30 0xBCDCE0) reads [VoiceChat.Vivox] ServerUrl, Domain, Issuer and Namespace from the
 //   ENGINE ini once, right after the start-up hotfix is applied ("[VoiceChat.Vivox] ServerUrl, Domain, or Issuer is not
 //   set" otherwise; 8.00 still has FVivox's [Vivox]). Namespace, or Issuer when unset, goes into its names: the account

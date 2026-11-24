@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  lteBootyBay, lteS7Overtime, ltmAshton, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -18,6 +18,8 @@ export const highStakes2019CalendarEvent = "CalendarEvent_Season8_HighStakes";
 export const buccaneersBountyCalendarEvent = "CalendarEvent_Season8_BootyBay";
 // 8.40's Schedule_LTM_Goose (the Air Royale Challenges) the same way.
 export const airRoyaleCalendarEvent = "CalendarEvent_Season8_AirRoyale";
+// 8.50's Schedule_LTM_Ashton (the Endgame Challenges) the same way.
+export const endgameCalendarEvent = "CalendarEvent_Season8_Ashton";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -164,6 +166,12 @@ const blockSteps820 = [
 // from the lap's first day, as 8.20's. 8.40 (CL-6005771) streams the same two from the same slabs (its POI_Foundations and
 // BP_SlabScripting are 8.30's), so it plays 8.30's dates (events/block.js).
 const blockBuilds830 = [["2019-02-28", "Llama Sphinx, by Prudiz"], ["2019-04-17", "Cordial Courtyard, by GonzoTheWizard"]];
+// 8.50 (CL-6058028, Update v8.50, 25 April 2019): SLAB_1 streams Athena/Maps/Block/8_50's Block_25x25_TrickyTracks ("Tricky
+// Tracks", Callum5tewart), SLAB_2 Block_25x25_AlienSanctuary ("Alien Sanctuary", Pr0Spartaner). 8.50's paks no longer have
+// 8.30's two. The Fortnite Wiki: Tricky Tracks on Update v8.50's day, Alien Sanctuary on 2 May (Update v8.51's day; 8.50's
+// paks already have it), on to the season's end. 8.50 came out mid-season, so its first build is up from the lap's first
+// day, as 8.30's.
+const blockBuilds850 = [["2019-02-28", "Tricky Tracks, by Callum5tewart"], ["2019-05-02", "Alien Sanctuary, by Pr0Spartaner"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -208,6 +216,11 @@ const buccaneersBountyEnd = Date.parse("2019-04-17T00:00:00.000Z");
 // (DaysFromEventStart 2 and 4).
 const airRoyaleAt = Date.parse("2019-04-17T00:00:00.000Z");
 const airRoyaleEnd = Date.parse("2019-04-25T00:00:00.000Z");
+// 8.50's Endgame Challenges (events/endgame.js): the Fortnite Wiki's "available from April 25th 2019 to May 5th 2019" (🟡
+// 00:00 UTC, to the last day's end). The bundle opens three more challenges on its third, fifth and seventh days itself
+// (DaysFromEventStart 2, 4 and 6).
+const endgameAt = Date.parse("2019-04-25T00:00:00.000Z");
+const endgameEnd = Date.parse("2019-05-06T00:00:00.000Z");
 // The lead-up to Season 8 (events/s8leadup.js has how 7.30 and 7.40 play it, and the sources).
 // - EQ, the tremors: from Content Update v7.30's day (5 February: the wiki's "The ground is occasionally shaking and rumbling
 //   noises can be heard, which is an earthquake") to the season's end (🟡 00:00 UTC; how long Epic's ran isn't recorded).
@@ -348,6 +361,8 @@ export const datedEvents = [
     steps: blockSteps820 },
   { id: "block830", name: "The Block's community builds (8.30)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds830) },
+  { id: "block850", name: "The Block's community builds (8.50)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds850) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -408,6 +423,11 @@ export const datedEvents = [
   { id: "airRoyale", name: "the Air Royale Challenges (8.40)", season: 8, flag: ltmGoose, anchor: "challenges", parts: 1,
     challenges: "Schedule_LTM_Goose", steps: [
       step("challenges", "The Air Royale Challenges", [ltmGoose, airRoyaleCalendarEvent], airRoyaleAt, airRoyaleEnd)
+    ] },
+  // 8.50's Endgame Challenges (events/endgame.js): one step, the flag and the schedule's calendar event.
+  { id: "endgame", name: "the Endgame Challenges (8.50)", season: 8, flag: ltmAshton, anchor: "challenges", parts: 1,
+    challenges: "Schedule_LTM_Ashton", steps: [
+      step("challenges", "The Endgame Challenges", [ltmAshton, endgameCalendarEvent], endgameAt, endgameEnd)
     ] },
   // The lead-up to Season 8 (events/s8leadup.js): the earthquakes (7.30's tremors, 7.40's cracks), and 7.40's heat.
   { id: "earthquakes", name: "the earthquakes before Season 8 (7.30, 7.40)", season: 7, flag: s8Cracks, anchor: "cracks", parts: 3, steps: [

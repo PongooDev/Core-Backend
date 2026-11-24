@@ -140,7 +140,8 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // below). 7.00's Creative (Playlist_PlaygroundV2) and 7.30's NFL Rumble (Playlist_Omaha) have the tiles Epic's later page
   // names for them (below). 7.30's Party at Pleasant Park (Playlist_Music_Highest) has none: that page names its playlist only
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
-  // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422).
+  // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422), and
+  // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile.
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
@@ -322,7 +323,10 @@ const tileFiles = [
   [["Playlist_Green_Squad"], "playlistinformation/08BR_LTM_SolidGreen_ModeTile_Squads-1024x512-f0d931472907d54ffaa52ef81f78bf9d5fcfaa2d.jpg"],
   // 8.40's (#422).
   [["Playlist_Goose_Duos"], "playlistinformation/08BR_AirRoyale_Mode-Tile-1024x512-e071f542b7e0ce2cfc34c208e14604815b76439c.jpg"],
-  [["Playlist_Barrier_16_B_Lava"], "playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg"]
+  [["Playlist_Barrier_16_B_Lava"], "playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg"],
+  // 8.50's Endgame, the page's Playlist_Ashton_Sm tile for its three playlists.
+  [["Playlist_Ashton_Sm", "Playlist_Ashton_Md", "Playlist_Ashton_Lg"],
+    "playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg"]
 ];
 const tileOf = Object.fromEntries(tileFiles.flatMap(([names, file]) => names.map((name) => [name, epicTile(file)])));
 // 7.10 on: the 14 Days of Fortnite's own tiles for two playlists the earlier pages show with another.
@@ -349,8 +353,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 8.40 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6005771"]);
+test("every build from 4.0 to 8.50 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6058028"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

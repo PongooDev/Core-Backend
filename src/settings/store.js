@@ -84,14 +84,14 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 7.40's (CL-5046157): Love Shot, Sword Fight, Catch! and Content Update v7.40's Driftin'.
   "loveShotDuos", "loveShotSolo", "loveShotSquads", "swordFightSquads", "swordFightSolo", "swordFightDuos", "catchSolo", "catchDuos",
   "catchSquads", "driftin", "driftin40", "driftin20s",
-  // Season 8's (8.00 to 8.40; Core-Backend's admin panel dropped the switches of ones not listed here): 50v50, Close Encounters,
+  // Season 8's (8.00 to 8.50; Core-Backend's admin panel dropped the switches of ones not listed here): 50v50, Close Encounters,
   // Team Rumble, Fly Explosives, One Shot, Solid Gold, Classic, Slide, the Getaway, Floor is Lava, Sniper Shootout, Going Green,
-  // and 8.40's Air Royale (Duos) and Food Fight: Deep Fried.
+  // 8.40's Air Royale (Duos) and Food Fight: Deep Fried, and 8.50's Endgame (its 40, 48 and 64 player playlists).
   "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
   "solidGoldSeason8Squads", "classicSeason8Squads", "slideSeason8Duos", "getawaySeason8Squads", "getawaySeason8Duos",
   "floorIsLavaSquads", "floorIsLavaDuos", "floorIsLavaSolo", "sniperShootoutSeason8Duos", "sniperShootoutSeason8Squads", "goingGreenSquads",
-  "airRoyaleDuos", "foodFightDeepFried",
-  // Season 8's Arena (8.20 to 8.40, Core-Backend #423, tournaments/arena.js): its Solo and Duos tiles in the mode select.
+  "airRoyaleDuos", "foodFightDeepFried", "endgame", "endgame48", "endgame64",
+  // Season 8's Arena (8.20 to 8.50, Core-Backend #423, tournaments/arena.js): its Solo and Duos tiles in the mode select.
   "arenaSolo", "arenaDuos"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
