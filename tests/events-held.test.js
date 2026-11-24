@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
-import { activeEventFlags, configureEvents, currentEventsConfig, holdEvents, withEventsHeld } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, currentEventsConfig, holdEvents, releaseHeldEvents, withEventsHeld } from "../src/events/events.js";
 import { worldInfo } from "../src/world/theaters.js";
 
 // Core-Backend #428/#429: 8.40's world info read the events config 128,000 times (a settings copy each) and rebuilt the
@@ -28,6 +28,10 @@ test("held event flags are copies, and a new hold reads the config afresh", (t) 
     config = { mode: "off" };
     assert.equal(currentEventsConfig().mode, "auto");
     assert.deepEqual(activeEventFlags(), flags.slice(0, -1));
+    // A season start recorded during the request (app.js configureSeasonStarts) is read from then on.
+    releaseHeldEvents();
+    assert.equal(currentEventsConfig().mode, "off");
+    assert.deepEqual(activeEventFlags(), []);
   }));
   inBuild("6005771", () => withEventsHeld(() => assert.deepEqual(activeEventFlags(), [])));
 });

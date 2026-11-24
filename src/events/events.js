@@ -803,6 +803,9 @@ export function currentEventsConfig() {
 const heldEvents = new AsyncLocalStorage();
 const heldConfig = Symbol("config");
 export const withEventsHeld = (fn) => (heldEvents.getStore() ? fn() : heldEvents.run(new Map(), fn));
+// A change to the config during the hold (a season's start recorded the day it is first served: app.js
+// configureSeasonStarts) is read afresh from then on.
+export const releaseHeldEvents = () => heldEvents.getStore()?.clear();
 // Every game request reads them once too: a profile command asks per quest and per item granted (QueryProfile and
 // ClientQuestLogin on an 8.40 campaign profile read them thousands of times). The admin panel, which changes them,
 // reads them afresh.

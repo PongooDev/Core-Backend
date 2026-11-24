@@ -8,7 +8,7 @@ import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
 import { configureItemShop, configureSeasonStarts } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
-import { configureEvents, holdEvents, seasonalEvents } from "./events/events.js";
+import { configureEvents, holdEvents, releaseHeldEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
 import { affiliateRoutes, configureCreators, isEnabledCreator } from "./store/creators.js";
@@ -109,7 +109,10 @@ export function createContext(config) {
   configureCreators(() => settings.get());
   configureGifting(() => settings.get());
   configureCreativeEarlyAccess(() => settings.get().creativeEarlyAccess !== false);
-  configureSeasonStarts((season, date) => settings.recordSeasonStart(season, date));
+  configureSeasonStarts((season, date) => {
+    settings.recordSeasonStart(season, date);
+    releaseHeldEvents();
+  });
   configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
