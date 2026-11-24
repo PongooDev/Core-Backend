@@ -140,10 +140,9 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // below). 7.00's Creative (Playlist_PlaygroundV2) and 7.30's NFL Rumble (Playlist_Omaha) have the tiles Epic's later page
   // names for them (below). 7.30's Party at Pleasant Park (Playlist_Music_Highest) has none: that page names its playlist only
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
-  // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have none: no copy of
-  // Epic's page Core has names them (🟡 the same).
-  assert.deepEqual(without, ["Playlist_Barrier_16_B_Lava", "Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
-    "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Goose_Duos", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
+  // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422).
+  assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
+    "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
@@ -320,7 +319,10 @@ const tileFiles = [
   [["Playlist_Omaha"], "playlistinformation/BR07_ModeTile_NFL_TeamRumble-1024x512-6facfc07214965dc2211d703904607a30c68d08a.jpg"],
   [["Playlist_Fill_Solo", "Playlist_Fill_Duos", "Playlist_Fill_Squads"],
     "playlistinformation/08BR_LTM_FloorIsLava_ModeTile-1024x512-f1af4cd98c7ff0ce4058f4e3b65a853641d0a35e.jpg"],
-  [["Playlist_Green_Squad"], "playlistinformation/08BR_LTM_SolidGreen_ModeTile_Squads-1024x512-f0d931472907d54ffaa52ef81f78bf9d5fcfaa2d.jpg"]
+  [["Playlist_Green_Squad"], "playlistinformation/08BR_LTM_SolidGreen_ModeTile_Squads-1024x512-f0d931472907d54ffaa52ef81f78bf9d5fcfaa2d.jpg"],
+  // 8.40's (#422).
+  [["Playlist_Goose_Duos"], "playlistinformation/08BR_AirRoyale_Mode-Tile-1024x512-e071f542b7e0ce2cfc34c208e14604815b76439c.jpg"],
+  [["Playlist_Barrier_16_B_Lava"], "playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg"]
 ];
 const tileOf = Object.fromEntries(tileFiles.flatMap(([names, file]) => names.map((name) => [name, epicTile(file)])));
 // 7.10 on: the 14 Days of Fortnite's own tiles for two playlists the earlier pages show with another.
@@ -330,13 +332,12 @@ const tileFrom710Of = {
 };
 const expectedTile = (name, build) => (Number(build) >= 4667333 ? tileFrom710Of[name] : undefined) ?? tileOf[name];
 // No tile of Epic's: Sky Supply and Impact never ran, 6.10's glider redeploy defaults no page names, the tournaments' playlists
-// take their tile from tournamentinformation, 7.30's Party at Pleasant Park's only tile on Epic's pages is a later event's, and
-// no copy of Epic's page names 8.40's Air Royale or Food Fight: Deep Fried tile.
+// take their tile from tournamentinformation, and 7.30's Party at Pleasant Park's only tile on Epic's pages is a later event's.
 const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads", "Playlist_Impact_Solo", "Playlist_Impact_Duos",
   "Playlist_Impact_Squads", "Playlist_GRD_Solo", "Playlist_GRD_Duos", "Playlist_GRD_Squads", "Playlist_Showdown_Solo", "Playlist_Showdown_Duos",
   "Playlist_Showdown_Squads", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Squads", "Playlist_Deimos_SoloShow",
   "Playlist_Deimos_DuoShow", "Playlist_Deimos_SquadShow", "Playlist_Deimos_Solo_WinterShow", "Playlist_Deimos_Duo_WinterShow",
-  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest", "Playlist_Goose_Duos", "Playlist_Barrier_16_B_Lava",
+  "Playlist_Deimos_Squad_WinterShow", "Playlist_Music_Highest",
   // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
   "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));

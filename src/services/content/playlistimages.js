@@ -186,6 +186,14 @@ const driftinTile = `${cdn}/playlistinformation/BR07_ModeTile_LTM_Drifting50s_Po
 // (searched 2026-11-19: playlistinformation's Season 7 files are the BR07_ ones here and CM_LobbyTileArt).
 const creativeTile = `${cdn}/playlistinformation/CM_LobbyTileArt-1024x512-fbcd48db36552ccb1ab4021b722ea29d515377cc.jpg`;
 const nflRumbleTile = `${cdn}/playlistinformation/BR07_ModeTile_NFL_TeamRumble-1024x512-6facfc07214965dc2211d703904607a30c68d08a.jpg`;
+// 8.40's (CL-6005771) Air Royale and Food Fight: Deep Fried (Core-Backend #422), the tiles Epic's later page (the Wayback
+// Machine's capture of fortnitecontent-website-prod07's fortnite-game of 2019-10-13, its playlistinformation) names for
+// them: 08BR_AirRoyale_Mode-Tile for Playlist_Goose_Solo, _Squads and _Duos_24 (the page has no entry for _Duos, the one 8.40
+// serves; it is the same mode, so it takes the mode's tile) and EN_08BR_DeepFried_Mode_Tile for Playlist_Barrier_16_B_Lava;
+// no border. Each on Epic's CDN, checked 2026-11-24: 200, image/jpeg, 393,691 and 378,140 bytes, the hash in each name the
+// file's SHA-1.
+const airRoyaleTile = `${cdn}/playlistinformation/08BR_AirRoyale_Mode-Tile-1024x512-e071f542b7e0ce2cfc34c208e14604815b76439c.jpg`;
+const deepFriedTile = `${cdn}/playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -285,7 +293,10 @@ export const epicPlaylistImages = {
   Playlist_Slide_Duos: slideTile,
   // 7.00's to 7.40's Creative and 7.30's NFL Rumble (above): only the pages of the builds that have them list them.
   Playlist_PlaygroundV2: creativeTile,
-  Playlist_Omaha: nflRumbleTile
+  Playlist_Omaha: nflRumbleTile,
+  // 8.40's Air Royale and Deep Fried (above).
+  Playlist_Goose_Duos: airRoyaleTile,
+  Playlist_Barrier_16_B_Lava: deepFriedTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads
