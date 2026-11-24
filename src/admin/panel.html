@@ -2188,7 +2188,7 @@
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
       { id: "6", label: "Season 6 (6.00 – 6.31)", from: "6.00+", days: 70 },
       { id: "7", label: "Season 7 (7.00 – 7.40)", from: "7.00+", days: 84 },
-      { id: "8", label: "Season 8 (8.00)", from: "8.00+", days: 70 }
+      { id: "8", label: "Season 8 (8.00 – 8.51)", from: "8.00+", days: 70 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -7854,7 +7854,8 @@ Each starts active; quests the account already has are left as they are.`, {
 
     async function showBattlePass() {
       const season = seasonOf(state.battlePassSeason || state.activeSeason).id;
-      if (["2", "3", "4", "5", "6", "7"].includes(season)) return showSeasonPass(season);
+      // Every season but Season 1 has a season pass (the backend serves ?season= for each season in battleRoyaleSeasons).
+      if (Number(season) >= 2) return showSeasonPass(season);
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
 

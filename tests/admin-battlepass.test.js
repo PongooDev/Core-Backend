@@ -148,3 +148,28 @@ test("the admin panel names Season 2 by its whole range, 1.11 – 2.5, and a lat
   }
 });
 
+
+// Core-Backend #432: showBattlePass sent only Seasons 2 to 7 to the season pass view, so Season 8 got Season 1's. The
+// panel's SEASONS table has to match the backend's seasons, and every season from 2 on has a pass.
+test("the admin panel's season table matches the backend's seasons and every season from 2 on opens its season pass", async () => {
+  const { battleRoyaleSeasons, seasonName } = await import("../src/builds/detect.js");
+  const panel = fs.readFileSync(new URL("../src/admin/panel.html", import.meta.url), "utf8");
+  const table = panel.match(/const SEASONS = \[([\s\S]*?)\];/)[1];
+  assert.deepEqual([...table.matchAll(/id: "(\d+)", label: "([^"]+)"/g)].map((m) => [Number(m[1]), m[2]]),
+    battleRoyaleSeasons.map(({ season }) => [season, seasonName(season)]));
+  const route = panel.match(/async function showBattlePass\(\) \{[\s\S]*?showSeasonPass\(season\);/)[0];
+  assert.ok(route.includes("Number(season) >= 2"));
+  assert.ok(!/\["2", "3"/.test(route));
+
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-admin-battlepass-s8-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    for (const { season } of battleRoyaleSeasons.filter((entry) => entry.season >= 2)) {
+      const overview = await admin(backend, `/battlepass/overview?season=${season}`);
+      assert.equal(overview.body.season, season);
+      assert.ok(overview.body.tiers.length > 0, `Season ${season} has its tiers`);
+    }
+  } finally {
+    await backend.close();
+  }
+});
