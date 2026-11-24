@@ -1531,8 +1531,9 @@ export function adminRoutes(context) {
     // now as 6.31's (CL-4573279), with its own (Mothmando, Lamp, Flutterbug, Scorecard, Phone It In). Season 7's as 7.40's
     // (CL-5046157): 7.00's, 7.10's (Krampus, Crackabella, Fishstick, DJ Bop, Sugarplum...), 7.20's (The Ice Queen, Malcore,
     // Jaeger, Fyra, Tech Ops, Volley Girl...), 7.30's (Marshmello, Firewalker, Kitbash, Sparkplug, Glowsticks...) and its own
-    // (Skully, Heartbreaker, Lil Whip, Revolt, Rebel...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279", 7: "5046157" }[s];
+    // (Skully, Heartbreaker, Lil Whip, Revolt, Rebel...). Season 8 and later: the season's newest data build
+    // (profiles/seasons.js buildOfSeason), 8.40's for Season 8; without it the panel read Season 1's data and listed no offer.
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4573279", 7: "5046157" }[s] ?? buildOfSeason(s);
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
