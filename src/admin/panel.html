@@ -1990,6 +1990,10 @@
             <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
             <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
           </svg><span>Tournaments</span></a>
+        <a href="#/arena" data-view="arena" title="Arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l2.6 5.4 5.9.9-4.3 4.1 1 5.9L12 16.5 6.8 19.3l1-5.9L3.5 9.3l5.9-.9z" />
+          </svg><span>Arena</span></a>
         <a href="#/creative" data-view="creative" title="Creative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 17c3-1 5-1 9 0s6 1 9 0" />
@@ -3110,7 +3114,7 @@
       // A view that redraws itself in place for the sidebar's season (matchmaking's LTM dates) sets this; others don't.
       state.onActiveSeason = null;
       const resolvedView = view === "sessions" ? "matchmaking" : view;
-      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "creative", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
+      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "arena", "creative", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -3176,7 +3180,7 @@
       if (state.view === "tournaments") {
         state.tournamentEventId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, creative: showCreative, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, arena: showArena, creative: showCreative, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     function syncSeasonDropdown() {
       const sel = $("sidebar-season-select");
@@ -4766,6 +4770,8 @@ Each starts active; quests the account already has are left as they are.`, {
       const ltmList = data.ltms?.list || [];
       const ltmOf = (id) => ltmList.find((l) => l.id === id);
       const isLtm = (id) => Boolean(ltmOf(id));
+      // Original dates moves every LTM with its dates but the Arena's tiles (Core-Backend #423: no dates, only a switch).
+      const datesFollowed = (id) => form.ltmOriginalDates && isLtm(id) && !ltmOf(id).arena;
       const coreModes = [...modeKeys];
       // An LTM's code is its event queue and, from 3.5.1, its playlist asset's name (#257); its name there too.
       modeKeys.push(...ltmList.map((l) => ({ id: l.id, name: l.name351 ? `${l.name} / ${l.name351}` : l.name, playlistId: l.playlistId, teams: l.teams,
@@ -4787,7 +4793,7 @@ Each starts active; quests the account already has are left as they are.`, {
       // when it changes so unsaved switches stay.
       let ltmSeason = seasonOf(state.activeSeason).id;
       const isModeActive = (m) => {
-        if (form.ltmOriginalDates && isLtm(m.id)) {
+        if (datesFollowed(m.id)) {
           return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
         }
         return isLtm(m.id)
@@ -4845,7 +4851,7 @@ Each starts active; quests the account already has are left as they are.`, {
       // --- Render Section 2: Server Limits (Only showing active/ON modes) ---
       function renderServerLimitsTable() {
         // With the original dates on, every LTM with dates may come on, so each keeps its quota.
-        const activeModes = modeKeys.filter((m) => form.ltmOriginalDates && isLtm(m.id) ? Boolean(ltmOf(m.id).original) : form.modes[m.id] !== false);
+        const activeModes = modeKeys.filter((m) => datesFollowed(m.id) ? Boolean(ltmOf(m.id).original) : form.modes[m.id] !== false);
         if (!activeModes.length) {
           serverLimitsTableBox.replaceChildren(
             el("div", {
@@ -5056,16 +5062,16 @@ Each starts active; quests the account already has are left as they are.`, {
             ["Queue Status", (m) => {
               const inWindow = isLtm(m.id) && ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
               const byHand = m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true;
-              const isEnabled = form.ltmOriginalDates && isLtm(m.id) ? inWindow : byHand;
+              const isEnabled = datesFollowed(m.id) ? inWindow : byHand;
               const datedLabel = isLtm(m.id) && ltmOf(m.id)?.original ? (inWindow ? "In its dates" : "Out of its dates") : "No original dates";
-              return chip(form.ltmOriginalDates && isLtm(m.id) ? datedLabel : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
+              return chip(datesFollowed(m.id) ? datedLabel : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
             }],
             ["Availability Toggle", (m) => {
               const byHand = m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true;
               return toggleSwitch(byHand, (checked) => {
                 form.modes[m.id] = checked;
                 onModeToggled();
-              }, form.ltmOriginalDates && isLtm(m.id), ltmOf(m.id)?.original ? "Original dates is on: this LTM follows its dates."
+              }, datesFollowed(m.id), ltmOf(m.id)?.original ? "Original dates is on: this LTM follows its dates."
                 : "Original dates is on: this LTM has no original dates, so it stays off.");
             }],
             ["", (m) => el("div", { class: "actions" },
@@ -5144,7 +5150,7 @@ Each starts active; quests the account already has are left as they are.`, {
               ? "Squad up with up to 4 players in 25 teams of four."
               : "Classic Battle Royale playlist.");
 
-            const dated = form.ltmOriginalDates && Boolean(l);
+            const dated = form.ltmOriginalDates && Boolean(l) && !l.arena;
             const statusBadge = chip(
               isAdded ? (dated ? (l.original ? (isEnabled ? "In its dates" : "Out of its dates") : "No original dates")
                 : (isEnabled ? "In Queue (Active)" : "In Queue (Off)")) : "Not in Queue",
@@ -9742,6 +9748,64 @@ Each starts active; quests the account already has are left as they are.`, {
             ? el("div", { class: "grid", style: "grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px; margin-top:14px;" },
                 ...data.events.map(eventCard))
             : el("div", { class: "empty", style: "margin-top:14px;", text: "No tournament events yet." }))
+      );
+    }
+
+    /* ---------- Arena (Core-Backend #423) ---------- */
+    // Season 8's Arena (8.20 to 8.40, tournaments/arena.js): the players by Hype, their reset, and the Hype each division takes
+    // to leave (Core's guesses from #420). Its Solo and Duos tiles are switched on the Matchmaking tab.
+    async function showArena() {
+      const data = await act(api("/admin/api/arena"));
+      if (!data || state.view !== "arena") return;
+      const rerender = () => showArena();
+      const inputs = data.hypeToLeave.map((value, index) => el("input", { class: "field num", type: "number", min: "1", max: String(data.maxHypeToLeave),
+        step: "1", value: String(value), style: "width:110px;", "aria-label": `Hype to leave Division ${index + 1}` }));
+      const saveThresholds = async () => {
+        const values = inputs.map((input) => Number(input.value));
+        if (!values.every((v, i) => Number.isInteger(v) && v >= 1 && v <= data.maxHypeToLeave && (i === 0 || v > values[i - 1]))) {
+          return toast("Each division needs a whole number of Hype above the one before it", true);
+        }
+        if (await act(api("/admin/api/arena/thresholds", { hypeToLeave: values }), "Hype to leave each division saved")) rerender();
+      };
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("h1", { text: "Arena" }),
+          el("div", { class: "actions" },
+            chip(`${data.players.length} players`, "accent"),
+            btn("Refresh", rerender, "ghost"),
+            btn("Reset everyone", async () => {
+              if (!await confirmModal("Reset every player's Arena Hype to 0 and their division to Division 1? Players lose the divisions they reached.", { title: "Reset Arena", confirmText: "Reset everyone", confirmKind: "danger" })) return;
+              if (await act(api("/admin/api/arena/reset", {}), "Every player's Arena Hype and division reset")) rerender();
+            }, "ghost"))),
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Modes" })),
+          el("div", { class: "note", text: "Season 8's Arena (8.20 to 8.40) has a tile in the game's mode select for each mode below. Show or hide a mode on the Matchmaking tab: a hidden mode has no event in the events download, no tile and no ticket." }),
+          el("div", { style: "display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;" },
+            ...data.modes.map((mode) => chip(`${mode.name}: ${mode.shown ? "shown" : "hidden"}`, mode.shown ? "good" : "warn")))),
+        el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Hype to leave each division" })),
+          el("div", { class: "note", text: "The Hype a player needs in total to move up from each division (cumulative). Epic's numbers aren't recorded: the defaults are Core's guesses from community records of Season 8. Each is above the one before; Division 7 (the Champion League) has no next division. A change reaches the game's events at a player's next lobby visit; players keep the divisions they have reached and move up by their next match's Hype." }),
+          el("div", { style: "display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:flex-end;" },
+            ...inputs.map((input, index) => el("label", { style: "display:flex; flex-direction:column; gap:4px;" },
+              el("span", { class: "muted", style: "font-size:12px;", text: `Division ${index + 1} (${data.divisions[index].league})` }), input))),
+          el("div", { class: "actions", style: "margin-top:12px; justify-content:flex-start; gap:8px;" },
+            btn("Save", saveThresholds, "primary"),
+            btn("Back to defaults", async () => {
+              if (await act(api("/admin/api/arena/thresholds", { hypeToLeave: null }), "Hype to leave each division back to the defaults")) rerender();
+            }, "ghost"))),
+        el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Leaderboard" }), chip(`${data.players.length} Ranked`, "sky")),
+          table([
+            ["#", (row) => String(row.rank), "num"],
+            ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
+            ["Hype", (row) => el("strong", { text: fmt(row.hype) }), "num"],
+            ["Division", (row) => chip(`Division ${row.division} (${row.league})`, row.division > 6 ? "accent" : row.division > 3 ? "sky" : "")],
+            ["Matches", (row) => String(row.matches), "num"],
+            ["", (row) => el("div", { class: "actions" }, btn("Reset", async () => {
+              if (!await confirmModal(`Reset ${row.displayName}'s Arena Hype (${row.hype}) and division (${row.division}) to 0 and Division 1?`, { title: "Reset Player", confirmText: "Reset", confirmKind: "danger" })) return;
+              if (await act(api(`/admin/api/arena/accounts/${row.accountId}/reset`, {}), `${row.displayName}'s Arena Hype and division reset`)) rerender();
+            }, "ghost"))]
+          ], data.players, "No player has played the Arena yet."))
       );
     }
 

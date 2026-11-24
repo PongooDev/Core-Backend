@@ -72,7 +72,7 @@ test("Hype: placement tiers, a point a team elimination, the division's bus fare
   assert.equal(arenaMatchPoints("Solo", 0, { place: 20, teamKills: 0 }), 3);
   assert.equal(arenaMatchPoints("Duos", 0, { place: 7, teamKills: 1 }), 3 + 2 + 1);
   assert.equal(arenaMatchPoints("Solo", 6, { place: 80, teamKills: 0 }), -8);
-  assert.deepEqual([0, 24, 25, 299, 300].map(divisionOfHype), [0, 0, 1, 5, 6]);
+  assert.deepEqual([0, 24, 25, 299, 300].map((hype) => divisionOfHype(hype)), [0, 0, 1, 5, 6]);
 
   assert.deepEqual(arenaPlayerOf(store.get("ann")), { tokens: [], persistentScores: { Hype: 0 } });
   store.record("ann", { matchId: "m1", points: 80 });

@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { versionOf } from "../builds/detect.js";
-import { hasLtm, ltms } from "../events/ltms.js";
+import { currentSettings, hasLtm, ltms } from "../events/ltms.js";
 import { readJson, writeJson } from "../json-file.js";
+import { arenaDivisionHypeValue, defaultArenaDivisionHype } from "../settings/store.js";
 import { eliminationsStat, placementStat, showdownColors, showdownImagePath, showdownImageSlots } from "./showdown.js";
 
 // Season 8's Arena (Core-Backend #420). Update v8.20 (27 March 2019): "New Feature: Arena Game Mode (Solo & Duos) ... Compete
@@ -53,8 +54,12 @@ export const arenaSeason = 8;
 export const hypeScoreId = "Hype";
 const modeSizes = { Solo: 1, Duos: 2 };
 // Hype to leave each division, cumulative; the Champion League's is the largest int32 (it has no next division; the client
-// reads the field as an int).
-export const divisionThresholds = [25, 75, 125, 175, 225, 300, 2147483647];
+// reads the field as an int). The first six are the admin panel's Arena tab's setting (settings arenaDivisionHype, #423),
+// these the defaults.
+const noNextDivision = 2147483647;
+export const divisionThresholds = [...defaultArenaDivisionHype, noNextDivision];
+// The thresholds in force: the settings' (the defaults for none or a bad list), with the last division's.
+export const divisionThresholdsOf = (settingsValue = currentSettings()) => [...arenaDivisionHypeValue(settingsValue?.arenaDivisionHype), noNextDivision];
 export const divisionBusFares = [0, 0, 0, 2, 4, 6, 8];
 export const placementTiers = { Solo: [[1, 3], [5, 2], [15, 2], [25, 3]], Duos: [[1, 3], [3, 2], [7, 2], [12, 3]] };
 export const matchPlayedStat = "MATCH_PLAYED_STAT";
@@ -63,11 +68,15 @@ const eliminationTiers = 99;
 const arenaBegins = "2019-03-27T00:00:00.000Z";
 const noEnd = "9999-12-31T23:59:59.000Z";
 
-const arenaLtms = ltms.filter((ltm) => ltm.arena);
+export const arenaLtms = ltms.filter((ltm) => ltm.arena);
 // The mode of an Arena LTM ("Solo", "Duos"), by its playlist.
 const modeOf = (ltm) => ltm.playlistName.replace(/^Playlist_ShowdownAlt_/, "");
 export const arenaLtmsOf = (build) => arenaLtms.filter((ltm) => hasLtm(ltm.id, build));
 export const hasArena = (build) => arenaLtmsOf(build).length > 0;
+// The build's Arena modes whose switch is on (matchmakingModes arenaSolo and arenaDuos, on by default; #423): a hidden mode has
+// no event in the download, no tile and no ticket.
+export const shownArenaLtmsOf = (build, settingsValue = currentSettings()) => arenaLtmsOf(build).filter((ltm) => settingsValue?.matchmakingModes?.[ltm.id] !== false);
+export const showsArena = (build, settingsValue = currentSettings()) => shownArenaLtmsOf(build, settingsValue).length > 0;
 export const isArenaPlaylist = (playlistId, build) => arenaLtmsOf(build).some((ltm) => ltm.playlistId === Number(playlistId));
 
 export const arenaEventId = (mode) => `epicgames_Arena_S${arenaSeason}_${mode}`;
@@ -76,10 +85,11 @@ export const divisionTemplateId = (mode, rank) => `eventTemplate_${divisionWindo
 export const divisionToken = (rank) => `ARENA_S${arenaSeason}_Division${rank + 1}`;
 
 // The division a Hype total reaches (0-based), by the thresholds alone.
-export const divisionOfHype = (hype) => divisionThresholds.findIndex((threshold) => hype < threshold);
+export const divisionOfHype = (hype, thresholds = divisionThresholds) => thresholds.findIndex((threshold) => hype < threshold);
 
-// A player's Arena record of the season: {hype, division (the highest reached), matches: [matchId]}.
-export function createArenaStore(dataDir) {
+// A player's Arena record of the season: {hype, division (the highest reached), matches: [matchId]}. thresholds: the division
+// thresholds in force (the admin panel's setting).
+export function createArenaStore(dataDir, thresholds = () => divisionThresholdsOf()) {
   const dir = path.join(dataDir, "accounts");
   const file = (accountId) => path.join(dir, accountId, "arena.json");
   const empty = () => ({ hype: 0, division: 0, matches: [] });
@@ -98,7 +108,7 @@ export function createArenaStore(dataDir) {
       const season = { ...empty(), ...(data.seasons?.[arenaSeason] ?? {}) };
       if (matchId && season.matches.includes(matchId)) return null;
       season.hype = Math.max(0, season.hype + points);
-      season.division = Math.max(season.division, divisionOfHype(season.hype));
+      season.division = Math.max(season.division, divisionOfHype(season.hype, thresholds()));
       if (matchId) season.matches = [...season.matches.slice(-199), matchId];
       data.seasons = { ...(data.seasons ?? {}), [arenaSeason]: season };
       fs.mkdirSync(path.dirname(file(accountId)), { recursive: true });
@@ -108,11 +118,28 @@ export function createArenaStore(dataDir) {
     set(accountId, hype) {
       const data = load(accountId);
       const season = { ...empty(), ...(data.seasons?.[arenaSeason] ?? {}), hype: Math.max(0, Math.floor(hype)) };
-      season.division = divisionOfHype(season.hype);
+      season.division = divisionOfHype(season.hype, thresholds());
       data.seasons = { ...(data.seasons ?? {}), [arenaSeason]: season };
       fs.mkdirSync(path.dirname(file(accountId)), { recursive: true });
       writeJson(file(accountId), data);
       return season;
+    },
+    // Every player with a record of the season, as {accountId, hype, division, matches}.
+    list() {
+      if (!fs.existsSync(dir)) return [];
+      return fs.readdirSync(dir).filter((accountId) => fs.existsSync(file(accountId)))
+        .map((accountId) => ({ accountId, ...this.get(accountId) }));
+    },
+    // Back to no Hype and Division I (the matches counted stay, so a result isn't counted twice); false for no record.
+    reset(accountId) {
+      const data = load(accountId);
+      if (!data.seasons?.[arenaSeason]) return false;
+      data.seasons[arenaSeason] = { ...empty(), ...data.seasons[arenaSeason], hype: 0, division: 0 };
+      writeJson(file(accountId), data);
+      return true;
+    },
+    resetAll() {
+      return this.list().filter(({ accountId }) => this.reset(accountId)).length;
     }
   };
 }
@@ -134,7 +161,7 @@ function scoringRulesOf(mode, rank) {
 
 // A division's template (FEventsServiceEventTemplate): the mode's playlist, the Hype score, the division's rules and the
 // next division's token at its threshold (8.20's threshold, 0x14AEA40).
-function templateOf(ltm, rank, gameId) {
+function templateOf(ltm, rank, gameId, divisionThresholds) {
   const mode = modeOf(ltm);
   const next = rank + 1 < divisionThresholds.length;
   return {
@@ -150,7 +177,7 @@ function templateOf(ltm, rank, gameId) {
   };
 }
 
-function windowOf(ltm, rank) {
+function windowOf(ltm, rank, divisionThresholds) {
   const mode = modeOf(ltm);
   return {
     eventWindowId: divisionWindowId(mode, rank),
@@ -175,16 +202,17 @@ function windowOf(ltm, rank) {
 
 // The build's Arena events (FEventsServiceEvent) and their templates, for the download. regions and platforms: the
 // eventsservice's own lists.
-export function arenaEvents(build, { gameId, regions = [], platforms = [] }) {
+export function arenaEvents(build, { gameId, regions = [], platforms = [] }, settingsValue = currentSettings()) {
   const events = [];
   const templates = [];
-  for (const ltm of arenaLtmsOf(build)) {
+  const thresholds = divisionThresholdsOf(settingsValue);
+  for (const ltm of shownArenaLtmsOf(build, settingsValue)) {
     const mode = modeOf(ltm);
-    const ranks = divisionThresholds.map((_, rank) => rank);
+    const ranks = thresholds.map((_, rank) => rank);
     events.push({ gameId, eventId: arenaEventId(mode), regions, regionMappings: {}, platforms, platformMappings: {},
       displayDataId: arenaEventId(mode), announcementTime: arenaBegins, beginTime: arenaBegins, endTime: noEnd,
-      eventWindows: ranks.map((rank) => windowOf(ltm, rank)), metadata: {} });
-    templates.push(...ranks.map((rank) => templateOf(ltm, rank, gameId)));
+      eventWindows: ranks.map((rank) => windowOf(ltm, rank, thresholds)), metadata: {} });
+    templates.push(...ranks.map((rank) => templateOf(ltm, rank, gameId, thresholds)));
   }
   return { events, templates };
 }
@@ -192,9 +220,9 @@ export function arenaEvents(build, { gameId, regions = [], platforms = [] }) {
 // An Arena ticket (services/matchmaking/ticket.js): the event and window the client named must be this build's Arena of
 // the playlist, the window one the player holds the tokens for, and the party the mode's size (bEnforceFullSquadInUI).
 // The refusals are 6.10's codes, which the lobby has texts for.
-export function arenaTicket({ playlistId, tournamentId = "", windowId = "", partySize, build, record }) {
+export function arenaTicket({ playlistId, tournamentId = "", windowId = "", partySize, build, record, settingsValue = currentSettings() }) {
   const refuse = (code, message) => ({ error: { code: `errors.com.epicgames.fortnite.${code}`, message } });
-  const ltm = arenaLtmsOf(build).find((entry) => entry.playlistId === Number(playlistId));
+  const ltm = shownArenaLtmsOf(build, settingsValue).find((entry) => entry.playlistId === Number(playlistId));
   if (!ltm) return refuse("invalid_tournament_id", "Tournament does not exist.");
   const mode = modeOf(ltm);
   if (tournamentId && tournamentId !== arenaEventId(mode)) return refuse("invalid_tournament_id", "Tournament does not exist.");
@@ -234,8 +262,8 @@ const arenaTileOf = (mode, build) => (Number.parseInt(versionOf(build) ?? "", 10
 // the entry (FColor::FromHex; a missing one is transparent, Core-Backend #336), so each has 6.10's colours and Core's own
 // pictures (tournaments/showdown.js). 🟡 Epic's Arena entries aren't recorded: the texts are the playlist's and the patch
 // notes'.
-export function arenaTournamentInformation(build, origin = undefined) {
-  return arenaLtmsOf(build).map((ltm) => {
+export function arenaTournamentInformation(build, origin = undefined, settingsValue = currentSettings()) {
+  return shownArenaLtmsOf(build, settingsValue).map((ltm) => {
     const mode = modeOf(ltm);
     return {
       tournament_display_id: arenaEventId(mode),

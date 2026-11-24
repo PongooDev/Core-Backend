@@ -88,7 +88,7 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     if (ltm?.arena) {
       const ticketed = arenaTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),
         windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild(),
-        record: arena?.get?.(accountId) });
+        record: arena?.get?.(accountId), settingsValue });
       if (ticketed.error) {
         log("Matchmaking", `Refused ${accountId}'s Arena ticket for bucket ${bucketId}: ${ticketed.error.message} (${ticketed.error.code})`);
         return sendError(res, 400, ticketed.error.code, ticketed.error.message);

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
-import { hasArena } from "./arena.js";
+import { showsArena } from "./arena.js";
 import { newsImageUrl } from "../services/content/images.js";
 import { payoutLines, rewardTableOf } from "./payouts.js";
 import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windowsOf } from "./store.js";
@@ -546,7 +546,7 @@ export function showdownRuntimeOptions(build, settingsValue, now = new Date(), s
   if (!hasShowdown(build)) return [];
   // 8.20 to 8.40 keep it on: their Arena (tournaments/arena.js, #420) is a division event of the same manager, and the
   // Events tab lists no division event (8.20 CL-5625478 0x34B4F80).
-  if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true && !hasArena(build)) return ["bEnableShowdown=false"];
+  if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true && !showsArena(build, settingsValue)) return ["bEnableShowdown=false"];
   return ["ShowdownTournamentCacheExpirationHours=0"];
 }
 

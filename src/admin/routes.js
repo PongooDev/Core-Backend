@@ -66,7 +66,7 @@ import { buildsNow, eventSchedules, scheduleEventPatch } from "./eventschedules.
 import { stormDestructionStatus } from "../events/stormdestruction.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
-import { defaultBots, defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
+import { arenaDivisionHypeValue, defaultArenaDivisionHype, defaultBots, defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxArenaDivisionHype, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
@@ -85,6 +85,7 @@ import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, displayColorFields, displayTextFields, leaderboardOf, matchesInWindow, maxQualifierPlaces, maxWindows,
   rulesets, scoringOf, statusOf, tournamentPlaylists, windowsOf } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownColors, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
+import { arenaLtms, divisionThresholdsOf } from "../tournaments/arena.js";
 import { payEvent, payoutLines, settleEvent, unknownPayoutItems } from "../tournaments/payouts.js";
 import { createWinterRoyale, winterRoyaleFirstDay, winterRoyaleRegions } from "../tournaments/winterroyale.js";
 
@@ -2839,6 +2840,46 @@ export function adminRoutes(context) {
     const unknown = unknownPayoutItems(table);
     return unknown.length ? `No build has ${[...new Set(unknown)].join(", ")}: a prize can't give it.` : null;
   };
+  // The Arena tab (Core-Backend #423, tournaments/arena.js): Season 8's Arena players by Hype, their reset, and the Hype each
+  // division takes to leave.
+  const arenaLeagues = ["Open League", "Open League", "Open League", "Contender League", "Contender League", "Contender League", "Champion League"];
+  function arenaPayload() {
+    const s = settings.get();
+    const thresholds = divisionThresholdsOf(s);
+    const players = context.arena.list().map((record) => {
+      const account = accounts.get(record.accountId);
+      return { accountId: record.accountId, displayName: account?.displayName ?? record.accountId, hype: record.hype, division: record.division + 1,
+        league: arenaLeagues[Math.min(record.division, arenaLeagues.length - 1)], matches: record.matches.length };
+    }).sort((a, b) => b.hype - a.hype || b.division - a.division || a.displayName.localeCompare(b.displayName)).map((player, index) => ({ rank: index + 1, ...player }));
+    return {
+      divisions: thresholds.map((threshold, index) => ({ division: index + 1, league: arenaLeagues[index], hypeToLeave: index + 1 < thresholds.length ? threshold : null })),
+      defaultHypeToLeave: defaultArenaDivisionHype,
+      hypeToLeave: thresholds.slice(0, -1),
+      maxHypeToLeave: maxArenaDivisionHype,
+      // The Arena's tiles by mode (matchmaking's switches, on by default), on the builds that have them.
+      modes: arenaLtms.map((ltm) => ({ id: ltm.id, name: ltm.name, shown: s.matchmakingModes?.[ltm.id] !== false })),
+      players
+    };
+  }
+  router.get("/admin/api/arena", (req, res) => res.json(arenaPayload()));
+  // The Hype to leave Divisions I to VI: {hypeToLeave: [6 whole numbers, each above the one before]}, null for the defaults.
+  router.post("/admin/api/arena/thresholds", (req, res) => {
+    const asked = req.body?.hypeToLeave === null ? defaultArenaDivisionHype : arenaDivisionHypeValue(req.body?.hypeToLeave, null);
+    if (!asked) return invalid(res, `hypeToLeave must be ${defaultArenaDivisionHype.length} whole numbers from 1 to ${maxArenaDivisionHype}, each above the one before`);
+    settings.update({ arenaDivisionHype: asked });
+    log("Admin", `Arena Hype to leave each division set to ${asked.join(", ")}`);
+    res.json({ success: true, ...arenaPayload() });
+  });
+  router.post("/admin/api/arena/accounts/:accountId/reset", (req, res) => {
+    if (!context.arena.reset(req.params.accountId)) return notFound(res, `No Arena record for ${req.params.accountId}`);
+    log("Admin", `Arena Hype and division of ${req.params.accountId} reset`);
+    res.json({ success: true, ...arenaPayload() });
+  });
+  router.post("/admin/api/arena/reset", (req, res) => {
+    const reset = context.arena.resetAll();
+    log("Admin", `Arena Hype and division of every player reset (${reset})`);
+    res.json({ success: true, reset, ...arenaPayload() });
+  });
   router.get("/admin/api/tournaments", (req, res) => res.json(tournamentsPayload()));
   router.post("/admin/api/tournaments", (req, res) => {
     try {

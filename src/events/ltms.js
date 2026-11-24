@@ -1451,11 +1451,12 @@ export const ltms = [
   // Season 8's Arena (Core-Backend #420, tournaments/arena.js): Update v8.20's "Arena Game Mode (Solo & Duos)", on the Pop-Up
   // Cups' Playlist_ShowdownAlt_Solo and _Duos (58074, 58075), which 8.20's to 8.40's paks name "Arena" ("Prove your skill in
   // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
-  // No lobby mode and no switch (arena): the events service's Arena events put the tile in the mode select, and a ticket for
-  // one is taken for the division the player holds (services/matchmaking/ticket.js).
-  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true,
+  // No lobby mode (arena): the events service's Arena events put the tile in the mode select, and a ticket for one is taken
+  // for the division the player holds (services/matchmaking/ticket.js). Its switch (on by default, #423) shows or hides the
+  // tile: a hidden mode's event stays out of the events download (tournaments/arena.js).
+  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true, defaultOn: true,
     teams: "100 Teams × 1", description: "Season 8's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League (Playlist_ShowdownAlt_Solo, 8.20's)." },
-  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true,
+  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true, defaultOn: true,
     teams: "100 Teams × 2", description: "Season 8's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
   // Season 8's in-game tournaments (Core-Backend #421): 8.20's paks add Athena/Playlists/Showdown/Tournament's
   // Playlist_ShowdownTournament_Solo, _Duos and _Squads (58082 to 58084, "Tournament": bIsTournament, MinPlayers 100,
@@ -1600,6 +1601,7 @@ let settingsProvider = () => undefined;
 export function configureLtms(provider) {
   settingsProvider = typeof provider === "function" ? provider : () => provider;
 }
+export const currentSettings = () => settingsProvider();
 
 // Whether the build's lobby offers the LTM now: always on the build it is new in. A tournament playlist is never a lobby
 // mode: its event decides (services/matchmaking/ticket.js).
@@ -1752,8 +1754,9 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     fortnitemaresOutage: fortnitemaresOutageOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     // Neither a tournament playlist (the Tournaments tab's) nor a game mode always on (7.00's Creative, #375) has a switch.
-    list: ltms.filter((ltm) => !ltm.tournament && !ltm.arena && !ltm.alwaysOn).map((ltm) => ({
+    list: ltms.filter((ltm) => !ltm.tournament && !ltm.alwaysOn).map((ltm) => ({
       id: ltm.id,
+      arena: ltm.arena === true,
       name: ltm.name,
       playlistId: ltm.playlistId,
       eventFlag: ltm.eventFlag,

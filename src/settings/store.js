@@ -90,7 +90,9 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
   "solidGoldSeason8Squads", "classicSeason8Squads", "slideSeason8Duos", "getawaySeason8Squads", "getawaySeason8Duos",
   "floorIsLavaSquads", "floorIsLavaDuos", "floorIsLavaSolo", "sniperShootoutSeason8Duos", "sniperShootoutSeason8Squads", "goingGreenSquads",
-  "airRoyaleDuos", "foodFightDeepFried"];
+  "airRoyaleDuos", "foodFightDeepFried",
+  // Season 8's Arena (8.20 to 8.40, Core-Backend #423, tournaments/arena.js): its Solo and Duos tiles in the mode select.
+  "arenaSolo", "arenaDuos"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
@@ -115,8 +117,22 @@ const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "
   // 7.40's (CL-5046157): Love Shot (Duos), Sword Fight (Squads), Catch! and Content Update v7.40's Driftin'.
   "loveShotDuos", "swordFightSquads", "catchSolo", "catchDuos", "catchSquads", "driftin",
   // 8.00's 50v50, the mode its shipped lobby offers.
-  "fiftyFiftySeason8"];
+  "fiftyFiftySeason8",
+  // The Arena's tiles (Core-Backend #423): shown until an admin hides one.
+  "arenaSolo", "arenaDuos"];
 export const matchmakingModesRevision = 1;
+// The Hype each Arena division takes to leave, cumulative (Core-Backend #423, tournaments/arena.js): Divisions I to VI; the
+// Champion League (VII) has no next division. 🟡 Core's guesses from community records of Season 8 (#420).
+export const defaultArenaDivisionHype = [25, 75, 125, 175, 225, 300];
+export const maxArenaDivisionHype = 1_000_000;
+// Six whole numbers from 1, each above the one before; else the current ones (null for a caller that wants to know).
+export function arenaDivisionHypeValue(input, current = defaultArenaDivisionHype) {
+  const fallback = () => (current === null ? null : [...current]);
+  if (!Array.isArray(input) || input.length !== defaultArenaDivisionHype.length) return fallback();
+  const numbers = input.map((value) => (typeof value === "number" || (typeof value === "string" && value.trim() !== "") ? Number(value) : NaN));
+  const sound = numbers.every((value, index) => Number.isInteger(value) && value >= 1 && value <= maxArenaDivisionHype && (index === 0 || value > numbers[index - 1]));
+  return sound ? numbers : fallback();
+}
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {
@@ -334,6 +350,8 @@ const defaults = {
     // its switch.
     ...Object.fromEntries(playlistAssetLtms.map((id) => [id, defaultOnPlaylistLtms.includes(id)]))
   },
+  // The Hype each Arena division takes to leave (Core-Backend #423, tournaments/arena.js).
+  arenaDivisionHype: defaultArenaDivisionHype,
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
   ltmOriginalDates: false,
@@ -742,6 +760,7 @@ export function createSettingsStore(dataDir) {
     battlepass: JSON.parse(JSON.stringify(defaults.battlepass)),
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
+    arenaDivisionHype: [...defaultArenaDivisionHype],
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
     bots: { ...defaults.bots, modes: defaultBotModes(), modeCounts: {}, fillLobby: {}, noCustomMatchBots: true },
     creators: []
@@ -770,6 +789,7 @@ export function createSettingsStore(dataDir) {
         if (!(Number(loaded.matchmakingModesRevision) >= 1)) for (const id of defaultOnPlaylistLtms) settings.matchmakingModes[id] = true;
       }
       settings.matchmakingModesRevision = matchmakingModesRevision;
+      settings.arenaDivisionHype = arenaDivisionHypeValue(loaded.arenaDivisionHype);
       if (loaded.serverLimits && typeof loaded.serverLimits === "object") {
         settings.serverLimits = sanitizeServerLimits(loaded.serverLimits, defaults.serverLimits);
       }
@@ -1000,6 +1020,7 @@ export function createSettingsStore(dataDir) {
       if (partial.matchmakingModes && typeof partial.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(partial.matchmakingModes, settings.matchmakingModes);
       }
+      if (partial.arenaDivisionHype !== undefined) settings.arenaDivisionHype = arenaDivisionHypeValue(partial.arenaDivisionHype, settings.arenaDivisionHype);
       if (partial.serverLimits && typeof partial.serverLimits === "object") {
         settings.serverLimits = sanitizeServerLimits(partial.serverLimits, settings.serverLimits);
       }
