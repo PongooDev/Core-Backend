@@ -119,10 +119,9 @@ test("the content page has an Arena entry for each mode on 8.20 on, with colours
   const entries = page.tournamentinformation.tournament_info.tournaments;
   assert.deepEqual(entries.map((entry) => entry.tournament_display_id), ["epicgames_Arena_S8_Solo", "epicgames_Arena_S8_Duos"]);
   assert.match(entries[0].title_color, /^[0-9A-F]{6}$/);
-  // Core-Backend #422: the Arena tiles are Epic's own mode select pictures, tunnelled from its CDN, and precached.
-  assert.equal(entries[0].playlist_tile_image, "https://cdn2.unrealengine.com/Fortnite%2Ffortnite-game%2Ftournaments%2FArena_ModeSelect_Generic_Solo4-1024x512-8a00c8b712843e0af102a7a43629f50c8987d927.png");
-  assert.equal(entries[1].playlist_tile_image, "https://cdn2.unrealengine.com/Fortnite%2Ffortnite-game%2Ftournaments%2FArena_ModeSelect_Generic_Duo4-1024x512-f9fd6282b090f61754c29bb28965d15d397d78e4.png");
-  for (const entry of entries) assert.ok(page._images_.includes(entry.playlist_tile_image));
+  // Core-Backend #422: Epic's Arena tiles are Season X art, so 8.20 to 8.40 keep Core's default tile picture, not Epic's.
+  for (const entry of entries) assert.ok(!String(entry.playlist_tile_image).includes("Arena_ModeSelect"));
+  assert.ok(page._images_.includes(entries[0].playlist_tile_image));
   assert.equal(contentPage(undefined, undefined, v800).tournamentinformation, undefined);
 });
 

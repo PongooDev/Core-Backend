@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { versionOf } from "../builds/detect.js";
 import { hasLtm, ltms } from "../events/ltms.js";
 import { readJson, writeJson } from "../json-file.js";
 import { eliminationsStat, placementStat, showdownColors, showdownImagePath, showdownImageSlots } from "./showdown.js";
@@ -219,11 +220,14 @@ export const arenaModeOf = (playlistId, build) => {
 // Epic's Arena mode select tiles (Core-Backend #422): playlist_tile_image of its arena_solo and arena_duos entries on its later
 // page (the Wayback Machine's capture of fortnitecontent-website-prod07's fortnite-game of 2019-10-13), Arena_ModeSelect_
 // Generic_Solo4 and _Duo4. Each on Epic's CDN, checked 2026-11-24: 200, image/png, 308,136 and 413,849 bytes, the hash in
-// each name the file's SHA-1. The page has no earlier Arena entry (🟡 Season 8's own tile isn't recorded).
+// each name the file's SHA-1. That is Season X (10.x) art: only builds from 10.00 serve it. The page has no Season 8 Arena
+// entry, so 8.20 to 8.40 serve none and the game shows its default tile (🟡 Season 8's own tile isn't recorded).
 export const arenaTileImages = {
   Solo: "https://cdn2.unrealengine.com/Fortnite%2Ffortnite-game%2Ftournaments%2FArena_ModeSelect_Generic_Solo4-1024x512-8a00c8b712843e0af102a7a43629f50c8987d927.png",
   Duos: "https://cdn2.unrealengine.com/Fortnite%2Ffortnite-game%2Ftournaments%2FArena_ModeSelect_Generic_Duo4-1024x512-f9fd6282b090f61754c29bb28965d15d397d78e4.png"
 };
+
+const arenaTileOf = (mode, build) => (Number.parseInt(versionOf(build) ?? "", 10) >= 10 ? arenaTileImages[mode] : undefined);
 
 // The content page's tournamentinformation entries for the Arena events (services/content/pages.js), by their
 // displayDataId: the lobby's division panel and the details screen are UFortShowdownDetailView's, whose colours come from
@@ -244,7 +248,7 @@ export function arenaTournamentInformation(build, origin = undefined) {
       long_format_title: `Arena (${mode})`,
       ...showdownColors,
       ...Object.fromEntries(showdownImageSlots.filter((slot) => slot.file).map((slot) => [slot.field, `${origin ?? ""}${showdownImagePath}/${slot.file}`])),
-      playlist_tile_image: arenaTileImages[mode],
+      ...(arenaTileOf(mode, build) ? { playlist_tile_image: arenaTileOf(mode, build) } : {}),
       _type: "Tournament Display Info"
     };
   });
