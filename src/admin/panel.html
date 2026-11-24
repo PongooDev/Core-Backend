@@ -9752,6 +9752,44 @@ Each starts active; quests the account already has are left as they are.`, {
     }
 
     /* ---------- Arena (Core-Backend #423) ---------- */
+    // The Arena's scoring (settings arenaScoring): Hype for a win, for each "top N" placement tier (Solo's and Duos' own), for
+    // a team elimination, and the bus fare taken in each division.
+    function scoringPanel(data, rerender) {
+      const s = data.scoring;
+      const num = (value, min, max, label, width = "80px") => el("input", { class: "field num", type: "number", min: String(min), max: String(max), step: "1",
+        value: String(value), style: `width:${width};`, "aria-label": label });
+      const labelled = (text, input) => el("label", { style: "display:flex; flex-direction:column; gap:4px;" }, el("span", { class: "muted", style: "font-size:12px;", text }), input);
+      const modes = Object.keys(s.victoryPoints);
+      const victory = Object.fromEntries(modes.map((mode) => [mode, num(s.victoryPoints[mode], 0, data.maxPoints, `${mode} Victory Royale Hype`)]));
+      const tiers = Object.fromEntries(modes.map((mode) => [mode, s.placements[mode].map(([upTo, points], index) => ({
+        upTo: num(upTo, 2, 100, `${mode} top N of tier ${index + 1}`), points: num(points, 0, data.maxPoints, `${mode} Hype of tier ${index + 1}`) }))]));
+      const elimination = num(s.eliminationPoints, 0, data.maxPoints, "Hype per elimination");
+      const fares = s.busFares.map((fare, index) => num(fare, 0, data.maxPoints, `Division ${index + 1} bus fare`));
+      const save = async () => {
+        const scoring = {
+          victoryPoints: Object.fromEntries(modes.map((mode) => [mode, Number(victory[mode].value)])),
+          placements: Object.fromEntries(modes.map((mode) => [mode, tiers[mode].map((tier) => [Number(tier.upTo.value), Number(tier.points.value)])])),
+          eliminationPoints: Number(elimination.value), busFares: fares.map((input) => Number(input.value))
+        };
+        if (await act(api("/admin/api/arena/scoring", { scoring }), "Arena scoring saved")) rerender();
+      };
+      return el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Scoring" })),
+        el("div", { class: "note", text: "A match's Hype: the Victory Royale's points for a win, plus each top N tier's points for placing N or better (they add up), plus the points of each team elimination (up to 99), less the bus fare of the division held. Whole numbers from 0 to " + data.maxPoints + "; the top N of a mode's three tiers rise from 2 to 100. The defaults are Core's guesses from community records of Season 8. They reach the game's events at a player's next lobby visit, and the Hype of the next match recorded." }),
+        ...modes.map((mode) => el("div", { style: "display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:flex-end;" },
+          el("strong", { style: "min-width:48px;", text: mode }),
+          labelled("Victory Royale", victory[mode]),
+          ...tiers[mode].flatMap((tier, index) => [labelled(`Top N (tier ${index + 1})`, tier.upTo), labelled("Hype", tier.points)]))),
+        el("div", { style: "display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:flex-end;" },
+          labelled("Hype per elimination", elimination),
+          ...fares.map((input, index) => labelled(`Bus fare, Division ${index + 1}`, input))),
+        el("div", { class: "actions", style: "margin-top:12px; justify-content:flex-start; gap:8px;" },
+          btn("Save", save, "primary"),
+          btn("Back to defaults", async () => {
+            if (await act(api("/admin/api/arena/scoring", { scoring: null }), "Arena scoring back to the defaults")) rerender();
+          }, "ghost")));
+    }
+
     // Season 8's Arena (8.20 to 8.40, tournaments/arena.js): the players by Hype, their reset, and the Hype each division takes
     // to leave (Core's guesses from #420). Its Solo and Duos tiles are switched on the Matchmaking tab.
     async function showArena() {
@@ -9793,6 +9831,7 @@ Each starts active; quests the account already has are left as they are.`, {
             btn("Back to defaults", async () => {
               if (await act(api("/admin/api/arena/thresholds", { hypeToLeave: null }), "Hype to leave each division back to the defaults")) rerender();
             }, "ghost"))),
+        scoringPanel(data, rerender),
         el("section", { class: "panel", style: "margin-top:16px;" },
           el("div", { class: "panel-head" }, el("h2", { text: "Leaderboard" }), chip(`${data.players.length} Ranked`, "sky")),
           table([

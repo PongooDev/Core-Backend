@@ -3,7 +3,7 @@ import path from "node:path";
 import { versionOf } from "../builds/detect.js";
 import { currentSettings, hasLtm, ltms } from "../events/ltms.js";
 import { readJson, writeJson } from "../json-file.js";
-import { arenaDivisionHypeValue, defaultArenaDivisionHype } from "../settings/store.js";
+import { arenaDivisionHypeValue, arenaScoringValue, defaultArenaDivisionHype, defaultArenaScoring } from "../settings/store.js";
 import { eliminationsStat, placementStat, showdownColors, showdownImagePath, showdownImageSlots } from "./showdown.js";
 
 // Season 8's Arena (Core-Backend #420). Update v8.20 (27 March 2019): "New Feature: Arena Game Mode (Solo & Duos) ... Compete
@@ -60,8 +60,20 @@ const noNextDivision = 2147483647;
 export const divisionThresholds = [...defaultArenaDivisionHype, noNextDivision];
 // The thresholds in force: the settings' (the defaults for none or a bad list), with the last division's.
 export const divisionThresholdsOf = (settingsValue = currentSettings()) => [...arenaDivisionHypeValue(settingsValue?.arenaDivisionHype), noNextDivision];
-export const divisionBusFares = [0, 0, 0, 2, 4, 6, 8];
-export const placementTiers = { Solo: [[1, 3], [5, 2], [15, 2], [25, 3]], Duos: [[1, 3], [3, 2], [7, 2], [12, 3]] };
+// The scoring in force (the admin panel's Arena tab's setting arenaScoring, #423; the defaults for none or a bad one): the
+// bus fare of each division, the points of a team elimination, and for each mode the placement tiers [N, points] a place of
+// N or better earns, the first the win's.
+export function arenaScoringOf(settingsValue = currentSettings()) {
+  const scoring = arenaScoringValue(settingsValue?.arenaScoring);
+  return {
+    busFares: scoring.busFares,
+    eliminationPoints: scoring.eliminationPoints,
+    placementTiers: Object.fromEntries(Object.keys(scoring.victoryPoints).map((mode) => [mode, [[1, scoring.victoryPoints[mode]], ...scoring.placements[mode]]]))
+  };
+}
+const defaultScoring = arenaScoringOf({ arenaScoring: defaultArenaScoring });
+export const divisionBusFares = defaultScoring.busFares;
+export const placementTiers = defaultScoring.placementTiers;
 export const matchPlayedStat = "MATCH_PLAYED_STAT";
 // The client shows 99 one-point elimination tiers as "each elimination" (0x1579620).
 const eliminationTiers = 99;
@@ -150,18 +162,18 @@ export const arenaTokensOf = (record) => Array.from({ length: Math.max(0, record
 // FEventsServicePlayer's Arena part: the division tokens and the Hype.
 export const arenaPlayerOf = (record) => ({ tokens: arenaTokensOf(record), persistentScores: { [hypeScoreId]: record?.hype ?? 0 } });
 
-function scoringRulesOf(mode, rank) {
-  const fare = divisionBusFares[rank];
+function scoringRulesOf(mode, rank, scoring) {
+  const fare = scoring.busFares[rank];
   return [
-    { trackedStat: placementStat, matchRule: "lte", rewardTiers: placementTiers[mode].map(([keyValue, pointsEarned]) => ({ keyValue, pointsEarned })) },
-    { trackedStat: eliminationsStat, matchRule: "gte", rewardTiers: Array.from({ length: eliminationTiers }, (_, index) => ({ keyValue: index + 1, pointsEarned: 1 })) },
+    { trackedStat: placementStat, matchRule: "lte", rewardTiers: scoring.placementTiers[mode].map(([keyValue, pointsEarned]) => ({ keyValue, pointsEarned })) },
+    { trackedStat: eliminationsStat, matchRule: "gte", rewardTiers: Array.from({ length: eliminationTiers }, (_, index) => ({ keyValue: index + 1, pointsEarned: scoring.eliminationPoints })) },
     ...(fare ? [{ trackedStat: matchPlayedStat, matchRule: "gte", rewardTiers: [{ keyValue: 1, pointsEarned: -fare }] }] : [])
   ];
 }
 
 // A division's template (FEventsServiceEventTemplate): the mode's playlist, the Hype score, the division's rules and the
 // next division's token at its threshold (8.20's threshold, 0x14AEA40).
-function templateOf(ltm, rank, gameId, divisionThresholds) {
+function templateOf(ltm, rank, gameId, divisionThresholds, scoring) {
   const mode = modeOf(ltm);
   const next = rank + 1 < divisionThresholds.length;
   return {
@@ -171,7 +183,7 @@ function templateOf(ltm, rank, gameId, divisionThresholds) {
     persistentScoreId: hypeScoreId,
     matchCap: 0,
     useIndividualScores: false,
-    scoringRules: scoringRulesOf(mode, rank),
+    scoringRules: scoringRulesOf(mode, rank, scoring),
     payoutTable: next ? [{ scoringType: "value", rolling: false, ranks: [{ threshold: divisionThresholds[rank],
       payouts: [{ rewardType: "token", rewardMode: "standard", value: divisionToken(rank + 1), quantity: 1 }] }] }] : []
   };
@@ -206,13 +218,14 @@ export function arenaEvents(build, { gameId, regions = [], platforms = [] }, set
   const events = [];
   const templates = [];
   const thresholds = divisionThresholdsOf(settingsValue);
+  const scoring = arenaScoringOf(settingsValue);
   for (const ltm of shownArenaLtmsOf(build, settingsValue)) {
     const mode = modeOf(ltm);
     const ranks = thresholds.map((_, rank) => rank);
     events.push({ gameId, eventId: arenaEventId(mode), regions, regionMappings: {}, platforms, platformMappings: {},
       displayDataId: arenaEventId(mode), announcementTime: arenaBegins, beginTime: arenaBegins, endTime: noEnd,
       eventWindows: ranks.map((rank) => windowOf(ltm, rank, thresholds)), metadata: {} });
-    templates.push(...ranks.map((rank) => templateOf(ltm, rank, gameId, thresholds)));
+    templates.push(...ranks.map((rank) => templateOf(ltm, rank, gameId, thresholds, scoring)));
   }
   return { events, templates };
 }
@@ -234,9 +247,10 @@ export function arenaTicket({ playlistId, tournamentId = "", windowId = "", part
 }
 
 // A match's Hype for a player in a division: the placement tiers reached, a point a team elimination, less the bus fare.
-export function arenaMatchPoints(mode, rank, { place, teamKills }) {
+export function arenaMatchPoints(mode, rank, { place, teamKills }, settingsValue = currentSettings()) {
+  const { placementTiers, busFares, eliminationPoints } = arenaScoringOf(settingsValue);
   const placement = placementTiers[mode].filter(([upTo]) => place <= upTo).reduce((total, [, points]) => total + points, 0);
-  return placement + Math.min(Math.max(0, teamKills), eliminationTiers) - divisionBusFares[Math.min(rank, divisionBusFares.length - 1)];
+  return placement + Math.min(Math.max(0, teamKills), eliminationTiers) * eliminationPoints - busFares[Math.min(rank, busFares.length - 1)];
 }
 
 // The mode of a build's Arena playlist, or null.

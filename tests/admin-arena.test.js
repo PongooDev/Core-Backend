@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { arenaEvents, createArenaStore, divisionThresholds, divisionThresholdsOf, shownArenaLtmsOf } from "../src/tournaments/arena.js";
-import { arenaDivisionHypeValue, createSettingsStore, defaultArenaDivisionHype, sanitizeMatchmakingModes } from "../src/settings/store.js";
+import { arenaEvents, arenaMatchPoints, arenaScoringOf, createArenaStore, divisionThresholds, divisionThresholdsOf, placementTiers, shownArenaLtmsOf } from "../src/tournaments/arena.js";
+import { arenaDivisionHypeValue, arenaScoringValue, createSettingsStore, defaultArenaDivisionHype, defaultArenaScoring, sanitizeMatchmakingModes } from "../src/settings/store.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // The admin panel's Arena tab (Core-Backend #423): the players by Hype and their resets, the Hype each division takes to leave
@@ -160,6 +160,74 @@ test("the admin Arena tab over HTTP: the leaderboard, the thresholds, the resets
     assert.ok(all.body.players.every((player) => player.hype === 0 && player.division === 1));
     const player = await send({ host: "127.0.0.1", port: backend.port, path: `/api/v1/players/Fortnite/${ann.accountId}`, headers: { "User-Agent": agent830, Authorization: `bearer ${ann.token}` } });
     assert.deepEqual([player.body.persistentScores, player.body.tokens], [{ Hype: 0 }, []]);
+  } finally {
+    backend.close();
+  }
+});
+
+// The Arena's scoring (Core-Backend #423): Victory Royale, top-N tiers per mode, elimination and bus fare points.
+const ownScoring = () => ({ victoryPoints: { Solo: 10, Duos: 8 }, placements: { Solo: [[4, 5], [10, 4], [20, 1]], Duos: [[2, 6], [5, 3], [9, 2]] },
+  eliminationPoints: 2, busFares: [0, 1, 2, 3, 4, 5, 6] });
+
+test("the Arena scoring setting: defaults, validation, a settings file round-trip, and Solo and Duos kept apart", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-arena-scoring-"));
+  try {
+    const settings = createSettingsStore(dataDir);
+    assert.deepEqual(settings.get().arenaScoring, defaultArenaScoring);
+    assert.deepEqual(arenaScoringOf(settings.get()).placementTiers, placementTiers, "the defaults are arena.js's own");
+    settings.update({ arenaScoring: ownScoring() });
+    assert.deepEqual(createSettingsStore(dataDir).get().arenaScoring, ownScoring());
+    const bad = (change) => { const value = ownScoring(); change(value); return value; };
+    for (const unsound of [null, "x", [], bad((v) => { v.busFares.pop(); }), bad((v) => { v.busFares[2] = -1; }), bad((v) => { v.eliminationPoints = 1.5; }),
+      bad((v) => { v.victoryPoints.Duos = 1001; }), bad((v) => { delete v.victoryPoints.Solo; }), bad((v) => { v.placements.Solo[1][0] = 4; }),
+      bad((v) => { v.placements.Duos[0][0] = 1; }), bad((v) => { v.placements.Duos[2][0] = 101; }), bad((v) => { v.placements.Solo.pop(); }),
+      bad((v) => { v.placements.Solo[0][1] = "3"; })]) {
+      settings.update({ arenaScoring: unsound });
+      assert.deepEqual(settings.get().arenaScoring, ownScoring(), JSON.stringify(unsound));
+      assert.equal(arenaScoringValue(unsound, null), null);
+    }
+    const scoring = arenaScoringOf(settings.get());
+    assert.deepEqual(scoring.placementTiers, { Solo: [[1, 10], [4, 5], [10, 4], [20, 1]], Duos: [[1, 8], [2, 6], [5, 3], [9, 2]] });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test("the events' scoring rules and a match's Hype follow the scoring setting", () => {
+  const defaultsHype = arenaMatchPoints("Solo", 3, { place: 1, teamKills: 4 }, {});
+  assert.equal(defaultsHype, 3 + 2 + 2 + 3 + 4 - 2, "the defaults as before: win, top 5, 15 and 25, 4 eliminations, Division 4's fare");
+  const own = { arenaScoring: ownScoring() };
+  assert.equal(arenaMatchPoints("Solo", 3, { place: 1, teamKills: 4 }, own), 10 + 5 + 4 + 1 + 4 * 2 - 3);
+  assert.equal(arenaMatchPoints("Duos", 0, { place: 5, teamKills: 0 }, own), 3 + 2);
+  assert.equal(arenaMatchPoints("Duos", 6, { place: 30, teamKills: 200 }, own), 99 * 2 - 6, "eliminations count to 99");
+
+  const { templates } = arenaEvents(v830, { gameId: "Fortnite" }, own);
+  const solo = templates.find((template) => template.eventTemplateId === "eventTemplate_Arena_S8_Division4_Solo");
+  const duos = templates.find((template) => template.eventTemplateId === "eventTemplate_Arena_S8_Division1_Duos");
+  assert.deepEqual(solo.scoringRules[0].rewardTiers, [{ keyValue: 1, pointsEarned: 10 }, { keyValue: 4, pointsEarned: 5 }, { keyValue: 10, pointsEarned: 4 }, { keyValue: 20, pointsEarned: 1 }]);
+  assert.deepEqual(duos.scoringRules[0].rewardTiers.map((tier) => [tier.keyValue, tier.pointsEarned]), [[1, 8], [2, 6], [5, 3], [9, 2]]);
+  assert.ok(solo.scoringRules[1].rewardTiers.every((tier) => tier.pointsEarned === 2));
+  assert.deepEqual(solo.scoringRules[2].rewardTiers, [{ keyValue: 1, pointsEarned: -3 }]);
+  assert.equal(duos.scoringRules.length, 2, "no bus fare in Division 1 here either (fare 0)");
+});
+
+test("the admin Arena scoring route: refused when unsound, saved, and back to the defaults", async () => {
+  const backend = await startBackend();
+  try {
+    const tab = await admin(backend, "/arena");
+    assert.deepEqual([tab.body.scoring, tab.body.defaultScoring], [defaultArenaScoring, defaultArenaScoring]);
+    const unsound = ownScoring();
+    unsound.placements.Solo[2][0] = 3;
+    assert.equal((await admin(backend, "/arena/scoring", { scoring: unsound })).status, 400);
+    assert.equal((await admin(backend, "/arena/scoring", {})).status, 400);
+    const saved = await admin(backend, "/arena/scoring", { scoring: ownScoring() });
+    assert.equal(saved.status, 200);
+    assert.deepEqual(saved.body.scoring, ownScoring());
+    const ann = await userLogin(backend.port, "ArenaScorer");
+    const download = await send({ host: "127.0.0.1", port: backend.port, headers: { "User-Agent": agent830, Authorization: `bearer ${ann.token}` },
+      path: `/api/v1/events/Fortnite/download/${ann.accountId}?region=NAE&platform=Windows&teamAccountIds=${ann.accountId}` });
+    assert.equal(download.body.templates[0].scoringRules[0].rewardTiers[0].pointsEarned, 10);
+    assert.deepEqual((await admin(backend, "/arena/scoring", { scoring: null })).body.scoring, defaultArenaScoring);
   } finally {
     backend.close();
   }

@@ -126,6 +126,38 @@ export const matchmakingModesRevision = 1;
 export const defaultArenaDivisionHype = [25, 75, 125, 175, 225, 300];
 export const maxArenaDivisionHype = 1_000_000;
 // Six whole numbers from 1, each above the one before; else the current ones (null for a caller that wants to know).
+// The Arena's scoring (Core-Backend #423, tournaments/arena.js), each Solo's and Duos' own placements: a match's Hype is the
+// Victory Royale's points for a win, plus each "top N" tier's points for placing N or better, plus the points of each team
+// elimination, less the bus fare of the division held (Division 1 to 7). 🟡 Core's numbers from community records (#420).
+export const defaultArenaScoring = {
+  victoryPoints: { Solo: 3, Duos: 3 },
+  placements: { Solo: [[5, 2], [15, 2], [25, 3]], Duos: [[3, 2], [7, 2], [12, 3]] },
+  eliminationPoints: 1,
+  busFares: [0, 0, 0, 2, 4, 6, 8]
+};
+export const maxArenaPoints = 1000;
+const arenaPointsOk = (value) => Number.isInteger(value) && value >= 0 && value <= maxArenaPoints;
+// The scoring as a whole, or the current one (null for a caller that wants to know) when any part is unsound: points whole
+// numbers 0 to 1000, three top-N tiers a mode with N from 2 to 100 rising, seven bus fares.
+export function arenaScoringValue(input, current = defaultArenaScoring) {
+  const fallback = () => (current === null ? null : JSON.parse(JSON.stringify(current)));
+  if (!input || typeof input !== "object" || Array.isArray(input)) return fallback();
+  const modes = Object.keys(defaultArenaScoring.victoryPoints);
+  const fares = input.busFares;
+  if (!arenaPointsOk(input.eliminationPoints) || !Array.isArray(fares) || fares.length !== defaultArenaScoring.busFares.length || !fares.every(arenaPointsOk)) return fallback();
+  const result = { victoryPoints: {}, placements: {}, eliminationPoints: input.eliminationPoints, busFares: [...fares] };
+  for (const mode of modes) {
+    const tiers = input.placements?.[mode];
+    if (!arenaPointsOk(input.victoryPoints?.[mode]) || !Array.isArray(tiers) || tiers.length !== defaultArenaScoring.placements[mode].length) return fallback();
+    for (const [index, tier] of tiers.entries()) {
+      if (!Array.isArray(tier) || tier.length !== 2 || !Number.isInteger(tier[0]) || tier[0] < 2 || tier[0] > 100 || !arenaPointsOk(tier[1])
+        || (index > 0 && tier[0] <= tiers[index - 1][0])) return fallback();
+    }
+    result.victoryPoints[mode] = input.victoryPoints[mode];
+    result.placements[mode] = tiers.map(([upTo, points]) => [upTo, points]);
+  }
+  return result;
+}
 export function arenaDivisionHypeValue(input, current = defaultArenaDivisionHype) {
   const fallback = () => (current === null ? null : [...current]);
   if (!Array.isArray(input) || input.length !== defaultArenaDivisionHype.length) return fallback();
@@ -352,6 +384,7 @@ const defaults = {
   },
   // The Hype each Arena division takes to leave (Core-Backend #423, tournaments/arena.js).
   arenaDivisionHype: defaultArenaDivisionHype,
+  arenaScoring: defaultArenaScoring,
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
   ltmOriginalDates: false,
@@ -761,6 +794,7 @@ export function createSettingsStore(dataDir) {
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
     arenaDivisionHype: [...defaultArenaDivisionHype],
+    arenaScoring: arenaScoringValue(defaultArenaScoring),
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
     bots: { ...defaults.bots, modes: defaultBotModes(), modeCounts: {}, fillLobby: {}, noCustomMatchBots: true },
     creators: []
@@ -790,6 +824,7 @@ export function createSettingsStore(dataDir) {
       }
       settings.matchmakingModesRevision = matchmakingModesRevision;
       settings.arenaDivisionHype = arenaDivisionHypeValue(loaded.arenaDivisionHype);
+      settings.arenaScoring = arenaScoringValue(loaded.arenaScoring);
       if (loaded.serverLimits && typeof loaded.serverLimits === "object") {
         settings.serverLimits = sanitizeServerLimits(loaded.serverLimits, defaults.serverLimits);
       }
@@ -1020,6 +1055,7 @@ export function createSettingsStore(dataDir) {
       if (partial.matchmakingModes && typeof partial.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(partial.matchmakingModes, settings.matchmakingModes);
       }
+      if (partial.arenaScoring !== undefined) settings.arenaScoring = arenaScoringValue(partial.arenaScoring, settings.arenaScoring);
       if (partial.arenaDivisionHype !== undefined) settings.arenaDivisionHype = arenaDivisionHypeValue(partial.arenaDivisionHype, settings.arenaDivisionHype);
       if (partial.serverLimits && typeof partial.serverLimits === "object") {
         settings.serverLimits = sanitizeServerLimits(partial.serverLimits, settings.serverLimits);

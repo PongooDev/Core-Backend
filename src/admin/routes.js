@@ -66,7 +66,7 @@ import { buildsNow, eventSchedules, scheduleEventPatch } from "./eventschedules.
 import { stormDestructionStatus } from "../events/stormdestruction.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
-import { arenaDivisionHypeValue, defaultArenaDivisionHype, defaultBots, defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxArenaDivisionHype, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
+import { arenaDivisionHypeValue, arenaScoringValue, defaultArenaDivisionHype, defaultArenaScoring, maxArenaPoints, defaultBots, defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxArenaDivisionHype, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
@@ -2856,6 +2856,11 @@ export function adminRoutes(context) {
       defaultHypeToLeave: defaultArenaDivisionHype,
       hypeToLeave: thresholds.slice(0, -1),
       maxHypeToLeave: maxArenaDivisionHype,
+      // The scoring (settings arenaScoring): victory points and top-N placement tiers for each mode, the points of an
+      // elimination, and each division's bus fare.
+      scoring: arenaScoringValue(s.arenaScoring),
+      defaultScoring: defaultArenaScoring,
+      maxPoints: maxArenaPoints,
       // The Arena's tiles by mode (matchmaking's switches, on by default), on the builds that have them.
       modes: arenaLtms.map((ltm) => ({ id: ltm.id, name: ltm.name, shown: s.matchmakingModes?.[ltm.id] !== false })),
       players
@@ -2868,6 +2873,14 @@ export function adminRoutes(context) {
     if (!asked) return invalid(res, `hypeToLeave must be ${defaultArenaDivisionHype.length} whole numbers from 1 to ${maxArenaDivisionHype}, each above the one before`);
     settings.update({ arenaDivisionHype: asked });
     log("Admin", `Arena Hype to leave each division set to ${asked.join(", ")}`);
+    res.json({ success: true, ...arenaPayload() });
+  });
+  // The scoring: {scoring: {victoryPoints, placements, eliminationPoints, busFares}} (settings/store.js arenaScoring), null for the defaults.
+  router.post("/admin/api/arena/scoring", (req, res) => {
+    const asked = req.body?.scoring === null ? defaultArenaScoring : arenaScoringValue(req.body?.scoring, null);
+    if (!asked) return invalid(res, `Points are whole numbers from 0 to ${maxArenaPoints}, each mode has three top-N tiers (N from 2 to 100, rising) and the seven divisions each a bus fare`);
+    settings.update({ arenaScoring: asked });
+    log("Admin", "Arena scoring set");
     res.json({ success: true, ...arenaPayload() });
   });
   router.post("/admin/api/arena/accounts/:accountId/reset", (req, res) => {
