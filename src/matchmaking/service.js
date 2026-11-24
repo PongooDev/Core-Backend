@@ -673,7 +673,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
   // (they register again once it ends), until their session goes.
   const hosts = new Map();
-  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", ...Object.fromEntries(ltms.map(({ playlistId, id }) => [playlistId, id])) };
+  // Season 8's Arena (#420) shares the Pop-Up Cups' ids (58074, 58075) and keeps their limits.
+  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", ...Object.fromEntries(ltms.filter((ltm) => !ltm.arena).map(({ playlistId, id }) => [playlistId, id])) };
   // The game's own warmup length by the build (the bucket's netcl) of the servers that reported one: the most time left
   // a warmup report gave while the panel left the length to the game (#160).
   const gameWarmups = new Map();

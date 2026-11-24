@@ -1,4 +1,5 @@
 import { regionMembers, serverRegionCodes } from "../matchmaking/regions.js";
+import { arenaEvents, arenaPlayerOf, hasArena } from "./arena.js";
 import { eliminationsStat, eventWindowsOf, eventsServiceBuild, hasShowdown, historiesOf, placementStat, showdownEvents, showdownPlaylistOf, showdownTiers,
   teamOf, tournamentIdOf } from "./showdown.js";
 import { matchWindowOf, rankRows, scoringOf } from "./store.js";
@@ -91,8 +92,19 @@ const regionNames = serverRegionCodes.filter((code) => regionMembers(code).lengt
 const platformNames = ["PS4", "XboxOne", "Switch", "Android", "IOS", "Windows", "Mac"];
 const withAsked = (list, asked) => [...new Set([...list, ...(typeof asked === "string" && asked && asked.length <= 32 ? [asked] : [])])];
 
-// FEventsServicePlayer.
-export const eventsPlayerOf = (accountId, gameId = eventsGameId) => ({ gameId, accountId, tokens: [], pendingPayouts: [], teams: {} });
+// The Arena records (tournaments/arena.js createArenaStore), for the builds with Season 8's Arena (#420).
+let arenaProvider = () => null;
+export function configureArena(provider) {
+  arenaProvider = typeof provider === "function" ? provider : () => provider;
+}
+
+// FEventsServicePlayer. On a build with the Arena (8.20 on, #420) it holds the player's division tokens and their Hype
+// (persistentScores, which 8.20's reader has: CL-5625478 "persistentScores"; 7.40's has none).
+export const eventsPlayerOf = (accountId, gameId = eventsGameId, build = null, arena = arenaProvider()) => {
+  if (!hasArena(build)) return { gameId, accountId, tokens: [], pendingPayouts: [], teams: {} };
+  const { tokens, persistentScores } = arenaPlayerOf(arena?.get?.(accountId));
+  return { gameId, accountId, tokens, persistentScores, pendingPayouts: [], teams: {} };
+};
 
 // An event as FEventsServiceEvent: from its announcement to its last window's end, a window for each of its times, each
 // counting down from the announcement as 6.10's (tournamentOf).
@@ -195,12 +207,15 @@ const scoresOf = (event, accountId, gameId) => eventWindowsOf(event)
 
 // DownloadUrl's answer (FEventsServiceDownload) for a player on a build: the events their build's Events tab lists for
 // them (showdownEvents), one template each, and their scores. query: the request's region and platform.
-export function eventsDownload(accountId, build, query = {}, now = new Date(), store = undefined, gameId = eventsGameId) {
+// On a build with Season 8's Arena (#420), its events and division templates come after them (tournaments/arena.js).
+export function eventsDownload(accountId, build, query = {}, now = new Date(), store = undefined, gameId = eventsGameId, arena = arenaProvider()) {
   const events = hasShowdown(build) ? showdownEvents(build, now, store, accountId) : [];
+  const arenas = hasArena(build) ? arenaEvents(build, { gameId, regions: withAsked(regionNames, query.region), platforms: withAsked(platformNames, query.platform) })
+    : { events: [], templates: [] };
   return {
-    player: eventsPlayerOf(accountId, gameId),
-    events: events.map((event) => eventOf(event, gameId, query)),
-    templates: events.map((event) => templateOf(event, gameId)),
+    player: eventsPlayerOf(accountId, gameId, build, arena),
+    events: [...events.map((event) => eventOf(event, gameId, query)), ...arenas.events],
+    templates: [...events.map((event) => templateOf(event, gameId)), ...arenas.templates],
     scores: events.flatMap((event) => scoresOf(event, accountId, gameId))
   };
 }

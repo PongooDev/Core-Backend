@@ -12,6 +12,7 @@ import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
 import { customMatchOptionsOf, customMatchOptionsText, parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
 import { defaultHostingIps, httpsProxied, requestAddress, viaHttpProxy } from "../../network.js";
+import { arenaTicket } from "../../tournaments/arena.js";
 import { showdownTicket, tournamentIdOf } from "../../tournaments/showdown.js";
 import { notRegionHost } from "./sessions.js";
 
@@ -25,7 +26,7 @@ import { notRegionHost } from "./sessions.js";
 // the address and port the connection came in on (network.js directHost).
 const customKeyLength = { min: 4, max: 16 };
 
-export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network, tournaments, profiles, stomp }) {
+export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network, tournaments, arena, profiles, stomp }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => {
@@ -79,10 +80,25 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       }
       tournamentEvent = event;
     }
+    // Season 8's Arena (Core-Backend #420, tournaments/arena.js): the client names the Arena event and the division window
+    // its tournament manager picked; the window must be one the player holds, the party full. 🟡 One queue for every
+    // division: Epic matched by Hype, widening the gap the longer a ticket waited until any player would do (the playlists'
+    // PriorityRatingExpansion, RatingDelta -1 after 1200 s), and Core's player counts are always past that.
+    let arenaDivision = null;
+    if (ltm?.arena) {
+      const ticketed = arenaTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),
+        windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild(),
+        record: arena?.get?.(accountId) });
+      if (ticketed.error) {
+        log("Matchmaking", `Refused ${accountId}'s Arena ticket for bucket ${bucketId}: ${ticketed.error.message} (${ticketed.error.code})`);
+        return sendError(res, 400, ticketed.error.code, ticketed.error.message);
+      }
+      arenaDivision = ticketed.rank;
+    }
     // 6.21's Fortnitemares modes follow the Leaky Lake's state (Core-Backend #354, events/ltms.js untilButterfly), as the
     // lobby lists them, and 7.20's Ice Storm modes the island's state from its storm (fromIceStorm, Core-Backend #354).
     // 7.00's Creative is always on (#375): a matchmaking setting saved for it before changes nothing.
-    const off = tournamentEvent || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly || ltm.fromIceStorm) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
+    const off = tournamentEvent || arenaDivision !== null || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly || ltm.fromIceStorm) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
       : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
@@ -152,7 +168,8 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
     const keyed = ticket.customKey ? `, custom key ${ticket.customKey}${ticket.customKeyHost ? "" : " (not allowed to open it)"}` : "";
     const optioned = ticket.customMatchOptions ? `, custom options ${customMatchOptionsText(ticket.customMatchOptions)}` : "";
-    const evented = tournamentEvent ? `, tournament event ${tournamentEvent.name} (${tournamentIdOf(tournamentEvent)})` : "";
+    const evented = tournamentEvent ? `, tournament event ${tournamentEvent.name} (${tournamentIdOf(tournamentEvent)})`
+      : arenaDivision !== null ? `, Arena division ${arenaDivision + 1}` : "";
     log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}${optioned}${evented}`);
     res.json(response);
   });

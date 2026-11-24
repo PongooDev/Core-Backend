@@ -1448,6 +1448,15 @@ export const ltms = [
   { id: "foodFightDeepFried", name: "Food Fight: Deep Fried", playlistId: 226, playlistName: "Playlist_Barrier_16_B_Lava", eventFlag: null, builds: [build840, build840], seasons: [8],
     original: [{ builds: [build840, build840], start: "2019-04-17", end: "2019-04-25" }],
     teams: "2 Teams × 16", description: "Food Fight with the lava rising from below: build a fort round your mascot, then destroy theirs and finish the enemies once the barrier lowers; red supply drops, free materials every second, no explosives (Playlist_Barrier_16_B_Lava, 8.40's)." },
+  // Season 8's Arena (Core-Backend #420, tournaments/arena.js): Update v8.20's "Arena Game Mode (Solo & Duos)", on the Pop-Up
+  // Cups' Playlist_ShowdownAlt_Solo and _Duos (58074, 58075), which 8.20's to 8.40's paks name "Arena" ("Prove your skill in
+  // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
+  // No lobby mode and no switch (arena): the events service's Arena events put the tile in the mode select, and a ticket for
+  // one is taken for the division the player holds (services/matchmaking/ticket.js).
+  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true,
+    teams: "100 Teams × 1", description: "Season 8's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League (Playlist_ShowdownAlt_Solo, 8.20's)." },
+  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build840], seasons: [8], arena: true,
+    teams: "100 Teams × 2", description: "Season 8's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
   // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,
@@ -1584,7 +1593,7 @@ export function configureLtms(provider) {
 // mode: its event decides (services/matchmaking/ticket.js).
 export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
   const ltm = byId.get(id);
-  if (!ltm || !hasLtm(id, build) || ltm.tournament) return false;
+  if (!ltm || !hasLtm(id, build) || ltm.tournament || ltm.arena) return false;
   // A game mode always on where the build has it (7.00's Creative, #375), whatever the settings say.
   if (ltm.alwaysOn || isNewIn(ltm, build)) return true;
   // 6.21's Fortnitemares modes (Core-Backend #354): the Leaky Lake's state, not the dates; off once the Butterfly has
@@ -1629,7 +1638,8 @@ const shippedPriority = { Playlist_50v50: 10, Playlist_Playground: 15, Playlist_
 export function ltmFrontEndPlaylists(build, settingsValue = settingsProvider(), now = new Date()) {
   if (Number(build) < frontEndPlaylistBuild) return [];
   const seen = new Set();
-  return ltms.filter((ltm) => ltm.playlistName && hasLtm(ltm.id, build) && !seen.has(ltm.playlistName) && seen.add(ltm.playlistName))
+  // Season 8's Arena (#420) is no FrontEndPlaylistData entry: its tile is the events service's (tournaments/arena.js).
+  return ltms.filter((ltm) => ltm.playlistName && !ltm.arena && hasLtm(ltm.id, build) && !seen.has(ltm.playlistName) && seen.add(ltm.playlistName))
     .map((ltm, index) => ({ name: ltm.playlistName, enabled: ltmOn(ltm.id, build, settingsValue, now),
       priority: shippedPriority[ltm.playlistName] ?? 20 + index, ltm }));
 }
@@ -1730,7 +1740,7 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     fortnitemaresOutage: fortnitemaresOutageOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     // Neither a tournament playlist (the Tournaments tab's) nor a game mode always on (7.00's Creative, #375) has a switch.
-    list: ltms.filter((ltm) => !ltm.tournament && !ltm.alwaysOn).map((ltm) => ({
+    list: ltms.filter((ltm) => !ltm.tournament && !ltm.arena && !ltm.alwaysOn).map((ltm) => ({
       id: ltm.id,
       name: ltm.name,
       playlistId: ltm.playlistId,

@@ -14,7 +14,9 @@ import { eventsDownload, eventsLeaderboard, eventsPlayerOf, eventsWindowHistory,
 //   player's scores in the window.
 // - GET /api/v1/leaderboards/<gameId>/<eventId>/<eventWindowId>/<accountId>?page=&rank=&teamAccountIds=
 //   (RequestLeaderboardUrl): a page of the window's leaderboard.
-// - GET /api/v1/players/<gameId>/<accountId> (RefreshPlayerUrl, 7.40's only): the player.
+// - GET /api/v1/players/<gameId>/<accountId> (RefreshPlayerUrl, 7.40 on): the player, with 8.20 on its Arena tokens and Hype
+//   (Core-Backend #420, tournaments/arena.js).
+// - GET /api/v1/events/<gameId>/data/<accountId> (DataUrl, 8.20 on): as the download.
 // Only for 7.30 and later (eventsServiceBuild): 7.20's and older builds' requests fall through to the unanswered routes as
 // before (they ask FortMcpUtils, services/fortnite/events.js). A window the player's list doesn't have is a 404 (🟡 the
 // error code is Core's: Epic's isn't known).
@@ -36,6 +38,12 @@ export function eventsServiceRoutes(context) {
       new Date(), context.tournaments, req.params.gameId));
   });
 
+  // DataUrl, GET /api/v1/events/<gameId>/data/<accountId> (8.20's to 8.40's table, CL-5625478 and CL-5793395's
+  // FOnlineEventsServiceMcp constructor, 0x463250 on 8.30): 🟡 no caller of it was traced, so it is answered as the download.
+  router.get("/api/v1/events/:gameId/data/:accountId", forBuild, auth, own, (req, res) => {
+    res.json(eventsDownload(req.params.accountId, currentBuild(), {}, new Date(), context.tournaments, req.params.gameId));
+  });
+
   router.get("/api/v1/events/:gameId/:eventId/:eventWindowId/history", forBuild, auth, (req, res) => {
     const scores = eventsWindowHistory(req.session.accountId, req.params.eventId, req.params.eventWindowId, currentBuild(), new Date(),
       context.tournaments, req.params.gameId);
@@ -51,7 +59,7 @@ export function eventsServiceRoutes(context) {
   });
 
   router.get("/api/v1/players/:gameId/:accountId", forBuild, auth, own, (req, res) => {
-    res.json(eventsPlayerOf(req.params.accountId, req.params.gameId));
+    res.json(eventsPlayerOf(req.params.accountId, req.params.gameId, currentBuild()));
   });
 
   return router;

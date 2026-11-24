@@ -1,4 +1,5 @@
 import { serveShowdownImage, showdownImagePath, showdownImagesFor, tournamentInformationFor } from "../../tournaments/showdown.js";
+import { arenaTournamentInformation, hasArena } from "../../tournaments/arena.js";
 import express from "express";
 import { inBuild } from "../../builds/context.js";
 import { getBuild, versionOf } from "../../builds/detect.js";
@@ -280,7 +281,14 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
   const playlistinformation = playlistInformationFor(changelist, playlistImages, imageOrigin);
   const subgameselectdata = subgameSelectFor(changelist, subgameSelect);
   // 6.10's tournaments: their texts, colours and pictures (Core-Backend #336), the pictures on this page's address.
-  const tournamentinformation = tournamentInformationFor(changelist, new Date(), undefined, imageOrigin);
+  // Season 8's Arena events (Core-Backend #420) have entries of their own, after the admin's events'.
+  const arenaEntries = hasArena(changelist) ? arenaTournamentInformation(changelist, imageOrigin) : [];
+  const showdownInformation = tournamentInformationFor(changelist, new Date(), undefined, imageOrigin);
+  const tournamentinformation = !arenaEntries.length ? showdownInformation : {
+    ...(showdownInformation ?? { _title: "tournamentinformation", _noIndex: false, _activeDate: "2019-03-27T00:00:00.000Z",
+      lastModified: "2026-11-24T00:00:00.000Z", _locale: "en-US" }),
+    tournament_info: { _type: "Tournaments Info", tournaments: [...(showdownInformation?.tournament_info.tournaments ?? []), ...arenaEntries] }
+  };
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
@@ -289,6 +297,7 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
       ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image),
       ...Object.values(subgameselectdata).map((entry) => entry.message.image),
       ...showdownImagesFor(changelist, new Date(), undefined, imageOrigin),
+      ...arenaEntries.flatMap((entry) => [entry.poster_front_image, entry.poster_back_image, entry.playlist_tile_image]),
       ...(creativeads?.ad_info.ads ?? []).map((ad) => ad.image)].filter(Boolean))],
     battleRoyaleNews,
     subgameselectdata,
