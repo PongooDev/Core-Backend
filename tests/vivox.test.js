@@ -254,6 +254,47 @@ test("hotfix: 5.10+ get [Vivox] ServerUrl (quoted) and Domain; older builds' fil
   }
 });
 
+test("8.20+ (UE 4.23's VivoxVoiceChat): [VoiceChat.Vivox] in DefaultEngine.ini, no [Vivox]; POST createLoginToken and createJoinToken", async () => {
+  const backend = await startVivoxBackend({ withSip: false });
+  try {
+    const { token, accountId } = await userLogin(backend.port, "SeasonEightPlayer");
+    const keys = createVivoxKeys(backend.dataDir);
+    const v800 = agentOf("8.00", 5203069);
+    const v830 = agentOf("8.30", 5793395);
+    const file = async (name, agent) => (await getAs(backend.port, `/fortnite/api/cloudstorage/system/${name}`, agent, token)).body;
+    const engineSection = `[VoiceChat.Vivox]\r\nServerUrl="http://127.0.0.1:${backend.port}/api2/"\r\nDomain=core.vivox.invalid\r\nIssuer=core\r\nNamespace=core\r\n`;
+
+    for (const agent of [agentOf("8.20", 5625478), v830, agentOf("8.40", 6005771)]) {
+      assert.ok((await file("DefaultEngine.ini", agent)).includes(engineSection), agent);
+      assert.doesNotMatch(await file("DefaultGame.ini", agent), /\[Vivox\]/, agent);
+    }
+    // 8.00 is still FVivox: [Vivox] in the game ini, nothing in the engine ini.
+    assert.match(await file("DefaultGame.ini", v800), /\[Vivox\]\r\nServerUrl=/);
+    assert.doesNotMatch(await file("DefaultEngine.ini", v800), /VoiceChat\.Vivox/);
+
+    const post = (urlPath, agent, body) => send({ host: "127.0.0.1", port: backend.port, method: "POST", path: urlPath,
+      headers: { "User-Agent": agent, Authorization: `bearer ${token}`, "Content-Type": "application/json" } }, JSON.stringify(body ?? {}));
+    const login = await post(`/fortnite/api/game/v2/voice/${accountId}/createLoginToken`, v830);
+    assert.equal(login.status, 200);
+    const loginCheck = keys.verify(login.body.token, { vxa: "login", user: `.core.${accountId}.` });
+    assert.equal(loginCheck.ok, true, loginCheck.reason);
+    assert.equal(loginCheck.payload.f, `sip:.core.${accountId}.@core.vivox.invalid`);
+
+    const join = await post(`/fortnite/api/game/v2/voice/${accountId}/createJoinToken`, v830, { channelType: "party", channelName: "abc123party" });
+    assert.equal(join.status, 200);
+    const joinCheck = keys.verify(join.body.token, { vxa: "join" });
+    assert.equal(joinCheck.ok, true, joinCheck.reason);
+    assert.equal(joinCheck.payload.t, "sip:confctl-g-core.abc123party@core.vivox.invalid");
+    const echo = await post(`/fortnite/api/game/v2/voice/${accountId}/createJoinToken`, v830, { channelType: "echo", channelName: "echo1" });
+    assert.equal(decodeToken(echo.body.token).t, "sip:confctl-e-core.echo1@core.vivox.invalid");
+
+    assert.equal((await post(`/fortnite/api/game/v2/voice/${accountId}/createJoinToken`, v830, { channelType: "party", channelName: "bad name" })).status, 400);
+    assert.equal((await post("/fortnite/api/game/v2/voice/someoneelse/createLoginToken", v830)).status, 403);
+  } finally {
+    backend.close();
+  }
+});
+
 // Canned messages as a SIP client sends them (compact headers, a folded line, the SDP offer).
 const register = [
   "REGISTER sip:core.vivox.invalid SIP/2.0",

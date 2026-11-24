@@ -26,6 +26,16 @@ import { createVivoxKeys, tokenPattern } from "./tokens.js";
 // Everything the emulator sees and says is logged under [Vivox], and kept in <data>/logs/vivox.log.
 
 export const vivoxIniBuild = 4225813;
+// 8.20 (CL-5625478) to 8.40 replaced FVivox with UE 4.23's VivoxVoiceChat and VoiceChatManager plugins (8.30 CL-5793395):
+// - FVivoxVoiceChat::Initialize (8.30 0xBCDCE0) reads [VoiceChat.Vivox] ServerUrl, Domain, Issuer and Namespace from the
+//   ENGINE ini once, right after the start-up hotfix is applied ("[VoiceChat.Vivox] ServerUrl, Domain, or Issuer is not
+//   set" otherwise; 8.00 still has FVivox's [Vivox]). Namespace, or Issuer when unset, goes into its names: the account
+//   ".<namespace>.<accountId>." and channels sip:confctl-<g|d|e>-<namespace>.<channel>@<domain>.
+// - The client asks for its own login and party join tokens: POST {MCP}/api/game/v2/voice/{accountId}/createLoginToken
+//   and createJoinToken (8.30 0xBC1C90, 0xBC0B90; the join's body {"channelType": "echo"|"direct"|"party"|"group",
+//   "channelName"}), answered {"token"} (0xBC2810). The match's join tokens still come from the gameserver's
+//   VoiceChatToken feature (ServerVoiceChatRequestJoinToken).
+export const vivoxVoiceChatBuild = 5625478;
 export const defaultSipPort = 5060;
 export const defaultRtpPorts = "5062-5199";
 const maxAdvertised = 256;
@@ -79,14 +89,26 @@ export function createVivoxService({ dataDir, network, settings, config = {}, ac
     },
     hostFor: (address) => advertised.get(address) ?? null,
 
+    // [VoiceChat.Vivox] for 8.20 and later's DefaultEngine.ini hotfix: the same ServerUrl and Domain, and the issuer as
+    // Issuer and Namespace, so the names the client builds are the ones this backend's and the gameserver's tokens sign.
+    engineSection(req, build) {
+      if (!service.servesBuild(build) || Number(build) < vivoxVoiceChatBuild) return "";
+      return ["[VoiceChat.Vivox]", `ServerUrl=${iniQuoted(service.serverUrl(req))}`, `Domain=${keys.domain}`, `Issuer=${keys.issuer}`,
+        `Namespace=${keys.issuer}`, ""].join("\r\n");
+    },
+    // The emulator's /api2/ by the address the game sent the request to.
+    serverUrl(req) {
+      const proxied = httpsProxied(req);
+      const base = proxied ? `https://${proxied.host}` : `${req.socket?.encrypted ? "https" : "http"}://${sentToHost(req) ?? network.directHost(req)}`;
+      return `${base}/api2/`;
+    },
+
     // [Vivox] for a build's DefaultGame.ini hotfix: ServerUrl at this backend's /api2/, by the address the game sent the
     // request to (as Support-A-Creator's page, network.js sentToHost: the SDK's own HTTP, WinINet, reaches it from the
     // player's PC without the game's -httpproxy), quoted so the hotfix merge keeps the "//" (fbb2301, #349); and Domain.
     gameSection(req, build) {
-      if (!service.servesBuild(build)) return "";
-      const proxied = httpsProxied(req);
-      const base = proxied ? `https://${proxied.host}` : `${req.socket?.encrypted ? "https" : "http"}://${sentToHost(req) ?? network.directHost(req)}`;
-      return ["[Vivox]", `ServerUrl=${iniQuoted(`${base}/api2/`)}`, `Domain=${keys.domain}`, ""].join("\r\n");
+      if (!service.servesBuild(build) || Number(build) >= vivoxVoiceChatBuild) return "";
+      return ["[Vivox]", `ServerUrl=${iniQuoted(service.serverUrl(req))}`, `Domain=${keys.domain}`, ""].join("\r\n");
     },
 
     // The SIP server (UDP and TCP on port) and its RTP ports; resolves with { port } (null when the port was taken).

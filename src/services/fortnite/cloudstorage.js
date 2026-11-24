@@ -289,7 +289,8 @@ const hotfixedKeysSection = (build, gameserver) => (gameserver && Number(build) 
 // 5.10's (CL-4225813) and later builds' Vivox voice chat (vivox/service.js gameSection): FVivox::Connect (7.00 0x999130)
 // reads [Vivox] ServerUrl and Domain from the game ini each time it connects, so this file, merged at start-up, points
 // the game's own Vivox at Core's emulator. Nothing for older builds (their URL is in the exe) or while the admin panel's
-// Voice chat (Vivox) switch is off, which leaves the file as it was.
+// Voice chat (Vivox) switch is off, which leaves the file as it was. 8.20 and later read [VoiceChat.Vivox] from the
+// engine ini instead, so theirs goes in DefaultEngine.ini (vivox/service.js engineSection).
 function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null, gameserver = false) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
@@ -312,7 +313,8 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
   // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
   // region and first region pick pings.
   const qos = qosEngineLines(build, settings?.get?.()?.regionPingServers);
-  const engine = engineNetwork + stormDestructionEngineSection(build) + (qos.length ? [...qos, ""].join("\r\n") : "");
+  const engine = engineNetwork + stormDestructionEngineSection(build) + (qos.length ? [...qos, ""].join("\r\n") : "")
+    + (vivox?.engineSection?.(req, build) ?? "");
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
     ...runtimeOptionsFiles(build, settings?.get?.(), creatorsUrl(req, network), islandLinks) };
 }

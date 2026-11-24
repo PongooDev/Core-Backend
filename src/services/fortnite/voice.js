@@ -15,6 +15,12 @@ import { describeToken, partyChannel } from "../../vivox/tokens.js";
 // Answered only for the builds the backend points at its Vivox emulator (5.10 and later, while the admin panel's Voice
 // chat (Vivox) switch is on: vivox/service.js servesBuild); any other build gets what it got before, the unknown route.
 const partyIdPattern = /^[A-Za-z0-9_-]{1,64}$/;
+// 8.20 and later (UE 4.23's VoiceChatManager, vivox/service.js vivoxVoiceChatBuild) POST for their own tokens:
+// createLoginToken, and createJoinToken with {"channelType", "channelName"} (8.30 0xBC0B90). Their account is
+// ".<namespace>.<accountId>." and a channel sip:confctl-<g|e>-<namespace>.<channelName>@<domain>, the namespace being
+// the issuer the hotfix gives them. "echo" is Vivox's echo channel (e); party, group and direct are non-positional (g).
+const channelNamePattern = /^[A-Za-z0-9_.-]{1,128}$/;
+const channelTypes = new Set(["echo", "direct", "party", "group"]);
 
 export function voiceRoutes({ tokens, vivox }) {
   const router = express.Router();
@@ -32,6 +38,24 @@ export function voiceRoutes({ tokens, vivox }) {
     }
     const token = vivox.keys.mint({ action: "join", player: req.params.accountId, channel: partyChannel(req.params.partyId) });
     vivox.say(`lobby party join token for ${req.params.accountId}, party ${req.params.partyId} (build ${getBuild(req)}): ${describeToken(token)}`);
+    res.json({ token });
+  });
+
+  router.post("/fortnite/api/game/v2/voice/:accountId/createLoginToken", served, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    const token = vivox.keys.mint({ action: "login", player: `${vivox.keys.issuer}.${req.params.accountId}` });
+    vivox.say(`lobby login token for ${req.params.accountId} (build ${getBuild(req)}): ${describeToken(token)}`);
+    res.json({ token });
+  });
+
+  router.post("/fortnite/api/game/v2/voice/:accountId/createJoinToken", served, requireAuth(tokens), requireOwnAccount, (req, res) => {
+    const channelType = String(req.body?.channelType ?? "");
+    const channelName = String(req.body?.channelName ?? "");
+    if (!channelTypes.has(channelType) || !channelNamePattern.test(channelName)) {
+      return sendError(res, 400, "errors.com.epicgames.fortnite.invalid_voice_channel", `Invalid voice channel ${channelType} ${channelName}`);
+    }
+    const channel = `confctl-${channelType === "echo" ? "e" : "g"}-${vivox.keys.issuer}.${channelName}`;
+    const token = vivox.keys.mint({ action: "join", player: `${vivox.keys.issuer}.${req.params.accountId}`, channel });
+    vivox.say(`lobby ${channelType} join token for ${req.params.accountId}, channel ${channelName} (build ${getBuild(req)}): ${describeToken(token)}`);
     res.json({ token });
   });
 
