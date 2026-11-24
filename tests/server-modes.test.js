@@ -356,3 +356,12 @@ test("the admin panel's Matchmaking page has the Server Game Modes section", () 
   assert.match(html, /sectionSessions, sectionServerModes, /);
   assert.match(html, /\["Hosts", \(s\) =>/);
 });
+
+// Core-Backend #432: the Add Game Mode to Queue window's season tabs and the bots' season filter stopped at Season 7.
+test("the admin panel's mode lists take their seasons from the season table, Season 8 included", () => {
+  const html = fs.readFileSync(new URL("../src/admin/panel.html", import.meta.url), "utf8");
+  assert.match(html, /\{ id: "8", label: "Season 8/);
+  assert.match(html, /\[\["all", "All Seasons"\], \.\.\.SEASONS\.map\(/);
+  assert.match(html, /\[\["all", "All seasons"\], \.\.\.SEASONS\.map\(/);
+  assert.doesNotMatch(html, /\["7", "Season 7"\]\]\.map/);
+});

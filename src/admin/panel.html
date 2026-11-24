@@ -5222,7 +5222,7 @@ Each starts active; quests the account already has are left as they are.`, {
         });
 
         const seasonPills = el("div", { class: "subtabs", role: "tablist", style: "margin:0;" },
-          [["all", "All Seasons"], ["1", "Season 1"], ["2", "Season 2"], ["3", "Season 3"], ["4", "Season 4"], ["5", "Season 5"], ["6", "Season 6"], ["7", "Season 7"]].map(([sId, sLabel]) =>
+          [["all", "All Seasons"], ...SEASONS.map(({ id }) => [id, `Season ${id}`])].map(([sId, sLabel]) =>
             el("button", {
               type: "button",
               role: "tab",
@@ -5449,7 +5449,7 @@ Each starts active; quests the account already has are left as they are.`, {
           botModesSeason = e.target.value;
           renderBotModes();
         }
-      }, ...[["all", "All seasons"], ...[1, 2, 3, 4, 5, 6, 7].map((season) => [String(season), `Season ${season}`])].map(([value, label]) =>
+      }, ...[["all", "All seasons"], ...SEASONS.map(({ id }) => [id, `Season ${id}`])].map(([value, label]) =>
         el("option", { value, text: label, selected: value === botModesSeason })));
       const botModesSearch = el("input", {
         class: "field",
