@@ -31,6 +31,14 @@ export async function startSipServer({ network, keys, port, media: mediaOptions 
   const media = createMedia({ ...mediaOptions, host: () => (net.isIPv4(network.bindAddress() ?? "") ? network.bindAddress() : undefined),
     allows: (address) => network.allows(address), say });
 
+  // Where the server's stream goes until the member's first packet says: the offer's c= for a client on this PC, else
+  // the address its SIP came from (a player behind a router or on a VPN offers its LAN address, which this PC can't
+  // reach). The SDK's RTP socket is bound to 0.0.0.0 (vivoxsdk 4.9's ortp rtp_session_set_local_addr), so either works.
+  function offerAddress(connection, sourceAddress) {
+    if (!connection || connection === "0.0.0.0" || !isLoopback(sourceAddress)) return sourceAddress;
+    return connection;
+  }
+
   // The address the SDP answer gives for media: what the prelogin told this client (by its IP), else the address the
   // Route header names (the proxy the client was given), else this PC's for this PC, else its public or LAN address.
   function mediaAddress(source, request) {
@@ -161,7 +169,8 @@ export async function startSipServer({ network, keys, port, media: mediaOptions 
     let joined;
     try {
       joined = await media.join({ callId, channel, label: uriOf(header(request, "from")) || source.address, codec,
-        remote: { address: codec.audio.connection && codec.audio.connection !== "0.0.0.0" ? codec.audio.connection : source.address, port: codec.audio.port } });
+        remote: { address: offerAddress(codec.audio.connection, source.address), port: codec.audio.port },
+        sendsFirst: codec.audio.attributes.some((attribute) => /^setup:passive$/i.test(attribute.trim())) });
     } catch (error) {
       calls.delete(callId);
       say(`${label}: no RTP port for ${channel} (${error.message})`);

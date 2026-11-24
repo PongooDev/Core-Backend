@@ -10,6 +10,11 @@ import dgram from "node:dgram";
 // can't decode (the SDK's Opus or Siren, when it offers no PCMU) forwards each packet to the others as it is, which is
 // right for two members and garbled for more. With echo on (config vivoxEcho), a member alone hears itself, for testing
 // with one client.
+//
+// A member whose offer says a=setup:passive (every Vivox SDK's, 4.9.0002.30406 and .31672: "o=amsip", RTP/AVP) gets a
+// frame every 20 ms from the start, silence while nobody talks, as a conference server's mixer sends: Vivox's servers
+// are the mixer, and the SDK offers itself as the passive side. Other members (plain SIP clients) get frames only while
+// someone talks, as before.
 
 // G.711 mu-law (ITU-T G.711, as in every softphone).
 const BIAS = 0x84;
@@ -141,7 +146,7 @@ export function createMedia({ range = { min: 5062, max: 5199 }, host, echo = fal
       if (!receiver.remote) continue;
       const alone = members.length === 1;
       const sources = [...frames].filter(([member]) => member !== receiver || (alone && echo));
-      if (!sources.length) {
+      if (!sources.length && !receiver.sendsFirst) {
         receiver.out.timestamp += frameSamples;
         receiver.out.silent = true;
         continue;
@@ -162,6 +167,7 @@ export function createMedia({ range = { min: 5062, max: 5199 }, host, echo = fal
   function send(member, packet) {
     member.rtp.send(packet, member.remote.port, member.remote.address);
     member.stats.sent++;
+    if (member.stats.sent === 1) say(`RTP: first packet to ${member.label} at ${member.remote.address}:${member.remote.port} from port ${member.port}${member.sendsFirst && !member.stats.received ? " (its offer is a=setup:passive, so the server's stream goes first)" : ""}`);
   }
 
   function onRtp(member, packet, from) {
@@ -195,9 +201,10 @@ export function createMedia({ range = { min: 5062, max: 5199 }, host, echo = fal
   return {
     // A call joining a channel: binds its ports and returns { port } for the SDP answer. remote: the SDP's address and
     // port, used until the member's first packet says where it really is.
-    async join({ callId, channel, label, codec, remote }) {
+    // sendsFirst: the offer's a=setup:passive (the SDK waits for the server's stream).
+    async join({ callId, channel, label, codec, remote, sendsFirst = false }) {
       const { rtp, rtcp, port } = await allocate();
-      const member = { callId, channel, label, codec, port, rtp, rtcp, remote: remote?.port ? remote : null, queue: [], primed: false,
+      const member = { callId, channel, label, codec, port, rtp, rtcp, remote: remote?.port ? remote : null, queue: [], primed: false, sendsFirst,
         out: { ssrc: crypto.randomBytes(4).readUInt32BE(0), sequence: crypto.randomBytes(2).readUInt16BE(0), timestamp: crypto.randomBytes(4).readUInt32BE(0), silent: true },
         stats: { received: 0, sent: 0, rtcp: 0, joined: Date.now() } };
       rtp.on("message", (packet, from) => onRtp(member, packet, from));

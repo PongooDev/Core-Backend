@@ -476,6 +476,30 @@ test("SIP server: REGISTER, INVITE answered with PCMU on a port of the call's ow
   }
 });
 
+test("media: a Vivox SDK's a=setup:passive member gets the server's stream (silence) from the start; others only when someone talks", async () => {
+  const media = createMedia({ range: { min: 5500, max: 5599 }, host: "127.0.0.1" });
+  const sdk = await udpClient();
+  const plain = await udpClient();
+  try {
+    const codec = { pt: 0, name: "PCMU", rate: 8000, rtpmap: "PCMU/8000", mixable: true };
+    await media.join({ callId: "sdk", channel: "party", label: "SDK", codec, remote: { address: "127.0.0.1", port: sdk.port }, sendsFirst: true });
+    await media.join({ callId: "plain", channel: "party", label: "Plain", codec, remote: { address: "127.0.0.1", port: plain.port } });
+    // Neither has sent anything: the SDK's member still gets 20 ms frames of mu-law silence, on payload type 0.
+    const first = parseRtp(await sdk.next((packet) => Boolean(parseRtp(packet))));
+    assert.equal(first.payloadType, 0);
+    assert.equal(first.payload.length, 160);
+    assert.ok([...first.payload].every((byte) => Math.abs(ulawDecode(byte)) < 8), "silence");
+    let plainGot = 0;
+    plain.socket.on("message", () => plainGot++);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    assert.equal(plainGot, 0, "a plain SIP member gets nothing while nobody talks, as before");
+  } finally {
+    media.close();
+    sdk.close();
+    plain.close();
+  }
+});
+
 test("media: two PCMU members hear each other through the mixer; echo lets one alone hear itself", async () => {
   const media = createMedia({ range: { min: 5300, max: 5399 }, host: "127.0.0.1" });
   const a = await udpClient();
