@@ -64,6 +64,9 @@ test("codes, paths and the link's shape", () => {
   assert.deepEqual(creativeRuntimeOptions(v700, null), []);
   assert.deepEqual(creativeRuntimeOptions(v710, { activeFeatured: () => ["1234-5678-9012"] }), ["PublishingEnabledForWhitelistedAccounts=true",
     "bEnableIslandCheckpoints=true", "bEnableIslandCodeEntryOnCuratedPortal=true", "!CuratedLinkCodes=ClearArray", "+CuratedLinkCodes=1234-5678-9012"]);
+  // 8.51's hub rifts by the bus (PongooDev/CoreV2#654): its PlaylistConditionalFlags, which 8.50 doesn't have.
+  assert.doesNotMatch(creativeRuntimeOptions(6058028, null).join(" "), /PlaylistConditionalFlags/);
+  assert.deepEqual(creativeRuntimeOptions(6165369, null).slice(-2), ["!PlaylistConditionalFlags=ClearArray", "+PlaylistConditionalFlags=BR_Portals_Enabled"]);
 });
 
 test("a creator's server publishes their island; its code, its file, its author's list, favorites and the featured rifts follow", async () => {

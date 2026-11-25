@@ -270,10 +270,17 @@ export function sanitizeFeatured(list) {
 // - bEnableIslandCheckpoints (+0x5F8): its Backup Island and Restore rows (0x308BA94).
 // - bEnableIslandCodeEntryOnCuratedPortal (+0xE6): the featured rifts' Enter Code (Update v7.01: "Featured Island Rifts ...
 //   also give access to 'Enter Code'"); a player's own rift keeps the build's setting.
+// - PlaylistConditionalFlags (8.51 CL-6165369 +0x7A0, new in 8.51): the keys of a playlist's ConditionalAssetGroup it
+//   brings. Creative's Playlist_PlaygroundV2 has Conditional_BR_Portal_Group: BR_Portals_Enabled streams the hub's five
+//   Battle Royale rifts by the bus (PG_Island_GroupMaster_BR_Portals: Sunny Steps and the others, each skydiving onto
+//   its part of the island), BR_Portals_Disabled their closed copy. With neither the pads stay empty
+//   (PongooDev/CoreV2#654). Only Epic's hotfix set it; the gameserver streams the flag's levels.
 export const creativeLinksBuild = 4667333;
+export const playlistConditionalFlagsBuild = 6165369;
 export function creativeRuntimeOptions(build, islandLinks) {
   if (Number(build) < creativeLinksBuild) return [];
   const featured = islandLinks?.activeFeatured?.() ?? [];
+  const conditional = Number(build) >= playlistConditionalFlagsBuild ? ["!PlaylistConditionalFlags=ClearArray", "+PlaylistConditionalFlags=BR_Portals_Enabled"] : [];
   return ["PublishingEnabledForWhitelistedAccounts=true", "bEnableIslandCheckpoints=true", "bEnableIslandCodeEntryOnCuratedPortal=true",
-    "!CuratedLinkCodes=ClearArray", ...featured.map((code) => `+CuratedLinkCodes=${code}`)];
+    "!CuratedLinkCodes=ClearArray", ...featured.map((code) => `+CuratedLinkCodes=${code}`), ...conditional];
 }
