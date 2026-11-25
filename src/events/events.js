@@ -547,8 +547,9 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // EventName of Season9_Fortbyte_Schedule, whose Fortbytes unlock DaysFromEventStart: events/fortbytes.js),
 // EventFlag.LTM_Wax and CalendarEvent_Season9_Wax (Schedule_LTM_Wax, Wick's Bounty's challenges: Update v9.01's LTM, 15 May
 // 2019, whose quests 9.00's paks don't have; not served), and Save the World's EventFlag.Season9 and EventFlag.Season9.Phase1
-// (QuestMap2's Season9AQuestMap), whose S9_* quest line isn't served yet, and EventFlag.Outpost (QuestMapData's Wargames
-// callout, events/wargames.js). It serves LobbySeason9, EventFlag.Outpost and nothing of Season 8's: its lobby, Spring 2019,
+// (QuestMapData's "TALES OF BEYOND" callout and QuestMap2's Season9AQuestMap, events/talesofbeyond.js), and EventFlag.Outpost
+// (QuestMapData's Wargames callout, events/wargames.js). It serves LobbySeason9, Tales of Beyond's two flags,
+// EventFlag.Outpost and nothing of Season 8's: its lobby, Spring 2019 (QuestMapData has no Spring2019QuestMap any more),
 // the Season 8 challenges' events and the Unvaulting end with 8.51. Neo Tilted, Mega Mall and the Slipstreams are 9.00's map itself: no calendar name gates them.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
@@ -587,6 +588,12 @@ export const lobbySeason9 = "EventFlag.LobbySeason9";
 // (EventCalloutQuestFlag EventFlag.Outpost) and the event's quests.
 export const wargames = "Wargames";
 export const wargamesFlag = "EventFlag.Outpost";
+// Save the World's Tales of Beyond (9.00, Core-Backend #435, events/talesofbeyond.js): QuestMapData's "TALES OF BEYOND"
+// event callout and Season9AQuestMap's four pages (EventCalloutQuestFlag and every page's QuestEventFlag
+// EventFlag.Season9.Phase1), with Season 9's own flag, as Spring 2019's.
+export const talesOfBeyond = "TalesOfBeyond";
+export const season9Flag = "EventFlag.Season9";
+export const season9Phase1 = "EventFlag.Season9.Phase1";
 // 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
 export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
@@ -791,6 +798,9 @@ const events = [
   { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build900 },
   // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js).
   { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build900 },
+  // 9.00's Tales of Beyond (events/talesofbeyond.js).
+  { name: talesOfBeyond, flag: season9Flag, firstBuild: build900, lastBuild: build900 },
+  { name: talesOfBeyond, flag: season9Phase1, firstBuild: build900, lastBuild: build900 },
   { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },

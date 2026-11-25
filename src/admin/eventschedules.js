@@ -222,7 +222,11 @@ export const eventCards = [
   // 9.00's Save the World Wargames (events/wargames.js, PongooDev/CoreV2#655).
   { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
     about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
-    flags: ["EventFlag.Outpost"] }
+    flags: ["EventFlag.Outpost"] },
+  // 9.00's Save the World Tales of Beyond (events/talesofbeyond.js, Core-Backend #435).
+  { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
+    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00.",
+    flags: ["EventFlag.Season9", "EventFlag.Season9.Phase1"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
