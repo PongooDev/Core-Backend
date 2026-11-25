@@ -12,6 +12,7 @@ import { mutantStorms2018Quests, mutantStormsQuests } from "./mutantstorms.js";
 import { luckOfTheStormQuests, springQuests } from "./spring2018.js";
 import { loveStormQuests, spring2019Phase1, spring2019Phase2, yarrrQuests } from "./spring2019.js";
 import { intoTheStormQuests } from "./storm2018.js";
+import { wargames, wargamesLineQuests } from "./wargames.js";
 import { winterQuests } from "./winter2017.js";
 
 // An event's quests leave with it (Core-Backend #127). Epic's were limited time quests: each one's Category is the
@@ -32,7 +33,8 @@ import { winterQuests } from "./winter2017.js";
 // AnniversaryQuest_2018 quests (events/birthday2018.js); 6.00's Cram Session its four AutumnQuest lines and its five
 // repeatable GenericQuests (events/cramsession2018.js); 7.10's Frostnite its WinterQuest_2018 quests and every week's
 // challenge pair (events/frostnite2018.js); 8.00's and 8.20's Spring 2019 a line per chapter, keyed on the chapter's flag
-// (Love Storm's LoveQuest_2019, Yarrr!'s PirateQuest_2019, events/spring2019.js), as each chapter's days are its own.
+// (Love Storm's LoveQuest_2019, Yarrr!'s PirateQuest_2019, events/spring2019.js), as each chapter's days are its own;
+// 9.00's Wargames its Boot Camp, visibility and Daily Challenge quests (events/wargames.js).
 // A function: roadtrip2018.js reads Season 5's replay clock (store/itemshop.js), whose imports come back here.
 const questLines = () => [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
   { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests },
@@ -40,7 +42,7 @@ const questLines = () => [{ flag: fortnitemares, starting: fortnitemaresQuests }
   { flag: blockbuster2018, starting: blockbusterQuests }, { flag: roadTrip2018, starting: roadTripLineQuests },
   { flag: birthday2018, starting: birthdayQuests }, { flag: cramSession2018, starting: cramSessionQuests },
   { flag: frostnite2018, starting: frostniteLineQuests }, { flag: spring2019Phase1, starting: loveStormQuests },
-  { flag: spring2019Phase2, starting: yarrrQuests }];
+  { flag: spring2019Phase2, starting: yarrrQuests }, { flag: wargames, starting: wargamesLineQuests() }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))
@@ -86,7 +88,7 @@ function endedEventQuests() {
 
 // Takes the quests that match out of the account's quest log (profile0), with their pins; the client hears of it as the
 // command's itemRemoved changes.
-function removeQuests(tracker, matches) {
+export function removeQuests(tracker, matches) {
   const removed = Object.entries(tracker.profile.items).filter(([, item]) => matches(item)).map(([itemId]) => itemId);
   for (const itemId of removed) tracker.removeItem(itemId);
 

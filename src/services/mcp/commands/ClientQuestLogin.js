@@ -3,6 +3,7 @@ import { eventQuests } from "../../../events/fortnitemares.js";
 import { settleFounderHeroes2018 } from "../../../events/fortnitemares2018.js";
 import { convertEventLeftovers } from "../../../events/leftovers.js";
 import { eventQuestsToRestore, removeEndedEventQuests, startEventRuns } from "../../../events/quests.js";
+import { refreshWargamesDailies } from "../../../events/wargames.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
@@ -46,6 +47,8 @@ export function clientQuestLogin({ session, notifications, profileId }) {
     // 6.20's Fortnitemares: a founder's two heroes (events/fortnitemares2018.js).
     settleFounderHeroes2018(session, grant);
     refreshDailyQuests(session);
+    // 9.00's Wargames Daily Challenges, a slot per unlocked zone (events/wargames.js).
+    refreshWargamesDailies(session);
     refreshHeldItems(session);
   }
   if (activeEventFlags().length) notifications.push(eventFlagsNotification());

@@ -546,10 +546,10 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // and six more: EventFlag.LobbySeason9 (Items/Events/Shared/LobbyBG_Season9, Season 9's lobby background; it is also the
 // EventName of Season9_Fortbyte_Schedule, whose Fortbytes unlock DaysFromEventStart: events/fortbytes.js),
 // EventFlag.LTM_Wax and CalendarEvent_Season9_Wax (Schedule_LTM_Wax, Wick's Bounty's challenges: Update v9.01's LTM, 15 May
-// 2019, whose quests 9.00's paks don't have; not served), and Save the World's EventFlag.Season9, EventFlag.Season9.Phase1
-// (QuestMap2's Season9AQuestMap) and EventFlag.Outpost (QuestMapData), whose S9_* quest line isn't served yet. It serves
-// LobbySeason9 and nothing of Season 8's: its lobby, Spring 2019, the Season 8 challenges' events and the Unvaulting end
-// with 8.51. Neo Tilted, Mega Mall and the Slipstreams are 9.00's map itself: no calendar name gates them.
+// 2019, whose quests 9.00's paks don't have; not served), and Save the World's EventFlag.Season9 and EventFlag.Season9.Phase1
+// (QuestMap2's Season9AQuestMap), whose S9_* quest line isn't served yet, and EventFlag.Outpost (QuestMapData's Wargames
+// callout, events/wargames.js). It serves LobbySeason9, EventFlag.Outpost and nothing of Season 8's: its lobby, Spring 2019,
+// the Season 8 challenges' events and the Unvaulting end with 8.51. Neo Tilted, Mega Mall and the Slipstreams are 9.00's map itself: no calendar name gates them.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
@@ -583,6 +583,10 @@ export const lobbySeason6 = "EventFlag.LobbySeason6";
 export const lobbySeason7 = "EventFlag.LobbySeason7";
 export const lobbySeason8 = "EventFlag.LobbySeason8";
 export const lobbySeason9 = "EventFlag.LobbySeason9";
+// Save the World's Wargames (9.00, PongooDev/CoreV2#655, events/wargames.js): QuestMapData's "WARGAMES" event callout
+// (EventCalloutQuestFlag EventFlag.Outpost) and the event's quests.
+export const wargames = "Wargames";
+export const wargamesFlag = "EventFlag.Outpost";
 // 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
 export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
@@ -785,6 +789,8 @@ const events = [
   { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build851 },
   // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event.
   { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build900 },
+  // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js).
+  { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build900 },
   { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },

@@ -18,6 +18,7 @@ import { stormDestructionEngineSection } from "../../events/stormdestruction.js"
 import { qosEngineLines } from "../../matchmaking/qos.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { creativeAccessGlobals } from "../../profiles/creative.js";
+import { wargamesGlobals } from "../../events/wargames.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { giftingRuntimeOptions } from "../../store/gifting.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
@@ -302,8 +303,10 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
     ...stompSection(build, address, port, proxied),
     ...sidecarSection(build)
   ].join("\r\n");
-  // 7.00's Creative early access notice on the lobby's "Start a server" tile (profiles/creative.js, Core-Backend #379).
-  const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build), ...creativeAccessGlobals(build)])
+  // 7.00's Creative early access notice on the lobby's "Start a server" tile (profiles/creative.js, Core-Backend #379), and
+  // 9.00's Wargames switch, bEnableIronCity (events/wargames.js, PongooDev/CoreV2#655), for the client and the gameserver.
+  const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build), ...creativeAccessGlobals(build),
+    ...wargamesGlobals(build)])
     + customKeySection(build)
     + forcedQueueSection(build) + chatSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })

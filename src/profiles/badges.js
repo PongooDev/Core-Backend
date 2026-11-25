@@ -1,4 +1,5 @@
 import { frostniteWaveTickets } from "../events/frostnite2018.js";
+import { wargameBadgeRewards } from "../events/wargames.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grant } from "./progress.js";
@@ -30,6 +31,9 @@ export function grantBadgeRewards(session, earnedBadgeData) {
     // Frostnite's wave badges (7.10): Snowflake Tickets for each wave the team survived (events/frostnite2018.js).
     for (const reward of frostniteWaveTickets(templateId, times)) granted.push(...grant(session, reward.templateId, reward.quantity));
   }
+  // 9.00's Wargames (events/wargames.js): the simulation's badge (IronCityMissionBadge01-25) gives its zone's Wargames
+  // Rewards pack, the challenge's badge one more.
+  for (const reward of wargameBadgeRewards(earnedBadgeData)) granted.push(...grant(session, reward.templateId, reward.quantity, { packSource: "Mission" }));
   if (granted.length) {
     const totals = new Map();
     for (const { templateId, quantity } of granted) totals.set(templateId, (totals.get(templateId) ?? 0) + quantity);

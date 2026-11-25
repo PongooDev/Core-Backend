@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { bannerIds } from "../gamedata/banners.js";
+import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
 import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities, stormZonePool, vindertechSchematics } from "./pools.js";
 
@@ -104,6 +104,7 @@ function zoneReward(group, templateId, info) {
   // "Seasonal Gold" (ZCP_EventScaling_T01-T20, every mission's while the Event Store is open, world/theaters.js): Seasonal
   // Gold (AccountResource:EventCurrency_Scaling), 5 a tier (🟡 Core's: Epic rolled it on its servers), so 5 for a T01
   // mission's pack and 100 for a T20's, times the mission's loot level as its other packs.
+  if (group === "zcp_wargame") return wargamesReward(info.lootTier || 1, resource);
   if (group === "zcp_eventscaling") return resource("AccountResource:eventcurrency_scaling", 5 * Math.max(info.lootTier || 1, 1));
   match = group.match(/^zcp_tutorial_(hero|melee|ranged|trap)$/);
   if (match) return one(match[1], null, "uc");
@@ -131,6 +132,28 @@ function zoneReward(group, templateId, info) {
       ...Object.values(xp).flatMap((id) => resource(id, xpByLevel[Math.min(tier, 6)])), ...one("schematic", null, tier <= 3 ? "r" : tier <= 5 ? "vr" : "sr")];
   }
   return [];
+}
+
+// 9.00's Wargames (events/wargames.js, PongooDev/CoreV2#655). "Wargames Banner" (CardPack_Wargames_Banner_<Sim>, group
+// CardPack_Wargames_Banner_<Sim>, "An exclusive homebase banner!"), each simulation quest's ("a unique banner reward"):
+// BannerIcons' Wargames<Sim> row (WargamesTornado ... in 9.00's banner table).
+function wargamesBannerOf(simulation) {
+  const banner = bannerTemplateId(`HomebaseBannerIcon:Wargames${simulation}`);
+  return banner ? [{ templateId: banner, quantity: 1 }] : [];
+}
+
+// "Wargames Rewards" (ZCP_IronCity_T01-T04, group ZCP_WarGame, loot tier 1 to 4), a simulation's (events/wargames.js), by
+// their descriptions: Stonewood's "Hero XP might be inside", Plankerton's "Schematic XP and Evolution Materials",
+// Canny Valley's "Survivor XP and RE-PERK!", Twine Peaks' "PERK-UP!". Epic rolled them on its servers; the amounts are
+// Core's (🟡): the XP of a zone reward pack one level above the zone, 2 of the zone's evolution material, 15 RE-PERK!,
+// and 10 Epic and 5 Legendary PERK-UP!.
+function wargamesReward(tier, resource) {
+  const zone = Math.min(Math.max(tier, 1), 4);
+  const xp = xpByLevel[zone + 1];
+  if (zone === 1) return resource("AccountResource:heroxp", xp);
+  if (zone === 2) return [...resource("AccountResource:schematicxp", xp), ...resource("AccountResource:reagent_c_t02", 2)];
+  if (zone === 3) return [...resource("AccountResource:personnelxp", xp), ...resource("AccountResource:reagent_alteration_generic", 15)];
+  return [...resource("AccountResource:reagent_alteration_upgrade_vr", 10), ...resource("AccountResource:reagent_alteration_upgrade_sr", 5)];
 }
 
 // Item caches (4.0, CoreV2 #290): the card packs a Save the World item cache opens into (UFortItemCacheItemDefinition
@@ -343,6 +366,8 @@ export function rollContents(templateId) {
   if (name.startsWith("cardpack_silver")) return llama(llamas.cardpack_silver);
   if (name.startsWith("cardpack_gold")) return llama(llamas.cardpack_gold);
   if (group.startsWith("cardpack_bronze") || group.startsWith("cardpack_event")) return llama(llamas.cardpack_bronze);
+  const wargamesBanner = /^cardpack_wargames_banner_([a-z]+)$/.exec(group);
+  if (wargamesBanner) return wargamesBannerOf(wargamesBanner[1]);
   if (group.startsWith("zcp_")) return zoneReward(group, templateId, withRarity);
   if (group.startsWith("cacheroll_")) return itemCache(group, templateId);
   if (group.startsWith("cardpack_founders_")) return founders(group);

@@ -218,7 +218,11 @@ export const eventCards = [
   // 9.00's (events/events.js): Season 9's lobby, which is also the Fortbytes' event (events/fortbytes.js).
   { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00", ranges: [[6337466, 6337466]],
     about: "Battle Royale's Season 9 lobby: EventFlag.LobbySeason9 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season9). It is also the event of the Battle Pass's Fortbytes (Season9_Fortbyte_Schedule): each Fortbyte unlocks its set number of days after the flag's start, Season 9's first day on its replay.",
-    flags: ["EventFlag.LobbySeason9"] }
+    flags: ["EventFlag.LobbySeason9"] },
+  // 9.00's Save the World Wargames (events/wargames.js, PongooDev/CoreV2#655).
+  { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
+    about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
+    flags: ["EventFlag.Outpost"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 
