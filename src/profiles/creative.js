@@ -170,20 +170,44 @@ const plotSetsBuild = 4667333;
 // sent it.
 const frostyFortressPlotTemplateId = "CreativePlot:arctic_competitive_medium1";
 const frostyFortressBuild = 4727874;
+// Season 8's islands (PongooDev/CoreV2#645), each a FortCreativeRealEstatePlotItemDefinition under
+// /Game/Playgrounds/Items/Plots in 8.30's and 8.51's paks. Update v8.10's "New Islands: Sandbar Island ... Volcano Island":
+// Sandbar_Large ("Sandbar Island {islandIndex}", PID_Playset_105x105_Composed_Sandbar, 105 x 105) and Volcano_Large
+// ("Volcano Island {islandIndex}", PID_Playset_60x60_Composed_Volcano, 65 x 65); Content Update v8.11's "Black Glass Island":
+// BlackGlass_Medium (PID_Playset_60x60_Composed_BlackGlass, 65 x 65). No 8.10 or 8.11 build is supported, so they come from
+// 8.20 (CL-5625478), the first after 8.00 (whose notes add no island). Update v8.30's "Added new Tropical Island" and
+// "Added new Rivers Edge Island ... using the new Military set": Tropical_Medium (PID_Playset_60x60_Composed_Tropical) and
+// Military_Medium ("Rivers Edge Island {islandIndex}", PID_Playset_60x60_Composed_Military), from 8.30 (CL-5793395).
+// Razor_Medium (PID_Playset_60x60_Composed_Razor) is in 8.30's paks too but was never released: no patch note adds it, its
+// DisplayName is still Arctic Island's, and Update v10.10's list of the islands available doesn't name it; so no account
+// gets one. 🟡 How many of each Epic gave isn't in the notes: one, as for the Frosty Fortress.
+const sandbarPlotTemplateId = "CreativePlot:sandbar_large";
+const volcanoPlotTemplateId = "CreativePlot:volcano_large";
+const blackGlassPlotTemplateId = "CreativePlot:blackglass_medium";
+const season8IslandsBuild = 5625478;
+const tropicalPlotTemplateId = "CreativePlot:tropical_medium";
+const riversEdgePlotTemplateId = "CreativePlot:military_medium";
+const tropicalIslandsBuild = 5793395;
 // A player's island types: the plot definition, how many of it an account gets (the island limit of that type), the first
 // build that has it, and its display name without the {islandIndex} (the definitions' own names, above).
 export const playerPlotTypes = [
   { templateId: plotTemplateId, count: plotCount, firstBuild: creativeProfileBuild, name: "Island" },
   { templateId: arcticPlotTemplateId, count: 4, firstBuild: plotSetsBuild, name: "Arctic Island" },
   { templateId: blockPlotTemplateId, count: 2, firstBuild: plotSetsBuild, name: "The Block" },
-  { templateId: frostyFortressPlotTemplateId, count: 1, firstBuild: frostyFortressBuild, name: "Frosty Fortress" }
+  { templateId: frostyFortressPlotTemplateId, count: 1, firstBuild: frostyFortressBuild, name: "Frosty Fortress" },
+  { templateId: sandbarPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Sandbar Island" },
+  { templateId: volcanoPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Volcano Island" },
+  { templateId: blackGlassPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Black Glass Island" },
+  { templateId: tropicalPlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Tropical Island" },
+  { templateId: riversEdgePlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Rivers Edge Island" }
 ];
 // The island type of a plot template id (any case), or null.
 export const playerPlotType = (templateId) => playerPlotTypes.find((type) => type.templateId.toLowerCase() === String(templateId ?? "").toLowerCase()) ?? null;
 const plotSets = (build = currentBuild()) => playerPlotTypes.filter((type) => type.templateId === plotTemplateId || Number(build) >= type.firstBuild);
 
-// The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, and
-// from 7.20 a Frosty Fortress.
+// The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, from
+// 7.20 a Frosty Fortress, from 8.20 a Sandbar, a Volcano and a Black Glass island, and from 8.30 a Tropical and a Rivers
+// Edge island.
 // Returns how many were given.
 export function settleCreativePlots(session, now = new Date()) {
   if (!hasCreative() || !creativeEntitled(session, now)) return 0;

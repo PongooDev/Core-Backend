@@ -17,8 +17,10 @@ import { siphonOn, siphonRows } from "../src/events/siphon.js";
 import { spring2019Flag, spring2019Phase1, spring2019Phase2 } from "../src/events/spring2019.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
+import { isForeignTemplate } from "../src/gamedata/templates.js";
 import { athenaQuestLogin, grantCosmetic, setUpAthena } from "../src/profiles/athena.js";
 import { isStylesCategory, styleSchedules } from "../src/profiles/challenges.js";
+import { plotsOf, settleCreativePlots } from "../src/profiles/creative.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -205,4 +207,31 @@ test("Season 8's shop history serves 8.30 its own items, and 8.20 only its own",
   } finally {
     configureItemShop(null);
   }
+});
+
+// PongooDev/CoreV2#645: Season 8's islands, each from the build Epic released it on (Update v8.10's Sandbar and Volcano,
+// Content Update v8.11's Black Glass: 8.20 is the first supported build with them; Update v8.30's Tropical and Rivers Edge);
+// 8.00 gets none of them, and no build gets the unreleased Razor_Medium.
+test("Season 8's Creative islands: 8.20 a Sandbar, Volcano and Black Glass island, 8.30 also a Tropical and Rivers Edge one", () => {
+  const v800 = "5203069";
+  const seasons = { mode: "auto", seasonStarts: { 7: "2018-12-06", 8: "2019-02-28" } };
+  const plots = (build, name) => withConfig(seasons, () => withSession(build, name, (session) => {
+    settleCreativePlots(session, at("2019-04-20T12:00:00Z"));
+    return plotsOf(session.profile("creative").profile).map(([, item]) => item.templateId.replace("CreativePlot:", ""));
+  }));
+  const season7 = ["temperate_medium", "arctic_medium", "theblock_season7", "arctic_competitive_medium1"];
+  const count = (list, id) => list.filter((plot) => plot === id).length;
+  const p800 = plots(v800, "plots800-645");
+  const p820 = plots(v820, "plots820-645");
+  const p830 = plots(v830, "plots830-645");
+  assert.deepEqual([...new Set(p800)].sort(), [...season7].sort());
+  assert.deepEqual([...new Set(p820)].sort(), [...season7, "sandbar_large", "volcano_large", "blackglass_medium"].sort());
+  assert.deepEqual([...new Set(p830)].sort(), [...season7, "sandbar_large", "volcano_large", "blackglass_medium", "tropical_medium", "military_medium"].sort());
+  for (const id of ["sandbar_large", "volcano_large", "blackglass_medium", "tropical_medium", "military_medium"]) assert.equal(count(p830, id), 1, id);
+  assert.equal(count(p830, "temperate_medium"), 4);
+  assert.equal(p830.some((plot) => plot.startsWith("razor")), false);
+  assert.equal(inBuild(v820, () => isForeignTemplate("CreativePlot:tropical_medium")), true);
+  assert.equal(inBuild(v830, () => isForeignTemplate("CreativePlot:military_medium")), false);
+  assert.equal(inBuild(v800, () => isForeignTemplate("CreativePlot:sandbar_large")), true);
+  assert.equal(inBuild(v820, () => isForeignTemplate("CreativePlot:blackglass_medium")), false);
 });

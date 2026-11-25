@@ -9981,7 +9981,9 @@ Each starts active; quests the account already has are left as they are.`, {
     // Creative's published islands and the hub's featured rifts (admin/creative.js, PongooDev/CoreV2#488).
     const islandBytes = (size) => (size >= 1048576 ? `${(size / 1048576).toFixed(1)} MB` : size >= 1024 ? `${Math.round(size / 1024)} KB` : `${size ?? 0} B`);
     const islandTemplateName = (templateId) => ({ "creativeplot:temperate_medium": "Island", "creativeplot:arctic_medium": "Arctic Island",
-      "creativeplot:theblock_season7": "The Block", "creativeplot:arctic_competitive_medium1": "Frosty Fortress" })[String(templateId).toLowerCase()] ?? String(templateId).replace(/^CreativePlot:/i, "");
+      "creativeplot:theblock_season7": "The Block", "creativeplot:arctic_competitive_medium1": "Frosty Fortress",
+      "creativeplot:sandbar_large": "Sandbar Island", "creativeplot:volcano_large": "Volcano Island", "creativeplot:blackglass_medium": "Black Glass Island",
+      "creativeplot:tropical_medium": "Tropical Island", "creativeplot:military_medium": "Rivers Edge Island" })[String(templateId).toLowerCase()] ?? String(templateId).replace(/^CreativePlot:/i, "");
     async function showCreative() {
       const view = await act(api("/admin/api/creative"));
       if (!view || state.view !== "creative") return;
