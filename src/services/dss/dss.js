@@ -4,6 +4,7 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { currentBuild } from "../../builds/context.js";
+import { versionOf } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
@@ -151,6 +152,44 @@ export function storeIsland(dataDir, island, info, data, meta, build = null) {
   info.updated = new Date().toISOString();
 }
 
+// An island file's SaveVersion: the int16 after its header's record name (an FString, "None"), before the record's
+// compressed blocks (tag 0x9E2A83C1, a few bytes on). 8.00 writes 5, 8.20 8, 8.50 and 8.51 10. Null when the data doesn't
+// start that way.
+const compressedTag = Buffer.from([0xc1, 0x83, 0x2a, 0x9e]);
+export function islandSaveVersion(data) {
+  if (!Buffer.isBuffer(data) || data.length < 10) return null;
+  const length = data.readInt32LE(0);
+  const nameBytes = length < 0 ? -length * 2 : length;
+  if (length === 0 || nameBytes > 512 || data.length < 4 + nameBytes + 2) return null;
+  const terminator = length < 0 ? data.readUInt16LE(4 + nameBytes - 2) : data[4 + nameBytes - 1];
+  if (terminator !== 0) return null;
+  const at = 4 + nameBytes;
+  const tag = data.indexOf(compressedTag, at + 2);
+  if (tag < 0 || tag > at + 2 + 32) return null;
+  return data.readInt16LE(at);
+}
+
+// 🟡 Core's: a save from an older SaveVersion than the island's file isn't written over it. 8.50 added
+// ULevelSaveRecord::VolumeInfoActorRecords (where it keeps the MinigameSettingsMachine); 8.20 to 8.40 can't read them, so
+// an 8.50+ island they load loses the machine (the island's GAME tab) at their next save, for good (PongooDev/CoreV2#661).
+// Epic's DSS never served a newer build's save to an older build; this one serves an island to any build. The older
+// upload is kept beside the island as <file>.v<its SaveVersion> (meta in <file>.v<N>.json), and the game is answered as
+// for any save.
+export const heldBackIslandFile = (dataDir, island, saveVersion) => `${islandFileOf(dataDir, island)}.v${saveVersion}`;
+function holdBackOlderSave(dataDir, island, data, meta, build) {
+  const incoming = islandSaveVersion(data);
+  if (incoming === null) return null;
+  // Only an island that has a file (an admin reset removes it and leaves .prev); a 0-byte one's save is its .prev (#395).
+  if (!fs.existsSync(islandFileOf(dataDir, island))) return null;
+  const stored = islandSaveVersion(readIslandSave(dataDir, island));
+  if (stored === null || incoming >= stored) return null;
+  const file = heldBackIslandFile(dataDir, island, incoming);
+  writeAtomic(file, data);
+  writeAtomic(`${file}.json`, JSON.stringify({ meta, build: creativeChangelist(build), saveVersion: incoming, islandSaveVersion: stored,
+    size: data.length, updated: new Date().toISOString() }));
+  return { incoming, stored, file };
+}
+
 export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) {
   const router = express.Router();
   const fileOf = (island) => islandFileOf(dataDir, island);
@@ -225,6 +264,18 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
 
   const store = (island, info, data, meta, build = currentBuild()) => storeIsland(dataDir, island, info, data, meta, build);
 
+  // An older SaveVersion's upload kept beside the island instead of over it (holdBackOlderSave), logged; null when it is
+  // the island's new save.
+  const holdBack = (island, data, meta, build = currentBuild()) => {
+    const heldBack = holdBackOlderSave(dataDir, island, data, meta, build);
+    if (heldBack) {
+      log("DSS", `${island.owner}'s island ${island.plotItemId}${island.checkpoint ? "'s checkpoint" : ""}: kept its SaveVersion ${heldBack.stored} save; `
+        + `the older SaveVersion ${heldBack.incoming} upload (${data.length} bytes) from build ${build ?? "unknown"}${build && versionOf(build) ? ` (${versionOf(build)})` : ""} `
+        + `went to ${path.basename(heldBack.file)} instead`);
+    }
+    return heldBack;
+  };
+
   const raw = express.raw({ type: () => true, limit: maxIslandBytes });
   const base = "/api/dss/v1/:appName/*filePath";
   router.use("/api/dss/v1", requireAuth(tokens));
@@ -268,12 +319,14 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
       log("DSS", `${island.owner}'s island ${island.plotItemId} ignored an empty upload${autolock ? ", autolock" : ""}`);
       return res.status(204).end();
     }
-    store(island, info, data, metaOf(req));
+    const meta = metaOf(req);
+    const heldBack = holdBack(island, data, meta);
+    if (!heldBack) store(island, info, data, meta);
     // An autolock upload over a checkout nobody has used for lockIdleMs ends it.
     if (autolock) delete info.lock;
     else if (info.lock) info.lock.at = Date.now();
     saveInfo(island, info);
-    log("DSS", `${island.owner}'s island ${island.plotItemId} saved (${data.length} bytes${autolock ? ", autolock" : ""})`);
+    if (!heldBack) log("DSS", `${island.owner}'s island ${island.plotItemId} saved (${data.length} bytes${autolock ? ", autolock" : ""})`);
     res.status(204).end();
   });
 
@@ -303,10 +356,12 @@ export function dssRoutes({ tokens, profiles, sessions, dataDir, islandLinks }) 
     if (operation === "checkin") {
       if (!held) return dssError(res, 409, "file_not_checked_out", `${dssApp}/${filePath} is not checked out`, [dssApp, filePath]);
       const data = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
-      if (data.length) store(island, info, data, { ...(info.meta ?? {}), ...metaOf(req) });
+      const meta = { ...(info.meta ?? {}), ...metaOf(req) };
+      const heldBack = data.length ? holdBack(island, data, meta) : null;
+      if (data.length && !heldBack) store(island, info, data, meta);
       delete info.lock;
       saveInfo(island, info);
-      log("DSS", `${island.owner}'s island ${island.plotItemId} checked in${data.length ? ` (${data.length} bytes)` : ""}`);
+      log("DSS", `${island.owner}'s island ${island.plotItemId} checked in${data.length ? ` (${data.length} bytes${heldBack ? ", kept beside it" : ""})` : ""}`);
       return res.status(204).end();
     }
     if (operation === "restore") {
