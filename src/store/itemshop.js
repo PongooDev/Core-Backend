@@ -184,7 +184,14 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // have (the Black Widow and Star-Lord outfits with their gear, Sterling, Daring Duelist, Dream with her glider and wrap,
 // Luminos, Aura, Guild, Cole, the Get Funky music and the Lavish emote); bundles (the Beastmode wraps) are left out. 28 February had two shops, 7.40's last before Update v8.00 and Season 8's launch: both are in, the launch
 // shop's items after the first's, as 14 February's were for 7.40. Battle Pass Tiers, bundles, free (0 V-Bucks) items
-// and real-money offers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
+// and real-money offers are left out.
+//
+// 9.00 (CL-6337466) is Season 9, with its own shop the same way: Epic's of Season 9, day by day from its first day, 9 May
+// 2019, to its last, 31 July 2019 (itemshop-season9.json, the same wiki pages; a day split in two pages from its Part 1),
+// replayed in an 84-day cycle from the day 9.00 is first served. Its items are those 9.00's data has (754 of the 1,184
+// the pages list); the later updates' (John Wick, the Hang Time and World Cup sets...) wait for their builds' data.
+// Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
+// data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -192,7 +199,7 @@ const readHistory = (file) => {
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
   3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json"),
   6: readHistory("itemshop-season6.json"), 7: readHistory("itemshop-season7.json"),
-  8: readHistory("itemshop-season8.json") };
+  8: readHistory("itemshop-season8.json"), 9: readHistory("itemshop-season9.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 // A season's replay is as long as its recorded history (Season 8's 70 days, 28 February to 8 May 2019).
@@ -213,8 +220,8 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
 // 3.0 is first served, Season 4 on the day 4.0 is, Season 5 on the day 5.0 is, Season 6 on the day 6.00 is, Season 7
-// on the day 7.00 is, and Season 8 on the day 8.00 is.
-const anchoredSeasons = [2, 3, 4, 5, 6, 7, 8];
+// on the day 7.00 is, Season 8 on the day 8.00 is, and Season 9 on the day 9.00 is.
+const anchoredSeasons = [2, 3, 4, 5, 6, 7, 8, 9];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {

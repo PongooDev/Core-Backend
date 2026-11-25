@@ -588,6 +588,17 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   include Season7_OT_Schedule (8.51's names only its calendar event too; its flag, LTE_S7_OverTime, isn't served on 8.51).
   No earlier overlay was redone. Against 8.50 only `athena.json` changes: the two schedules and their bundles, and
   AthenaLootPackages_Client (a Minigun row and an SMG row's NamedWeightMult: the Unvaulting's GW.* loot weights).
+  9.00's (CL-6337466, Update v9.00) is `4.23.0-6337466+++Fortnite+Release-9.00` (no `Build.version`; its Dumper-7 SDK is
+  4.23.0-6337466; the build folder is `9.00-CL-6337466\9.00-CL-6337466\Fortnite`) with 8.51's full data (Cert's files with
+  `gamedata/6165369` applied) as the fifth argument and the main key FModel's settings hold for its build folder. 8.51's
+  layout with only the keyed pakchunk1000 to 1002, of which the keychain opens 1002. Its mission alerts are still the fifth
+  argument's. No extractor change. Against 8.51 fifteen files change: `athena.json` (117 cosmetics, none gone: Season 9's
+  Battle Pass, Rox, Sentinel, Bunker Jonesy, Vega, Stratus, Demi, Vendetta, Kyo, the Holographic umbrella; AthenaSeason9 and
+  its schedules, the Fortbytes' Season9_Fortbyte_Schedule with its hundred DaysFromEventStart quests, Schedule_LTM_Wax
+  without its quests), `items.json`, `quests.json` (Save the World's S9_* quest line, the Wargames dailies),
+  `world.json`, `objectivestats.json`, `characters.json`, `cardpacks.json`, `collectionbook.json`,
+  `alterations.json`, `banners.json`, `dailyrewards.json`, `expeditions.json`, `fabricator.json`, `transmog.json`
+  and `upgrades.json`; the other five are 8.51's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

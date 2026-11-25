@@ -1,0 +1,4785 @@
+{
+ "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.weirdgloop.org, ?action=raw; May 9th 2019 - July 31st 2019, Season 9 whole run, 84 days; a day split in two pages (May 17th, May 22nd, June 6th, June 12th, July 20th, July 26th) from its Part 1, the shop at UTC midnight), read 2026-11-25, the items and prices as charged that day (featured = the wiki featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki ImageCycler) listed; the items of one tile carry {tile: n}, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back). Each item is matched to 9.00's (CL-6337466) data by its display name and type (an Emote never to an emoticon, spray or toy of the same name: July's Crabby emote is a later build's, not 4.0's Crabby emoticon); a build serves the ones its own data has. Items 9.00 lacks are left out (the later updates' cosmetics: John Wick, the Hang Time and World Cup sets, Doggo...); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too.",
+ "days": [
+  {
+   "date": "2019-05-09",
+   "featured": [
+    [
+     "AthenaCharacter:cid_199_athena_commando_f_bluesamurai",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_198_athena_commando_m_bluesamurai",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_090_samuraiblue",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_066_samuraiblue",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_160_icecream",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_120_icecream",
+     800,
+     {
+      "tile": 2
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_170_athena_commando_f_luchador",
+     1200
+    ],
+    [
+     "AthenaDance:eid_electroswing",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_014_icecream",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_180_tristar",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_218_athena_commando_m_greenberet",
+     800
+    ],
+    [
+     "AthenaDance:eid_facepalm",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-10",
+   "featured": [
+    [
+     "AthenaCharacter:cid_153_athena_commando_f_carbideblack",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_152_athena_commando_f_carbideorange",
+     2000,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_045_carbideblack",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_413_athena_commando_m_streetdemon",
+     1200
+    ],
+    [
+     "AthenaItemWrap:wrap_067_streetdemon",
+     500
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_021_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_082_sushichef",
+     800
+    ],
+    [
+     "AthenaDance:eid_mime",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_072_athena_commando_m_scout",
+     1200
+    ],
+    [
+     "AthenaDance:eid_laugh",
+     500
+    ],
+    [
+     "AthenaGlider:glider_id_036_auroraglow",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-11",
+   "featured": [
+    [
+     "AthenaCharacter:cid_413_athena_commando_m_streetdemon",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_067_streetdemon",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_097_athena_commando_f_rockerpunk",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_034_rockerpunk",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_022_rockerpunk",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_339_athena_commando_m_robottrouble",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_340_athena_commando_f_robottrouble",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_159_robottrouble",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_073_medic",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_276_athena_commando_f_sniperhood",
+     1200
+    ],
+    [
+     "AthenaDance:eid_breakboy",
+     500
+    ],
+    [
+     "AthenaDance:eid_intensity",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_074_sharpdresser",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_075_athena_commando_f_stripe",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-12",
+   "featured": [
+    [
+     "AthenaCharacter:cid_031_athena_commando_m_retro",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_020_keg",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_412_athena_commando_f_raptor",
+     2000
+    ],
+    [
+     "AthenaGlider:glider_id_147_raptor",
+     1200
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaItemWrap:wrap_064_raptor",
+     300
+    ],
+    [
+     "AthenaDance:eid_dab",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_134_snowman",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_023_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_124_athena_commando_f_auroraglow",
+     800
+    ],
+    [
+     "AthenaDance:eid_shaolin",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-13",
+   "featured": [
+    [
+     "AthenaCharacter:cid_412_athena_commando_f_raptor",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_031_athena_commando_m_retro",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_147_raptor",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_020_keg",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_383_athena_commando_f_cacti",
+     800,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_185_badasscowboycactus",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_cactustpose",
+     200
+    ],
+    [
+     "AthenaCharacter:cid_216_athena_commando_f_medic",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_035_prismatic",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_064_raptor",
+     300
+    ],
+    [
+     "AthenaCharacter:cid_328_athena_commando_f_tennis",
+     1200
+    ],
+    [
+     "AthenaDance:eid_martialarts",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-14",
+   "featured": [
+    [
+     "AthenaCharacter:cid_362_athena_commando_f_bandageninja",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_361_athena_commando_m_bandageninja",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_172_bandageninja",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_265_athena_commando_f_animaljackets",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_264_athena_commando_m_animaljackets",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_119_animaljackets",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_093_animaljackets",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_133_bandageninja",
+     1500,
+     {
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_firedance",
+     800
+    ],
+    [
+     "AthenaDance:eid_cowboydance",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_042_bandageninja",
+     300
+    ],
+    [
+     "AthenaCharacter:cid_073_athena_commando_f_scuba",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_355_athena_commando_m_farmer",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_063_strawberrypilot",
+     300
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-15",
+   "featured": [
+    [
+     "AthenaCharacter:cid_321_athena_commando_m_militaryfashion1",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_146_militaryfashion",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_111_militaryfashion",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_229_athena_commando_f_darkbomber",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_106_darkbomber",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_083_darkbomber",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_414_athena_commando_f_militaryfashion",
+     800
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_warehouse",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_192_palmtree",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_074_athena_commando_f_stripe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_373_athena_commando_m_pirate01",
+     1200
+    ],
+    [
+     "AthenaGlider:glider_id_040_jailbird",
+     800
+    ],
+    [
+     "AthenaDance:eid_jazzhands",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-16",
+   "featured": [
+    [
+     "AthenaCharacter:cid_414_athena_commando_f_militaryfashion",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_321_athena_commando_m_militaryfashion1",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_146_militaryfashion",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_111_militaryfashion",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_377_athena_commando_f_darkshaman",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_376_athena_commando_m_darkshaman",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_184_darkshaman",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_334_athena_commando_m_scrapyard",
+     1500
+    ],
+    [
+     "AthenaDance:eid_twist",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_387_athena_commando_f_golf",
+     800
+    ],
+    [
+     "AthenaDance:eid_hilowwave",
+     800
+    ],
+    [
+     "AthenaMusicPack:musicpack_012_electroswing",
+     200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_190_golfclub",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-17",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_031_squeak",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_275_athena_commando_m_sniperhood",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_037_athena_commando_f_wintercamo",
+     1200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-18",
+   "featured": [
+    [
+     "AthenaCharacter:cid_069_athena_commando_f_pinkbear",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_104_fuzzybear",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_158_fuzzybear",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_353_athena_commando_f_bandolier",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_168_bandolier",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_125_bandolier",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_043_athena_commando_f_stealth",
+     1500
+    ],
+    [
+     "AthenaDance:eid_bunnyhop",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_043_bandolette",
+     300
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_179_starwand",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_106_athena_commando_f_taxi",
+     800
+    ],
+    [
+     "AthenaDance:eid_acrobaticsuperhero",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-19",
+   "featured": [
+    [
+     "AthenaCharacter:cid_410_athena_commando_m_cyberscavenger",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_212_cyberscavenger",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_148_cyberscavenger",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_411_athena_commando_f_cyberscavenger",
+     1500
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_319_athena_commando_f_nautilus",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_087_athena_commando_f_redsilk",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_015_snowboard",
+     300
+    ],
+    [
+     "AthenaDance:eid_livinglarge",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_014_wintercamo",
+     500
+    ],
+    [
+     "AthenaDance:eid_airhorn",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-20",
+   "featured": [
+    [
+     "AthenaCharacter:cid_411_athena_commando_f_cyberscavenger",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_410_athena_commando_m_cyberscavenger",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_212_cyberscavenger",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_148_cyberscavenger",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_102_athena_commando_m_raven",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_194_athena_commando_f_ravenquill",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_089_ravenquill",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_024_reaper",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_121_athena_commando_m_graffiti",
+     1500
+    ],
+    [
+     "AthenaPickaxe:sicklebatpickaxe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_242_athena_commando_f_bullseye",
+     800
+    ],
+    [
+     "AthenaDance:eid_kpopdance02",
+     800
+    ],
+    [
+     "AthenaDance:eid_og_runningman",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_011_hotcold",
+     300
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-21",
+   "featured": [
+    [
+     "AthenaCharacter:cid_093_athena_commando_m_dinosaur",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_107_athena_commando_f_pajamaparty",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_041_pajamaparty",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_044_pterodactyl",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_297_athena_commando_f_math",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_136_math",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_104_math",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_112_techops",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_072_athena_commando_m_scout",
+     1200
+    ],
+    [
+     "AthenaDance:eid_infinitedab",
+     500
+    ],
+    [
+     "AthenaDance:eid_dj01",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_169_farmer",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_356_athena_commando_f_farmer",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-22",
+   "featured": [
+    [
+     "AthenaCharacter:cid_341_athena_commando_f_skullbrite",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_162_skullbrite",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_185_athena_commando_m_durrburgerhero",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_084_durrburgerhero",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_059_durrburgerhero",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_182_athena_commando_m_modernmilitary",
+     1500
+    ],
+    [
+     "AthenaDance:eid_floppy",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_175_tropical",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_024_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaMusicPack:musicpack_010_runningman",
+     200
+    ],
+    [
+     "AthenaDance:eid_truelove",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-23",
+   "featured": [
+    [
+     "AthenaCharacter:cid_369_athena_commando_f_devilrock",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_028_devillace",
+     500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_176_devilrock",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_109_athena_commando_m_pizza",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_040_pizza",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_107_halloweentomato",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_116_pizzapit",
+     1200,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_323_athena_commando_m_barbarian",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_021_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaGlider:glider_flames",
+     500
+    ],
+    [
+     "AthenaDance:eid_easternbloc",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_148_barbarian",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-24",
+   "featured": [
+    [
+     "AthenaCharacter:cid_315_athena_commando_m_teriyakifish",
+     1200
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_rockguitar",
+     800
+    ],
+    [
+     "AthenaGlider:glider_id_110_teriyakifish",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_142_teriyakifish",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_110_athena_commando_f_circuitbreaker",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_354_athena_commando_m_munitionsexpert",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-25",
+   "featured": [
+    [
+     "AthenaCharacter:cid_315_athena_commando_m_teriyakifish",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_168_athena_commando_m_shark",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_017_shark",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_058_shark",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_272_athena_commando_m_hornedmask",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_273_athena_commando_f_hornedmask",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_123_hornedmask",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_096_hornedmask",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_135_athena_commando_f_jailbird",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_180_tristar",
+     800
+    ],
+    [
+     "AthenaGlider:glider_prismatic",
+     800
+    ],
+    [
+     "AthenaDance:eid_texting",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_218_athena_commando_m_greenberet",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-26",
+   "featured": [
+    [
+     "AthenaCharacter:cid_241_athena_commando_m_plague",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_240_athena_commando_f_plague",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_107_plague",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_084_plague",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_023_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaDance:eid_jammin",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_015_athena_commando_f",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_191_banana",
+     800
+    ],
+    [
+     "AthenaDance:eid_crazyfeet",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-27",
+   "featured": [
+    [
+     "AthenaCharacter:cid_359_athena_commando_f_aztec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_358_athena_commando_m_aztec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_170_aztec",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_127_aztec",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_228_athena_commando_m_vampire",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_110_vampire",
+     1200,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_discofever",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_035_prismatic",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_013_athena_commando_f",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_073_athena_commando_f_scuba",
+     1200
+    ],
+    [
+     "AthenaGlider:glider_stealth",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-28",
+   "featured": [
+    [
+     "AthenaCharacter:cid_044_athena_commando_f_scipop",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_112_athena_commando_m_brite",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_026_brite",
+     1500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_121_britebomberdeluxe",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_108_athena_commando_m_fishhead",
+     2000,
+     {
+      "tile": 2,
+      "banner": "Back"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_043_orbitingplanets",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_151_alienfishhead",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_027_satelite",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_274_athena_commando_m_feathers",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_097_feathers",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_124_feathers",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_121_athena_commando_m_graffiti",
+     1500
+    ],
+    [
+     "AthenaGlider:glider_id_057_modernmilitary",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_050_graffiti",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_170_athena_commando_f_luchador",
+     1200
+    ],
+    [
+     "AthenaDance:eid_martialarts",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-29",
+   "featured": [
+    [
+     "AthenaCharacter:cid_178_athena_commando_f_streetracercobra",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_177_athena_commando_m_streetracercobra",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_248_athena_commando_m_blackwidow",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_249_athena_commando_f_blackwidow",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_111_blackwidow",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_086_blackwidow",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_301_athena_commando_m_rhino",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_127_rhino",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_102_rhino",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_firedance",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_081_streetracercobra",
+     800
+    ],
+    [
+     "AthenaMusicPack:musicpack_011_getfunky",
+     200
+    ],
+    [
+     "AthenaCharacter:cid_271_athena_commando_f_sushichef",
+     1200
+    ],
+    [
+     "AthenaDance:eid_electroswing",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_016_athena_commando_f",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-30",
+   "featured": [
+    [
+     "AthenaPickaxe:pickaxe_id_058_basketball",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_041_basketball",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_136_athena_commando_m_streetbasketball",
+     1200,
+     {
+      "banner": "Back"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_137_athena_commando_f_streetbasketball",
+     1200,
+     {
+      "banner": "Back"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_180_athena_commando_m_scuba",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_171_athena_commando_m_sharpdresser",
+     1200
+    ],
+    [
+     "AthenaPickaxe:happypickaxe",
+     500
+    ],
+    [
+     "AthenaGlider:glider_id_095_witch",
+     1200
+    ],
+    [
+     "AthenaDance:eid_basketball",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-05-31",
+   "featured": [
+    [
+     "AthenaCharacter:cid_136_athena_commando_m_streetbasketball",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_137_athena_commando_f_streetbasketball",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_058_basketball",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_041_basketball",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaDance:eid_basketball",
+     500,
+     {
+      "tile": 2
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_hilowwave",
+     800
+    ],
+    [
+     "AthenaGlider:glider_id_130_sciops",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_124_athena_commando_f_auroraglow",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_275_athena_commando_m_sniperhood",
+     1200
+    ],
+    [
+     "AthenaDance:eid_sexyflip",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_079_modernmilitary",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-01",
+   "featured": [
+    [
+     "AthenaCharacter:cid_148_athena_commando_f_soccergirla",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_149_athena_commando_f_soccergirlb",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_150_athena_commando_f_soccergirlc",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_151_athena_commando_f_soccergirld",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_144_athena_commando_m_soccerdudea",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_145_athena_commando_m_soccerdudeb",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_146_athena_commando_m_soccerdudec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_147_athena_commando_m_soccerduded",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_062_soccer",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_063_vuvuzela",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_042_soccer",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_010_storm",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_122_witch",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_202_athena_commando_f_desertops",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_328_athena_commando_f_tennis",
+     1200
+    ],
+    [
+     "AthenaDance:eid_soccerjuggling",
+     500
+    ],
+    [
+     "AthenaDance:eid_redcard",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-02",
+   "featured": [
+    [
+     "AthenaCharacter:cid_396_athena_commando_f_swashbuckler",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_201_swashbuckler",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_148_athena_commando_f_soccergirla",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_149_athena_commando_f_soccergirlb",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_150_athena_commando_f_soccergirlc",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_151_athena_commando_f_soccergirld",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_144_athena_commando_m_soccerdudea",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_145_athena_commando_m_soccerdudeb",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_146_athena_commando_m_soccerdudec",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_147_athena_commando_m_soccerduded",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_062_soccer",
+     500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_063_vuvuzela",
+     800,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_042_soccer",
+     500,
+     {
+      "tile": 3
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_381_athena_commando_f_baseballkitbash",
+     1200
+    ],
+    [
+     "AthenaPickaxe:sicklebatpickaxe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_357_athena_commando_m_orangecamo",
+     1200
+    ],
+    [
+     "AthenaGlider:glider_id_096_hornedmask",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-03",
+   "featured": [
+    [
+     "AthenaCharacter:cid_300_athena_commando_f_angel",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_144_angel",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_045_angel",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_318_athena_commando_m_demon",
+     1500,
+     {
+      "tile": 2
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_186_demonstone",
+     1200
+    ],
+    [
+     "AthenaGlider:glider_id_051_luchador",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_074_athena_commando_f_stripe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_335_athena_commando_f_scrapyard",
+     1200
+    ],
+    [
+     "AthenaDance:eid_dreamfeet",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-04",
+   "featured": [
+    [
+     "AthenaCharacter:cid_310_athena_commando_f_streetgoth",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_309_athena_commando_m_streetgoth",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_140_streetgoth",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_109_streetgoth",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_188_athena_commando_f_streetracerwhite",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_190_athena_commando_m_streetracerwhite",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_062_streetracerwhite",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_061_streetracerbiker",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_105_athena_commando_f_spaceblack",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_026_shuttleb",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_025_shuttlea",
+     1200,
+     {
+      "tile": 3
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_216_athena_commando_f_medic",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_172_athena_commando_f_sharpdresser",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_171_orangecamo",
+     500
+    ],
+    [
+     "AthenaDance:eid_warehouse",
+     800
+    ],
+    [
+     "AthenaGlider:glider_id_028_googly",
+     800
+    ],
+    [
+     "AthenaDance:eid_cry",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-05",
+   "featured": [
+    [
+     "AthenaCharacter:cid_034_athena_commando_f_medieval",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_066_flintlockred",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_018_magma",
+     700
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_269_athena_commando_m_wizard",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_074_sharpdresser",
+     800
+    ],
+    [
+     "AthenaDance:eid_breakboy",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_373_athena_commando_m_pirate01",
+     1200
+    ],
+    [
+     "AthenaDance:eid_fireworksspin",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-06",
+   "featured": [
+    [
+     "AthenaCharacter:cid_220_athena_commando_f_clown",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_221_athena_commando_m_clown",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_031_squeak",
+     1500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_383_athena_commando_f_cacti",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_185_badasscowboycactus",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_388_athena_commando_m_thebomb",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_194_thebomb",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_073_athena_commando_f_scuba",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_131_nautilus",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_276_athena_commando_f_sniperhood",
+     1200
+    ],
+    [
+     "AthenaDance:eid_bunnyhop",
+     500
+    ],
+    [
+     "AthenaDance:eid_cactustpose",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-07",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_324_athena_commando_f_barbarian",
+     1500
+    ],
+    [
+     "AthenaDance:eid_electroswing",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_126_athena_commando_m_auroraglow",
+     800
+    ],
+    [
+     "AthenaDance:eid_wavedance",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_014_wintercamo",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-08",
+   "featured": [
+    [
+     "AthenaCharacter:cid_257_athena_commando_m_samuraiultra",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_094_samuraiultra",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_387_athena_commando_f_golf",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_364_athena_commando_f_sciops",
+     1200
+    ],
+    [
+     "AthenaDance:eid_backflip",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_190_golfclub",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-09",
+   "featured": [
+    [
+     "AthenaCharacter:cid_277_athena_commando_m_moth",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_125_moth",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_099_moth",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_339_athena_commando_m_robottrouble",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_192_palmtree",
+     800
+    ],
+    [
+     "AthenaDance:eid_popdance01",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_372_athena_commando_f_pirate01",
+     1200
+    ],
+    [
+     "AthenaDance:eid_laugh",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-10",
+   "featured": [
+    [
+     "AthenaCharacter:cid_153_athena_commando_f_carbideblack",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_152_athena_commando_f_carbideorange",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_045_carbideblack",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_097_athena_commando_f_rockerpunk",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_034_rockerpunk",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_022_rockerpunk",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_141_athena_commando_m_darkeagle",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_059_darkeagle",
+     1500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_322_athena_commando_m_techops",
+     1200
+    ],
+    [
+     "AthenaItemWrap:wrap_035_goldensnake",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_354_athena_commando_m_munitionsexpert",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_181_log",
+     800
+    ],
+    [
+     "AthenaDance:eid_shaolin",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-11",
+   "featured": [
+    [
+     "AthenaCharacter:cid_128_athena_commando_f_hazmat",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_127_athena_commando_m_hazmat",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_397_athena_commando_f_treasurehunterfashion",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_398_athena_commando_m_treasurehunterfashion",
+     800,
+     {
+      "tile": 2
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_037_hazmat",
+     500
+    ],
+    [
+     "AthenaDance:eid_kpopdance02",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_052_hazmat",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_159_athena_commando_m_gumshoedark",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_024_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaDance:eid_dab",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-12",
+   "featured": [
+    [
+     "AthenaCharacter:cid_070_athena_commando_m_cupid",
+     2000,
+     {
+      "tile": 1,
+      "banner": "Back"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_019_heart",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_069_athena_commando_f_pinkbear",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_104_fuzzybear",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_158_fuzzybear",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_312_athena_commando_f_funkops",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_204_miner",
+     800
+    ],
+    [
+     "AthenaGlider:glider_prismatic",
+     800
+    ],
+    [
+     "AthenaDance:eid_lazyshuffle",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_242_athena_commando_f_bullseye",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-13",
+   "featured": [
+    [
+     "AthenaCharacter:cid_413_athena_commando_m_streetdemon",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_067_streetdemon",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_160_icecream",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_120_icecream",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_265_athena_commando_f_animaljackets",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_264_athena_commando_m_animaljackets",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_119_animaljackets",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_093_animaljackets",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_297_athena_commando_f_math",
+     1200
+    ],
+    [
+     "AthenaDance:eid_wiggle",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_123_athena_commando_f_metal",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_035_prismatic",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_014_icecream",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-14",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_073_medic",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_180_tristar",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_074_athena_commando_f_stripe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_271_athena_commando_f_sushichef",
+     1200
+    ],
+    [
+     "AthenaDance:eid_livinglarge",
+     500
+    ],
+    [
+     "AthenaDance:eid_vikinghorn",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-15",
+   "featured": [
+    [
+     "AthenaCharacter:cid_353_athena_commando_f_bandolier",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_168_bandolier",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_125_bandolier",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_336_athena_commando_m_dragonmask",
+     1200
+    ],
+    [
+     "AthenaDance:eid_armupdance",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_043_bandolette",
+     300
+    ],
+    [
+     "AthenaPickaxe:sicklebatpickaxe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_331_athena_commando_m_taxi",
+     800
+    ],
+    [
+     "AthenaDance:eid_fingerguns",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-16",
+   "featured": [
+    [
+     "AthenaCharacter:cid_100_athena_commando_m_cuchulainn",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_036_cuchulainn",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_199_athena_commando_f_bluesamurai",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_198_athena_commando_m_bluesamurai",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_090_samuraiblue",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_066_samuraiblue",
+     500,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_377_athena_commando_f_darkshaman",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_122_witch",
+     800
+    ],
+    [
+     "AthenaDance:eid_jazzdance",
+     500
+    ],
+    [
+     "AthenaDance:eid_electroshuffle",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_035_goldensnake",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_202_athena_commando_f_desertops",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-17",
+   "featured": [
+    [
+     "AthenaCharacter:cid_229_athena_commando_f_darkbomber",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_106_darkbomber",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_083_darkbomber",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_319_athena_commando_f_nautilus",
+     1500
+    ],
+    [
+     "AthenaGlider:glider_id_009_candycoat",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_086_athena_commando_m_redsilk",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_020_keg",
+     1500
+    ],
+    [
+     "AthenaDance:eid_og_runningman",
+     500
+    ],
+    [
+     "AthenaDance:eid_flex",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-18",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_410_athena_commando_m_cyberscavenger",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_381_athena_commando_f_baseballkitbash",
+     1200
+    ],
+    [
+     "AthenaMusicPack:musicpack_012_electroswing",
+     200
+    ],
+    [
+     "AthenaDance:eid_kpopdance01",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_191_banana",
+     800
+    ],
+    [
+     "AthenaDance:eid_tpose",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-19",
+   "featured": [
+    [
+     "AthenaCharacter:cid_362_athena_commando_f_bandageninja",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_361_athena_commando_m_bandageninja",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_133_bandageninja",
+     2000,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_043_athena_commando_f_stealth",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_366_athena_commando_m_tropical",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_175_tropical",
+     500
+    ],
+    [
+     "AthenaDance:eid_rockguitar",
+     800
+    ],
+    [
+     "AthenaDance:eid_quicksweeper",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_042_bandageninja",
+     300
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-20",
+   "featured": [
+    [
+     "AthenaCharacter:cid_395_athena_commando_f_shatterfly",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_051_shatterfly",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_140_shatterfly",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_394_athena_commando_m_moonlightassassin",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_200_moonlightassassin",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_135_athena_commando_f_jailbird",
+     1500
+    ],
+    [
+     "AthenaDance:eid_cheerleading",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_179_starwand",
+     800
+    ],
+    [
+     "AthenaDance:eid_breakdance",
+     800
+    ],
+    [
+     "AthenaGlider:glider_id_104_math",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-21",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_095_witch",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_325_athena_commando_m_wavyman",
+     1200
+    ],
+    [
+     "AthenaDance:eid_dreamfeet",
+     500
+    ],
+    [
+     "AthenaDance:eid_kpopdance01",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_037_stealth",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_401_athena_commando_m_miner",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-22",
+   "featured": [
+    [
+     "AthenaCharacter:cid_369_athena_commando_f_devilrock",
+     2000,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_028_devillace",
+     500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_176_devilrock",
+     1200,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_031_squeak",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_076_athena_commando_f_sup",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_087_athena_commando_f_redsilk",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-23",
+   "featured": [
+    [
+     "AthenaCharacter:cid_093_athena_commando_m_dinosaur",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_107_athena_commando_f_pajamaparty",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_041_pajamaparty",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_044_pterodactyl",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaGlider:glider_id_021_scavenger",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_080_scuba",
+     800
+    ],
+    [
+     "AthenaDance:eid_breakboy",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_019_athena_commando_m",
+     1200
+    ],
+    [
+     "AthenaDance:eid_drummajor",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_218_athena_commando_m_greenberet",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-24",
+   "featured": [
+    [
+     "AthenaCharacter:cid_356_athena_commando_f_farmer",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_355_athena_commando_m_farmer",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaBackpack:bid_220_farmerfemale",
+     200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_169_farmer",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaBackpack:bid_219_farmermale",
+     200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_377_athena_commando_f_darkshaman",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_073_athena_commando_f_scuba",
+     1200
+    ],
+    [
+     "AthenaDance:eid_wiggle",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_186_demonstone",
+     1200
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-25",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_216_athena_commando_f_medic",
+     1500
+    ],
+    [
+     "AthenaItemWrap:wrap_063_strawberrypilot",
+     300
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_024_plunger",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_016_athena_commando_f",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-26",
+   "featured": [
+    [
+     "AthenaCharacter:cid_299_athena_commando_m_snowninja",
+     1500,
+     {
+      "tile": 2,
+      "banner": "Back"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_329_athena_commando_f_snowninja",
+     1500,
+     {
+      "tile": 2,
+      "banner": "Back"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_115_snowninja",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_184_athena_commando_m_durrburgerworker",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_015_athena_commando_f",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_134_snowman",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-27",
+   "featured": [
+    [
+     "AthenaCharacter:cid_412_athena_commando_f_raptor",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_031_athena_commando_m_retro",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_147_raptor",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_020_keg",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_270_athena_commando_f_witch",
+     1500
+    ],
+    [
+     "AthenaDance:eid_boneless",
+     500
+    ],
+    [
+     "AthenaDance:eid_og_runningman",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_124_athena_commando_f_auroraglow",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-28",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaItemWrap:wrap_066_assassinsuit02",
+     300
+    ],
+    [
+     "AthenaCharacter:cid_387_athena_commando_f_golf",
+     1200
+    ],
+    [
+     "AthenaDance:eid_irishjig",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_190_golfclub",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-29",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_021_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_037_athena_commando_f_wintercamo",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_079_modernmilitary",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-06-30",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaDance:eid_hilowwave",
+     800
+    ],
+    [
+     "AthenaDance:eid_electroswing",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_014_wintercamo",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_023_athena_commando_f",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_106_athena_commando_f_taxi",
+     800
+    ],
+    [
+     "AthenaDance:eid_tpose",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-01",
+   "featured": [
+    [
+     "AthenaCharacter:cid_108_athena_commando_m_fishhead",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_043_orbitingplanets",
+     1500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_151_alienfishhead",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_027_satelite",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_411_athena_commando_f_cyberscavenger",
+     1500
+    ],
+    [
+     "AthenaDance:eid_livinglarge",
+     500
+    ],
+    [
+     "AthenaDance:eid_discofever",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_074_sharpdresser",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_036_evilsuit",
+     300
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-02",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_363_athena_commando_m_sciops",
+     1200
+    ],
+    [
+     "AthenaPickaxe:happypickaxe",
+     500
+    ],
+    [
+     "AthenaDance:eid_armupdance",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-03",
+   "featured": [
+    [
+     "AthenaCharacter:cid_034_athena_commando_f_medieval",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_066_flintlockred",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_043_athena_commando_f_stealth",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_035_prismatic",
+     800
+    ],
+    [
+     "AthenaDance:eid_pump",
+     500
+    ],
+    [
+     "AthenaDance:eid_kpopdance02",
+     800
+    ],
+    [
+     "AthenaDance:eid_handsignals",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_202_athena_commando_f_desertops",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-04",
+   "featured": [
+    [
+     "AthenaCharacter:cid_156_athena_commando_f_fuzzybearind",
+     1500,
+     {
+      "banner": "Back"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_electroshuffle",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_180_tristar",
+     800
+    ],
+    [
+     "AthenaDance:eid_sparkler",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-05",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaDance:eid_sparkler",
+     200
+    ],
+    [
+     "AthenaDance:eid_fireworksspin",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-06",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_155_athena_commando_f_gumshoe",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_122_witch",
+     800
+    ],
+    [
+     "AthenaItemWrap:wrap_035_goldensnake",
+     500
+    ],
+    [
+     "AthenaDance:eid_zombie",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_321_athena_commando_m_militaryfashion1",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-07",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_297_athena_commando_f_math",
+     1200
+    ],
+    [
+     "AthenaDance:eid_quicksweeper",
+     500
+    ],
+    [
+     "AthenaGlider:glider_id_096_hornedmask",
+     800
+    ],
+    [
+     "AthenaDance:eid_cry",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-08",
+   "featured": [
+    [
+     "AthenaCharacter:cid_385_athena_commando_m_pilotskull",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_138_bomberplane",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_024_stealthblack",
+     300,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_044_battleplane",
+     300,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_340_athena_commando_f_robottrouble",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_175_tropical",
+     500
+    ],
+    [
+     "AthenaGlider:glider_id_095_witch",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_074_athena_commando_f_stripe",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-09",
+   "featured": [
+    [
+     "AthenaCharacter:cid_396_athena_commando_f_swashbuckler",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_201_swashbuckler",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_382_athena_commando_m_baseballkitbash",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_183_baseballbat2018",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_381_athena_commando_f_baseballkitbash",
+     1200
+    ],
+    [
+     "AthenaDance:eid_lazyshuffle",
+     500
+    ],
+    [
+     "AthenaGlider:glider_id_135_baseball",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-10",
+   "featured": [
+    [
+     "AthenaCharacter:cid_148_athena_commando_f_soccergirla",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_149_athena_commando_f_soccergirlb",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_150_athena_commando_f_soccergirlc",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_151_athena_commando_f_soccergirld",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_144_athena_commando_m_soccerdudea",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_145_athena_commando_m_soccerdudeb",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_146_athena_commando_m_soccerdudec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_147_athena_commando_m_soccerduded",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_062_soccer",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_063_vuvuzela",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_042_soccer",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_241_athena_commando_m_plague",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_240_athena_commando_f_plague",
+     1500,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_107_plague",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_084_plague",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_warehouse",
+     800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_191_banana",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_075_athena_commando_f_stripe",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_290_athena_commando_f_bluebadass",
+     1200
+    ],
+    [
+     "AthenaDance:eid_dab",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_034_waypoint",
+     300
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-11",
+   "featured": [
+    [
+     "AthenaCharacter:cid_148_athena_commando_f_soccergirla",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_149_athena_commando_f_soccergirlb",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_150_athena_commando_f_soccergirlc",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_151_athena_commando_f_soccergirld",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_144_athena_commando_m_soccerdudea",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_145_athena_commando_m_soccerdudeb",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_146_athena_commando_m_soccerdudec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_147_athena_commando_m_soccerduded",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_062_soccer",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_063_vuvuzela",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_042_soccer",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_texting",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_414_athena_commando_f_militaryfashion",
+     800
+    ],
+    [
+     "AthenaPickaxe:sicklebatpickaxe",
+     800
+    ],
+    [
+     "AthenaDance:eid_cowboydance",
+     500
+    ],
+    [
+     "AthenaItemWrap:wrap_014_icecream",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-12",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_031_squeak",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_336_athena_commando_m_dragonmask",
+     1200
+    ],
+    [
+     "AthenaDance:eid_taichi",
+     500
+    ],
+    [
+     "AthenaDance:eid_rockguitar",
+     800
+    ],
+    [
+     "AthenaDance:eid_jammin",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_383_athena_commando_f_cacti",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-13",
+   "featured": [],
+   "daily": []
+  },
+  {
+   "date": "2019-07-14",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_376_athena_commando_m_darkshaman",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_037_stealth",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_086_athena_commando_m_redsilk",
+     800
+    ],
+    [
+     "AthenaDance:eid_llamabell",
+     800
+    ],
+    [
+     "AthenaDance:eid_headbang",
+     500
+    ],
+    [
+     "AthenaDance:eid_irishjig",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-15",
+   "featured": [
+    [
+     "AthenaItemWrap:wrap_018_magma",
+     700
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_186_demonstone",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_326_athena_commando_f_wavyman",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_018_athena_commando_m",
+     1200
+    ],
+    [
+     "AthenaDance:eid_laugh",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-16",
+   "featured": [
+    [
+     "AthenaCharacter:cid_300_athena_commando_f_angel",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_045_angel",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_144_angel",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_318_athena_commando_m_demon",
+     1500,
+     {
+      "tile": 2
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_intensity",
+     800
+    ],
+    [
+     "AthenaDance:eid_whirlwind",
+     500
+    ],
+    [
+     "AthenaDance:eid_easternbloc",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_087_athena_commando_f_redsilk",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-17",
+   "featured": [
+    [
+     "AthenaCharacter:cid_178_athena_commando_f_streetracercobra",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_177_athena_commando_m_streetracercobra",
+     1500,
+     {
+      "tile": 1
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_335_athena_commando_f_scrapyard",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_242_athena_commando_f_bullseye",
+     800
+    ],
+    [
+     "AthenaDance:eid_rockpaperscissors",
+     200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_134_snowman",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-18",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_179_starwand",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-19",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaPickaxe:pickaxe_id_074_sharpdresser",
+     800
+    ],
+    [
+     "AthenaDance:eid_fancyfeet",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-20",
+   "featured": [
+    [
+     "AthenaCharacter:cid_105_athena_commando_f_spaceblack",
+     2000,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_026_shuttleb",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_025_shuttlea",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_202_athena_commando_f_desertops",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_269_athena_commando_m_wizard",
+     1500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-21",
+   "featured": [],
+   "daily": [
+    [
+     "AthenaCharacter:cid_135_athena_commando_f_jailbird",
+     1500
+    ],
+    [
+     "AthenaDance:eid_kpopdance01",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_106_athena_commando_f_taxi",
+     800
+    ],
+    [
+     "AthenaDance:eid_hilowwave",
+     800
+    ],
+    [
+     "AthenaDance:eid_dreamfeet",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-22",
+   "featured": [
+    [
+     "AthenaGlider:glider_id_083_darkbomber",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_229_athena_commando_f_darkbomber",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_106_darkbomber",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_341_athena_commando_f_skullbrite",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_162_skullbrite",
+     800,
+     {
+      "tile": 3
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_073_athena_commando_f_scuba",
+     1200
+    ],
+    [
+     "AthenaDance:eid_flex",
+     200
+    ],
+    [
+     "AthenaCharacter:cid_410_athena_commando_m_cyberscavenger",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_180_tristar",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-23",
+   "featured": [
+    [
+     "AthenaCharacter:cid_395_athena_commando_f_shatterfly",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_051_shatterfly",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_140_shatterfly",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_394_athena_commando_m_moonlightassassin",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_200_moonlightassassin",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_043_athena_commando_f_stealth",
+     1500
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_159_athena_commando_m_gumshoedark",
+     1500
+    ],
+    [
+     "AthenaDance:eid_thighslapper",
+     500
+    ],
+    [
+     "AthenaGlider:glider_stealth",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_037_stealth",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_354_athena_commando_m_munitionsexpert",
+     800
+    ],
+    [
+     "AthenaDance:eid_cry",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-24",
+   "featured": [
+    [
+     "AthenaCharacter:cid_044_athena_commando_f_scipop",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_112_athena_commando_m_brite",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_026_brite",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_121_britebomberdeluxe",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_094_athena_commando_m_rider",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_297_athena_commando_f_math",
+     1200
+    ],
+    [
+     "AthenaDance:eid_cheerleading",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-25",
+   "featured": [
+    [
+     "AthenaCharacter:cid_413_athena_commando_m_streetdemon",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_067_streetdemon",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_310_athena_commando_f_streetgoth",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_309_athena_commando_m_streetgoth",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_140_streetgoth",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_109_streetgoth",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_037_athena_commando_f_wintercamo",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_387_athena_commando_f_golf",
+     1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_190_golfclub",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-26",
+   "featured": [
+    [
+     "AthenaCharacter:cid_315_athena_commando_m_teriyakifish",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_142_teriyakifish",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_110_teriyakifish",
+     800,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_247_athena_commando_m_guanyu",
+     1500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-27",
+   "featured": [
+    [
+     "AthenaDance:eid_squishydance",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_118_squishy",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_315_athena_commando_m_teriyakifish",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_142_teriyakifish",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_110_teriyakifish",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_333_athena_commando_m_squishy",
+     1500,
+     {
+      "banner": "Back"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_saxophone",
+     800
+    ],
+    [
+     "AthenaDance:eid_confused",
+     500
+    ],
+    [
+     "AthenaCharacter:cid_317_athena_commando_m_winterghoul",
+     1500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-28",
+   "featured": [
+    [
+     "AthenaDance:eid_squishydance",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_118_squishy",
+     500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_315_athena_commando_m_teriyakifish",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_142_teriyakifish",
+     500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_110_teriyakifish",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_333_athena_commando_m_squishy",
+     1500
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_336_athena_commando_m_dragonmask",
+     1200
+    ],
+    [
+     "AthenaDance:eid_kpopdance02",
+     800
+    ],
+    [
+     "AthenaDance:eid_headbang",
+     500
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-29",
+   "featured": [
+    [
+     "AthenaCharacter:cid_359_athena_commando_f_aztec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_358_athena_commando_m_aztec",
+     1200,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_170_aztec",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_127_aztec",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_dj01",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_377_athena_commando_f_darkshaman",
+     1500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_024_plunger",
+     800
+    ],
+    [
+     "AthenaDance:eid_wolfhowl",
+     200
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-30",
+   "featured": [
+    [
+     "AthenaCharacter:cid_220_athena_commando_f_clown",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_221_athena_commando_m_clown",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_031_squeak",
+     1500,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_188_athena_commando_f_streetracerwhite",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_190_athena_commando_m_streetracerwhite",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_062_streetracerwhite",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_061_streetracerbiker",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaCharacter:cid_076_athena_commando_f_sup",
+     1200
+    ],
+    [
+     "AthenaDance:eid_texting",
+     500
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_112_guanyu",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_321_athena_commando_m_militaryfashion1",
+     800
+    ]
+   ]
+  },
+  {
+   "date": "2019-07-31",
+   "featured": [
+    [
+     "AthenaCharacter:cid_397_athena_commando_f_treasurehunterfashion",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_398_athena_commando_m_treasurehunterfashion",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_362_athena_commando_f_bandageninja",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_361_athena_commando_m_bandageninja",
+     1500,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_133_bandageninja",
+     1500,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ]
+   ],
+   "daily": [
+    [
+     "AthenaDance:eid_warehouse",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_344_athena_commando_m_icecream",
+     1500
+    ],
+    [
+     "AthenaCharacter:cid_024_athena_commando_f",
+     1200
+    ]
+   ]
+  }
+ ]
+}

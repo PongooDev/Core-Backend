@@ -78,8 +78,16 @@ import { currentBattlePassConfig } from "./season1.js";
 // their progressive challenges (_ProgressiveA_), the free half of the weeks is every player's (Season8_Free_Schedule,
 // SeasonGrantsToEveryone), and its tier 100 Luxe (Season8_Shiny_Schedule). The offers' texts are Core's again, in Season
 // 7's form, from what AthenaSeason8's pass and its first 25 tiers give.
+// Season 9's Battle Pass (9.00, CL-6337466) is AthenaSeason9's the same way: 100 tiers, the BRSeason9 storefront, its own
+// display assets (DA_BR_Season9_BattlePass, DA_BR_Season9_BattlePassWithLevels), its own tier offer (BattlePassLevelOfferID
+// 33E185A84ED7B64F2856E69AADFD092C), at Epic's prices (Update v9.00: "New Season, new Battle Pass. 100 levels, over 100 new
+// rewards. Available in-game right now for 950 V-Bucks"; the bundle 2,800). Its tier 1 Battle Pass rewards give Rox and
+// Sentinel, their progressive challenges (Season9_Paid_Schedule), the cumulative challenges (Season9_Cumulative_Schedule)
+// and the Fortbytes (Season9_Fortbyte_Schedule, events/fortbytes.js); the free half of the weeks is every player's
+// (Season9_Free_Schedule, SeasonGrantsToEveryone), and its tier 100 Vendetta (Season9_BattleSuit_Schedule). The offers'
+// texts are Core's again, in Season 8's form, from what AthenaSeason9's pass and its first 25 tiers give.
 // The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4,
-// .season5, .season6, .season7, .season8).
+// .season5, .season6, .season7, .season8, .season9).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
@@ -88,7 +96,7 @@ export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
 // Each season's default prices: Season 3's, Season 4's, Season 5's, Season 6's and Season 7's are Season 2's.
 export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 },
   5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 }, 7: { battlePassPrice: 950, bundlePrice: 2800 },
-  8: { battlePassPrice: 950, bundlePrice: 2800 } };
+  8: { battlePassPrice: 950, bundlePrice: 2800 }, 9: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -226,6 +234,24 @@ const season8BundleDescription = [
   "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to Luxe at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season9PassDescription = [
+  "Season 9: May 9 - Jul 31", "",
+  "Instantly get these items:",
+  "  • Rox Outfit", "  • Sentinel Outfit", "  • 50% Bonus Season Match XP", "  • 60% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "  • Fortbytes", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • Vendetta plus 4 other outfits", "  • Progressive Rox, Sentinel and Vendetta challenges", "  • 6 Wraps", "  • 1 Pet", "  • 2 Music Tracks",
+  "  • 3 Gliders", "  • 4 Contrails", "  • 8 Loading Screens", "  • 1300 V-Bucks",
+  "  • 120% Bonus Season Match XP", "  • 120% Bonus Season Friend Match XP", "  • Toys, Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season9BundleDescription = [
+  "Season 9: May 9 - Jul 31", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • Rox Outfit", "  • Sentinel Outfit", "  • Bunker Jonesy Outfit", "  • Turbo Spin Glider", "  • Ripe Rippers Harvesting Tool",
+  "  • 2 Wraps", "  • Justice Music", "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 80% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to Vendetta at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
   3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
@@ -233,7 +259,8 @@ const seasonTexts = {
   5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" },
   6: { passOfferId: "core_br_season6_battlepass", pass: season6PassDescription, bundle: season6BundleDescription, bundleAsset: "BattlePassWithLevels" },
   7: { passOfferId: "core_br_season7_battlepass", pass: season7PassDescription, bundle: season7BundleDescription, bundleAsset: "BattlePassWithLevels" },
-  8: { passOfferId: "core_br_season8_battlepass", pass: season8PassDescription, bundle: season8BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  8: { passOfferId: "core_br_season8_battlepass", pass: season8PassDescription, bundle: season8BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  9: { passOfferId: "core_br_season9_battlepass", pass: season9PassDescription, bundle: season9BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
 // The season's tier offer id: AthenaSeason3's (and AthenaSeason4's, 5's, 6's and 7's) BattlePassLevelOfferID from Season 3, else the modal's.

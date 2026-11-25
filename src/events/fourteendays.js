@@ -1,13 +1,14 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows, fourteenDaysCalendarEvent } from "./datedflags.js";
-import { currentEventsConfig, lteBootyBay, lteFestivus, lteS7Overtime, lteS8ExtraCredit, ltm14DaysOfFortnite, ltmAshton, ltmGoose, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, lobbySeason9, lteBootyBay, lteFestivus, lteS7Overtime, lteS8ExtraCredit, ltm14DaysOfFortnite, ltmAshton, ltmGoose, ltmWinterDeimos, seasonalEventsOn } from "./events.js";
 import { showtimeDay } from "./festivus.js";
 import { overtimeDay } from "./overtime.js";
 import { buccaneersBountyDay } from "./buccaneersbounty.js";
 import { airRoyaleDay } from "./airroyale.js";
 import { endgameDay } from "./endgame.js";
 import { extraCreditDay } from "./extracredit.js";
+import { fortbytesDay } from "./fortbytes.js";
 import { iceStormDay } from "./icestorm.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
@@ -71,12 +72,14 @@ export function fourteenDaysDay(now = new Date(), changelist = currentBuild(), c
 // The days an event schedule's challenges have had, by its event flag: the 14 Days of Fortnite's, 7.20's Ice Storm
 // Challenges' (events/icestorm.js), 7.30's Showtime Challenges' (events/festivus.js) and 7.40's Overtime Challenges'
 // (events/overtime.js), 8.30's Buccaneer's Bounty Challenges' (events/buccaneersbounty.js), 8.40's Air Royale
-// Challenges' (events/airroyale.js), 8.50's Endgame Challenges' (events/endgame.js) and 8.51's Season 8 Overtime
-// Challenges' (events/extracredit.js) count days; no other event's does.
+// Challenges' (events/airroyale.js), 8.50's Endgame Challenges' (events/endgame.js), 8.51's Season 8 Overtime
+// Challenges' (events/extracredit.js) and 9.00's Fortbytes' (events/fortbytes.js, the Season 9 lobby's flag) count days; no
+// other event's does.
 const eventDays = { [ltm14DaysOfFortnite.toLowerCase()]: fourteenDaysDay, [ltmWinterDeimos.toLowerCase()]: iceStormDay,
   [lteFestivus.toLowerCase()]: showtimeDay, [lteS7Overtime.toLowerCase()]: overtimeDay,
   [lteBootyBay.toLowerCase()]: buccaneersBountyDay, [ltmGoose.toLowerCase()]: airRoyaleDay,
-  [ltmAshton.toLowerCase()]: endgameDay, [lteS8ExtraCredit.toLowerCase()]: extraCreditDay };
+  [ltmAshton.toLowerCase()]: endgameDay, [lteS8ExtraCredit.toLowerCase()]: extraCreditDay,
+  [lobbySeason9.toLowerCase()]: fortbytesDay };
 export const eventDaysOf = (eventName, now = new Date()) => eventDays[String(eventName ?? "").toLowerCase()]?.(now) ?? null;
 
 export { fourteenDaysCalendarEvent };

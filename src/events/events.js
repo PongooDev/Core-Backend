@@ -540,6 +540,16 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // Challenges by their dates, and the Season 8 Overtime Challenges (EventFlag.LTE_S8_ExtraCredit, events/extracredit.js),
 // whose schedule 8.51 is the first to have when Season 8's replay reaches them. Its own event is the Unvaulting
 // (events/unvaulting.js), whose names are plain ones (below). Its Block is 8.50's (events/block.js).
+//
+// 9.00 (CL-6337466, Update v9.00, 9 May 2019), Season 9's first. Every EventFlag.* and CalendarEvent_* in its paks (the
+// same byte scan, 552,950 files; the keychain opens pakchunk1002, not 1000 or 1001) is 8.51's, less EventFlag.Spring2019,
+// and six more: EventFlag.LobbySeason9 (Items/Events/Shared/LobbyBG_Season9, Season 9's lobby background; it is also the
+// EventName of Season9_Fortbyte_Schedule, whose Fortbytes unlock DaysFromEventStart: events/fortbytes.js),
+// EventFlag.LTM_Wax and CalendarEvent_Season9_Wax (Schedule_LTM_Wax, Wick's Bounty's challenges: Update v9.01's LTM, 15 May
+// 2019, whose quests 9.00's paks don't have; not served), and Save the World's EventFlag.Season9, EventFlag.Season9.Phase1
+// (QuestMap2's Season9AQuestMap) and EventFlag.Outpost (QuestMapData), whose S9_* quest line isn't served yet. It serves
+// LobbySeason9 and nothing of Season 8's: its lobby, Spring 2019, the Season 8 challenges' events and the Unvaulting end
+// with 8.51. Neo Tilted, Mega Mall and the Slipstreams are 9.00's map itself: no calendar name gates them.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
@@ -572,6 +582,7 @@ export const lobbySeason5 = "EventFlag.LobbySeason5";
 export const lobbySeason6 = "EventFlag.LobbySeason6";
 export const lobbySeason7 = "EventFlag.LobbySeason7";
 export const lobbySeason8 = "EventFlag.LobbySeason8";
+export const lobbySeason9 = "EventFlag.LobbySeason9";
 // 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
 export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
@@ -717,6 +728,7 @@ const build800 = 5203069;
 const build820 = 5625478;
 const build850 = 6058028;
 const build851 = 6165369;
+const build900 = 6337466;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -771,6 +783,8 @@ const events = [
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
   // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.51's too.
   { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build851 },
+  // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event.
+  { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build900 },
   { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },

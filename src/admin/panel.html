@@ -2012,6 +2012,7 @@
             <option value="6">Season 6</option>
             <option value="7">Season 7</option>
             <option value="8">Season 8</option>
+            <option value="9">Season 9</option>
           </select>
         </div>
         <a href="#/seasons" data-view="seasons" title="Season Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2188,7 +2189,8 @@
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
       { id: "6", label: "Season 6 (6.00 – 6.31)", from: "6.00+", days: 70 },
       { id: "7", label: "Season 7 (7.00 – 7.40)", from: "7.00+", days: 84 },
-      { id: "8", label: "Season 8 (8.00 – 8.51)", from: "8.00+", days: 70 }
+      { id: "8", label: "Season 8 (8.00 – 8.51)", from: "8.00+", days: 70 },
+      { id: "9", label: "Season 9 (9.00)", from: "9.00+", days: 84 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;

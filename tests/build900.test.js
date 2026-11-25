@@ -1,0 +1,236 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { eventCard } from "../src/admin/eventschedules.js";
+import { battlePassOffers } from "../src/battlepass/season2.js";
+import { allowedBuildList } from "../src/builds/allowed.js";
+import { inBuild } from "../src/builds/context.js";
+import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
+import { blockEventOf, blockStates } from "../src/events/block.js";
+import { activeEventFlags, blockSlab, configureEvents, lobbySeason9 } from "../src/events/events.js";
+import { fortbytesDay } from "../src/events/fortbytes.js";
+import { eventDaysOf } from "../src/events/fourteendays.js";
+import { hasLtm, ltmOn } from "../src/events/ltms.js";
+import { unvaultingFlagsNow } from "../src/events/unvaulting.js";
+import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
+import { dataBuild } from "../src/gamedata/read.js";
+import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
+import { buildOfSeason } from "../src/profiles/seasons.js";
+import { openSession } from "../src/profiles/session.js";
+import { createProfileStore } from "../src/profiles/store.js";
+import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, shopDay } from "../src/store/itemshop.js";
+import { post, send, startBackend, userLogin } from "./helpers.js";
+
+// Fortnite 9.00 (Update v9.00, 9 May 2019; Season 9's first build): CL-6337466, on its own data (gamedata/6337466).
+// Season 9's Battle Pass (BRSeason9; Rox, Sentinel, Vendetta), the Fortbytes, the Season 9 lobby and shop, the Block's 9.00
+// builds, Update v9.00's rotation (Trios, Solid Gold, One Shot) and its one new MCP command, SetCompetitiveRegion.
+const v900 = "6337466";
+const v851 = "6165369";
+const at = (iso) => new Date(iso);
+const withConfig = (config, run) => {
+  configureEvents(config);
+  try {
+    return run();
+  } finally {
+    configureEvents(null);
+  }
+};
+const season9 = { mode: "auto", seasonStarts: { 9: "2019-05-09" } };
+const typesOf = (states) => states[0]?.events.map(({ eventType }) => eventType) ?? [];
+const replayDaysAgo = (days) => new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()) - days * 86400000)
+  .toISOString().slice(0, 10);
+const withSession = (build, name, run) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "core-900-"));
+  try {
+    return inBuild(build, () => run(openSession(createProfileStore(dir), name)));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+};
+const templatesOf = (session) => Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId);
+
+test("9.00 is known, on its own data, Season 9's first build", () => {
+  assert.equal(versionOf(v900), "9.00");
+  assert.equal(allowedBuildList(["9.00"]).join(), v900);
+  assert.equal(dataBuild(v900), v900);
+  assert.equal(dataBuild("6300000"), v851, "a build between 8.51 and 9.00 plays on 8.51's");
+  assert.equal(dataBuild("6400000"), v900, "a later build Core doesn't know plays on 9.00's");
+  assert.equal(releasedOn(v900), Date.UTC(2019, 4, 9));
+  assert.equal(buildOfSeason(9), v900);
+  assert.equal(buildOfSeason(8), v851, "8.51 stays Season 8's newest");
+  assert.equal(seasonName(9), "Season 9 (9.00)");
+  const season = inBuild(v900, athenaSeason);
+  assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels, season.numSeasonLevels], [9, "BRSeason9", 100, 100]);
+  assert.equal(inBuild(v900, seasonOfBuild), 9);
+  assert.deepEqual(season.firstWinRewards, [{ quantity: 1, templateId: "AthenaGlider:umbrella_season_09" }]);
+  assert.deepEqual(inBuild(v900, () => battlePassOffers()).map(({ offerId, storefront, price }) => [offerId, storefront, price]),
+    [["core_br_season9_battlepass", "BRSeason9", 950], ["core_br_season9_battlebundle", "BRSeason9", 2800],
+      ["33E185A84ED7B64F2856E69AADFD092C", "BRSeason9", 150]]);
+});
+
+test("9.00's cosmetics: Rox, Sentinel, Vendetta and the rest; 117 added, none removed since 8.51", () => {
+  const [c900, c851] = [inBuild(v900, athenaCosmetics), inBuild(v851, athenaCosmetics)];
+  assert.equal(Object.keys(c900).length, 1795);
+  assert.equal(Object.keys(c900).filter((id) => !c851[id]).length, 117);
+  assert.deepEqual(Object.keys(c851).filter((id) => !c900[id]), []);
+  for (const [id, name] of [["AthenaCharacter:cid_408_athena_commando_f_strawberrypilot", "Rox"],
+    ["AthenaCharacter:cid_403_athena_commando_m_rooster", "Sentinel"],
+    ["AthenaCharacter:cid_407_athena_commando_m_battlesuit", "Vendetta"],
+    ["AthenaCharacter:cid_409_athena_commando_m_bunkerman", "Bunker Jonesy"],
+    ["AthenaSkyDiveContrail:trails_id_051_neontubes", "Neo Tubes"]]) assert.equal(c900[id]?.name, name, id);
+});
+
+test("Season 9's Battle Pass and challenges: ten free weeks, tier 1's paid, cumulative and Fortbyte schedules", () => {
+  const season = inBuild(v900, athenaSeason);
+  assert.deepEqual(season.grantsToEveryone, [{ quantity: 1, templateId: "ChallengeBundleSchedule:season9_free_schedule" }]);
+  const tier1 = season.bookPaidRewards.find(({ level }) => level === 1).rewards.map(({ templateId }) => templateId);
+  for (const id of ["AthenaCharacter:cid_408_athena_commando_f_strawberrypilot", "AthenaCharacter:cid_403_athena_commando_m_rooster",
+    "ChallengeBundleSchedule:season9_paid_schedule", "ChallengeBundleSchedule:season9_cumulative_schedule",
+    "ChallengeBundleSchedule:season9_fortbyte_schedule"]) assert.ok(tier1.includes(id), id);
+  inBuild(v900, () => {
+    assert.equal(athenaChallengeSchedules().season9_free_schedule.bundles.length, 10);
+    assert.equal(athenaChallengeSchedules().season9_fortbyte_schedule.eventName, lobbySeason9);
+    const fortbytes = athenaChallengeBundles().questbundle_s9_fortbyte.quests;
+    assert.equal(fortbytes.length, 100);
+    assert.equal(fortbytes.filter(({ unlockType, unlockValue }) => unlockType === "DaysFromEventStart" && unlockValue === 0).length, 18,
+      "Update v9.00: 18 Fortbytes on the first day");
+  });
+  assert.equal(inBuild(v851, athenaChallengeSchedules).season9_free_schedule, undefined, "8.51 has no Season 9");
+});
+
+test("the Fortbytes count Season 9's days on 9.00, while LobbySeason9 is served", () => {
+  withConfig(season9, () => {
+    assert.equal(inBuild(v900, () => fortbytesDay(at("2019-05-09T12:00:00Z"))), 0);
+    assert.equal(inBuild(v900, () => eventDaysOf(lobbySeason9, at("2019-05-25T12:00:00Z"))), 16);
+    assert.equal(inBuild(v851, () => fortbytesDay(at("2019-05-25T12:00:00Z"))), null, "8.51 serves no LobbySeason9");
+  });
+  withConfig({ ...season9, mode: "off" }, () => {
+    assert.equal(inBuild(v900, () => fortbytesDay(at("2019-05-25T12:00:00Z"))), null, "events off: no flag, no days");
+  });
+});
+
+test("a 9.00 player gets the free weeks, but the Fortbytes only with the Battle Pass (not by the lobby's flag)", () => {
+  withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(3) } }, () => withSession(v900, "season900", (session) => {
+    setUpAthena(session);
+    athenaQuestLogin(session);
+    const templates = templatesOf(session);
+    assert.ok(templates.includes("ChallengeBundleSchedule:season9_free_schedule"), "the free schedule");
+    assert.ok(templates.includes("ChallengeBundle:questbundle_s9_week_001"), "week 1");
+    assert.equal(templates.includes("ChallengeBundle:questbundle_s9_week_002"), false, "week 2 waits for its ninth day");
+    assert.equal(templates.includes("ChallengeBundleSchedule:season9_fortbyte_schedule"), false, "no pass, no Fortbytes");
+    assert.equal(session.profile("athena").profile.stats.attributes.season_num, 9);
+  }));
+});
+
+test("9.00's shop: Season 9's own history, day by day from Epic's 9 May shop, an 84-day replay", () => {
+  const shopConfig = { mode: "fnbr", rotationHour: 0, seasonStarts: { 9: "2019-05-09" } };
+  configureItemShop(() => shopConfig);
+  try {
+    assert.equal(hasSeasonHistory(9), true);
+    const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season9.json", import.meta.url), "utf8")).days;
+    assert.equal(history.length, 84);
+    assert.deepEqual([history[0].date, history.at(-1).date], ["2019-05-09", "2019-07-31"]);
+    const cosmetics = inBuild(v900, athenaCosmetics);
+    inBuild(v900, () => {
+      const first = itemShopOffers(at("2019-05-09T12:00:00Z"), shopConfig);
+      const offers = [...first.BRWeeklyStorefront, ...first.BRDailyStorefront];
+      const recorded = new Set([...history[0].featured, ...history[0].daily].map(([templateId]) => templateId));
+      assert.ok(offers.length >= 10, "the day's shop");
+      assert.ok(offers.every(({ templateId }) => recorded.has(templateId)), "only the day's recorded items");
+      assert.ok(offers.every(({ templateId }) => cosmetics[templateId]), "only 9.00's cosmetics");
+      assert.deepEqual(shopDay(at("2019-05-14T12:00:00Z"), shopConfig), history[5]);
+      assert.equal(shopDay(at("2019-08-01T12:00:00Z"), shopConfig).date, "2019-05-09", "the 85th day is the first again");
+      assert.equal(seasonEnd(at("2019-05-14T12:00:00Z"), shopConfig).toISOString().slice(0, 10), "2019-08-01");
+    });
+  } finally {
+    configureItemShop(null);
+  }
+});
+
+test("Season 9's LTMs: 9.00's lobby's 50v50 and Playground, Update v9.00's rotation by its Original dates", () => {
+  const dated = { ltmOriginalDates: true };
+  withConfig(season9, () => {
+    for (const id of ["fiftyFiftySeason9", "playgroundV2", "creative"]) assert.equal(ltmOn(id, v900, {}, at("2019-05-20T12:00:00Z")), true, id);
+    for (const id of ["triosSeason9", "solidGoldSeason9Squads", "oneShotSeason9Squads"]) {
+      assert.equal(ltmOn(id, v900, {}, at("2019-05-10T12:00:00Z")), false, `${id} is off by default`);
+      assert.equal(ltmOn(id, v900, dated, at("2019-05-10T12:00:00Z")), true, `${id} in its window`);
+      assert.equal(ltmOn(id, v900, dated, at("2019-05-20T12:00:00Z")), false, `${id} after 9.01's day`);
+      assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [true, false], id);
+    }
+    // Season 8's modes, the Arena and the tournaments end with 8.51; Air Royale's and Sword Fight's playlists are gone.
+    for (const id of ["fiftyFiftySeason8", "airRoyaleDuos", "endgame", "unvaulting", "arenaSolo", "tournamentS8Solo"]) {
+      assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [false, true], id);
+    }
+  });
+});
+
+test("9.00's lobby and Block: LobbySeason9, Modern Mansion then Custom Car Carpet; nothing of Season 8's", () => {
+  assert.ok(activeEventFlags(v900).includes(lobbySeason9));
+  for (const flag of ["EventFlag.LobbySeason8", "EventFlag.Spring2019"]) assert.equal(activeEventFlags(v900).includes(flag), false, flag);
+  assert.equal(activeEventFlags(v851).includes(lobbySeason9), false);
+  assert.equal(blockEventOf(v900)?.id, "block900");
+  assert.equal(blockEventOf(v851)?.id, "block850", "8.51 keeps 8.50's Block");
+  withConfig(season9, () => {
+    assert.deepEqual(typesOf(inBuild(v900, () => blockStates(at("2019-05-10T12:00:00Z")))), [blockSlab(1)]);
+    assert.deepEqual(typesOf(inBuild(v900, () => blockStates(at("2019-05-20T12:00:00Z")))), [blockSlab(2)]);
+    assert.deepEqual(inBuild(v900, () => unvaultingFlagsNow(at("2019-05-10T12:00:00Z"))), [], "the Unvaulting is 8.51's");
+  });
+  assert.deepEqual(eventCard("block900").ranges, [[6337466, 6337466]]);
+  assert.deepEqual(eventCard("season9Lobby").ranges, [[6337466, 6337466]]);
+});
+
+test("9.00's SetCompetitiveRegion is accepted with no profile change", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Region9");
+    const command = (name, body) => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=athena&rvn=-1`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-9.00-CL-6337466",
+        Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
+    }, JSON.stringify(body));
+    const before = (await command("QueryProfile", {})).body.profileChanges[0].profile;
+    const answer = await command("SetCompetitiveRegion", { newlySelectedRegionId: "EU" });
+    assert.equal(answer.status, 200);
+    assert.equal(answer.body.errorCode, undefined);
+    const after = (await command("QueryProfile", {})).body.profileChanges[0].profile;
+    assert.deepEqual(after.stats.attributes, before.stats.attributes);
+  } finally {
+    backend.close();
+  }
+});
+
+test("buying Season 9's Battle Pass on 9.00 gives the Fortbytes: the first day's 18, not the later days'", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Fortbytes9");
+    const command = (name, profileId, body) => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=${profileId}&rvn=-1`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-9.00-CL-6337466",
+        Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
+    }, JSON.stringify(body));
+    const templates = async () => Object.values((await command("QueryProfile", "athena", {})).body.profileChanges[0].profile.items)
+      .map(({ templateId }) => templateId.toLowerCase());
+    await command("ClientQuestLogin", "athena", {});
+    assert.equal((await templates()).includes("challengebundleschedule:season9_fortbyte_schedule"), false);
+    assert.equal((await post(backend.port, `/admin/api/accounts/${player.accountId}/currency`, undefined, { key: "vbucks", quantity: 5000 })).status, 200);
+    const bought = await command("PurchaseCatalogEntry", "common_core",
+      { offerId: "core_br_season9_battlepass", purchaseQuantity: 1, currency: "MtxCurrency", expectedPrice: 950 });
+    assert.equal(bought.status, 200, JSON.stringify(bought.body));
+    await command("ClientQuestLogin", "athena", {});
+    const held = await templates();
+    assert.ok(held.includes("challengebundleschedule:season9_fortbyte_schedule"), "tier 1 gives the schedule");
+    assert.ok(held.includes("quest:quest_br_s9_fortbyte_01"), "a first day's Fortbyte");
+    assert.equal(held.includes("quest:quest_br_s9_fortbyte_13"), false, "the sixteenth day's waits");
+    assert.equal(held.filter((id) => /^quest:quest_br_s9_fortbyte_\d+$/.test(id)).length, 18);
+  } finally {
+    backend.close();
+  }
+});

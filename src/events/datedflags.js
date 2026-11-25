@@ -57,8 +57,11 @@ export const season7EndDay = Date.parse("2019-02-28T00:00:00.000Z");
 // Block (events/block.js).
 export const season8FirstDay = Date.parse("2019-02-28T00:00:00.000Z");
 export const season8EndDay = Date.parse("2019-05-09T00:00:00.000Z");
+// Season 9's replay: its 84 days, 9 May to 31 July 2019 (store/itemshop-season9.json; Season 10 began 1 August).
+export const season9FirstDay = Date.parse("2019-05-09T00:00:00.000Z");
+export const season9EndDay = Date.parse("2019-08-01T00:00:00.000Z");
 const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay], 7: [season7FirstDay, season7EndDay],
-  8: [season8FirstDay, season8EndDay] };
+  8: [season8FirstDay, season8EndDay], 9: [season9FirstDay, season9EndDay] };
 export const datedSeasonOf = (event) => event.season ?? 5;
 const daysOf = (event) => seasonDays[datedSeasonOf(event)];
 // The replay's moment now for an event's season: momentNowMs is that moment (ms), or a function of the season that gives it.
@@ -175,6 +178,12 @@ const blockBuilds830 = [["2019-02-28", "Llama Sphinx, by Prudiz"], ["2019-04-17"
 // paks already have it), on to the season's end. 8.50 came out mid-season, so its first build is up from the lap's first
 // day, as 8.30's.
 const blockBuilds850 = [["2019-02-28", "Tricky Tracks, by Callum5tewart"], ["2019-05-02", "Alien Sanctuary, by Pr0Spartaner"]];
+// 9.00 (CL-6337466, Update v9.00, 9 May 2019): SLAB_1 streams Athena/Maps/Block/9_00's Block_25x25_ModernMansion ("Modern
+// Mansion", MakaMakes_YT), SLAB_2 Block_25x25_CustomCarCarpet ("Custom Cart Carpet" on its slab, Rallred84); BP_SlabScripting
+// still watches slab1 to slab3. 9.00's paks no longer have 8.50's two. The Fortnite Wiki's The Block: "Maka's Modern
+// Mansion" on 9 May 2019 (Season 9's first day), "Custom Car Carpet" on 15 May (Update v9.01's day; 9.00's paks already have
+// it), on to the season's end (🟡 the wiki's next build, 22 May, isn't in 9.00's paks).
+const blockBuilds900 = [["2019-05-09", "Modern Mansion, by MakaMakes_YT"], ["2019-05-15", "Custom Car Carpet, by Rallred84"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -391,6 +400,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds830) },
   { id: "block850", name: "The Block's community builds (8.50)", season: 8, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds850) },
+  { id: "block900", name: "The Block's community builds (9.00)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds900) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).

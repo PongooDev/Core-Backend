@@ -169,6 +169,10 @@ export const eventCards = [
   { id: "block830", kind: "dated", dated: "block830", seasons: [8], name: "The Block's community builds (8.30, 8.40)", builds: "8.30 – 8.40", ranges: [[5793395, 6005771]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Llama Sphinx goes up", endLabel: "Cordial Courtyard goes up",
     about: "8.30's two community-built islands on the Block, each a level in its paks: Llama Sphinx (Prudiz; Update v8.30, 10 April 2019; 8.30 came out mid-season, so it is up from the replay's first day) and Cordial Courtyard (GonzoTheWizard, 17 April, Update v8.40's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  // 9.00's Block (events/block.js): Modern Mansion, then Custom Car Carpet on 9.01's day (both in 9.00's paks).
+  { id: "block900", kind: "dated", dated: "block900", seasons: [9], name: "The Block's community builds (9.00)", builds: "9.00", ranges: [[6337466, 6337466]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Modern Mansion goes up", endLabel: "Custom Car Carpet goes up",
+    about: "9.00's two community-built islands on the Block, each a level in its paks: Maka's Modern Mansion (MakaMakes_YT; Update v9.00, 9 May 2019, Season 9's first day) and Custom Car Carpet (Rallred84, 15 May, Update v9.01's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
   // 8.50's Block (events/block.js): Tricky Tracks, then Alien Sanctuary on 8.51's day (both in 8.50's paks); 8.51's is 8.50's.
   { id: "block850", kind: "dated", dated: "block850", seasons: [8], name: "The Block's community builds (8.50, 8.51)", builds: "8.50 – 8.51", ranges: [[6058028, 6165369]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Tricky Tracks goes up", endLabel: "Alien Sanctuary goes up",
@@ -210,7 +214,11 @@ export const eventCards = [
     flags: ["EventFlag.Spring2019", "EventFlag.Spring2019.Phase1", "EventFlag.Spring2019.Phase2 (8.20 – 8.51)"] },
   { id: "season8Lobby", kind: "build", seasons: [8], name: "Season 8 lobby", builds: "8.00 – 8.51", ranges: [[5203069, 6165369]],
     about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 to 8.51 carry no other Battle Royale lobby flag.",
-    flags: ["EventFlag.LobbySeason8"] }
+    flags: ["EventFlag.LobbySeason8"] },
+  // 9.00's (events/events.js): Season 9's lobby, which is also the Fortbytes' event (events/fortbytes.js).
+  { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00", ranges: [[6337466, 6337466]],
+    about: "Battle Royale's Season 9 lobby: EventFlag.LobbySeason9 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season9). It is also the event of the Battle Pass's Fortbytes (Season9_Fortbyte_Schedule): each Fortbyte unlocks its set number of days after the flag's start, Season 9's first day on its replay.",
+    flags: ["EventFlag.LobbySeason9"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 

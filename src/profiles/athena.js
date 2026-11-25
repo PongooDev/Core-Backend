@@ -1494,10 +1494,16 @@ function settleSeasonGrants(session) {
 // Schedule_LTM_Goose (EventFlag.LTM_Goose, the Air Royale Challenges) while its dates do (events/airroyale.js), and 8.50's
 // Schedule_LTM_Ashton (EventFlag.LTM_Ashton, the Endgame Challenges) while its dates do (events/endgame.js), and 8.51's
 // Season8_ExtraCredit_Schedule (EventFlag.LTE_S8_ExtraCredit, the Season 8 Overtime Challenges) while its dates do
-// (events/extracredit.js).
+// (events/extracredit.js). A schedule the season's Battle Pass gives isn't one: 9.00's Season9_Fortbyte_Schedule names
+// EventFlag.LobbySeason9 only for its quests' DaysFromEventStart (events/fortbytes.js), and AthenaSeason9's tier 1 paid
+// rewards give it, so only Battle Pass owners have the Fortbytes (Update v9.00: "available to Battle Pass owners").
+const battlePassSchedules = () => new Set([...(athenaSeason()?.bookPaidRewards ?? []), ...(athenaSeason()?.bookFreeRewards ?? [])]
+  .flatMap(({ rewards }) => rewards ?? []).map(({ templateId }) => templateId.toLowerCase())
+  .filter((templateId) => typeOf(templateId) === "challengebundleschedule").map((templateId) => templateId.split(":")[1]));
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
-  const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
+  const fromBattlePass = battlePassSchedules();
+  const event = Object.keys(schedules).filter((id) => schedules[id].eventName && !fromBattlePass.has(id.toLowerCase()));
   if (!event.length) return;
   const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow(), ...endgameFlagsNow(), ...extraCreditFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");

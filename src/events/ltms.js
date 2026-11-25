@@ -700,6 +700,10 @@ const build820 = 5625478;
 const build840 = 6005771;
 const build850 = 6058028;
 const build851 = 6165369;
+const build900 = 6337466;
+const season9Window = [{ builds: [build900, build900], start: "2019-05-09", end: "2019-08-01" }];
+// 9.00's rotation (Update v9.00's "Limited Time Mode Rotation"): 🟡 no source gives its days; from 9.00's day to 9.01's.
+const rotation900Window = [{ builds: [build900, build900], start: "2019-05-09", end: "2019-05-15" }];
 const season8Window = [{ builds: [build800, build851], start: "2019-02-28", end: "2019-05-09" }];
 const season7Window = [{ builds: [build700, build740], start: "2018-12-06", end: "2019-02-28" }];
 const loveShotWindow = [{ builds: [build740, build740], start: "2019-02-14", end: "2019-02-16" }];
@@ -981,8 +985,8 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build851], seasons: [5, 6, 7, 8], defaultOn: true,
-    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window, ...season8Window],
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build900], seasons: [5, 6, 7, 8, 9], defaultOn: true,
+    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window, ...season8Window, ...season9Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
     original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
@@ -1485,6 +1489,26 @@ export const ltms = [
   { id: "unvaulting", name: "The Unvaulting", playlistId: 325, playlistName: "Playlist_Music_Highest", eventFlag: null, builds: [build851, build851], seasons: [8],
     advertise: "New", defaultOn: true, original: unvaultingWindow,
     teams: "2 Teams × 50", description: "The choice is yours! Season 8's live event, the Vault opening: vote for the item that comes back, then the volcano erupts; respawn on (Playlist_Music_Highest, 8.51's)." },
+  // 9.00 (CL-6337466, Update v9.00, 9 May 2019), Season 9's first build. Its 143 playlist assets are 8.51's less Air
+  // Royale's Playlist_Goose_* (300 to 303) and Sword Fight's Playlist_Sword_* (335 to 337), with Creative's
+  // Playlist_Creative_LTM_v1, _LTM_40_v1 and _TDM_v2 (35, "Creative Team Battle") and Playlist_Respawn_20_Sif (1023, Team
+  // Rumble, 2 teams of 20) added; every other playlist's id, name and size is 8.51's. Its DefaultGame.ini's lobby is 8.51's
+  // (50v50, Playground, Creative), so 50v50 is on by default. Update v9.00's "Limited Time Mode Rotation" is Trios
+  // (Playlist_Trios, 201), Solid Gold and One Shot (🟡 the notes name no team size: Squads, as Season 8's runs; Playlist_
+  // SolidGold_Squads, 27, and Playlist_Low_Squads, 252), each by its Original dates from 9.00's day to 9.01's (🟡) and off by
+  // default, as 9.00's lobby ships none of them. Season 8's entries end with 8.51: 9.00 is a new season (seasonOf).
+  { id: "fiftyFiftySeason9", name: "50v50 (Season 9)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build900, build900], seasons: [9], defaultOn: true,
+    original: season9Window,
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height: 9.00's lobby ships it on (Playlist_50v50, 9.00's)." },
+  { id: "triosSeason9", name: "Trios (Season 9)", playlistId: 201, playlistName: "Playlist_Trios", eventFlag: null, builds: [build900, build900], seasons: [9],
+    original: rotation900Window,
+    teams: "33 Teams × 3", description: "Classic Battle Royale in squads of three: Update v9.00's limited time mode rotation (Playlist_Trios, 9.00's)." },
+  { id: "solidGoldSeason9Squads", name: "Solid Gold (Season 9, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build900, build900], seasons: [9],
+    original: rotation900Window,
+    teams: "100 Teams × 4", description: "Every weapon Legendary: Update v9.00's limited time mode rotation (Playlist_SolidGold_Squads, 9.00's)." },
+  { id: "oneShotSeason9Squads", name: "One Shot (Season 9, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build900, build900], seasons: [9],
+    original: rotation900Window,
+    teams: "100 Teams × 4", description: "Low gravity, 50 health, snipers only and Bandages the only healing: Update v9.00's limited time mode rotation (Playlist_Low_Squads, 9.00's)." },
   // Season 8's Arena (Core-Backend #420, tournaments/arena.js): Update v8.20's "Arena Game Mode (Solo & Duos)", on the Pop-Up
   // Cups' Playlist_ShowdownAlt_Solo and _Duos (58074, 58075), which 8.20's to 8.51's paks name "Arena" ("Prove your skill in
   // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
@@ -1520,8 +1544,8 @@ export const ltms = [
   // admin panel switch, no Original dates, and a matchmaking setting saved for it before is ignored. A Creative match is its
   // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
-  // v7.00's early access).
-  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build851], seasons: [7, 8], defaultOn: true,
+  // v7.00's early access). 9.00's lobby keeps it (Playlist_PlaygroundV2, 9.00's DefaultGame.ini).
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build900], seasons: [7, 8, 9], defaultOn: true,
     alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];
@@ -1603,7 +1627,7 @@ export function eventTagOfPlaylist(playlistId, build = currentBuild()) {
   return ltm && inRange(ltm.builds, build) ? ltm.tag351 ?? ltm.playlistId : undefined;
 }
 
-const seasonOf = (build) => (Number(build) >= build800 ? 8 : Number(build) >= build700 ? 7 : Number(build) >= build6000 ? 6 : Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3
+const seasonOf = (build) => (Number(build) >= build900 ? 9 : Number(build) >= build800 ? 8 : Number(build) >= build700 ? 7 : Number(build) >= build6000 ? 6 : Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3
   : Number(build) >= build111 ? 2 : 1);
 const day = (date) => Date.parse(`${date}T00:00:00Z`);
 // An LTM's original windows ([] for none): {builds, start, end, season}, start and end in ms of Epic's calendar (UTC), end

@@ -59,6 +59,8 @@ export function sanitizeBattlePass(input, current = defaultBattlePass) {
   if (input.season7 !== undefined) result.season7 = sanitizeSeasonPrices(input.season7, result.season7, defaultSeasonPrices[7]);
   // Season 8's (8.00).
   if (input.season8 !== undefined) result.season8 = sanitizeSeasonPrices(input.season8, result.season8, defaultSeasonPrices[8]);
+  // Season 9's (9.00).
+  if (input.season9 !== undefined) result.season9 = sanitizeSeasonPrices(input.season9, result.season9, defaultSeasonPrices[9]);
 
   if (Array.isArray(input.milestones)) {
     const sanitized = [];

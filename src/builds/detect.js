@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22", 4573096: "6.30", 4573279: "6.31", 4629139: "7.00", 4667333: "7.10", 4727874: "7.20", 4834550: "7.30", 5046157: "7.40", 5203069: "8.00", 5625478: "8.20", 5793395: "8.30", 6005771: "8.40", 6058028: "8.50", 6165369: "8.51" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21", 4543176: "6.22", 4573096: "6.30", 4573279: "6.31", 4629139: "7.00", 4667333: "7.10", 4727874: "7.20", 4834550: "7.30", 5046157: "7.40", 5203069: "8.00", 5625478: "8.20", 5793395: "8.30", 6005771: "8.40", 6058028: "8.50", 6165369: "8.51", 6337466: "9.00" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -17,7 +17,7 @@ export const buildReleases = {
   4573096: Date.UTC(2018, 10, 14), 4573279: Date.UTC(2018, 10, 27), 4629139: Date.UTC(2018, 11, 6), 4667333: Date.UTC(2018, 11, 18),
   4727874: Date.UTC(2019, 0, 15), 4834550: Date.UTC(2019, 0, 29), 5046157: Date.UTC(2019, 1, 14), 5203069: Date.UTC(2019, 1, 28),
   5625478: Date.UTC(2019, 2, 27), 5793395: Date.UTC(2019, 3, 10), 6005771: Date.UTC(2019, 3, 17), 6058028: Date.UTC(2019, 3, 25),
-  6165369: Date.UTC(2019, 4, 1)
+  6165369: Date.UTC(2019, 4, 1), 6337466: Date.UTC(2019, 4, 9)
 };
 export const releasedOn = (changelist) => buildReleases[changelist] ?? null;
 
@@ -157,6 +157,10 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // Season 8 page and the Duet's Weekly Store day, 🟡 its Update v8.51 page says 2 May: the Shadow Bomb, the Diner prefabs, the
 // Unvaulting) keeps AthenaSeason8; its data is gamedata/6165369. Its install is 8.50's layout with the keyed pakchunk1000
 // to 1009, the keychain having all but 1002.
+// Season 9 began with 9.00 (++Fortnite+Release-9.00, CL-6337466, UE 4.23, Update v9.00, 9 May 2019: Neo Tilted and Mega
+// Mall, the Sky Platforms and Slipstreams, Fortbytes, the Season 9 Battle Pass). Its AthenaSeason9 has its own Battle Pass
+// (100 tiers, the BRSeason9 storefront); its data is gamedata/6337466. Its install is 8.51's layout with only the keyed
+// pakchunk1000 to 1002, the keychain having pakchunk1002's key only.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
@@ -165,7 +169,8 @@ export const battleRoyaleSeasons = [
   { season: 5, firstVersion: "5.0", lastVersion: "5.41" },
   { season: 6, firstVersion: "6.00", lastVersion: "6.31" },
   { season: 7, firstVersion: "7.00", lastVersion: "7.40" },
-  { season: 8, firstVersion: "8.00", lastVersion: "8.51" }
+  { season: 8, firstVersion: "8.00", lastVersion: "8.51" },
+  { season: 9, firstVersion: "9.00", lastVersion: "9.00" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {
