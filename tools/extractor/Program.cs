@@ -38,6 +38,12 @@ else
 }
 var engine = $"{version["MajorVersion"]}.{version["MinorVersion"]}";
 var changelist = version["Changelist"]?.GetValue<int>() ?? 0;
+// 9.00 (CL 6337466) renames EFortRarity (its SDK: Common, Uncommon, Rare, Epic, Legendary, Mythic, Transcendent,
+// Unattainable; 8.51's Handmade, Ordinary, Sturdy, Quality, Fine, Elegant, Masterwork, Epic, Badass, Legendary), the same
+// items keeping their tier (8.51's Sturdy items are 9.00's Rare ones, its Legendary five 9.00's Unattainable). The data keeps
+// the earlier names, which every build's data and the backend use; tables with a column per rarity (the durability and
+// conversion cost rows) are read by the build's own names.
+RarityNames.Renamed = changelist >= 6337466;
 var game = engine switch
 {
     "4.16" => EGame.GAME_UE4_16,
@@ -152,7 +158,7 @@ int MaxDurability(JsonNode? statHandle, string rarity, int level)
         || Row(TableRows(durabilityTable), durabilityRow) is not JsonObject byRarity) return 1;
     var baseLevel = stats["BaseLevel"]?.GetValue<int>() ?? 0;
     var scale = stats["DurabilityScale"]?.GetValue<float>() ?? 0f;
-    var max = (int)(((float)Math.Max(0, level - baseLevel) * scale + 1.0f) * (byRarity[rarity]?.GetValue<int>() ?? 1));
+    var max = (int)(((float)Math.Max(0, level - baseLevel) * scale + 1.0f) * (byRarity[RarityNames.Column(rarity)]?.GetValue<int>() ?? 1));
     return max == 0 ? 1 : max;
 }
 
@@ -317,8 +323,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             ["requiredItem"] = costs["RequiredItem"] is { } required && AssetPath(required) is { Length: > 0 } requiredPath and not "None" ? assetTypes.TemplateId(requiredPath) : "",
             ["tiers"] = rarityNames.Select(rarity => new SortedDictionary<string, object>(StringComparer.Ordinal)
             {
-                ["cost"] = costs[rarity]?["TierCost"]?.GetValue<int>() ?? -1,
-                ["quantity"] = costs[rarity]?["RequiredItemQuantity"]?.GetValue<int>() ?? 0
+                ["cost"] = costs[RarityNames.Column(rarity)]?["TierCost"]?.GetValue<int>() ?? -1,
+                ["quantity"] = costs[RarityNames.Column(rarity)]?["RequiredItemQuantity"]?.GetValue<int>() ?? 0
             }).ToList(),
             ["catalysts"] = Strings(costs["RequiredCatalysts"]),
             ["consumed"] = properties["bConsumedOnConversion"]?.GetValue<bool>() ?? false,
@@ -2031,7 +2037,13 @@ static string ItemAndCountTemplateId(JsonNode item, AssetTypes assetTypes)
     return type is null or "None" || name is null or "None" ? "None" : $"{type}:{name.ToLowerInvariant()}";
 }
 
-static string? Enum(JsonNode? value) => value?.GetValue<string>().Split("::").Last();
+static string? Enum(JsonNode? value)
+{
+    var text = value?.GetValue<string>();
+    var name = text?.Split("::").Last();
+    return text is not null && text.StartsWith("EFortRarity::") && name is not null ? RarityNames.Earlier(name) : name;
+}
+
 
 // A soft object path as the game writes it, "/Game/Path/Asset.Asset" (some references come back without the object name).
 static string ObjectPath(string path) => path.Contains('.') ? path : $"{path}.{path.Split('/').Last()}";
@@ -2321,4 +2333,19 @@ sealed class AssetTypes
 
         return cache[objectPath] = $"{match.Type}:{assetName.ToLowerInvariant()}";
     }
+}
+
+static class RarityNames
+{
+    public static bool Renamed;
+    static readonly Dictionary<string, string> earlier = new()
+    {
+        ["Common"] = "Handmade", ["Uncommon"] = "Ordinary", ["Rare"] = "Sturdy", ["Epic"] = "Quality", ["Legendary"] = "Fine",
+        ["Mythic"] = "Elegant", ["Transcendent"] = "Masterwork", ["Unattainable"] = "Legendary"
+    };
+    static readonly Dictionary<string, string> build = earlier.ToDictionary(pair => pair.Value, pair => pair.Key);
+    // An EFortRarity name of the build as the data writes it (the earlier name).
+    public static string Earlier(string name) => Renamed && earlier.TryGetValue(name, out var old) ? old : name;
+    // A rarity column of the build's tables for a name the data writes; 8.51's Epic and Badass have none in 9.00.
+    public static string Column(string name) => !Renamed ? name : build.TryGetValue(name, out var now) ? now : "";
 }

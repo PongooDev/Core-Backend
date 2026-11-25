@@ -592,7 +592,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   4.23.0-6337466; the build folder is `9.00-CL-6337466\9.00-CL-6337466\Fortnite`) with 8.51's full data (Cert's files with
   `gamedata/6165369` applied) as the fifth argument and the main key FModel's settings hold for its build folder. 8.51's
   layout with only the keyed pakchunk1000 to 1002, of which the keychain opens 1002. Its mission alerts are still the fifth
-  argument's. No extractor change. Against 8.51 fifteen files change: `athena.json` (117 cosmetics, none gone: Season 9's
+  argument's. One extractor change: 9.00 renames EFortRarity (Common, Uncommon, Rare, Epic, Legendary, Mythic, Transcendent,
+  Unattainable for 8.51's Handmade, Ordinary, Sturdy, Quality, Fine, Elegant, Masterwork and Legendary; the same items keep
+  their tier), so from CL 6337466 a rarity is written by its earlier name, which every build's data and the backend use,
+  and the tables with a column per rarity (WeaponDurabilityRarity, ConversionControlCosts) are read by 9.00's own names
+  (8.51's Epic and Badass have none). The first 9.00 overlay, made without it, had 9.00's names: the Perk Recombobulator's
+  groups found no perk (CI's alterations test) and the Uncommon traps' durability fell to 1. Against 8.51 fifteen files change: `athena.json` (117 cosmetics, none gone: Season 9's
   Battle Pass, Rox, Sentinel, Bunker Jonesy, Vega, Stratus, Demi, Vendetta, Kyo, the Holographic umbrella; AthenaSeason9 and
   its schedules, the Fortbytes' Season9_Fortbyte_Schedule with its hundred DaysFromEventStart quests, Schedule_LTM_Wax
   without its quests), `items.json`, `quests.json` (Save the World's S9_* quest line, the Wargames dailies),

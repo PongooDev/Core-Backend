@@ -1,42 +1,4 @@
 {
-  "criteria": {
-    "RequiresEpicCommando": {
-      "rarity": "Epic"
-    },
-    "RequiresEpicConstructor": {
-      "rarity": "Epic"
-    },
-    "RequiresEpicNinja": {
-      "rarity": "Epic"
-    },
-    "RequiresEpicOutlander": {
-      "rarity": "Epic"
-    },
-    "RequiresLegendaryCommando": {
-      "rarity": "Legendary"
-    },
-    "RequiresLegendaryConstructor": {
-      "rarity": "Legendary"
-    },
-    "RequiresLegendaryNinja": {
-      "rarity": "Legendary"
-    },
-    "RequiresLegendaryOutlander": {
-      "rarity": "Legendary"
-    },
-    "RequiresRareCommando": {
-      "rarity": "Rare"
-    },
-    "RequiresRareConstructor": {
-      "rarity": "Rare"
-    },
-    "RequiresRareNinja": {
-      "rarity": "Rare"
-    },
-    "RequiresRareOutlander": {
-      "rarity": "Rare"
-    }
-  },
   "expeditions": {
     "Expedition:expedition_craftingrun_short_t00": {
       "basePower": 20,

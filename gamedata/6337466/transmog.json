@@ -4,43 +4,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 750,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 750,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -48,32 +48,16 @@
     "requiredItem": "AccountResource:peopleresource",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 24,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -81,11 +65,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -94,31 +94,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 120,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -126,11 +110,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -139,43 +139,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 750,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 750,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -184,31 +184,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 48,
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -216,11 +200,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -229,31 +229,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 300,
@@ -261,43 +245,43 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_defender_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 24,
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 48,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 120,
+        "quantity": 50
       },
       {
         "cost": -1,
@@ -305,11 +289,27 @@
       },
       {
         "cost": -1,
+        "quantity": 250
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 250
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -317,31 +317,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -349,11 +333,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -361,43 +361,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
         "quantity": 10
       },
       {
+        "cost": 200,
+        "quantity": 25
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 200,
-        "quantity": 25
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -405,31 +405,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -437,11 +421,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -449,31 +449,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": 80,
@@ -481,11 +465,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -493,31 +493,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 160,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -525,11 +509,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -537,43 +537,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 1000,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -581,31 +581,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -613,11 +597,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -625,31 +625,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 400,
@@ -657,11 +641,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -670,31 +670,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -702,11 +686,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -715,43 +715,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 500,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -760,31 +760,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -792,11 +776,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -805,43 +805,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 500,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -850,31 +850,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -882,11 +866,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -894,32 +894,16 @@
     "lootTierGroup": "CCK_Expedition_Traps_Common",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 19,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -927,11 +911,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -940,31 +940,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 96,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -972,11 +956,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -985,43 +985,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 600,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 600,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1030,31 +1030,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 38,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1062,11 +1046,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1075,31 +1075,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 240,
@@ -1107,43 +1091,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_expedition_weapon_common": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1151,11 +1135,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1163,31 +1163,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1195,11 +1179,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1207,43 +1207,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1251,31 +1251,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1283,11 +1267,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1295,31 +1295,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -1327,43 +1311,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_expedition_worker_common": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 6,
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -1371,11 +1355,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1383,31 +1383,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -1415,11 +1399,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1427,43 +1427,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
         "quantity": 10
       },
       {
+        "cost": 200,
+        "quantity": 25
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 200,
-        "quantity": 25
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1471,31 +1471,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -1503,11 +1487,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1515,31 +1515,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": 80,
@@ -1547,11 +1531,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1560,51 +1560,23 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
         "cost": 1000,
         "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_commando_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -1625,22 +1597,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 450
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 700
       }
     ]
   },
@@ -1649,51 +1605,23 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
         "cost": 1000,
         "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_constructor_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -1714,22 +1642,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 450
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 700
       }
     ]
   },
@@ -1738,43 +1650,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 1000,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1783,31 +1695,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 160,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1815,11 +1711,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1828,43 +1740,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 1000,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1873,31 +1785,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -1905,11 +1801,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -1918,31 +1830,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 400,
@@ -1950,19 +1846,7 @@
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
         "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_core_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -1983,66 +1867,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 420
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 660
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_core_unlimited_vr": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": 400,
-        "quantity": 420
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 660
       }
     ]
   },
@@ -2051,51 +1875,23 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
         "cost": 1000,
         "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_ninja_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -2116,22 +1912,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 450
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 700
       }
     ]
   },
@@ -2140,51 +1920,23 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
         "cost": 1000,
         "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_hero_outlander_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -2205,22 +1957,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 450
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 700
       }
     ]
   },
@@ -2229,43 +1965,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 250,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 250,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2273,32 +2009,16 @@
     "requiredItem": "AccountResource:peopleresource",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 8,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2306,11 +2026,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2319,31 +2055,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 40,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2351,11 +2071,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2364,43 +2100,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 50
       },
       {
+        "cost": 250,
+        "quantity": 100
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 250,
-        "quantity": 100
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2409,31 +2145,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 16,
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2441,11 +2161,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2454,31 +2190,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 10
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 100,
@@ -2486,90 +2206,6 @@
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 100
-      }
-    ]
-  },
-  "ConversionControl:cck_manager_core_unlimited": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 360
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 550
-      }
-    ]
-  },
-  "ConversionControl:cck_material_event_pumpkinwarhead": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
         "quantity": 100
       },
       {
@@ -2578,7 +2214,19 @@
       },
       {
         "cost": -1,
-        "quantity": 150
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2587,43 +2235,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2631,32 +2279,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2664,11 +2296,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2677,31 +2325,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2709,11 +2341,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2722,43 +2370,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2767,31 +2415,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -2799,11 +2431,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2812,31 +2460,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -2844,43 +2476,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_axe_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -2888,11 +2520,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2901,75 +2549,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_blunt_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -2977,11 +2609,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -2990,43 +2638,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3034,32 +2682,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3067,11 +2699,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3080,31 +2728,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3112,11 +2744,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3125,43 +2773,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3170,31 +2818,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3202,11 +2834,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3215,31 +2863,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -3247,43 +2879,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_club_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -3291,11 +2923,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3304,75 +2952,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -3380,43 +3012,43 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_core_unlimited_vr": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": 200,
@@ -3424,11 +3056,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3437,75 +3085,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_edged_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -3513,11 +3145,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3526,75 +3174,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_piercing_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -3602,11 +3234,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3615,43 +3263,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3659,32 +3307,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3692,11 +3324,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3705,31 +3353,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3737,11 +3369,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3750,43 +3398,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3795,31 +3443,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -3827,11 +3459,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3840,31 +3488,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -3872,43 +3504,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_scythe_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -3916,11 +3548,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3929,43 +3577,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -3973,32 +3621,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4006,11 +3638,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4019,31 +3667,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4051,11 +3683,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4064,43 +3712,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4109,31 +3757,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4141,11 +3773,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4154,31 +3802,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -4186,43 +3818,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_spear_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -4230,11 +3862,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4243,43 +3891,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4287,32 +3935,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4320,11 +3952,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4333,31 +3981,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4365,11 +3997,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4378,43 +4026,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4423,31 +4071,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4455,11 +4087,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4468,31 +4116,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -4500,43 +4132,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_sword_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -4544,11 +4176,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4557,43 +4205,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4601,32 +4249,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4634,11 +4266,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4647,31 +4295,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4679,11 +4311,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4692,43 +4340,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4737,31 +4385,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4769,11 +4401,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4782,31 +4430,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -4814,43 +4446,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_melee_tool_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -4858,11 +4490,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4874,43 +4522,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4919,43 +4567,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -4963,32 +4611,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -4996,11 +4628,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5009,31 +4657,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5041,11 +4673,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5054,43 +4702,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5099,31 +4747,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5131,11 +4763,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5144,31 +4792,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -5176,11 +4808,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5192,75 +4840,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_assault_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -5268,11 +4900,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5281,75 +4929,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -5357,43 +4989,43 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_core_unlimited_vr": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": 200,
@@ -5401,19 +5033,7 @@
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
         "quantity": 1500
-      }
-    ]
-  },
-  "ConversionControl:cck_ranged_launcher_pumpkin_consumable_sr": {
-    "tiers": [
-      {
-        "cost": -1,
-        "quantity": 0
       },
       {
         "cost": -1,
@@ -5434,22 +5054,6 @@
       {
         "cost": -1,
         "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 300
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": 625,
-        "quantity": 5
       }
     ]
   },
@@ -5461,43 +5065,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5506,43 +5110,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5550,32 +5154,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5583,11 +5171,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5596,31 +5200,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5628,11 +5216,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5641,43 +5245,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5686,31 +5290,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5718,11 +5306,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5731,31 +5335,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -5763,43 +5351,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_pistol_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -5807,11 +5395,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5820,43 +5424,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5864,32 +5468,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5897,11 +5485,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5910,31 +5514,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -5942,11 +5530,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -5955,43 +5559,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6000,31 +5604,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6032,11 +5620,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6045,31 +5649,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -6077,43 +5665,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_shotgun_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -6121,11 +5709,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6134,43 +5738,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6178,32 +5782,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6211,11 +5799,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6224,31 +5828,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6256,11 +5844,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6269,43 +5873,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6314,31 +5918,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6346,11 +5934,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6359,31 +5963,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 200,
@@ -6391,43 +5979,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_ranged_sniper_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -6435,11 +6023,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6448,43 +6052,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 582,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 582,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6492,32 +6096,16 @@
     "requiredItem": "Token:collectionresource_nodegatetoken01",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 18,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6525,11 +6113,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6538,31 +6142,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 93,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6570,11 +6158,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6583,43 +6187,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 582,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 582,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6628,31 +6232,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
+      },
+      {
+        "cost": 37,
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -6660,11 +6248,27 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6673,31 +6277,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": 232,
@@ -6705,43 +6293,43 @@
       },
       {
         "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 200
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_trap_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 18,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 37,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 93,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -6749,11 +6337,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6762,75 +6366,59 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_weapon_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 16,
+        "quantity": 10
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 32,
+        "quantity": 25
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 80,
+        "quantity": 150
       },
       {
         "cost": -1,
@@ -6838,11 +6426,27 @@
       },
       {
         "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 1500
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6854,43 +6458,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 25
       },
       {
         "cost": -1,
         "quantity": 75
       },
       {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 500,
-        "quantity": 200
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6899,43 +6503,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
         "quantity": 10
       },
       {
+        "cost": 190,
+        "quantity": 25
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 190,
-        "quantity": 25
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6943,32 +6547,16 @@
     "requiredItem": "AccountResource:peopleresource",
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 6,
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -6976,11 +6564,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -6989,31 +6593,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 30,
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -7021,11 +6609,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -7034,43 +6638,43 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
         "quantity": 10
       },
       {
+        "cost": 190,
+        "quantity": 25
+      },
+      {
         "cost": -1,
         "quantity": 0
       },
       {
-        "cost": 190,
-        "quantity": 25
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -7079,31 +6683,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": -1,
@@ -7111,11 +6699,27 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
@@ -7124,31 +6728,15 @@
     "tiers": [
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 1
       },
       {
         "cost": -1,
-        "quantity": 0
+        "quantity": 2
       },
       {
         "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "quantity": 5
       },
       {
         "cost": 76,
@@ -7156,43 +6744,43 @@
       },
       {
         "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 25
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_worker_core_unlimited": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 6,
+        "quantity": 1
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 12,
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 30,
+        "quantity": 25
       },
       {
         "cost": -1,
@@ -7200,43 +6788,43 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   },
   "ConversionControl:cck_worker_core_unlimited_vr": {
     "tiers": [
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 6,
+        "quantity": 1
       },
       {
-        "cost": -1,
-        "quantity": 0
+        "cost": 12,
+        "quantity": 5
       },
       {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
-      },
-      {
-        "cost": -1,
-        "quantity": 0
+        "cost": 30,
+        "quantity": 25
       },
       {
         "cost": 76,
@@ -7244,11 +6832,27 @@
       },
       {
         "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
         "quantity": 0
       },
       {
         "cost": -1,
-        "quantity": 100
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
       }
     ]
   }
