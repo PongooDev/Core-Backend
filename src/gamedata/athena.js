@@ -1,5 +1,9 @@
 import { activeBuild, buildGameData, dataBuilds, perBuild } from "./read.js";
 
+// The item events of objectives that count an item the athena profile holds (EFortQuestObjectiveItemEvent HasItem; 7.00,
+// CL-4629139, adds HasAccumulatedItem = 16 after it, and its data names that for the quests that were HasItem on 6.31).
+export const heldItemEvents = ["HasItem", "HasAccumulatedItem"];
+
 // Battle Royale's game data (gamedata/athena.json, tools/extractor): its cosmetics, the item shop's display assets, its
 // quests, season levels and the objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena
 // profile and the base file holds its data (the extractor makes it empty from Cert; no earlier build asks for it) rather
@@ -22,6 +26,9 @@ const data = perBuild((read) => {
     // From 1.11 (Season 2), the Battle Pass's daily challenges (EFortQuestType::AthenaBattlePassQuest,
     // Athena/Items/Quests/BattlePass), one a day for its owners besides the three above.
     battlePassDailies: Object.keys(quests).filter((id) => quests[id].type === "AthenaBattlePassQuest"),
+    // The items an objective counts as held (ItemEvent HasItem, and from 7.00 HasAccumulatedItem), lowercase.
+    heldCountedItems: new Set(Object.values(quests).flatMap((quest) => quest.objectives ?? [])
+      .filter((objective) => heldItemEvents.includes(objective.itemEvent) && objective.item).map((objective) => objective.item.toLowerCase())),
     loot,
     challengeSchedules,
     challengeBundles,
@@ -77,6 +84,8 @@ export const getAthenaQuest = (questId) => data().quests[String(questId).toLower
 export const athenaDailyIds = () => data().dailies;
 
 export const athenaBattlePassDailyIds = () => data().battlePassDailies;
+
+export const isHeldCountedItem = (templateId) => data().heldCountedItems.has(String(templateId).toLowerCase());
 
 // A daily's chance against the others (FortQuestItemDefinition Weight, 1 unless the asset says).
 export const dailyWeight = (questId) => getAthenaQuest(questId)?.weight ?? 1;

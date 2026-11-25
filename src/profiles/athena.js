@@ -17,7 +17,7 @@ import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist, ltmPlaylistTag } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
 import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, athenaVariantTokens, dailyWeight,
-  getAthenaQuest, seasonLevels, splitOffBackpacks } from "../gamedata/athena.js";
+  getAthenaQuest, heldItemEvents, isHeldCountedItem, seasonLevels, splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { isRedirectTarget } from "../gamedata/templates.js";
@@ -875,7 +875,7 @@ export function setSeasonLevel(session, level) {
 }
 
 // What profiles/seasons.js gives season rewards with.
-const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken, settleBattlePassLevelObjectives,
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken, settleHeldObjectives,
   // A schedule a tier gives (6.00's progressive ones at the pass's tier 1) counts the tokens already held at once.
   grantChallengeSchedule: (session, templateId) => {
     grantSchedule(session, templateId, seasonFunctions);
@@ -984,6 +984,7 @@ function completeQuest(session, itemId) {
     giveQuestGiftBox(session, itemId);
     countBundleQuest(session, itemId, (rewardSession, reward) => giveSeasonReward(rewardSession, reward, seasonFunctions));
     itemObjectives(session, "HasCompletedQuest", `Quest:${questIdOf(item)}`, 1);
+    settleHeldObjectives(session);
     return;
   }
   itemObjectives(session, "HasCompletedQuest", `Quest:${questIdOf(item)}`, 1);
@@ -1064,10 +1065,17 @@ export function claimAthenaQuest(session, itemId) {
   // (Quest_BR_Styles_SkullTrooper_Complete_Daily_Challenges: ItemEvent Acquire of that token, 7). The token has no item
   // definition in the client's paks (no such asset in 6.02's 337,735 files), so Epic's servers counted it without the
   // client ever holding it: here too it is counted and no item is added.
+  // A hidden token that an objective counts as held is held in athena, as a shown one is: 7.40's Overtime and 8.51's Extra
+  // Credit challenge tokens (Token:athena_s7overtime_challenge_token, Token:athena_s8extracredit_challenge_token, FortTokenType
+  // items in their paks), which the tier quests' second stages count (Quest_BR_S7_Overtime_CompleteQuests_ChainTest_02, 5;
+  // Quest_BR_S8_ExtraCredit_CompleteQuests_ChainTest_01b, 2; HasItem).
   for (const { templateId, quantity } of quest.hiddenRewards ?? []) {
-    if (typeOf(templateId) === "token") itemObjectives(session, "Acquire", templateId, quantity);
+    if (typeOf(templateId) === "token" && isHeldCountedItem(templateId)) acquireAthenaToken(session, templateId, quantity);
+    else if (typeOf(templateId) === "token") itemObjectives(session, "Acquire", templateId, quantity);
     else grantHiddenBanner(session, templateId, questIdOf(item));
   }
+  // The stage it leads to (Sentinel's tier 99 one after his 10 Fortbytes) counts the tier and what is held at once.
+  settleHeldObjectives(session);
 }
 
 // A banner a challenge gives hidden (the quests' rewards table, Hidden): the secret banners of the loading screens.
@@ -1083,6 +1091,26 @@ function grantHiddenBanner(session, templateId, questId) {
   if (!banner || findItem(session.profile("profile0").profile, banner)) return;
   grant(session, banner, 1);
   log("Battle Royale", `${session.accountId} got the banner ${banner}, ${questId}'s hidden reward`);
+}
+
+// The held-counted tokens of challenges collected before their hidden ones were held (claimAthenaQuest): what the Claimed
+// quests the profile holds gave of such a token, shown and hidden, tops up what athena holds, at the quest login. Shown
+// tokens and bundle steps' were always held, so this adds only what hidden rewards never gave.
+function settleHiddenTokens(session) {
+  const tracker = session.profile("athena");
+  const given = new Map();
+  for (const item of Object.values(tracker.profile.items)) {
+    const quest = item.attributes?.quest_state === "Claimed" && athenaQuestOf(item);
+    for (const { templateId, quantity } of quest ? [...(quest.rewards ?? []), ...(quest.hiddenRewards ?? [])] : []) {
+      const id = templateId.toLowerCase();
+      if (typeOf(id) === "token" && isHeldCountedItem(id)) given.set(id, { templateId, quantity: (given.get(id)?.quantity ?? 0) + quantity });
+    }
+  }
+  for (const [id, { templateId, quantity }] of given) {
+    const held = Object.values(tracker.profile.items).filter((item) => item.templateId.toLowerCase() === id)
+      .reduce((sum, item) => sum + (item.quantity ?? 0), 0);
+    if (held < quantity) acquireAthenaToken(session, templateId, quantity - held);
+  }
 }
 
 // The hidden banners of challenges collected before they were given (above): a Claimed challenge the profile holds gives
@@ -1175,10 +1203,15 @@ function acquireAthenaToken(session, templateId, quantity) {
 // and 60: Token:AthenaBattlePass_WeeklyChallenge_Token, one a weekly challenge, their colours' tokens VTID_046 to _048 and
 // VTID_039, _040 and _040_Color3) and Season 5's and 6's Road Trip and Hunting Party 8 and 9 (the weekly bundle token):
 // the count athena holds, up to the objective's, so the tokens held before the challenge came count too.
+// From 7.00 (CL-4629139) those quests, and the later seasons' like them, name HasAccumulatedItem instead (gamedata/athena.js
+// heldItemEvents): Season 7's and 8's outfit styles and cumulative mystery outfits (weekly challenge tokens), and 9.00's
+// (CL-6337466) Rox, Sentinel, Vendetta, Bunker Jonesy, Luxe, Masako and Stormtracker unlocks (Token:AthenaFortbyte, 5 to 90;
+// weekly challenge tokens, 10 to 65) and Quest_BR_S9_Cumulative_CollectTokens_001 to _010 (the weekly bundle token, 1 to
+// 10). 🟡 Those tokens are never spent, so what athena holds is what was accumulated.
 function settleHeldItemObjectives(session) {
   const tracker = session.profile("athena");
   for (const { itemId, quest } of activeQuests(tracker)) {
-    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasItem" && candidate.item)) {
+    for (const objective of quest.objectives.filter((candidate) => heldItemEvents.includes(candidate.itemEvent) && candidate.item)) {
       const held = Object.values(tracker.profile.items).filter((item) => item.templateId.toLowerCase() === objective.item.toLowerCase())
         .reduce((sum, item) => sum + (item.quantity ?? 0), 0);
       const count = Math.min(held, objective.count) - (tracker.profile.items[itemId]?.attributes[`completion_${objective.name}`] ?? 0);
@@ -1227,15 +1260,15 @@ function settleLevelObjectives(session) {
   }
 }
 
-// Objectives that count the Battle Pass tier (ItemEvent HasLeveledUpBattlePass): 9.00's (CL-6337466) Fortbytes
-// Quest_BR_S9_Fortbyte_06 to _10, "Awarded at Battle Pass Tier 20" to "100" (the Fortbyte's number is its quest's
-// Weight: _07, tier 40, is #25), and Sentinel's Quest_BR_S9_Rooster_CollectGlyphs_01_B (tier 99). The tier reached
-// (book_level), up to the count, however it was reached: Battle Stars, bought tiers or the bundle's 25. Run whenever the
-// tier moves (profiles/seasons.js settleSeasonRewards) and at quest login, so a quest that comes past its tier completes.
-// 🟡 From 9.00 only: 7.40's Overtime and 8.51's Overtime (Extra Credit) tier quests name the same event and stay as they were.
-const firstBattlePassLevelBuild = 6337466;
+// Objectives that count the Battle Pass tier (ItemEvent HasLeveledUpBattlePass, first in 7.40's data, CL-5046157): 7.40's
+// Overtime Quest_BR_S7_Overtime_CompleteQuests_ChainTest_01, _03 and _05 (tiers 47, 71 and 87, each leading to the stage
+// that gives the Snowboarder's, Yeti's and Durrr Burger PJs' style; still in 8.x's and 9.00's data), 8.50's and 8.51's
+// Extra Credit Quest_BR_S8_ExtraCredit_CompleteQuests_ChainTest_01a, _02a and _03a (tiers 23, 71 and 87: Medusa, Fire Elf
+// and Master Key, then their style stages), 9.00's (CL-6337466) Fortbytes Quest_BR_S9_Fortbyte_06 to _10, "Awarded at
+// Battle Pass Tier 20" to "100" (the Fortbyte's number is its quest's Weight: _07, tier 40, is #25), and Sentinel's
+// Quest_BR_S9_Rooster_CollectGlyphs_01_B (tier 99). The tier reached (book_level), up to the count, however it was
+// reached: Battle Stars, bought tiers or the bundle's 25.
 function settleBattlePassLevelObjectives(session) {
-  if (Number(currentBuild()) < firstBattlePassLevelBuild) return;
   const tier = session.profile("athena").profile.stats.attributes.book_level ?? 1;
   for (const { itemId, item, quest } of activeQuests(session.profile("athena"))) {
     for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasLeveledUpBattlePass")) {
@@ -1243,6 +1276,14 @@ function settleBattlePassLevelObjectives(session) {
       if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
     }
   }
+}
+
+// The objectives that count what the profile holds rather than an event (the Battle Pass tier, the items held), whenever
+// they can have moved: the tier (profiles/seasons.js settleSeasonRewards), a token, a quest collected or given (the stage
+// it leads to), and at quest login, so a quest that comes past its count completes.
+function settleHeldObjectives(session) {
+  settleBattlePassLevelObjectives(session);
+  settleHeldItemObjectives(session);
 }
 
 // Objectives that count the season XP gained (5.0's progressive challenges, Core-Backend #307: Drift's and Ragnarok's
@@ -1567,8 +1608,8 @@ export function athenaQuestLogin(session) {
   settleFinishedChallenges(session);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);
-  settleBattlePassLevelObjectives(session);
-  settleHeldItemObjectives(session);
+  settleHiddenTokens(session);
+  settleHeldObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
   settleHiddenBanners(session);

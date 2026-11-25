@@ -19,8 +19,8 @@ import { unvaultingFlagsNow, unvaultingStates } from "../src/events/unvaulting.j
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
-import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
-import { buildOfSeason } from "../src/profiles/seasons.js";
+import { advanceAthenaObjectives, athenaQuestLogin, grantAthenaQuest, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
+import { buildOfSeason, buyBattlePass, buyTiers } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 
@@ -164,6 +164,52 @@ test("an 8.51 player gets the Overtime Challenges while they run, their days' ch
     setUpAthena(session);
     athenaQuestLogin(session);
     assert.equal(templatesOf(session).includes("ChallengeBundleSchedule:season8_extracredit_schedule"), false, "not before them");
+  }));
+});
+
+// The Overtime tier quests (HasLeveledUpBattlePass): Quest_BR_S8_ExtraCredit_CompleteQuests_ChainTest_01a, tier 23, gives
+// Medusa (CID_348) and leads to _01b, two Overtime challenges (HasItem of the hidden Token:athena_s8extracredit_challenge_token
+// each gives), her second style (VTID_176_Medusa_StyleB, Material Mat2).
+const questOf = (session, questId) => Object.values(session.profile("athena").profile.items)
+  .find(({ templateId }) => templateId.toLowerCase() === `quest:${questId}`);
+const itemIdOf = (session, questId) => Object.keys(session.profile("athena").profile.items)
+  .find((itemId) => session.profile("athena").profile.items[itemId].templateId.toLowerCase() === `quest:${questId}`);
+
+test("8.51's Overtime tier style: tier 23 gives Medusa and her style stage, two Overtime challenges then her style", () => {
+  withConfig({ mode: "auto", seasonStarts: { 8: replayDaysAgo(66) } }, () => withSession(v851, "tierstyle851", (session) => {
+    setUpAthena(session);
+    buyBattlePass(session, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_01a")?.attributes.quest_state, "Active");
+    buyTiers(session, 22, seasonRewardFunctions());
+    assert.equal(session.profile("athena").profile.stats.attributes.book_level, 23);
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_01a").attributes.quest_state, "Claimed", "tier 23");
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_02a").attributes.completion_quest_s8_extracredit_completequests_test_03, 23, "tier 71 waits");
+    assert.ok(templatesOf(session).includes("AthenaCharacter:cid_348_athena_commando_f_medusa"));
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_01b")?.attributes.quest_state, "Active", "her style stage");
+    advanceAthenaObjectives(session, [{ statName: "overtime_battlepass_play_featured_creative_content", count: 20 }]);
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_01b").attributes.completion_quest_s7_overtime_completequests_test_02, 1);
+    advanceAthenaObjectives(session, [{ statName: "extracredit_battlepass_damage_athena_player", count: 1000 }]);
+    assert.equal(questOf(session, "quest_br_s8_extracredit_completequests_chaintest_01b").attributes.quest_state, "Claimed", "two Overtime challenges");
+    const medusa = Object.values(session.profile("athena").profile.items).find(({ templateId }) => templateId === "AthenaCharacter:cid_348_athena_commando_f_medusa");
+    assert.ok(medusa.attributes.variants.some(({ channel, owned }) => channel === "Material" && owned.includes("Mat2")));
+  }));
+});
+
+test("8.51: Overtime challenges collected before their hidden tokens were held count for the style stage at quest login", () => {
+  withConfig({ mode: "auto", seasonStarts: { 8: replayDaysAgo(66) } }, () => withSession(v851, "oldtokens851", (session) => {
+    setUpAthena(session);
+    athenaQuestLogin(session);
+    const tracker = session.profile("athena");
+    const claimed = itemIdOf(session, "quest_br_extracredit_creative_collectcoins");
+    tracker.setItemAttribute(claimed, "quest_state", "Claimed");
+    const stage = grantAthenaQuest(tracker, "quest_br_s8_extracredit_completequests_chaintest_01b");
+    athenaQuestLogin(session);
+    const held = Object.values(tracker.profile.items).filter(({ templateId }) => templateId.toLowerCase() === "token:athena_s8extracredit_challenge_token");
+    assert.deepEqual(held.map(({ quantity }) => quantity), [1]);
+    assert.equal(tracker.profile.items[stage].attributes.completion_quest_s7_overtime_completequests_test_02, 1);
+    athenaQuestLogin(session);
+    assert.equal(Object.values(tracker.profile.items).find(({ templateId }) => templateId.toLowerCase() === "token:athena_s8extracredit_challenge_token").quantity, 1, "once");
   }));
 });
 

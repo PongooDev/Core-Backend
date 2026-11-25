@@ -16,7 +16,7 @@ import { hasLtm, ltmOn } from "../src/events/ltms.js";
 import { unvaultingFlagsNow } from "../src/events/unvaulting.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
-import { athenaQuestLogin, grantAthenaQuest, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
+import { athenaQuestLogin, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
 import { buildOfSeason, buyBattlePass, buyTiers } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -303,14 +303,32 @@ test("the Battle Bundle's 25 tiers and bought tiers give 9.00's tier Fortbytes t
   }
 });
 
-test("8.51's Overtime tier challenges stay as they were (the tier objective is counted from 9.00)", () => {
-  withSession(v851, "tier851", (session) => {
+// Sentinel's back bling (HasAccumulatedItem): Quest_BR_S9_Rooster_CollectGlyphs_01_A, 10 Fortbytes, gives BID_261_Rooster and
+// leads to _01_B, Battle Pass tier 99, its second style (VTID_203_Rooster_BackBling_StyleB).
+test("a 9.00 player's 10th Fortbyte gives Sentinel's back bling and his tier 99 stage, which tier 99 completes", () => {
+  withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(0) } }, () => withSession(v900, "rooster900", (session) => {
     setUpAthena(session);
-    const tracker = session.profile("athena");
-    tracker.setStat("book_level", 30);
-    const itemId = grantAthenaQuest(tracker, "quest_br_s8_extracredit_completequests_chaintest_01a");
+    buyBattlePass(session, seasonRewardFunctions());
     athenaQuestLogin(session);
-    assert.equal(tracker.profile.items[itemId]?.attributes.quest_state, "Active");
-    assert.equal(tracker.profile.items[itemId]?.attributes.completion_quest_s8_extracredit_completequests_test_01, 0);
-  });
+    const tracker = session.profile("athena");
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_01_a")?.attributes.quest_state, "Active");
+    // Nine Fortbytes found before; tier 20's (Quest_BR_S9_Fortbyte_06) is the tenth.
+    tracker.addItem("ninebytes", { templateId: "Token:athenafortbyte", attributes: { item_seen: false }, quantity: 9 });
+    athenaQuestLogin(session);
+    assert.equal(questOf(session, "quest_br_s9_strawberrypilot_collectglyphs_01").attributes.quest_state, "Claimed", "Rox's 5 Fortbytes");
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_01_a").attributes.completion_athena_battlepass_rooster_collectglyphs_01_a, 9);
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_01_b"), undefined, "not handed out before the 10th");
+    buyTiers(session, 19, seasonRewardFunctions());
+    assert.equal(fortbytesHeld(session), 10);
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_01_a").attributes.quest_state, "Claimed");
+    assert.ok(templatesOf(session).includes("AthenaBackpack:bid_261_rooster"));
+    const stage = questOf(session, "quest_br_s9_rooster_collectglyphs_01_b");
+    assert.equal(stage?.attributes.quest_state, "Active", "the tier 99 stage, given at once");
+    assert.equal(stage.attributes.completion_athena_battlepass_rooster_collectglyphs_01_b, 20);
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_02").attributes.quest_state, "Active", "20 Fortbytes waits");
+    buyTiers(session, 79, seasonRewardFunctions());
+    assert.equal(questOf(session, "quest_br_s9_rooster_collectglyphs_01_b").attributes.quest_state, "Claimed", "tier 99");
+    const backpack = Object.values(tracker.profile.items).find(({ templateId }) => templateId === "AthenaBackpack:bid_261_rooster");
+    assert.ok(backpack.attributes.variants.some(({ channel, owned }) => channel === "Particle" && owned.includes("Particle2")));
+  }));
 });
