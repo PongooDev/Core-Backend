@@ -2524,6 +2524,8 @@ export function adminRoutes(context) {
     }
     if (typeof req.body.customMatchNoRewards === "boolean") update.customMatchNoRewards = req.body.customMatchNoRewards;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
+    // Every game mode on for every build that has it (events/ltms.js allGameModesOn), over the switches and Original dates.
+    if (typeof req.body.allGameModes === "boolean") update.allGameModes = req.body.allGameModes;
     // 6.20's and 6.21's Fortnitemares modes in the default modes' place while on (#348, events/ltms.js defaultReplacements).
     if (typeof req.body.fortnitemaresReplacesDefaults === "boolean") update.fortnitemaresReplacesDefaults = req.body.fortnitemaresReplacesDefaults;
     // With Original dates, Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367, events/ltms.js fortnitemaresOutage).
@@ -2563,6 +2565,7 @@ export function adminRoutes(context) {
     settings.update({
       matchmakingModes: defaultMatchmakingModes,
       ltmOriginalDates: false,
+      allGameModes: false,
       ltmCloseEncounters: { wholeDay: true, hour: 0 },
       fortnitemaresReplacesDefaults: true,
       fortnitemaresOutage: false,

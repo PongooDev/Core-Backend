@@ -4733,6 +4733,8 @@ Each starts active; quests the account already has are left as they are.`, {
         bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
         ltmOriginalDates: data.ltms?.originalDates === true,
+        // Every game mode on for every build that has it, over the switches and Original dates (events/ltms.js allGameModesOn).
+        allGameModes: data.ltms?.allGameModes === true,
         // Close Encounters' original date (#258): its whole day or one hour of it.
         ltmCloseEncounters: { ...(data.ltms?.closeEncounters || { wholeDay: true, hour: 0 }) },
         // 6.20's and 6.21's Fortnitemares modes in Solo's, Duos' and Squads' place while on (#348).
@@ -4773,7 +4775,9 @@ Each starts active; quests the account already has are left as they are.`, {
       const ltmOf = (id) => ltmList.find((l) => l.id === id);
       const isLtm = (id) => Boolean(ltmOf(id));
       // Original dates moves every LTM with its dates but the Arena's tiles (Core-Backend #423: no dates, only a switch).
-      const datesFollowed = (id) => form.ltmOriginalDates && isLtm(id) && !ltmOf(id).arena;
+      // All game modes turns every mode on but the Arena's tiles (their own switch, #423), the switches and dates kept.
+      const allModesOverride = (id) => form.allGameModes && !(isLtm(id) && ltmOf(id).arena);
+      const datesFollowed = (id) => form.ltmOriginalDates && isLtm(id) && !ltmOf(id).arena && !form.allGameModes;
       const coreModes = [...modeKeys];
       // An LTM's code is its event queue and, from 3.5.1, its playlist asset's name (#257); its name there too.
       modeKeys.push(...ltmList.map((l) => ({ id: l.id, name: l.name351 ? `${l.name} / ${l.name351}` : l.name, playlistId: l.playlistId, teams: l.teams,
@@ -4795,6 +4799,7 @@ Each starts active; quests the account already has are left as they are.`, {
       // when it changes so unsaved switches stay.
       let ltmSeason = seasonOf(state.activeSeason).id;
       const isModeActive = (m) => {
+        if (allModesOverride(m.id)) return true;
         if (datesFollowed(m.id)) {
           return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
         }
@@ -5064,6 +5069,7 @@ Each starts active; quests the account already has are left as they are.`, {
             ["Queue Status", (m) => {
               const inWindow = isLtm(m.id) && ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
               const byHand = m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true;
+              if (allModesOverride(m.id)) return chip("On (All game modes)", "good");
               const isEnabled = datesFollowed(m.id) ? inWindow : byHand;
               const datedLabel = isLtm(m.id) && ltmOf(m.id)?.original ? (inWindow ? "In its dates" : "Out of its dates") : "No original dates";
               return chip(datesFollowed(m.id) ? datedLabel : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
@@ -5073,7 +5079,8 @@ Each starts active; quests the account already has are left as they are.`, {
               return toggleSwitch(byHand, (checked) => {
                 form.modes[m.id] = checked;
                 onModeToggled();
-              }, datesFollowed(m.id), ltmOf(m.id)?.original ? "Original dates is on: this LTM follows its dates."
+              }, allModesOverride(m.id) || datesFollowed(m.id), allModesOverride(m.id) ? "All game modes is on: this mode is on wherever the build has it. Its switch comes back when All game modes is off."
+                : ltmOf(m.id)?.original ? "Original dates is on: this LTM follows its dates."
                 : "Original dates is on: this LTM has no original dates, so it stays off.");
             }],
             ["", (m) => el("div", { class: "actions" },
@@ -5152,9 +5159,9 @@ Each starts active; quests the account already has are left as they are.`, {
               ? "Squad up with up to 4 players in 25 teams of four."
               : "Classic Battle Royale playlist.");
 
-            const dated = form.ltmOriginalDates && Boolean(l) && !l.arena;
+            const dated = datesFollowed(m.id);
             const statusBadge = chip(
-              isAdded ? (dated ? (l.original ? (isEnabled ? "In its dates" : "Out of its dates") : "No original dates")
+              isAdded ? (allModesOverride(m.id) ? "On (All game modes)" : dated ? (l.original ? (isEnabled ? "In its dates" : "Out of its dates") : "No original dates")
                 : (isEnabled ? "In Queue (Active)" : "In Queue (Off)")) : "Not in Queue",
               isAdded ? (isEnabled ? "good" : "warn") : ""
             );
@@ -5174,7 +5181,9 @@ Each starts active; quests the account already has are left as they are.`, {
                   form.modes[m.id] = !isEnabled;
                   onModeToggled();
                   renderModalList();
-                }, isEnabled ? "ghost small" : "primary small", dated
+                }, isEnabled ? "ghost small" : "primary small", allModesOverride(m.id)
+                  ? { disabled: true, title: "All game modes is on: this mode is on wherever the build has it." }
+                  : dated
                   ? { disabled: true, title: l.original ? "Original dates is on: this LTM follows its dates." : "Original dates is on: this LTM has no original dates, so it stays off." }
                   : {})
               : btn("+ Add to Queue", () => {
@@ -5267,10 +5276,26 @@ Each starts active; quests the account already has are left as they are.`, {
         });
       }
 
-      const ltmModeChip = chip(form.ltmOriginalDates ? "Original dates" : "By hand", "accent");
+      const ltmModeLabel = () => (form.allGameModes ? "All game modes" : form.ltmOriginalDates ? "Original dates" : "By hand");
+      const ltmModeChip = chip(ltmModeLabel(), "accent");
+      const originalDatesOverriddenText = el("div", { class: "muted", style: "font-size:12px; color:var(--warn, #f5b13d);",
+        text: "Overridden: All game modes is on, so the dates are ignored until it is off." });
+      const allGameModesOverriddenText = el("div", { class: "muted", style: "font-size:12px; color:var(--warn, #f5b13d);",
+        text: "On: the per-mode switches and Original dates below are overridden (kept as set, back when this is off)." });
+      const showModeOverrides = () => {
+        ltmModeChip.textContent = ltmModeLabel();
+        originalDatesOverriddenText.hidden = !form.allGameModes;
+        allGameModesOverriddenText.hidden = !form.allGameModes;
+      };
+      showModeOverrides();
       const originalDatesToggle = toggleSwitch(form.ltmOriginalDates, (checked) => {
         form.ltmOriginalDates = checked;
-        ltmModeChip.textContent = checked ? "Original dates" : "By hand";
+        showModeOverrides();
+        onModeToggled();
+      });
+      const allGameModesToggle = toggleSwitch(form.allGameModes, (checked) => {
+        form.allGameModes = checked;
+        showModeOverrides();
         onModeToggled();
       });
 
@@ -5557,8 +5582,15 @@ Each starts active; quests the account already has are left as they are.`, {
         el("p", { class: "note", text: "Solo, Duos and Squads are listed for both seasons; each limited-time mode (LTM) under the season whose builds have it, and it runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the LTM switches are then ignored. An LTM with no original dates (Speedy Storm, Take To The Skies and Lotsa Loot, which Epic never ran) stays off while Original dates is on. Seasons 3 and 4's dates are in for every build, so a build Core supports later runs its LTMs on their dates; Close Encounters' card picks its whole day or one hour." }),
         el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
           el("div", {},
+            el("div", { class: "font-semibold", text: "All game modes on" }),
+            el("div", { class: "muted", text: "Turns on every game mode, limited-time modes included, for every build that has it, builds added later too. A build only offers the modes its own game data has; tournament playlists (Tournaments tab) and the Arena keep their own settings. The switches below are kept and come back when this is off." }),
+            allGameModesOverriddenText),
+          allGameModesToggle),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
             el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
-            replayDayText),
+            replayDayText,
+            originalDatesOverriddenText),
           originalDatesToggle),
         el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
           el("div", {},

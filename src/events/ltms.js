@@ -1655,10 +1655,17 @@ export function inOriginalWindow(id, build, now = new Date(), settingsValue = se
   return windows.some(({ start, end }) => moment >= start && moment < end);
 }
 
+// "All game modes" (settings allGameModes): every default mode and LTM on, whatever its switch and Original dates say.
+// The switches stay as saved, so turning it off brings them back. What the build lacks, the tournament and Arena playlists
+// and the island's story (the Leaky Lake, the Ice Storm) still decide as without it (ltmOn).
+export const allGameModesOn = (settingsValue) => settingsValue?.allGameModes === true;
+const defaultModeIds = ["solo", "duo", "squad"];
+
 // The matchmaking modes in force ({solo, duo, ..., <ltm id>: boolean}): the admin's, with each LTM's by its original
-// window while Original dates is on. settingsValue is the settings store's value.
+// window while Original dates is on, every one on while All game modes is. settingsValue is the settings store's value.
 export function ltmModes(build, settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes;
+  if (allGameModesOn(settingsValue)) return { ...(modes ?? {}), ...Object.fromEntries([...defaultModeIds, ...ltms.map(({ id }) => id)].map((id) => [id, true])) };
   if (settingsValue?.ltmOriginalDates !== true) return modes;
   return { ...(modes ?? {}), ...Object.fromEntries(ltms.map(({ id }) => [id, inOriginalWindow(id, build, now, settingsValue)])) };
 }
@@ -1686,8 +1693,8 @@ export function ltmOn(id, build, settingsValue = settingsProvider(), now = new D
   // dates (on the admin's own times the storm's moment is the admin's, and the dates' start would hide the modes).
   const island = ltm.fromIceStorm ? iceKingState(now, build) : null;
   if (island === "before") return false;
-  if (island === "after" && !iceKingOnEpicDates()) return ltm.defaultOn ? settingsValue?.matchmakingModes?.[id] !== false : settingsValue?.matchmakingModes?.[id] === true;
-  const modes = lake === "before" ? settingsValue?.matchmakingModes : ltmModes(build, settingsValue, now);
+  if (island === "after" && !iceKingOnEpicDates() && !allGameModesOn(settingsValue)) return ltm.defaultOn ? settingsValue?.matchmakingModes?.[id] !== false : settingsValue?.matchmakingModes?.[id] === true;
+  const modes = lake === "before" && !allGameModesOn(settingsValue) ? settingsValue?.matchmakingModes : ltmModes(build, settingsValue, now);
   return ltm.defaultOn ? modes?.[id] !== false : modes?.[id] === true;
 }
 
@@ -1746,7 +1753,7 @@ export function iceStormMatchBucket(bucketId, build, settingsValue = settingsPro
   const parts = String(bucketId ?? "").split(":");
   if (parts.length < 4 || !replacesDefaultsOn(settingsValue) || !iceKingStormSoon(now, build)) return bucketId;
   const ltm = ltms.find((entry) => entry.fromIceStorm && entry.replaces?.toLowerCase() === parts[3].toLowerCase() && hasLtm(entry.id, build));
-  if (!ltm || settingsValue?.matchmakingModes?.[ltm.id] === false) return bucketId;
+  if (!ltm || (settingsValue?.matchmakingModes?.[ltm.id] === false && !allGameModesOn(settingsValue))) return bucketId;
   parts[3] = ltm.playlistName.toLowerCase();
   return parts.join(":");
 }
@@ -1777,7 +1784,7 @@ export function ltmQuests({ running }, build = currentBuild(), now = new Date())
 // When an LTM next starts or ends on the build's replay while Original dates is on (for the calendar's cacheExpire), or
 // null.
 export function nextLtmChange(build, settingsValue, now = new Date()) {
-  if (settingsValue?.ltmOriginalDates !== true) return null;
+  if (settingsValue?.ltmOriginalDates !== true || allGameModesOn(settingsValue)) return null;
   const season = seasonOf(build);
   const times = ltms.flatMap((ltm) => windowsOf(ltm, settingsValue)).filter((window) => inRange(window.builds, build))
     .flatMap(({ start, end }) => [start, end]).map((moment) => nextReplayOf(moment, now, null, season).getTime());
@@ -1813,6 +1820,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
   const moments = Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map((season) => [season, seasonMoment(now, null, season).getTime()]));
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
+    // Every game mode on, over the switches and Original dates.
+    allGameModes: allGameModesOn(settingsValue),
     // Close Encounters' day: the whole of it or one hour (#258).
     closeEncounters: closeEncountersSetting(settingsValue),
     // Whether 6.20's and 6.21's Fortnitemares modes take Solo's, Duos' and Squads' place while on (#348).

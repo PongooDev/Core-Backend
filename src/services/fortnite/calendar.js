@@ -97,6 +97,8 @@ export function calendarRevision(settingsValue) {
   const inputs = { events: value.events ?? null, seasonalEvents: value.seasonalEvents !== false,
     matchmakingModes: value.matchmakingModes ?? null, ltmOriginalDates: value.ltmOriginalDates === true,
     ltmCloseEncounters: value.ltmCloseEncounters ?? null,
+    // All game modes (events/ltms.js allGameModesOn); off, the revision is as it was.
+    ...(value.allGameModes === true ? { allGameModes: true } : {}),
     // Fortnitemares' launch-day outage moves LTM windows too (#367); off, the revision is as it was.
     ...(value.fortnitemaresOutage === true ? { fortnitemaresOutage: true } : {}) };
   return createHash("sha1").update(JSON.stringify(inputs)).digest("hex").slice(0, 12);

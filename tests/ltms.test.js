@@ -440,3 +440,56 @@ test("the admin panel keeps the Close Encounters choice (#258)", async () => {
     backend.close();
   }
 });
+
+// All game modes (settings allGameModes): every mode and LTM on for every build that has it, over the switches and
+// Original dates, which are kept.
+test("All game modes turns every mode the build has on, over the switches and Original dates, and keeps them", async () => {
+  const v720 = "4727874";
+  const v840 = "6005771";
+  // Every switch off (a later build's new modes arrive off), Original dates on out of every window.
+  const off = { matchmakingModes: Object.fromEntries(["solo", "duo", "squad", ...ltms.map(({ id }) => id)].map((id) => [id, false])), ltmOriginalDates: true };
+  const all = { ...off, allGameModes: true };
+  assert.equal(ltmOn("sniperShootout", v23, off, at("2018-03-20")), false);
+  assert.equal(ltmOn("sniperShootout", v23, all, at("2018-03-20")), true);
+  assert.equal(ltmOn("speedyStorm", v25, all, at("2018-03-20")), true, "no original dates");
+  assert.equal(ltmOn("fiftyFifty", v24, all, at("2018-03-20")), true);
+  // A mode the settings have no switch for at all.
+  assert.equal(ltmOn("blitz", v242, { allGameModes: true }), true);
+  const modes = ltmModes(v23, all, at("2018-03-20"));
+  assert.deepEqual([modes.solo, modes.duo, modes.squad, modes.sniperShootout], [true, true, true, true]);
+  assert.deepEqual(ltmEventFlags(v24, all, at("2018-03-20")).sort(), ltms.filter((ltm) => ltm.eventFlag && hasLtm(ltm.id, v24)).map((ltm) => ltm.eventFlag).sort());
+  // What the build lacks, the tournament playlists and the Arena stay off.
+  assert.equal(ltmOn("sniperShootout", v110, all), false, "1.10 has no Sniper Shootout");
+  assert.equal(ltmOn("blitz", v23, all), false, "2.3 has no Blitz");
+  assert.equal(ltmOn("showdownSolo", v720, all), false);
+  assert.equal(ltmOn("arenaSolo", v840, all), false);
+  // Off again, the switches and dates stand.
+  assert.equal(ltmOn("sniperShootout", v23, { ...all, allGameModes: false, ltmOriginalDates: false }), false, "its switch");
+  assert.equal(ltmOn("sniperShootout", v23, { allGameModes: false, matchmakingModes: { sniperShootout: true } }), true, "its switch");
+  assert.equal(ltmSchedule(all).allGameModes, true);
+  assert.equal(ltmSchedule(off).allGameModes, false);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "AllModesPlayer");
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { solo: false, sneakySilencers: false } });
+    assert.equal((await ticket(v23, backend.port, player, 2)).status, 400);
+    assert.equal((await ticket(v23, backend.port, player, 12)).status, 400);
+    const overview = (await post(backend.port, "/admin/api/matchmaking/config", undefined, { allGameModes: true })).body;
+    assert.equal(overview.ltms.allGameModes, true);
+    // The switches are kept as saved.
+    assert.equal(overview.ltms.list.find((ltm) => ltm.id === "sneakySilencers").enabled, false);
+    assert.equal((await ticket(v23, backend.port, player, 2)).status, 200);
+    assert.equal((await ticket(v23, backend.port, player, 12)).status, 200);
+    assert.ok((await regionState(v23, backend.port, player.token)).NA.EventFlagsForcedOn.includes("Event5"));
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { allGameModes: "yes" });
+    assert.equal((await post(backend.port, "/admin/api/matchmaking/config", undefined, {})).body.ltms.allGameModes, true, "not a boolean: unchanged");
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { allGameModes: false });
+    assert.equal((await ticket(v23, backend.port, player, 2)).status, 400);
+    assert.equal((await ticket(v23, backend.port, player, 12)).status, 400);
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { allGameModes: true });
+    assert.equal((await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {})).body.ltms.allGameModes, false);
+  } finally {
+    backend.close();
+  }
+});

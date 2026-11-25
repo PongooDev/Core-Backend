@@ -394,6 +394,9 @@ const defaults = {
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
   ltmOriginalDates: false,
+  // "All game modes" (events/ltms.js allGameModesOn): on, every default mode and LTM is on for every build that has it,
+  // over matchmakingModes and ltmOriginalDates, which stay as saved.
+  allGameModes: false,
   // Close Encounters with Original dates on (Core-Backend #258): its whole day, or the hour of it chosen.
   ltmCloseEncounters: { wholeDay: true, hour: 0 },
   // 6.20's and 6.21's Fortnitemares Solo, Duos and Squads in the default modes' place while they're on (Core-Backend #348,
@@ -819,6 +822,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
       if (typeof loaded.ltmOriginalDates !== "boolean") settings.ltmOriginalDates = defaults.ltmOriginalDates;
+      if (typeof loaded.allGameModes !== "boolean") settings.allGameModes = defaults.allGameModes;
       settings.ltmCloseEncounters = closeEncountersValue(loaded.ltmCloseEncounters, defaults.ltmCloseEncounters);
       settings.sidebarWidth = sidebarWidthValue(loaded.sidebarWidth) ?? defaults.sidebarWidth;
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
@@ -1041,6 +1045,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (partial.bots !== undefined) settings.bots = botsValue(partial.bots, settings.bots);
       if (typeof partial.ltmOriginalDates === "boolean") settings.ltmOriginalDates = partial.ltmOriginalDates;
+      if (typeof partial.allGameModes === "boolean") settings.allGameModes = partial.allGameModes;
       if (partial.ltmCloseEncounters !== undefined) settings.ltmCloseEncounters = closeEncountersValue(partial.ltmCloseEncounters, settings.ltmCloseEncounters);
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
