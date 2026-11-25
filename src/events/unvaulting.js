@@ -1,7 +1,10 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows } from "./datedflags.js";
-import { currentEventsConfig, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, seasonalEventsOn, unvaultingAfter, unvaultingEvent as unvaultingEventFlag } from "./events.js";
+import path from "node:path";
+import fs from "node:fs";
+import { readJson, writeJson } from "../json-file.js";
 
 // The Unvaulting, Season 8's end-of-season live event (8.51, CL-6165369; 4 May 2019, 18:00 UTC). The Fortnite Wiki: the
 // Vault under Loot Lake opened, players voted by pickaxing one of six crystals (Bouncers, the Drum Gun, the Grappler, the
@@ -30,7 +33,8 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // - The vote's result isn't the calendar's: BP_DirtShell_Pillars' winner (the crystal hit most) is UnvaultedItemName,
 //   kept in the mesh network's metadata (key SnowScripting) with the pillars' time, and a game server's
 //   OnRep_UnvaultedItemName sets its loot weights (SetNamedWeightForContainerLootRoll, the GW.* rows of AthenaGameData:
-//   GW.DrumGun 0.85; 8.51's AthenaLootPackages_Client rows name them as NamedWeightMult). Nothing of it is the backend's.
+//   GW.DrumGun 0.85; 8.51's AthenaLootPackages_Client rows name them as NamedWeightMult). A Core gameserver's vote is its
+//   own match's, so the winner is kept here for the matches after it (below).
 // So the backend's half is the calendar (services/fortnite/calendar.js): those six names, each in activeEvents with its
 // activeSince and activeUntil, in states whose validFrom is when they change (events/datedflags.js unvaulting): Epic's
 // dates on Season 8's replay (the default), the admin's times, or off (the island as it was before, no countdown). A
@@ -53,3 +57,70 @@ export function unvaultingStates(now = new Date(), changelist = currentBuild(), 
 // The Unvaulting's names served now (none outside its steps).
 export const unvaultingFlagsNow = (now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) =>
   (unvaultingStates(now, changelist, config)[0]?.events ?? []).map(({ eventType }) => eventType);
+
+// The vote's winner (PongooDev/CoreV2#647). On Epic's servers it came from the mesh network's root and stayed for the
+// rest of the season; a Core gameserver plays the vote on its own (CoreV2's FCoreSnowMeshRoot) and reports its winner
+// here, and every 8.51 server asks for it as it starts: after the event (PGW, the "after" step) it sets it on
+// BP_SnowScripting (SetUnvaultItemName), whose OnRep_UnvaultedItemName puts its GW.* loot weight on the match's
+// containers. The names are BP_DirtShell_Pillars' (its pillars by index): GW.Tac, GW.Grappler, GW.DrumGun,
+// GW.Bouncer, Plane, GW.Sword. Epic's vote chose the Drum Gun, which an "after" step gets until a server has reported.
+export const unvaultedItems = ["GW.Tac", "GW.Grappler", "GW.DrumGun", "GW.Bouncer", "Plane", "GW.Sword"];
+export const epicUnvaultedItem = "GW.DrumGun";
+export const sanitizeUnvaultedItem = (value) => (typeof value === "string" && unvaultedItems.includes(value) ? value : null);
+
+// The event's lap now: the start of its latest event step (GWS0) at or before now and whether its "after" step (PGW)
+// holds now, by the event's mode (none on another build, with the seasonal events off or in another event mode).
+export function unvaultingLapNow(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  if (Number(changelist) !== unvaultingBuild || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return null;
+  const nowMs = now.getTime();
+  const windows = datedWindows(unvaultingEvent, datedSettings(config).unvaulting, nowMs, seasonMoment(now, null, unvaultingEvent.season).getTime());
+  const events = windows.filter(({ eventType, since }) => eventType === unvaultingEventFlag && since <= nowMs).sort((a, b) => b.since - a.since);
+  if (!events.length) return null;
+  const after = windows.some(({ eventType, since, until }) => eventType === unvaultingAfter && since <= nowMs && nowMs < until && since >= events[0].since);
+  return { eventAt: new Date(events[0].since).toISOString(), after };
+}
+
+// The reported winner, <dataDir>/unvaulting.json {item, eventAt, reportedAt}: the first report of an event's lap.
+export function createUnvaultingStore(dataDir) {
+  const file = dataDir ? path.join(dataDir, "unvaulting.json") : null;
+  let value = null;
+  if (file && fs.existsSync(file)) {
+    try { value = readJson(file); } catch { value = null; }
+  }
+  return {
+    get: () => value,
+    report(item, eventAt, now = new Date()) {
+      if (!sanitizeUnvaultedItem(item) || !eventAt || value?.eventAt === eventAt) return false;
+      value = { item, eventAt, reportedAt: now.toISOString() };
+      if (file) writeJson(file, value);
+      return true;
+    }
+  };
+}
+
+// What a gameserver asks: {item (or null), source: "reported" | "epic" | "admin" | null, eventAt, after}. The item is
+// given only after the event; during it each match plays its own vote. The admin's choice (events config
+// unvaultedItem) comes before a report.
+export function unvaultedItemNow(store, now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  const lap = unvaultingLapNow(now, changelist, config);
+  if (!lap) return { item: null, source: null, eventAt: null, after: false };
+  const admin = sanitizeUnvaultedItem(config?.unvaultedItem);
+  const reported = store?.get?.();
+  const own = reported?.eventAt === lap.eventAt ? sanitizeUnvaultedItem(reported.item) : null;
+  if (!lap.after) return { item: null, source: null, eventAt: lap.eventAt, after: false };
+  if (admin) return { item: admin, source: "admin", eventAt: lap.eventAt, after: true };
+  return own ? { item: own, source: "reported", eventAt: lap.eventAt, after: true } : { item: epicUnvaultedItem, source: "epic", eventAt: lap.eventAt, after: true };
+}
+
+// "Plane" (the Stormwing, FerretVehicle) is no loot: the map info's vehicle spawners spawn it by AthenaGameData's
+// Default.BiPlane.MinSpawnPercent and MaxSpawnPercent (DefaultMapInfo's VehicleClassDetails, AFortGameModeAthena::
+// ShouldSpawnVehicle 8.51 0xFB3D90), 0 in 8.51 (vaulted). Unvaulted, the rows are hotfixed up as Epic's balance changes
+// were ([AssetHotfix] RowUpdate, events/contentupdates.js), which a gameserver reads as it starts, before the spawners.
+// 🟡 The percent Epic's planes last spawned at isn't in 8.30 to 8.51's files (0 there): every spawner spawns its plane.
+const athenaGameData = "/Game/Athena/Balance/DataTables/AthenaGameData.AthenaGameData";
+export const unvaultedPlaneSpawnPercent = 100;
+export function unvaultingRows(store, build = currentBuild(), now = new Date(), config = currentEventsConfig()) {
+  if (Number(build) !== unvaultingBuild || unvaultedItemNow(store, now, build, config).item !== "Plane") return [];
+  return ["Default.BiPlane.MinSpawnPercent", "Default.BiPlane.MaxSpawnPercent"]
+    .map((row) => ({ table: athenaGameData, row, column: "0", value: unvaultedPlaneSpawnPercent }));
+}

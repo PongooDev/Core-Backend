@@ -331,6 +331,7 @@ const defaults = {
     meteorStrike: defaultMeteorStrikePhase,
     // 7.20's Ice Storm snow (events/icestorm.js): "event" (SP by the Ice King's storm), "none" or "full".
     iceKingSnow: defaultIceKingSnow,
+    unvaultedItem: "vote",
     // 7.40 to 8.20's siphon and material changes in Solo, Duos and Squads (events/siphon.js, PongooDev/CoreV2#557): "build"
     // (as Epic ran each build), "on" or "off".
     siphon: defaultSiphon,
@@ -559,6 +560,9 @@ function sanitizeEvents(input, current = defaults.events) {
 
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
   if (input.iceKingSnow !== undefined) result.iceKingSnow = sanitizeIceKingSnow(input.iceKingSnow, result.iceKingSnow ?? defaultIceKingSnow);
+  // 8.51's Unvaulting's item (events/unvaulting.js unvaultedItems): "vote" (the servers' vote) or one of the pillars' names.
+  if (input.unvaultedItem !== undefined) result.unvaultedItem = ["vote", "GW.Tac", "GW.Grappler", "GW.DrumGun", "GW.Bouncer", "Plane", "GW.Sword"].includes(input.unvaultedItem)
+    ? input.unvaultedItem : (result.unvaultedItem ?? "vote");
   if (input.siphon !== undefined) result.siphon = sanitizeSiphon(input.siphon, result.siphon ?? defaultSiphon);
   if (input.spring2019 !== undefined) result.spring2019 = sanitizeSpring2019(input.spring2019, result.spring2019 ?? defaultSpring2019);
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);

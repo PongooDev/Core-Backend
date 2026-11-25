@@ -75,6 +75,8 @@ import { twitchRoutes } from "./services/fortnite/twitch.js";
 import { privacyRoutes } from "./services/fortnite/privacy.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { calendarRoutes } from "./services/fortnite/calendar.js";
+import { unvaultingRoutes } from "./services/fortnite/unvaulting.js";
+import { createUnvaultingStore } from "./events/unvaulting.js";
 import { waitingRoomRoutes } from "./services/fortnite/waitingroom.js";
 import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
@@ -176,6 +178,8 @@ export function createContext(config) {
     creatorPayouts: createCreatorPayoutStore(config.dataDir),
     // Published Creative islands and their codes (services/links/islands.js, PongooDev/CoreV2#488).
     islandLinks: createIslandLinkStore(config.dataDir),
+    // 8.51's Unvaulting's winner (events/unvaulting.js, PongooDev/CoreV2#647).
+    unvaulting: createUnvaultingStore(config.dataDir),
     // The admin panel's tournament events and their points (Core-Backend #263).
     tournaments,
     arena,
@@ -283,6 +287,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(staticAssetsRoutes(config));
   app.use(versionRoutes(context));
   app.use(calendarRoutes(context));
+  app.use(unvaultingRoutes(context));
   app.use(waitingRoomRoutes(context));
   app.use(cloudStorageRoutes(context));
   app.use(eulaRoutes(context));

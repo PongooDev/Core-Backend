@@ -202,6 +202,8 @@ export const eventCards = [
     key: "event", startLabel: "The Vault opens",
     about: "Season 8's live event, 4 May 2019 at 2 PM ET (18:00 UTC): the fifth rune's hologram (30 April) and the rune over the volcano (1 May), the 24-hour countdown over the Vault, the sky above it streamed in for the event's half hour, the event (the Vault opens, every player votes by pickaxing a crystal, the volcano erupts) and the island after it (the ash sky; Retail Row, Polar Peak and Tilted Towers hit) to the season's end. Every Battle Royale match running then plays it, not Creative or Playground; the Unvaulting playlist is events/ltms.js's. The vote's winner and its loot are the game server's, not the calendar's (Epic's chose the Drum Gun). Start now or a time on the event's step plays it then, the steps before it at Epic's spacing: a time a few minutes ahead lets running matches show the countdown's end. Off leaves the island as it was before. 🟡 The rune days' hours (00:00 UTC), the sky level's half hour and the event's 10 minutes aren't recorded.",
     flags: ["GWW5", "GW5", "GWS1", "GWLevel", "GWS0", "PGW"] },
+  { id: "unvaultedItem", kind: "choice", choice: "unvaultedItem", seasons: [8], name: "The Unvaulting's unvaulted item", builds: "8.51", ranges: [[6165369, 6165369]],
+    about: "What the island has unvaulted after the Unvaulting, in every 8.51 match from the event's end on: its loot weight goes on the match's chests, floor loot and supply drops (Planes: every Stormwing spawner spawns its plane). By default the first 8.51 game server whose vote ends reports its winner and every later match takes it; until one has, Epic's own result, the Drum Gun. Pick an item to set it yourself. During the event each match still plays its own vote." },
   // 8.00's to 8.51's Save the World Spring 2019 (events/spring2019.js, Core-Backend #408).
   { id: "spring2019", kind: "choice", choice: "spring2019", seasons: [8], name: "Love Storm and Yarrr! (Save the World)", builds: "8.00 – 8.51", ranges: [[5203069, 6165369]],
     about: "Save the World's spring event of 2019 on the quest map's event pages. Love Storm (Update v8.00, 28 February 2019): the LoveQuest_2019 line with its trebuchet landmark, on 8.00 to 8.51. Yarrr! (Update v8.20, 27 March 2019): the PirateQuest_2019 line with the Pirate Cove and Walk the Plank landmarks, Corsair, Jack's Revenge and Blakebeard the Blackhearted, on 8.20 to 8.51; 8.40 adds Bunny Brawler Luna and Dashing Hare Ken to the Event Store (17 April), 8.50 Cottontail Eagle Eye and Miss Bunny Penny (25 April). The quests pay Spring Tickets and Gold; each landmark mission is on a tile in every campaign theater that only a player holding its quest sees. Epic's dates follow Season 8's replay, so Yarrr! is on from its 27 March to the season's end. 🟡 No hours (00:00 UTC) and no recorded end (both run to the season's end).",
@@ -218,9 +220,12 @@ export const meteorStrikePhases = [["none", "Comet only"], ["broadcast", "TVs sh
 export const iceKingSnowPhases = [["event", "Follows the storm"], ["none", "Season 7's own snow"], ["full", "Island under snow"]];
 export const siphonPhases = [["build", "As Epic ran it"], ["on", "On"], ["off", "Off"]];
 export const spring2019Phases = [["dates", "Epic's dates"], ["on", "On"], ["off", "Off"]];
+export const unvaultedItemPhases = [["vote", "The servers' vote (the Drum Gun until one reports)"], ["GW.DrumGun", "Drum Gun"], ["GW.Tac", "Tactical SMG"],
+  ["GW.Grappler", "Grappler"], ["GW.Bouncer", "Bouncer"], ["GW.Sword", "Infinity Blade"], ["Plane", "Planes"]];
 // The choice cards' settings: the events config's key, its phases and its default.
 const choices = { meteorStrike: { phases: meteorStrikePhases, fallback: "meteors" }, iceKingSnow: { phases: iceKingSnowPhases, fallback: "event" },
-  siphon: { phases: siphonPhases, fallback: "build" }, spring2019: { phases: spring2019Phases, fallback: "dates" } };
+  siphon: { phases: siphonPhases, fallback: "build" }, spring2019: { phases: spring2019Phases, fallback: "dates" },
+  unvaultedItem: { phases: unvaultedItemPhases, fallback: "vote" } };
 const choiceOf = (card) => choices[card.choice ?? "meteorStrike"];
 const eventModeNames = { force_fortnitemares: "forces Fortnitemares 2017", force_mutantstorms: "forces the Mutant Storms", force_winter2017: "forces Survive the Holidays",
   custom: "serves only the flags listed under Advanced" };
@@ -275,6 +280,10 @@ export function eventSchedules({ now = new Date(), config = {}, seasonalEvents =
         if (phase[0] === "off") return { tone: "off", text: "Off" };
         if (phase[0] === "on") return { tone: "on", nowLabel: "on", text: "On now: Love Storm on 8.00 and 8.20, Yarrr! on 8.20" };
         return { tone: "dates", nowLabel: "on", text: "Follows Epic's dates on Season 8's replay: Love Storm all season (8.00 and 8.20), Yarrr! from 27 March (8.20)" };
+      }
+      if (key === "unvaultedItem") {
+        return phase[0] === "vote" ? { tone: "dates", text: "Follows the vote: the first 8.51 server's winner, the Drum Gun until one reports" }
+          : { tone: "on", nowLabel: phase[1].toLowerCase(), text: `On now: ${phase[1]}, whatever the vote` };
       }
       if (key === "iceKingSnow") {
         return phase[0] === "event" ? { tone: "dates", text: "Follows the storm: Season 7's own snow before it, the island under snow after it" }

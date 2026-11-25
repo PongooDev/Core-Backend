@@ -11,6 +11,7 @@ import { lootHotfixSection } from "../../events/contentupdates.js";
 import { defaultReplacements, lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
+import { unvaultingRows } from "../../events/unvaulting.js";
 import { siphonRows } from "../../events/siphon.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
@@ -291,7 +292,7 @@ const hotfixedKeysSection = (build, gameserver) => (gameserver && Number(build) 
 // the game's own Vivox at Core's emulator. Nothing for older builds (their URL is in the exe) or while the admin panel's
 // Voice chat (Vivox) switch is off, which leaves the file as it was. 8.20 and later read [VoiceChat.Vivox] from the
 // engine ini instead, so theirs goes in DefaultEngine.ini (vivox/service.js engineSection).
-function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null, gameserver = false) {
+function systemFiles(req, network = defaultNetwork, settings = null, vivox = null, islandLinks = null, gameserver = false, unvaulting = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
@@ -307,7 +308,7 @@ function systemFiles(req, network = defaultNetwork, settings = null, vivox = nul
     + forcedQueueSection(build) + chatSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + (vivox?.gameSection?.(req, build) ?? "")
-    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build), ...siphonRows(build)], build)
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build), ...siphonRows(build), ...unvaultingRows(unvaulting, build)], build)
     + hotfixedKeysSection(build, gameserver);
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
   // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
@@ -329,18 +330,18 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens, accounts, network, settings, vivox, islandLinks }) {
+export function cloudStorageRoutes({ tokens, accounts, network, settings, vivox, islandLinks, unvaulting }) {
   const router = express.Router();
   // A gameserver logs in as its server account (CoreServer{n}) or takes the dedicated server client's token.
   const isGameserver = (session) => isDedicatedServerToken(session)
     || Boolean(session?.accountId && isServerAccountName(accounts?.get?.(session.accountId)?.displayName));
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session))).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session), unvaulting)).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session))[req.params.filename];
+    const data = systemFiles(req, network, settings, vivox, islandLinks, isGameserver(req.session), unvaulting)[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });
