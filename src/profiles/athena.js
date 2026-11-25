@@ -875,7 +875,7 @@ export function setSeasonLevel(session, level) {
 }
 
 // What profiles/seasons.js gives season rewards with.
-const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken,
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken, settleBattlePassLevelObjectives,
   // A schedule a tier gives (6.00's progressive ones at the pass's tier 1) counts the tokens already held at once.
   grantChallengeSchedule: (session, templateId) => {
     grantSchedule(session, templateId, seasonFunctions);
@@ -1227,6 +1227,24 @@ function settleLevelObjectives(session) {
   }
 }
 
+// Objectives that count the Battle Pass tier (ItemEvent HasLeveledUpBattlePass): 9.00's (CL-6337466) Fortbytes
+// Quest_BR_S9_Fortbyte_06 to _10, "Awarded at Battle Pass Tier 20" to "100" (the Fortbyte's number is its quest's
+// Weight: _07, tier 40, is #25), and Sentinel's Quest_BR_S9_Rooster_CollectGlyphs_01_B (tier 99). The tier reached
+// (book_level), up to the count, however it was reached: Battle Stars, bought tiers or the bundle's 25. Run whenever the
+// tier moves (profiles/seasons.js settleSeasonRewards) and at quest login, so a quest that comes past its tier completes.
+// 🟡 From 9.00 only: 7.40's Overtime and 8.51's Overtime (Extra Credit) tier quests name the same event and stay as they were.
+const firstBattlePassLevelBuild = 6337466;
+function settleBattlePassLevelObjectives(session) {
+  if (Number(currentBuild()) < firstBattlePassLevelBuild) return;
+  const tier = session.profile("athena").profile.stats.attributes.book_level ?? 1;
+  for (const { itemId, item, quest } of activeQuests(session.profile("athena"))) {
+    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasLeveledUpBattlePass")) {
+      const count = Math.min(tier, objective.count) - (item.attributes[`completion_${objective.name}`] ?? 0);
+      if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
+    }
+  }
+}
+
 // Objectives that count the season XP gained (5.0's progressive challenges, Core-Backend #307: Drift's and Ragnarok's
 // Quest_BR_S5_Gain_SeasonXP_ProgressiveA/B_01 to _05, ItemEvent HasGainedAthenaSeasonXp, 10,000 to 500,000 XP): each
 // award's XP, from when the challenge is open (Ragnarok's open at tier 100), and past the last season level too, as the
@@ -1549,6 +1567,7 @@ export function athenaQuestLogin(session) {
   settleFinishedChallenges(session);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);
+  settleBattlePassLevelObjectives(session);
   settleHeldItemObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);

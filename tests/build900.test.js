@@ -16,8 +16,8 @@ import { hasLtm, ltmOn } from "../src/events/ltms.js";
 import { unvaultingFlagsNow } from "../src/events/unvaulting.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
-import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
-import { buildOfSeason } from "../src/profiles/seasons.js";
+import { athenaQuestLogin, grantAthenaQuest, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
+import { buildOfSeason, buyBattlePass, buyTiers } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, shopDay } from "../src/store/itemshop.js";
@@ -233,4 +233,84 @@ test("buying Season 9's Battle Pass on 9.00 gives the Fortbytes: the first day's
   } finally {
     backend.close();
   }
+});
+
+// The tier Fortbytes (HasLeveledUpBattlePass): Quest_BR_S9_Fortbyte_06 to _10 at tiers 20 to 100; _07 (Weight 25) is
+// Fortbyte #25, "Awarded at Battle Pass Tier 40".
+const questOf = (session, questId) => Object.values(session.profile("athena").profile.items)
+  .find(({ templateId }) => templateId.toLowerCase() === `quest:${questId}`);
+const fortbytesHeld = (session) => Object.values(session.profile("athena").profile.items)
+  .filter(({ templateId }) => templateId.toLowerCase() === "token:athenafortbyte").reduce((sum, { quantity }) => sum + quantity, 0);
+
+test("buying tiers past 40 on 9.00 gives Fortbyte #25 (tier 40), and tier 20's, not tier 60's", () => {
+  withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(0) } }, () => withSession(v900, "tierbytes900", (session) => {
+    setUpAthena(session);
+    buyBattlePass(session, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_07")?.attributes.quest_state, "Active");
+    buyTiers(session, 40, seasonRewardFunctions());
+    assert.equal(session.profile("athena").profile.stats.attributes.book_level, 41);
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_06").attributes.quest_state, "Claimed", "tier 20");
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_07").attributes.quest_state, "Claimed", "tier 40: Fortbyte #25");
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_08").attributes.quest_state, "Active", "tier 60 waits");
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_08").attributes.completion_glyph_08, 41);
+    assert.equal(fortbytesHeld(session), 2);
+  }));
+});
+
+test("a 9.00 player already past tier 40 when the Fortbytes come gets them at quest login", () => {
+  withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(0) } }, () => withSession(v900, "pastbytes900", (session) => {
+    setUpAthena(session);
+    buyBattlePass(session, seasonRewardFunctions());
+    buyTiers(session, 64, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    for (const id of ["06", "07", "08"]) assert.equal(questOf(session, `quest_br_s9_fortbyte_${id}`).attributes.quest_state, "Claimed", id);
+    assert.equal(questOf(session, "quest_br_s9_fortbyte_09").attributes.quest_state, "Active", "tier 80 waits");
+  }));
+});
+
+test("the Battle Bundle's 25 tiers and bought tiers give 9.00's tier Fortbytes through PurchaseCatalogEntry", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "TierBytes9");
+    const command = (name, profileId, body) => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=${profileId}&rvn=-1`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-9.00-CL-6337466",
+        Authorization: `bearer ${player.token}`, "Content-Type": "application/json" }
+    }, JSON.stringify(body));
+    const states = async () => Object.fromEntries(Object.values((await command("QueryProfile", "athena", {})).body.profileChanges[0].profile.items)
+      .map(({ templateId, attributes }) => [templateId.toLowerCase(), attributes.quest_state]));
+    await command("ClientQuestLogin", "athena", {});
+    assert.equal((await post(backend.port, `/admin/api/accounts/${player.accountId}/currency`, undefined, { key: "vbucks", quantity: 6000 })).status, 200);
+    const bundle = await command("PurchaseCatalogEntry", "common_core",
+      { offerId: "core_br_season9_battlebundle", purchaseQuantity: 1, currency: "MtxCurrency", expectedPrice: 2800 });
+    assert.equal(bundle.status, 200, JSON.stringify(bundle.body));
+    await command("ClientQuestLogin", "athena", {});
+    let held = await states();
+    assert.equal(held["quest:quest_br_s9_fortbyte_06"], "Claimed", "the bundle's tier 26 is past tier 20");
+    assert.equal(held["quest:quest_br_s9_fortbyte_07"], "Active");
+    const tiers = await command("PurchaseCatalogEntry", "common_core",
+      { offerId: "33E185A84ED7B64F2856E69AADFD092C", purchaseQuantity: 15, currency: "MtxCurrency", expectedPrice: 2250 });
+    assert.equal(tiers.status, 200, JSON.stringify(tiers.body));
+    held = await states();
+    assert.equal(held["quest:quest_br_s9_fortbyte_07"], "Claimed", "tier 41: Fortbyte #25 with the purchase, no login needed");
+    assert.equal(held["quest:quest_br_s9_fortbyte_08"], "Active");
+  } finally {
+    backend.close();
+  }
+});
+
+test("8.51's Overtime tier challenges stay as they were (the tier objective is counted from 9.00)", () => {
+  withSession(v851, "tier851", (session) => {
+    setUpAthena(session);
+    const tracker = session.profile("athena");
+    tracker.setStat("book_level", 30);
+    const itemId = grantAthenaQuest(tracker, "quest_br_s8_extracredit_completequests_chaintest_01a");
+    athenaQuestLogin(session);
+    assert.equal(tracker.profile.items[itemId]?.attributes.quest_state, "Active");
+    assert.equal(tracker.profile.items[itemId]?.attributes.completion_quest_s8_extracredit_completequests_test_01, 0);
+  });
 });

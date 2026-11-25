@@ -484,6 +484,8 @@ export function settleSeasonRewards(session, athena, { giftBox = true } = {}) {
       if (!rewards.length) break;
       for (const reward of rewards) loot.push(...giveReward(session, reward, athena));
     }
+    // The challenges that count the tier (9.00's tier Fortbytes: profiles/athena.js settleBattlePassLevelObjectives).
+    if (outer) athena.settleBattlePassLevelObjectives?.(session);
   } finally {
     if (outer) settling = null;
   }
