@@ -70,6 +70,12 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
 - No CoreClient.dll changes unless the owner explicitly OKs that specific change.
 - Close an issue only with a comment naming the fixing commit (section 7).
 
+## 2a. Coordinating work: when to use subagents
+
+Follow CoreV2's `AGENTS.md` section 2a: one subagent per issue, three subagents (promotion, gameserver, backend game
+data) for a new build, and the coordinator alone deploys, restarts the 5595 backend, tags releases and closes
+issues. Subagents report back instead of doing those. Backend issues get one subagent each, and a new build's game data is one of the three bring-up subagents. A subagent never restarts 5595; the coordinator does that after pulling main.
+
 ## 3. Repo map
 
 | Path | What lives there |
