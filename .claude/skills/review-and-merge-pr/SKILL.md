@@ -8,15 +8,15 @@ description: Use for every open Core-Backend pull request - check it out in a wo
 The owner's rule: agents review every open PR, make it right and merge it themselves. Rules: AGENTS.md sections 1,
 2, 6 and 8.
 
-1. Read `H:\CoreWork\HANDOFF.md` (skip PRs someone is already on). `gh pr list -R PongooDev/Core-Backend --state open`.
+1. Read `D:\CoreWork\HANDOFF.md` (skip PRs someone is already on). `gh pr list -R PongooDev/Core-Backend --state open`.
 2. Read it: `gh pr view <n> -R PongooDev/Core-Backend --comments`, `gh pr diff <n> -R PongooDev/Core-Backend`.
 3. Reject only if it adds something ruled out (a client-only change without the owner's OK, a feature outside the
    project's scope): `gh pr close <n> -R PongooDev/Core-Backend --comment "<why>"`. Stop.
 4. Worktree and checkout:
    ```
    git -C $env:USERPROFILE\Documents\GitHub\Core-Backend fetch origin
-   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add --detach H:\CoreWork\bepr-<n> origin/main
-   cd H:\CoreWork\bepr-<n>
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add --detach D:\CoreWork\bepr-<n> origin/main
+   cd D:\CoreWork\bepr-<n>
    gh pr checkout <n> -R PongooDev/Core-Backend
    npm.cmd ci
    ```

@@ -38,7 +38,7 @@ npm.cmd run test:stress                                    # only when you chang
 Gameserver boots (CoreV2) need a backend on a test port:
 
 ```
-node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-ping-port 0 --vivox-sip-port 0
+node src/main.js --port 5711 --data D:\CoreWork\<task>-data --local-only --qos-ping-port 0 --vivox-sip-port 0
 ```
 
 Start it from your worktree so it runs your commit, wait for `Listening on port 5711`, and stop it when done. Never

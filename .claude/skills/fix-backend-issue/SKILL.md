@@ -7,7 +7,7 @@ description: Use when fixing a Core-Backend GitHub issue or a reported lobby, pr
 
 Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 
-1. Read `H:\CoreWork\HANDOFF.md`. If the issue is listed, continue from it; don't redo or undo listed work.
+1. Read `D:\CoreWork\HANDOFF.md`. If the issue is listed, continue from it; don't redo or undo listed work.
 2. Run the core MCP's `project_status` (if available).
 3. Read the issue and every comment: `gh issue view <n> -R PongooDev/Core-Backend --comments`. Note the reporter's
    build and CL, the backend log, and `logs/unknown/<CL>.jsonl` if attached. If the issue gives a list (dates,
@@ -16,8 +16,8 @@ Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 5. Worktree from a fresh `origin/main`:
    ```
    git -C $env:USERPROFILE\Documents\GitHub\Core-Backend fetch origin
-   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
-   cd H:\CoreWork\be-<n>
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> D:\CoreWork\be-<n> origin/main
+   cd D:\CoreWork\be-<n>
    npm.cmd ci
    ```
 6. Find what **the reporter's build** sends and expects: its SDK (`sdk_find`), its exe (IDA MCP, read-only), its
@@ -38,7 +38,7 @@ Rules: AGENTS.md sections 1 and 2. Depth: `docs/agents/*.md`.
 14. Restart the owner's 5595 backend on the new main: `restart_backend` (core MCP), else the `restart-live-backend`
     skill. Check for `Listening on port 5595`.
 15. Clean up: if `node_modules` is a junction, remove it with `cmd /c rmdir node_modules` (never `/s`); then
-    `git worktree remove H:\CoreWork\be-<n>`, `git branch -D fix-<n>`; no process of yours left running other than
-    the restarted 5595 backend. Write anything unfinished in `H:\CoreWork\HANDOFF.md`.
+    `git worktree remove D:\CoreWork\be-<n>`, `git branch -D fix-<n>`; no process of yours left running other than
+    the restarted 5595 backend. Write anything unfinished in `D:\CoreWork\HANDOFF.md`.
 
 Done when: AGENTS.md section 6 is all ticked.

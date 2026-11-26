@@ -11,13 +11,13 @@ command examples do.
 
 ## 0. Start of every session
 
-1. Read `H:\CoreWork\HANDOFF.md` (local, shared by every agent, not committed). Don't redo or undo work listed in it.
+1. Read `D:\CoreWork\HANDOFF.md` (local, shared by every agent, not committed). Don't redo or undo work listed in it.
 2. Run the core MCP's `project_status` tool (if available): build in development, supported range, installed
    builds, SDKs, IDA ports. Without it: the README status table and Core-Launcher's `KnownBuilds.cs`.
-3. Work in your own git worktree under `H:\CoreWork` (section 5). Never edit files in the main checkout at
+3. Work in your own git worktree under `D:\CoreWork` (section 5). Never edit files in the main checkout at
    `%USERPROFILE%\Documents\GitHub\Core-Backend`: the owner's live backend runs from it. The only things done there
    are `git pull --ff-only` and the 5595 restart (section 2).
-4. If you can't finish in this session, update `H:\CoreWork\HANDOFF.md`: what is in progress, the branch or
+4. If you can't finish in this session, update `D:\CoreWork\HANDOFF.md`: what is in progress, the branch or
    worktree, what was verified, what's next.
 
 Per-build facts (paths, IDA ports, CLs, past findings) are in the read-only knowledge base
@@ -49,7 +49,7 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
   MCP's `restart_backend` (if available); otherwise follow `docs/agents/restarting-the-live-backend.md` exactly: pull
   the main checkout, stop the 5595 listener only if it is `node.exe` running Core-Backend's `src\main.js`, start it
   again hidden, and wait for `Listening on port 5595`. If anything else holds 5595, stop and report.
-- Test backends: your own port (not 5595), your own data folder under `H:\CoreWork`, `--local-only`, and
+- Test backends: your own port (not 5595), your own data folder under `D:\CoreWork`, `--local-only`, and
   `--qos-ping-port 0 --vivox-sip-port 0` so they don't collide with the live one.
 - **Pre-commit hooks:** `tools/githooks/pre-commit` runs on every commit (enabled per clone with
   `git config core.hooksPath tools/githooks`; this checkout has it on). It blocks pak AES keys, private keys, files
@@ -65,7 +65,7 @@ is the CoreV2 checkout's path with `\` and `:` turned into `-`. Read it; **never
 - **Never** print, copy or commit a pak AES key. (`src/store/keychain.json` is LawinServer's published cosmetic
   keychain, which the owner chose to ship; it is the only exception, and even there report counts, not keys.)
 - Run any Python that reads downloaded or untrusted files with `python -I`.
-- Work in worktrees under `H:\CoreWork`. Rebase onto `origin/main` before pushing: other agents push here too.
+- Work in worktrees under `D:\CoreWork`. Rebase onto `origin/main` before pushing: other agents push here too.
 - Stage only your own paths. **Never** `git add -A` (it once committed another agent's half-done files).
 - No CoreClient.dll changes unless the owner explicitly OKs that specific change.
 - Close an issue only with a comment naming the fixing commit (section 7).
@@ -101,7 +101,7 @@ the result. Fallback commands, from the worktree, in PowerShell (`npm.cmd`, beca
 node --test tests/<file>.test.js tests/<other>.test.js      # while iterating: only the touched files
 # No full local run: CI (.github/workflows/test.yml) runs the whole suite on every push; check it with
 # `gh run list -R PongooDev/Core-Backend -L 3` after pushing and fix a red run straight away.
-node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-ping-port 0 --vivox-sip-port 0
+node src/main.js --port 5711 --data D:\CoreWork\<task>-data --local-only --qos-ping-port 0 --vivox-sip-port 0
 ```
 
 - Node 22 or newer. A new worktree needs `node_modules`: run `npm.cmd ci` in it, or junction the main checkout's
@@ -114,14 +114,14 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
 
 ## 5. How a change is done here
 
-1. Read `H:\CoreWork\HANDOFF.md`; run `project_status`.
+1. Read `D:\CoreWork\HANDOFF.md`; run `project_status`.
 2. Read the issue and every comment (`gh issue view <n> -R PongooDev/Core-Backend --comments`): build and CL, the
    backend log, `data/logs/unknown/<CL>.jsonl` (requests nothing answered).
 3. If it's the build's own behaviour or needs a client change, comment why and close as not planned.
 4. Worktree from a fresh `origin/main`:
    ```
    git -C $env:USERPROFILE\Documents\GitHub\Core-Backend fetch origin
-   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> H:\CoreWork\be-<n> origin/main
+   git -C $env:USERPROFILE\Documents\GitHub\Core-Backend worktree add -b fix-<n> D:\CoreWork\be-<n> origin/main
    ```
 5. Find what the reporter's build sends and expects: its exe (IDA, read-only), its SDK, its paks (FModel). Check the
    reporter's build specifically, and every other build the code path serves.
@@ -163,7 +163,7 @@ node src/main.js --port 5711 --data H:\CoreWork\<task>-data --local-only --qos-p
   rule, 2026-11-19).
 - **MrPodge6's decisions count as the owner's** on issues and PRs, from 2026-11-17 on (not earlier ones): reopening,
   closing, approving a change. The safety rules above still apply.
-- Unfinished work goes in `H:\CoreWork\HANDOFF.md`, not a pushed WIP branch.
+- Unfinished work goes in `D:\CoreWork\HANDOFF.md`, not a pushed WIP branch.
 
 **Pull requests: review, fix, merge.** Agents review every open PR, make it right and merge it themselves (the
 owner's rule). Check it out in a worktree (`gh pr checkout`), review it against sections 1 and 6 (each build's own

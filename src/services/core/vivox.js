@@ -3,7 +3,7 @@ import { requireAuth, requireDedicatedServer } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { tokenLifetimeSeconds, describeToken } from "../../vivox/tokens.js";
 
-// Core's: the Vivox signing a Core gameserver shares with this backend (H:\CoreWork\vivox\contract.md). In a match the
+// Core's: the Vivox signing a Core gameserver shares with this backend (D:\CoreWork\vivox\contract.md). In a match the
 // tokens come from the server: AFortGameModeZone's voice login and channel join (7.00 0xEE0690, 0xEE0480; the Athena
 // overrides 0xC23370 and 0xC23250 call them for teams of more than one) look up the IModularFeature "VoiceChatToken", a
 // server-only plugin missing from the client builds Core's servers run, and call it synchronously (slot 0: PlayerName,

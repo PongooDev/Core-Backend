@@ -11,7 +11,7 @@ explained in the message. Rules: AGENTS.md sections 1, 2 and 8.
 **Scope**
 1. Only this change's files staged? (Never `git add -A`; no other agent's files, no `data/`, logs, scratch output,
    `.claude/settings.local.json` or `.freebuff/`.)
-2. Was `H:\CoreWork\HANDOFF.md` read, and does this commit not undo work listed there?
+2. Was `D:\CoreWork\HANDOFF.md` read, and does this commit not undo work listed there?
 
 **Right build, right data**
 3. Was the reporter's own build checked, by its CL (its paks, SDK or exe), not a neighbouring build's?
@@ -41,4 +41,4 @@ reports and commit again.
 
 After the commit: rebase on `origin/main`, push, comment on the issue naming the commit, restart the owner's 5595
 backend on the new main (`restart_backend`, or the `restart-live-backend` skill), and record anything unfinished in
-`H:\CoreWork\HANDOFF.md`.
+`D:\CoreWork\HANDOFF.md`.

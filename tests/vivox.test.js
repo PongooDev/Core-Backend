@@ -45,7 +45,7 @@ const getAs = (port, urlPath, agent, token, extra = {}) => send({ host: "127.0.0
 test("tokens: Vivox's format, e30.<base64url payload>.<base64url HMAC-SHA256>, the contract's test vector", () => {
   const payload = { iss: "core", exp: 1700000000, vxa: "login", vxi: 1, f: "sip:.abc.@core.vivox.invalid" };
   const token = signToken("test-key", payload);
-  // The vector in H:\CoreWork\vivox\contract.md, checked against Python's hmac as well.
+  // The vector in D:\CoreWork\vivox\contract.md, checked against Python's hmac as well.
   assert.equal(token, "e30.eyJpc3MiOiJjb3JlIiwiZXhwIjoxNzAwMDAwMDAwLCJ2eGEiOiJsb2dpbiIsInZ4aSI6MSwiZiI6InNpcDouYWJjLkBjb3JlLnZpdm94LmludmFsaWQifQ.InhINmldXJHde7uN4qr-wzShXhyBSeL769h8bKoP7oA");
   const [head, body, signature] = token.split(".");
   assert.equal(head, Buffer.from("{}").toString("base64url"));

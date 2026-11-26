@@ -4,7 +4,7 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 
 // Vivox access tokens, in Vivox's documented format, signed with a key only this backend (and the Core gameservers it
-// hands it to, H:\CoreWork\vivox\contract.md) knows. Fortnite's Vivox plugin (FVivox, LogVivoxVoiceChat; 7.00's
+// hands it to, D:\CoreWork\vivox\contract.md) knows. Fortnite's Vivox plugin (FVivox, LogVivoxVoiceChat; 7.00's
 // SDK is vivoxsdk_x64.dll 4.9.0002.30406) never reads a token: it passes it to the SDK, which sends it to the account web
 // API (viv_signin.php, vivox/web.js) and the SIP server (vivox/sip-server.js), both Core's here.
 //

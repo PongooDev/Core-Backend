@@ -21,7 +21,7 @@ import { createVivoxKeys, tokenPattern } from "./tokens.js";
 //   the ports the SIP answers name (vivox/media.js).
 // - The tokens: the lobby's party voice asks this backend (services/fortnite/voice.js: /fortnite/api/game/v2/voice/...),
 //   the match's come from the gameserver's "VoiceChatToken" modular feature, which CoreV2 signs with this backend's key
-//   (services/core/vivox.js, H:\CoreWork\vivox\contract.md).
+//   (services/core/vivox.js, D:\CoreWork\vivox\contract.md).
 //
 // Everything the emulator sees and says is logged under [Vivox], and kept in <data>/logs/vivox.log.
 

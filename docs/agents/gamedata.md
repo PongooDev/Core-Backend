@@ -35,9 +35,9 @@ node tools/overlay/overlay.mjs <cert output folder> <build output folder> <CL>
   the fourth argument in its User-Agent form (`4.19.0-3790078+++Fortnite+Release-Cert`).
 - **AES keys:** the extractor needs the build's pak key. **Never** print, paste into chat, log, write to a file or
   commit a key, and never put one in a commit message or issue. If you can't run the extraction without the key
-  appearing in output, stop and leave the extraction to the owner (write it in `H:\CoreWork\HANDOFF.md`).
+  appearing in output, stop and leave the extraction to the owner (write it in `D:\CoreWork\HANDOFF.md`).
 - Both builds must be extracted by the same extractor version, so only the build's own differences land in the
-  overlay. Extraction output goes in your scratch folder under `H:\CoreWork`, never in a build folder.
+  overlay. Extraction output goes in your scratch folder under `D:\CoreWork`, never in a build folder.
 - Read only from the installed build folders; never copy or change them.
 - A new UE version needs its mapping in the extractor (`Program.cs`) first.
 

@@ -8,11 +8,11 @@ description: Use when Core-Backend must serve a new Fortnite build (a new-build 
 Depth: `docs/agents/gamedata.md`, `docs/agents/versions-and-calendar.md`, `docs/agents/mcp-commands.md`.
 
 **Never** print, paste, log, write to a file or commit a pak AES key. If the extraction can't run without the key
-appearing in output, stop and write it in `H:\CoreWork\HANDOFF.md` for the owner.
+appearing in output, stop and write it in `D:\CoreWork\HANDOFF.md` for the owner.
 
-1. Read `H:\CoreWork\HANDOFF.md`; run `project_status` for the build folder, CL, UE version and SDK.
-2. Worktree from `origin/main` under `H:\CoreWork` (see AGENTS.md section 5), `npm.cmd ci`.
-3. Extract Cert and the new build with the same extractor into scratch folders under `H:\CoreWork` (never into the
+1. Read `D:\CoreWork\HANDOFF.md`; run `project_status` for the build folder, CL, UE version and SDK.
+2. Worktree from `origin/main` under `D:\CoreWork` (see AGENTS.md section 5), `npm.cmd ci`.
+3. Extract Cert and the new build with the same extractor into scratch folders under `D:\CoreWork` (never into the
    build folder):
    ```
    dotnet run -c Release --project tools/extractor -- "<Cert build folder>" <aes key> <scratch>\cert
