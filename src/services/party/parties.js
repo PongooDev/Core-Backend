@@ -20,10 +20,19 @@ import { sendError } from "../../errors.js";
 // member_state_updated, member_state_removed, captain_id, party_privacy_type, max_number_of_members,
 // party_state_updated, party_state_removed, party_state_overrode, inviter_id and invitee_id from them.
 //
+// Pings (9.10, CL-6573057: FOnlinePartySystemMcpV2's PartyUser requests CreatePing 0x3F8B90, DeletePing 0x3F9280 and
+// JoinPartyFromPing 0x3F9F60, new beside 9.01's): POST and DELETE .../user/{accountId}/pings/{fromAccountId}, and POST .../pings/{fromAccountId}/join,
+// a ping being a player's request that another join their party without an invite. Its notification is PING, which 9.01
+// already read ({ns, pinger_id, expires}, 9.10 0x566C80, with the pinger's display name), and the user summary lists the
+// pings sent to a player. The token's account is the pinger when it creates one, and the joiner when it joins from one:
+// either of the URL's two accounts, the other being the one pinged or the pinger.
+//
 // Parties live in memory, as they did for Epic only while their members were online: a restarted backend has none,
 // and the client makes a new one at its next login.
 
 const notificationType = (type) => `com.epicgames.social.party.notification.v0.${type}`;
+// A ping's life (Epic's service let one stand an hour).
+const pingTtlSeconds = 3600;
 const defaultConfig = { type: "DEFAULT", joinability: "OPEN", discoverability: "ALL", sub_type: "default", max_size: 16,
   invite_ttl: 14400, join_confirmation: false, intention_ttl: 60 };
 const configKeys = Object.keys(defaultConfig);
@@ -65,8 +74,24 @@ function partyError(res, status, code, message, vars = []) {
 
 export function createPartyStore() {
   const parties = new Map(); // id -> party
+  const pings = new Map(); // pinged account id -> [ping]
+  const livePings = (accountId) => {
+    const live = (pings.get(accountId) ?? []).filter((ping) => Date.parse(ping.expires_at) > Date.now());
+    if (live.length) pings.set(accountId, live);
+    else pings.delete(accountId);
+    return live;
+  };
   return {
     parties,
+    pings,
+    pingsTo: livePings,
+    pingFrom: (accountId, pingerId) => livePings(accountId).find((ping) => ping.sent_by === pingerId) ?? null,
+    addPing: (ping) => pings.set(ping.sent_to, [...livePings(ping.sent_to).filter((entry) => entry.sent_by !== ping.sent_by), ping]),
+    removePing: (accountId, pingerId) => {
+      const left = livePings(accountId).filter((ping) => ping.sent_by !== pingerId);
+      if (left.length) pings.set(accountId, left);
+      else pings.delete(accountId);
+    },
     get: (id) => parties.get(id) ?? null,
     of: (accountId) => [...parties.values()].find((party) => party.members.some((member) => member.account_id === accountId)) ?? null,
     invitesTo: (accountId) => [...parties.values()].flatMap((party) => party.invites.filter((invite) => invite.sent_to === accountId))
@@ -159,7 +184,8 @@ export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore
 
   router.get(`${base}/user/:accountId`, auth, own, (req, res) => {
     const party = parties.of(req.params.accountId);
-    res.json({ current: party ? [party] : [], pending: [], invites: parties.invitesTo(req.params.accountId), pings: [] });
+    res.json({ current: party ? [party] : [], pending: [], invites: parties.invitesTo(req.params.accountId),
+      pings: parties.pingsTo(req.params.accountId) });
   });
 
   router.post(`${base}/parties`, auth, (req, res) => {
@@ -247,17 +273,11 @@ export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore
     res.status(204).end();
   });
 
-  // The joiner is the token's account. 8.30's JoinParty puts the account whose party it joins through in the URL
-  // (its JoinInfo's SourceUserId: .../members/<the inviter or friend>/join, Core-Backend #416), so the URL's account
-  // only has to be the joiner or someone already in the party.
-  router.post(`${base}/parties/:partyId/members/:accountId/join`, auth, findParty, (req, res) => {
-    const party = req.party;
-    const accountId = req.session.accountId;
-    if (req.params.accountId !== accountId && !memberOf(party, req.params.accountId)) {
-      return partyError(res, 403, "not_authorized", "This token cannot act for that account");
-    }
+  // The token's account joins the party (its join info: connection and meta), or the service's refusal. A ping from one of
+  // its members lets the one pinged in as an invite does.
+  function joinParty(res, party, accountId, joinInfo, pinged = false) {
     if (!memberOf(party, accountId)) {
-      const invited = party.invites.some((invite) => invite.sent_to === accountId);
+      const invited = pinged || party.invites.some((invite) => invite.sent_to === accountId);
       if (party.config.joinability === "INVITE_ONLY" && !invited) {
         return partyError(res, 403, "party_join_forbidden", `${accountId} isn't invited to party ${party.id}`, [accountId, party.id]);
       }
@@ -266,13 +286,71 @@ export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore
       }
       const previous = parties.of(accountId);
       if (previous) removeMember(previous, memberOf(previous, accountId), "MEMBER_LEFT");
-      const member = newMember(accountId, req.body);
+      const member = newMember(accountId, joinInfo);
       party.members.push(member);
       party.invites = party.invites.filter((invite) => invite.sent_to !== accountId);
       changed(party);
       notify(party, "MEMBER_JOINED", joinedNotice(party, member));
     }
-    res.json({ status: "JOINED", party_id: party.id });
+    return res.json({ status: "JOINED", party_id: party.id });
+  }
+
+  // The joiner is the token's account. 8.30's JoinParty puts the account whose party it joins through in the URL
+  // (its JoinInfo's SourceUserId: .../members/<the inviter or friend>/join, Core-Backend #416), so the URL's account
+  // only has to be the joiner or someone already in the party.
+  router.post(`${base}/parties/:partyId/members/:accountId/join`, auth, findParty, (req, res) => {
+    if (req.params.accountId !== req.session.accountId && !memberOf(req.party, req.params.accountId)) {
+      return partyError(res, 403, "not_authorized", "This token cannot act for that account");
+    }
+    return joinParty(res, req.party, req.session.accountId, req.body);
+  });
+
+  // The two accounts of a ping route: the token's and the other, or null when the token is neither.
+  const pingPair = (req) => {
+    const { accountId, fromAccountId } = req.params;
+    const self = req.session.accountId;
+    if (self === fromAccountId) return { self, other: accountId };
+    if (self === accountId) return { self, other: fromAccountId };
+    return null;
+  };
+
+  // A ping: the token's account asks the other to join its party (PING to the one pinged).
+  router.post(`${base}/user/:accountId/pings/:fromAccountId`, auth, (req, res) => {
+    const pair = pingPair(req);
+    if (!pair || pair.self === pair.other) return partyError(res, 403, "not_authorized", "This token cannot act for that account");
+    const at = new Date();
+    const ping = {
+      sent_by: pair.self,
+      sent_to: pair.other,
+      sent_at: at.toISOString(),
+      expires_at: new Date(at.getTime() + pingTtlSeconds * 1000).toISOString(),
+      meta: cleanMeta(req.body?.meta ?? req.body)
+    };
+    parties.addPing(ping);
+    xmpp?.notifyRaw?.(ping.sent_to, { type: notificationType("PING"), sent: ping.sent_at, ns: req.params.namespace,
+      pinger_id: ping.sent_by, pinger_dn: displayName(ping.sent_by), expires: ping.expires_at, meta: ping.meta });
+    res.json(ping);
+  });
+
+  // A ping taken back by its pinger, or dismissed by the one pinged.
+  router.delete(`${base}/user/:accountId/pings/:fromAccountId`, auth, (req, res) => {
+    const pair = pingPair(req);
+    if (!pair) return partyError(res, 403, "not_authorized", "This token cannot act for that account");
+    parties.removePing(req.params.accountId, req.params.fromAccountId);
+    parties.removePing(req.params.fromAccountId, req.params.accountId);
+    res.status(204).end();
+  });
+
+  // Joining from a ping: the token's account joins the other's party, whoever pinged whom.
+  router.post(`${base}/user/:accountId/pings/:fromAccountId/join`, auth, (req, res) => {
+    const pair = pingPair(req);
+    if (!pair || pair.self === pair.other) return partyError(res, 403, "not_authorized", "This token cannot act for that account");
+    const party = parties.of(pair.other);
+    if (!party) return partyError(res, 404, "user_has_no_party", `${pair.other} has no party to join`, [pair.other]);
+    const pinged = Boolean(parties.pingFrom(pair.self, pair.other));
+    parties.removePing(req.params.accountId, req.params.fromAccountId);
+    parties.removePing(req.params.fromAccountId, req.params.accountId);
+    return joinParty(res, party, pair.self, req.body, pinged);
   });
 
   router.post(`${base}/parties/:partyId/members/:accountId/promote`, auth, findParty, captain, (req, res) => {

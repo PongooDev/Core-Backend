@@ -100,3 +100,42 @@ test("a second player joins, the captain leaves and the other becomes captain, a
     backend.close();
   }
 });
+
+test("9.10's pings: a ping reaches the one pinged and the summary, who joins the pinger's invite-only party from it", async () => {
+  const backend = await startBackend();
+  try {
+    const one = await player(backend.port, "PingCaptain");
+    const two = await player(backend.port, "PingGuest");
+    const body = createBody(one.jid, "PingCaptain");
+    const party = (await post(backend.port, `${base}/parties`, one.token, { ...body, config: { ...body.config, joinability: "INVITE_ONLY" } })).body;
+    await post(backend.port, `${base}/parties`, two.token, createBody(two.jid, "PingGuest"));
+
+    // CreatePing: .../user/{the one pinged}/pings/{the pinger}, by the pinger.
+    const pinged = await post(backend.port, `${base}/user/${two.accountId}/pings/${one.accountId}`, one.token, {});
+    assert.equal(pinged.status, 200);
+    assert.deepEqual([pinged.body.sent_by, pinged.body.sent_to], [one.accountId, two.accountId]);
+    const ping = await notification(two.client, "PING");
+    assert.deepEqual([ping.pinger_id, ping.pinger_dn, ping.ns], [one.accountId, "PingCaptain", "Fortnite"]);
+    assert.ok(Date.parse(ping.expires) > Date.now());
+    assert.deepEqual((await get(backend.port, `${base}/user/${two.accountId}`, two.token)).body.pings.map(({ sent_by }) => sent_by), [one.accountId]);
+    assert.equal((await post(backend.port, `${base}/user/${two.accountId}/pings/${one.accountId}`, (await userLogin(backend.port, "PingOther")).token, {})).status, 403);
+
+    // JoinPartyFromPing: the one pinged joins the pinger's party, though it is invite only, and the ping is gone.
+    const joined = await post(backend.port, `${base}/user/${two.accountId}/pings/${one.accountId}/join`, two.token,
+      { connection: { id: two.jid, meta: {} }, meta: { "urn:epic:member:dn_s": "PingGuest" } });
+    assert.equal(joined.status, 200);
+    assert.deepEqual(joined.body, { status: "JOINED", party_id: party.id });
+    assert.deepEqual((await get(backend.port, `${base}/parties/${party.id}`, one.token)).body.members.map(({ account_id }) => account_id),
+      [one.accountId, two.accountId]);
+    assert.deepEqual((await get(backend.port, `${base}/user/${two.accountId}`, two.token)).body.pings, []);
+
+    // DeletePing: taken back, it leaves the summary.
+    await post(backend.port, `${base}/user/${two.accountId}/pings/${one.accountId}`, one.token, {});
+    assert.equal((await request(backend.port, "DELETE", `${base}/user/${two.accountId}/pings/${one.accountId}`, one.token)).status, 204);
+    assert.deepEqual((await get(backend.port, `${base}/user/${two.accountId}`, two.token)).body.pings, []);
+    one.client.close();
+    two.client.close();
+  } finally {
+    backend.close();
+  }
+});
