@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
-import { ltmEventLock, ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
+import { isHeldLtm, ltmEventLock, ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
 import { creativeEntitled, creativePartyHosts, earlyAccessMessage, settleCreativePlots } from "../../profiles/creative.js";
 import { openSession } from "../../profiles/session.js";
@@ -105,8 +105,10 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     }
     // 6.21's Fortnitemares modes follow the Leaky Lake's state (Core-Backend #354, events/ltms.js untilButterfly), as the
     // lobby lists them, and 7.20's Ice Storm modes the island's state from its storm (fromIceStorm, Core-Backend #354).
-    // 7.00's Creative is always on (#375): a matchmaking setting saved for it before changes nothing.
-    const off = tournamentEvent || arenaDivision !== null || ltm?.alwaysOn ? false : ltm && (!ltm.defaultOn || ltm.untilButterfly || ltm.fromIceStorm) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
+    // 7.00's Creative is always on (#375): a matchmaking setting saved for it before changes nothing. An earlier season's
+    // playlist the build's paks hold (#440) is on only by its switch (events/ltms.js heldLtmOn).
+    const off = tournamentEvent || arenaDivision !== null || ltm?.alwaysOn ? false
+      : ltm && (!ltm.defaultOn || ltm.untilButterfly || ltm.fromIceStorm || isHeldLtm(ltm.id, currentBuild())) ? !ltmOn(ltm.id, currentBuild(), settingsValue)
       : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't

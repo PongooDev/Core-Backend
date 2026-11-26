@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { iceStormMatchBucket, ltms, playlistIdOfName } from "../events/ltms.js";
+import { heldPlaylistTeams, iceStormMatchBucket, ltms, playlistIdOfName } from "../events/ltms.js";
 import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { inIpRanges } from "../network.js";
@@ -526,6 +526,10 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  // An earlier season's playlist the build's paks still hold (Core-Backend #440): the build's own asset's teams (9.00's
+  // Playlist_Final_12 is 103, 8 teams of 12, where 5.30 gave 103 to Score Royale Squads).
+  const held = build === null ? null : heldPlaylistTeams(playlistId, build);
+  if (held) return held;
   if (Number(build) >= playlistTeams910Build && playlistTeamsFrom910[playlistId]) return playlistTeamsFrom910[playlistId];
   if (Number(build) >= playlistTeams901Build && playlistTeamsFrom901[playlistId]) return playlistTeamsFrom901[playlistId];
   if (Number(build) >= playlistTeams850Build && playlistTeamsFrom850[playlistId]) return playlistTeamsFrom850[playlistId];

@@ -3,6 +3,7 @@ import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 import { leakyLakeState } from "./butterfly.js";
 import { eventPlaylistLock, eventPlaylistsLockOn } from "./eventplaylists.js";
+import { buildPlaylists } from "./buildplaylists.js";
 import { iceKingOnEpicDates, iceKingState, iceKingStormSoon } from "./icestorm.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
@@ -1629,15 +1630,52 @@ const isNewIn = (ltm, build) => newInBuilds(ltm).includes(Number(build));
 // Creative, Core-Backend #375).
 export const ltmIds = ltms.filter(({ alwaysOn }) => !alwaysOn).map(({ id }) => id);
 const byId = new Map(ltms.map((ltm) => [ltm.id, ltm]));
-// A playlist's LTM: the requesting build's (3.5.1 gave 23 and 26 to other modes), else any build's.
+
+// The LTMs of earlier seasons whose playlist the build's paks still hold (Core-Backend #440, events/buildplaylists.js),
+// by lowercased PlaylistName: {ltm, playlistId, teams}, playlistId and teams the build's own asset's. Each playlist is
+// its latest LTM that ended before the build, where no LTM of the build has it. The tournament, Arena and story-gated
+// (Leaky Lake, Ice Storm) modes stay their own builds'. 🟡 Epic didn't offer these on the build: they are on only by the
+// admin's switch or All game modes (heldLtmOn), never by a default or Original dates.
+const heldByBuild = new Map();
+function heldLtms(build) {
+  const playlists = buildPlaylists[Number(build)];
+  if (!playlists) return null;
+  if (heldByBuild.has(Number(build))) return heldByBuild.get(Number(build));
+  const own = new Set(ltms.filter((ltm) => ltm.playlistName && inRange(ltm.builds, build)).map((ltm) => ltm.playlistName.toLowerCase()));
+  const held = new Map();
+  for (const [playlistName, [playlistId, maxTeamCount, maxTeamSize, maxSquadSize]] of Object.entries(playlists)) {
+    const key = playlistName.toLowerCase();
+    if (own.has(key)) continue;
+    const earlier = ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === key && !ltm.tournament && !ltm.arena && !ltm.untilButterfly
+      && !ltm.fromIceStorm && compareToBound(build, ltm.builds[1]) > 0);
+    if (earlier.length) held.set(key, { ltm: earlier[earlier.length - 1], playlistId, teams: { maxTeamCount, maxTeamSize, maxSquadSize } });
+  }
+  heldByBuild.set(Number(build), held);
+  return held;
+}
+const heldOf = (playlistName, build) => (playlistName ? heldLtms(build)?.get(String(playlistName).toLowerCase()) ?? null : null);
+const heldOfId = (playlistId, build) => [...(heldLtms(build)?.values() ?? [])].find((held) => held.playlistId === Number(playlistId)) ?? null;
+// Whether the LTM is one whose playlist the build's paks hold from an earlier season.
+export const isHeldLtm = (id, build) => {
+  const ltm = byId.get(id);
+  return Boolean(ltm?.playlistName) && heldOf(ltm.playlistName, build)?.ltm === ltm;
+};
+// The build's own teams of such a playlist, by the build's PlaylistId, or null (matchmaking/service.js teamsOfPlaylist).
+export const heldPlaylistTeams = (playlistId, build) => heldOfId(playlistId, build)?.teams ?? null;
+// Whether the build has the LTM: it is the build's own, or held from an earlier season (isHeldLtm).
+const onBuild = (ltm, build) => inRange(ltm.builds, build) || isHeldLtm(ltm.id, build);
+
+// A playlist's LTM: the requesting build's (3.5.1 gave 23 and 26 to other modes), else any build's. A held playlist's id is
+// the build's own.
 export const ltmOfPlaylist = (playlistId, build = currentBuild()) => {
   const of = ltms.filter((ltm) => ltm.playlistId === Number(playlistId));
-  return of.find((ltm) => inRange(ltm.builds, build)) ?? of[0] ?? null;
+  return of.find((ltm) => inRange(ltm.builds, build)) ?? heldOfId(playlistId, build)?.ltm ?? of[0] ?? null;
 };
 // The playlist asset's own tag its stats count in (playlistTag: 8.40's Air Royale, 8.50's Endgame), on the builds that
 // have the LTM; null otherwise.
 export const ltmPlaylistTag = (playlistId, build = currentBuild()) => {
-  const ltm = ltms.find((entry) => entry.playlistId === Number(playlistId) && entry.playlistTag && inRange(entry.builds, build));
+  const ltm = ltms.find((entry) => entry.playlistId === Number(playlistId) && entry.playlistTag && inRange(entry.builds, build))
+    ?? (heldOfId(playlistId, build)?.ltm.playlistTag ? heldOfId(playlistId, build).ltm : null);
   return ltm?.playlistTag ?? null;
 };
 // A matchmaking bucket's LTM (matchmaking/service.js parseBucket's {playlistId, playlistName}): by its PlaylistName where the
@@ -1645,7 +1683,7 @@ export const ltmPlaylistTag = (playlistId, build = currentBuild()) => {
 // Playground, Playlist_Playground, are both 35), else by its id as ltmOfPlaylist.
 export const ltmOfBucketPlaylist = ({ playlistId, playlistName } = {}, build = currentBuild()) => {
   const named = playlistName ? ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === String(playlistName).toLowerCase()) : [];
-  return named.find((ltm) => inRange(ltm.builds, build)) ?? named[0] ?? (playlistId === null || playlistId === undefined ? null : ltmOfPlaylist(playlistId, build));
+  return named.find((ltm) => onBuild(ltm, build)) ?? named[0] ?? (playlistId === null || playlistId === undefined ? null : ltmOfPlaylist(playlistId, build));
 };
 // A playlist's id by its PlaylistName, in any case, or null for a name Core has no id for. From 4.4 (CL-4117433) the
 // client's matchmaking bucket names its playlist, lowercased, where 4.2 and earlier gave the id ("%u:%d:%s:%s" against
@@ -1656,6 +1694,8 @@ const defaultPlaylistIds = { playlist_defaultsolo: 2, playlist_defaultduo: 10, p
 export const playlistIdOfName = (name, build = currentBuild()) => {
   const key = String(name ?? "").toLowerCase();
   if (Object.hasOwn(defaultPlaylistIds, key)) return defaultPlaylistIds[key];
+  const held = heldOf(key, build);
+  if (held) return held.playlistId;
   const of = ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === key);
   return (of.find((ltm) => inRange(ltm.builds, build)) ?? of[0])?.playlistId ?? null;
 };
@@ -1666,6 +1706,9 @@ export const playlistNameOfId = (playlistId, build = currentBuild()) => {
   const id = Number(playlistId);
   const named = Object.entries(defaultPlaylistIds).find(([, defaultId]) => defaultId === id);
   if (named) return named[0];
+  const own = ltms.find((ltm) => ltm.playlistId === id && ltm.playlistName && inRange(ltm.builds, build));
+  const held = own ? null : heldOfId(id, build);
+  if (held) return held.ltm.playlistName.toLowerCase();
   const of = ltms.filter((ltm) => ltm.playlistId === id && ltm.playlistName);
   const earlier = of.filter((ltm) => compareToBound(build, ltm.builds[0]) >= 0);
   const ltm = of.find((entry) => inRange(entry.builds, build)) ?? earlier[earlier.length - 1] ?? of[0];
@@ -1699,8 +1742,8 @@ const windowsOf = (ltm, settingsValue) => [].concat(ltm.original ?? []).map(({ b
   ({ builds, start: momentOf(start, settingsValue), end: momentOf(end, settingsValue), season: seasonOfBound(builds[0]) }))
   .filter(({ start, end }) => start < end);
 
-// Whether a build's data has the LTM.
-export const hasLtm = (id, build) => Boolean(byId.get(id)) && inRange(byId.get(id).builds, build);
+// Whether a build's data has the LTM: Epic ran it on the build, or the build's paks hold its playlist (isHeldLtm).
+export const hasLtm = (id, build) => Boolean(byId.get(id)) && onBuild(byId.get(id), build);
 
 // Whether the LTM's original window holds the season's replay now, for a build Epic ran it on.
 export function inOriginalWindow(id, build, now = new Date(), settingsValue = settingsProvider()) {
@@ -1742,6 +1785,16 @@ export function configureLtms(provider) {
 }
 export const currentSettings = () => settingsProvider();
 
+// A held playlist's mode (Core-Backend #440): on by All game modes, else by the admin's switch for it or for an earlier
+// LTM of the same playlist (the panel lists 5.40's Getaway and Season 8's apart), never while Original dates is on (Epic's
+// calendar has no window for it on the build) and never by a default.
+function heldLtmOn(ltm, settingsValue) {
+  if (allGameModesOn(settingsValue)) return true;
+  if (settingsValue?.ltmOriginalDates === true) return false;
+  const name = ltm.playlistName.toLowerCase();
+  return ltms.some((entry) => entry.playlistName?.toLowerCase() === name && settingsValue?.matchmakingModes?.[entry.id] === true);
+}
+
 // Whether the build's lobby offers the LTM now: always on the build it is new in. A tournament playlist is never a lobby
 // mode: its event decides (services/matchmaking/ticket.js).
 export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
@@ -1749,6 +1802,7 @@ export function ltmOn(id, build, settingsValue = settingsProvider(), now = new D
   if (!ltm || !hasLtm(id, build) || ltm.tournament || ltm.arena) return false;
   const lock = ltmEventLock(build, settingsValue, now);
   if (lock) return id === lock.ltm;
+  if (isHeldLtm(id, build)) return heldLtmOn(ltm, settingsValue);
   // A game mode always on where the build has it (7.00's Creative, #375), whatever the settings say.
   if (ltm.alwaysOn || isNewIn(ltm, build)) return true;
   // 6.21's Fortnitemares modes (Core-Backend #354): the Leaky Lake's state, not the dates; off once the Butterfly has
@@ -1793,8 +1847,10 @@ const shippedPriority = { Playlist_50v50: 10, Playlist_Playground: 15, Playlist_
 export function ltmFrontEndPlaylists(build, settingsValue = settingsProvider(), now = new Date()) {
   if (Number(build) < frontEndPlaylistBuild) return [];
   const seen = new Set();
-  // Season 8's Arena (#420) is no FrontEndPlaylistData entry: its tile is the events service's (tournaments/arena.js).
-  return ltms.filter((ltm) => ltm.playlistName && !ltm.arena && hasLtm(ltm.id, build) && !seen.has(ltm.playlistName) && seen.add(ltm.playlistName))
+  // Season 8's Arena (#420) is no FrontEndPlaylistData entry: its tile is the events service's (tournaments/arena.js). A held
+  // playlist (#440) is listed only while it is on, so the build's list is otherwise as before.
+  return ltms.filter((ltm) => ltm.playlistName && !ltm.arena && hasLtm(ltm.id, build) && (!isHeldLtm(ltm.id, build) || ltmOn(ltm.id, build, settingsValue, now))
+    && !seen.has(ltm.playlistName) && seen.add(ltm.playlistName))
     .map((ltm, index) => ({ name: ltm.playlistName, enabled: ltmOn(ltm.id, build, settingsValue, now),
       priority: shippedPriority[ltm.playlistName] ?? 20 + index, ltm }));
 }

@@ -12,8 +12,10 @@ import { blockEventOf, blockStates } from "../src/events/block.js";
 import { activeEventFlags, blockSlab, configureEvents, lobbySeason9 } from "../src/events/events.js";
 import { fortbytesDay } from "../src/events/fortbytes.js";
 import { eventDaysOf } from "../src/events/fourteendays.js";
-import { hasLtm, ltmOn } from "../src/events/ltms.js";
+import { hasLtm, isHeldLtm, ltmFrontEndPlaylists, ltmOfBucketPlaylist, ltmOn, playlistIdOfName, playlistNameOfId } from "../src/events/ltms.js";
 import { unvaultingFlagsNow } from "../src/events/unvaulting.js";
+import { playlistTeamsOf } from "../src/matchmaking/service.js";
+import { playlistInformationFor } from "../src/services/content/playlistimages.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { isForeignTemplate } from "../src/gamedata/templates.js";
@@ -23,7 +25,7 @@ import { buildOfSeason, buyBattlePass, buyTiers } from "../src/profiles/seasons.
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { configureItemShop, hasSeasonHistory, itemShopOffers, seasonEnd, seasonOfBuild, shopDay } from "../src/store/itemshop.js";
-import { post, send, startBackend, userLogin } from "./helpers.js";
+import { clientToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 9.00 (Update v9.00, 9 May 2019; Season 9's first build): CL-6337466, on its own data (gamedata/6337466).
 // Season 9's Battle Pass (BRSeason9; Rox, Sentinel, Vendetta), the Fortbytes, the Season 9 lobby and shop, the Block's 9.00
@@ -162,10 +164,73 @@ test("Season 9's LTMs: 9.00's lobby's 50v50 and Playground, Update v9.00's rotat
       assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [true, false], id);
     }
     // Season 8's modes, the Arena and the tournaments end with 8.51; Air Royale's and Sword Fight's playlists are gone.
-    for (const id of ["fiftyFiftySeason8", "airRoyaleDuos", "endgame", "unvaulting", "arenaSolo", "tournamentS8Solo"]) {
+    // Endgame's playlist is still in 9.00's paks (#440, below): the build has it, off unless the admin turns it on.
+    for (const id of ["fiftyFiftySeason8", "airRoyaleDuos", "unvaulting", "arenaSolo", "tournamentS8Solo"]) {
       assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [false, true], id);
     }
+    assert.deepEqual([hasLtm("endgame", v900), ltmOn("endgame", v900, {}, at("2019-05-20T12:00:00Z"))], [true, false]);
   });
+});
+
+// Core-Backend #440: 9.00's paks still hold earlier seasons' playlists (events/buildplaylists.js), so an admin can turn
+// Endgame, The Getaway or Food Fight on there; Epic's calendar never offered them on 9.00, so nothing else does.
+test("9.00 offers an earlier season's mode its paks hold once the admin turns it on, never by default or Original dates", () => {
+  const now = at("2019-05-20T12:00:00Z");
+  const on = (modes) => ({ matchmakingModes: modes });
+  withConfig(season9, () => {
+    for (const id of ["endgame", "endgame48", "endgame64", "getawaySeason8Squads", "foodFight", "foodFight16", "foodFightDeepFried"]) {
+      assert.deepEqual([hasLtm(id, v900), isHeldLtm(id, v900), isHeldLtm(id, v851)], [true, true, false], id);
+      assert.equal(ltmOn(id, v900, {}, now), false, `${id} off by default`);
+      assert.equal(ltmOn(id, v900, on({ [id]: true }), now), true, `${id} on by its switch`);
+      assert.equal(ltmOn(id, v900, { ...on({ [id]: true }), ltmOriginalDates: true }, now), false, `${id}: no window on 9.00`);
+      assert.equal(ltmOn(id, v900, { allGameModes: true }, now), true, `${id} by All game modes`);
+    }
+    // The Getaway's playlist is Season 8's LTM on 9.00, and 5.40's switch turns it on too (the panel lists both).
+    assert.equal(ltmOfBucketPlaylist({ playlistName: "playlist_bling_squads" }, v900).id, "getawaySeason8Squads");
+    assert.equal(ltmOn("getawaySeason8Squads", v900, on({ getaway: true }), now), true);
+    // The 9.00 asset's own ids and teams: Score Royale Squads is 100 there (5.30's 103), 103 is Final Fight's Teams of 12.
+    assert.deepEqual([playlistIdOfName("playlist_score_squads", v900), playlistIdOfName("playlist_score_squads", "4305896")], [100, 103]);
+    assert.equal(playlistNameOfId(103, v900), "playlist_final_12");
+    assert.deepEqual(playlistTeamsOf(`${v900}:0:NAE:playlist_final_12`, v900), { maxTeamCount: 8, maxTeamSize: 12, maxSquadSize: 4 });
+    assert.deepEqual(playlistTeamsOf(`${v900}:0:NAE:playlist_ashton_sm`, v900), { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 });
+    // What 9.00's paks don't hold, or holds for a live event, a tournament or a later build, stays off.
+    for (const id of ["airRoyaleDuos", "unvaulting", "partyAtPleasantPark", "arenaSolo", "tournamentS8Solo", "iceStormSolo", "unvaultedSeason9Squads"]) {
+      assert.equal(ltmOn(id, v900, { allGameModes: true, matchmakingModes: { [id]: true } }, now), false, id);
+    }
+    // The lobby's list has a held playlist only while it is on; a 9.00 tile exists for it.
+    const listed = (settings) => ltmFrontEndPlaylists(v900, settings, now).map(({ name, enabled }) => [name, enabled]);
+    assert.equal(listed({}).some(([name]) => name === "Playlist_Ashton_Sm"), false);
+    assert.deepEqual(listed(on({ endgame: true })).find(([name]) => name === "Playlist_Ashton_Sm"), ["Playlist_Ashton_Sm", true]);
+    assert.ok(playlistInformationFor(v900).playlist_info.playlists.some((entry) => entry.playlist_name === "Playlist_Ashton_Sm"));
+  });
+});
+
+test("9.00's lobby lists Endgame and takes its ticket once the admin turns it on (#440)", async () => {
+  const agent = `Fortnite/++Fortnite+Release-9.00-CL-${v900} Windows/10.0.19045.1.256.64bit`;
+  const backend = await startBackend();
+  try {
+    const endgameLine = async () => {
+      const token = await clientToken(backend.port);
+      const ini = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/cloudstorage/system/DefaultGame.ini",
+        headers: { "User-Agent": agent, Authorization: `bearer ${token}` } });
+      return String(ini.body ?? "").split("\r\n").find((line) => line.startsWith("+FrontEndPlaylistData=(PlaylistName=Playlist_Ashton_Sm,"));
+    };
+    const player = await userLogin(backend.port, "Endgame900");
+    const ticket = () => send({ host: "127.0.0.1", port: backend.port, method: "GET",
+      path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+        `&bucketId=${v900}:0:NAE:playlist_ashton_sm&player.platform=Windows`,
+      headers: { "User-Agent": agent, Authorization: `bearer ${player.token}` } });
+    assert.equal(await endgameLine(), undefined);
+    assert.equal((await ticket()).status, 400);
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { endgame: true } });
+    assert.match(await endgameLine(), /PlaylistAccess=\(bEnabled=true,/);
+    assert.equal((await ticket()).status, 200);
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { endgame: false } });
+    assert.equal(await endgameLine(), undefined);
+    assert.equal((await ticket()).status, 400);
+  } finally {
+    backend.close();
+  }
 });
 
 test("9.00's lobby and Block: LobbySeason9, Modern Mansion then Custom Car Carpet; nothing of Season 8's", () => {

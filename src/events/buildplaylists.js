@@ -1,0 +1,77 @@
+// The playlists of earlier seasons a build's paks still hold, each with everything it loads (Core-Backend #440): its
+// ModifierList, mission generator, GameData, loot tables, resource rates, supply drops and ItemsToFullyLoad, every one in
+// the build's paks (FModel). An admin may turn such a playlist's mode on there (events/ltms.js heldLtms): Epic didn't
+// offer it on the build, but the build plays it. Each entry is the build's own asset's [PlaylistId, MaxTeamCount,
+// MaxTeamSize, MaxSquadSize]: a playlist's id can differ from its own season's (9.00's Playlist_Score_Squads is 100, 5.30's
+// 103; 9.00's 103 is Playlist_Final_12). Only playlists whose last LTM is before the build are listed: a later season's
+// playlist a build ships early may not be finished.
+// 9.00 (CL-6337466): its paks' FortniteGame/Content/Athena/Playlists, against events/ltms.js's LTMs of 1.11 to 8.51.
+// Playlist_Music_Highest (7.30's Party at Pleasant Park, 8.51's Unvaulting) is a live event's, and the Ice Storm's, the
+// Showdown's, the Arena's and the tournaments' playlists are their events', so none is listed.
+export const buildPlaylists = {
+  6337466: {
+    Playlist_33: [151, 3, 33, 4],
+    Playlist_50v50HE: [203, 2, 50, 4],
+    Playlist_50v50SAU: [1993, 2, 50, 4],
+    Playlist_5x20: [22, 5, 20, 4],
+    Playlist_Ashton_Lg: [258, 2, 32, 4],
+    Playlist_Ashton_Md: [257, 2, 24, 4],
+    Playlist_Ashton_Sm: [256, 2, 20, 4],
+    Playlist_Barrier: [204, 2, 24, 4],
+    Playlist_Barrier_12: [206, 2, 12, 4],
+    Playlist_Barrier_16: [207, 2, 16, 4],
+    Playlist_Barrier_16_B_Lava: [226, 2, 16, 4],
+    Playlist_Bling_Duos: [141, 100, 2, 2],
+    Playlist_Bling_Solo: [140, 100, 1, 1],
+    Playlist_Bling_Squads: [142, 100, 4, 4],
+    Playlist_Blitz_Duos: [37, 100, 2, 2],
+    Playlist_Blitz_Solo: [36, 100, 1, 1],
+    Playlist_Classic_Duos: [215, 100, 2, 2],
+    Playlist_Classic_Solo: [214, 100, 1, 1],
+    Playlist_Classic_Squads: [216, 100, 4, 4],
+    Playlist_Close_50: [4750, 2, 50, 4],
+    Playlist_Close_Duos: [45, 100, 2, 2],
+    Playlist_Close_Solo: [44, 100, 1, 1],
+    Playlist_Disco_32: [217, 2, 32, 4],
+    Playlist_Disco_32_Alt: [232, 2, 32, 4],
+    Playlist_Fill_Duos: [350, 100, 2, 2],
+    Playlist_Fill_Solo: [349, 100, 1, 1],
+    Playlist_Fill_Squads: [351, 100, 4, 4],
+    Playlist_Final_12: [103, 8, 12, 4],
+    Playlist_Final_20: [104, 5, 20, 4],
+    Playlist_FlyExplosives_Duos: [121, 100, 2, 2],
+    Playlist_FlyExplosives_Solo: [120, 100, 1, 1],
+    Playlist_FlyExplosives_Squads: [122, 100, 4, 4],
+    Playlist_Ground_Squads: [112, 100, 4, 4],
+    Playlist_Hard_Squads: [242, 100, 4, 4],
+    Playlist_HighExplosives_Solo: [23, 100, 1, 1],
+    Playlist_HighExplosives_Squads: [24, 100, 4, 4],
+    Playlist_Love_Duos: [346, 100, 2, 2],
+    Playlist_Love_Solo: [345, 100, 1, 1],
+    Playlist_Love_Squads: [347, 100, 4, 4],
+    Playlist_Omaha: [285, 2, 20, 4],
+    Playlist_Respawn_24: [280, 2, 20, 4],
+    Playlist_Score_Duos: [102, 100, 2, 2],
+    Playlist_Score_Solo: [101, 100, 1, 1],
+    Playlist_Score_Squads: [100, 100, 4, 4],
+    Playlist_Slide_Duos: [161, 100, 2, 2],
+    Playlist_Slide_Solo: [160, 100, 1, 1],
+    Playlist_Sneaky_Solo: [260, 100, 1, 1],
+    Playlist_Snipers_Duos: [40, 100, 2, 2],
+    Playlist_Snipers_Solo: [39, 100, 1, 1],
+    Playlist_Soaring_50s: [53, 2, 50, 4],
+    Playlist_Soaring_Duos: [186, 100, 2, 2],
+    Playlist_Soaring_Solo: [185, 100, 1, 1],
+    Playlist_Soaring_Squads: [187, 100, 4, 4],
+    Playlist_SolidGold_Duos: [34, 100, 2, 2],
+    Playlist_SolidGold_Solo: [26, 100, 1, 1],
+    Playlist_Steady_Duos: [161, 100, 2, 2],
+    Playlist_Steady_Solo: [160, 100, 1, 1],
+    Playlist_Steady_Squads: [162, 100, 4, 4],
+    Playlist_Toss_Duos: [341, 100, 2, 2],
+    Playlist_Toss_Solo: [340, 100, 1, 1],
+    Playlist_Toss_Squads: [342, 100, 4, 4],
+    Playlist_Vamp_Solo: [265, 100, 1, 1],
+    Playlist_WW_Solo: [900, 100, 1, 1]
+  }
+};
