@@ -185,6 +185,11 @@ test("9.00 offers an earlier season's mode its paks hold once the admin turns it
       assert.equal(ltmOn(id, v900, { ...on({ [id]: true }), ltmOriginalDates: true }, now), false, `${id}: no window on 9.00`);
       assert.equal(ltmOn(id, v900, { allGameModes: true }, now), true, `${id} by All game modes`);
     }
+    // Playlists whose PlaylistName differs from their file's (Playlist_Close_Squads.uasset is Playlist_Close_Squad) are held too.
+    for (const id of ["closeEncountersSeason8Squads", "sniperShootoutSeason8Squads", "goingGreenSquads", "driftin"]) {
+      assert.deepEqual([hasLtm(id, v900), isHeldLtm(id, v900), ltmOn(id, v900, {}, now)], [true, true, false], id);
+    }
+    assert.equal(playlistIdOfName("playlist_close_squad", v900), 46);
     // The Getaway's playlist is Season 8's LTM on 9.00, and 5.40's switch turns it on too (the panel lists both).
     assert.equal(ltmOfBucketPlaylist({ playlistName: "playlist_bling_squads" }, v900).id, "getawaySeason8Squads");
     assert.equal(ltmOn("getawaySeason8Squads", v900, on({ getaway: true }), now), true);

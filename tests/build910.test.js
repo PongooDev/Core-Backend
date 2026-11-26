@@ -11,14 +11,14 @@ import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
 import { blockEventOf, blockStates } from "../src/events/block.js";
 import { downtownDropCalendarEvent, downtownDropFlagsNow, downtownDropStates } from "../src/events/downtowndrop.js";
 import { activeEventFlags, blockSlab, configureEvents, lobbySeason9, ltmVigilante, ltmWax } from "../src/events/events.js";
-import { hasLtm, ltmOn } from "../src/events/ltms.js";
+import { hasLtm, isHeldLtm, ltmFrontEndPlaylists, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
 import { season4Flag } from "../src/events/season4flags.js";
 import { season9Flag, season9Phase1 } from "../src/events/talesofbeyond.js";
 import { wargamesDailyQuests, wargamesFlag, wargamesGlobals, wargamesQuests } from "../src/events/wargames.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { getItem } from "../src/gamedata/items.js";
 import { dataBuild } from "../src/gamedata/read.js";
-import { teamsOfPlaylist } from "../src/matchmaking/service.js";
+import { playlistTeamsOf, teamsOfPlaylist } from "../src/matchmaking/service.js";
 import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
 import { styleSchedules } from "../src/profiles/challenges.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
@@ -27,6 +27,7 @@ import { createProfileStore } from "../src/profiles/store.js";
 import { storefronts } from "../src/store/catalog.js";
 import { eventStorefront } from "../src/store/eventstore.js";
 import { configureItemShop, itemShopOffers, seasonOfBuild } from "../src/store/itemshop.js";
+import { clientToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 9.10 (Season 9): two builds, both "9.10". CL-6639283 (Content Update v9.10, 29 May 2019) on its own data
 // (gamedata/6639283), and CL-6573057 (Update v9.10, 22 May), whose paks Core has no copy of, on CL-6639283's (laterData).
@@ -37,6 +38,7 @@ import { configureItemShop, itemShopOffers, seasonOfBuild } from "../src/store/i
 const v910 = "6639283";
 const v9100 = "6573057";
 const v901 = "6428087";
+const v851 = "6165369";
 const at = (iso) => new Date(iso);
 const withConfig = (config, run) => {
   configureEvents(config);
@@ -225,3 +227,61 @@ test("9.10's shop: Season 9's history with its cosmetics in, Doggo from 26 May; 
     configureItemShop(null);
   }
 });
+
+// Core-Backend #440: both 9.10 builds hold 9.01's earlier seasons' playlists less the three 9.10's own rotations and Team
+// Rumble run (events/buildplaylists.js); CL-6573057 plays on CL-6639283's list.
+test("9.10 (both builds) offers an earlier season's mode its paks hold once the admin turns it on, never by default or Original dates", () => {
+  const now = at("2019-06-01T12:00:00Z");
+  const on = (modes) => ({ matchmakingModes: modes });
+  withConfig(season9, () => {
+    for (const build of [v9100, v910]) {
+      for (const id of ["endgame", "endgame48", "endgame64", "getawaySeason8Squads", "foodFight", "foodFight16", "foodFightDeepFried"]) {
+        assert.deepEqual([hasLtm(id, build), isHeldLtm(id, build), isHeldLtm(id, v851)], [true, true, false], `${id} ${build}`);
+        assert.equal(ltmOn(id, build, {}, now), false, `${id} ${build} off by default`);
+        assert.equal(ltmOn(id, build, on({ [id]: true }), now), true, `${id} ${build} on by its switch`);
+        assert.equal(ltmOn(id, build, { ...on({ [id]: true }), ltmOriginalDates: true }, now), false, `${id} ${build}: no window`);
+        assert.equal(ltmOn(id, build, { allGameModes: true }, now), true, `${id} ${build} by All game modes`);
+      }
+      // Close Encounters Squads and Sniper Shootout Duos are 9.10's own rotation's, so Season 8's aren't held.
+      assert.deepEqual([isHeldLtm("closeEncountersSeason8Squads", build), isHeldLtm("closeEncountersSeason9Squads", build)], [false, false]);
+      assert.deepEqual([playlistIdOfName("playlist_score_squads", build), playlistIdOfName("playlist_close_squad", build)], [100, 46]);
+      assert.deepEqual(playlistTeamsOf(`${build}:0:NAE:playlist_final_12`, build), { maxTeamCount: 8, maxTeamSize: 12, maxSquadSize: 4 });
+      for (const id of ["airRoyaleDuos", "unvaulting", "partyAtPleasantPark", "arenaSolo", "tournamentS8Solo", "iceStormSolo"]) {
+        assert.equal(ltmOn(id, build, { allGameModes: true, matchmakingModes: { [id]: true } }, now), false, `${id} ${build}`);
+      }
+      const listed = (settings) => ltmFrontEndPlaylists(build, settings, now).map(({ name, enabled }) => [name, enabled]);
+      assert.equal(listed({}).some(([name]) => name === "Playlist_Ashton_Sm"), false);
+      assert.deepEqual(listed(on({ endgame: true })).find(([name]) => name === "Playlist_Ashton_Sm"), ["Playlist_Ashton_Sm", true]);
+    }
+  });
+});
+
+for (const [build, version] of [[v9100, "9.10"], [v910, "9.10"]]) {
+  test(`9.10 CL-${build}'s lobby lists Endgame and takes its ticket once the admin turns it on (#440)`, async () => {
+    const agent = `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.19045.1.256.64bit`;
+    const backend = await startBackend();
+    try {
+      const endgameLine = async () => {
+        const token = await clientToken(backend.port);
+        const ini = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/cloudstorage/system/DefaultGame.ini",
+          headers: { "User-Agent": agent, Authorization: `bearer ${token}` } });
+        return String(ini.body ?? "").split("\r\n").find((line) => line.startsWith("+FrontEndPlaylistData=(PlaylistName=Playlist_Ashton_Sm,"));
+      };
+      const player = await userLogin(backend.port, `Endgame${build}`);
+      const ticket = () => send({ host: "127.0.0.1", port: backend.port, method: "GET",
+        path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+          `&bucketId=${build}:0:NAE:playlist_ashton_sm&player.platform=Windows`,
+        headers: { "User-Agent": agent, Authorization: `bearer ${player.token}` } });
+      assert.equal(await endgameLine(), undefined);
+      assert.equal((await ticket()).status, 400);
+      await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { endgame: true } });
+      assert.match(await endgameLine(), /PlaylistAccess=\(bEnabled=true,/);
+      assert.equal((await ticket()).status, 200);
+      await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { endgame: false } });
+      assert.equal(await endgameLine(), undefined);
+      assert.equal((await ticket()).status, 400);
+    } finally {
+      backend.close();
+    }
+  });
+}
