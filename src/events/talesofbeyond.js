@@ -16,6 +16,12 @@ export { season9Flag, season9Phase1, talesOfBeyond };
 // quests, but QuestMapData has no Spring2019QuestMap and EventFlag.Spring2019 is gone, so 9.00's quest map can't show it.
 // 🟡 Epic's days aren't recorded: it runs on 9.00 throughout, as Wargames does.
 
+// Summer Tickets (EventCurrency_Summer, "Summer Tickets"), which Tales of Beyond's and Wargames' quests pay, and the llama they buy:
+// the Military Llama (CardPack_Event_2019_Military, new in 9.00's paks: "Guarantees at least one Epic or better limited
+// time Military weapon or Hero!", store/catalog.js, Core-Backend #437).
+export const summerTickets = "AccountResource:eventcurrency_summer";
+export const militaryLlama = "CardPack:cardpack_event_2019_military";
+
 // The quest that starts the line, given at quest login while the flag is served (nothing in 9.00's data grants it).
 export const talesOfBeyondQuests = ["s9_fetch_quest_a1"];
 

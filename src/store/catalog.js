@@ -2,7 +2,7 @@ import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
 import { dailyLimitOf, upgradeLlamaDailyLimit } from "./dailylimit.js";
 import { blockbuster2018, blockbusterLlama, blockbusterTickets } from "../events/blockbuster2018.js";
-import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, spring2019Phase2, storm2018, winter2017 } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, spring2019Phase2, storm2018, wargames, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { roadTrip2018, roadTripLlama, roadTripTickets } from "../events/roadtrip2018.js";
@@ -11,6 +11,7 @@ import { frostnite2018, winterLlama2018 } from "../events/frostnite2018.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
 import { springTickets } from "../events/spring2019.js";
 import { intoTheStormLlama } from "../events/storm2018.js";
+import { militaryLlama, summerTickets, talesOfBeyond } from "../events/talesofbeyond.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
@@ -135,6 +136,12 @@ const voucherOffers = perBuild(() => itemIds()
 // Holiday Hero!") is bought with Snowflake Tickets again while Frostnite runs (7.10, events/frostnite2018.js): "The longer
 // you survive the more Snowflake Tickets you will earn! Tickets can be spent on the new Winter Llama." The notes give no
 // price: the Holiday Survival Llama's 1,000 (🟡), the admin panel's snowflakePerLlama as that one's.
+//
+// The Military Llama (CardPack_Event_2019_Military) is bought with Summer Tickets (EventCurrency_Summer), which 9.00's
+// Tales of Beyond and Wargames quests pay (events/talesofbeyond.js, events/wargames.js), on sale while either runs:
+// Epic's Save the World roadmap (7 June 2019) calls the Year 2 Birthday Llama's 1,000 Summer Tickets "Same ticket type as
+// the previous season 9 Llamas" and turns leftover tickets into Sci-Fi Llamas "(not Military or BDay)". At 500 Summer
+// Tickets (🟡 the wikis' price; Epic's notes for it aren't kept), Yarrr!'s Pirate Llama's.
 const pirateLlama2019 = "CardPack:cardpack_event_2019_pirate";
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
@@ -166,12 +173,14 @@ const eventOffers = [
     currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: frostnite2018 },
   // 8.20's Yarrr! (events/spring2019.js): "Pirate Llama is now available ... Cost: 500 Spring Tickets" (Update v8.20).
   { offerId: "core_event_pirate2019_llama", templateId: pirateLlama2019, title: "Pirate Llama",
-    currencyType: "GameItem", currencySubType: springTickets, price: 500, always: true, event: spring2019Phase2 }
+    currencyType: "GameItem", currencySubType: springTickets, price: 500, always: true, event: spring2019Phase2 },
+  { offerId: "core_event_military2019_llama", templateId: militaryLlama, title: "Military Llama",
+    currencyType: "GameItem", currencySubType: summerTickets, price: 500, always: true, event: [talesOfBeyond, wargames] }
 ];
 
-// An event's offers are on sale while the requesting build runs the event and has their llama, but not one a later
-// llama of the same event on sale replaces.
-const onSaleAlone = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
+// An event's offers are on sale while the requesting build runs the event (one of them, for a list) and has their llama,
+// but not one a later llama of the same event on sale replaces.
+const onSaleAlone = (offer) => !offer.event || ([offer.event].flat().some((event) => isEventActive(event)) && Boolean(getCardPack(offer.templateId)));
 const onSale = (offer) => onSaleAlone(offer) && !eventOffers.some((other) => other.replaces === offer.offerId && onSaleAlone(other));
 
 const allOffers = () => {

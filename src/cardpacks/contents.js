@@ -327,6 +327,23 @@ function pirateLlama2019() {
   return [...llama(llamas.cardpack_bronze), ...pickOne(pirateLlama2019Items(weighted([["vr", 75], ["sr", 25]])))];
 }
 
+// The Military Llama (CardPack_Event_2019_Military, 9.00), sold for Summer Tickets (store/catalog.js): "Guarantees at
+// least one Epic or better limited time Military weapon or Hero!" 9.00's paks give it two inner packs,
+// CardPack_Event_2019_Military_VR and _SR (group CardPack_Event_2019_Military_Inner, "Choose one random item.", Epic and
+// Legendary). The Military weapons are Blockbuster's set (store/eventstore.js blockbusterWeapons) with 5.40's Silenced
+// and 9.00's Burst assault rifles; the heroes are 9.00's four 4thJuly heroes (🟡 Core's pick). An
+// Upgrade Llama's items and one inner pack's item, Epic or (a quarter of the time) Legendary, as the Pirate Llama's
+// (🟡 the odds and the item list are Core's: no loot table ships).
+const militaryLlama2019Items = (rarity) => [...["assault_military_auto", "assault_military_burst", "assault_military_silenced",
+  "assault_military_surgical", "assault_smg_silenced_military", "assault_lmg_military", "pistol_silenced_military", "shotgun_military",
+  "sniper_military", "sniper_crossbow_military", "piercing_spear_military", "explosive_launcher_military"]
+  .map((name) => `Schematic:sid_${name}_${rarity}_ore_t01`),
+...["commando_guntough_f_4thjuly", "commando_guntough_m_4thjuly", "constructor_hammerplasma_4thjuly", "outlander_010_m_4thjuly"]
+  .map((name) => `Hero:hid_${name}_${rarity}_t01`)].filter(hasItem);
+function militaryLlama2019() {
+  return [...llama(llamas.cardpack_bronze), ...pickOne(militaryLlama2019Items(weighted([["vr", 75], ["sr", 25]])))];
+}
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -357,6 +374,8 @@ export function rollContents(templateId) {
   if (group === "cardpack_event_2017_firststorm") return stormLlama();
   if (group === "cardpack_event_2018_winter") return winterLlama2018();
   if (group === "cardpack_event_2019_pirate") return pirateLlama2019();
+  if (group === "cardpack_event_2019_military") return militaryLlama2019();
+  if (group === "cardpack_event_2019_military_inner") return pickOne(militaryLlama2019Items(/_(vr|sr)$/.exec(templateId.toLowerCase())?.[1] ?? "vr"));
   const vindertechWeapon = vindertechPack(group);
   if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);

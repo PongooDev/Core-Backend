@@ -225,7 +225,7 @@ export const eventCards = [
     flags: ["EventFlag.Outpost"] },
   // 9.00's Save the World Tales of Beyond (events/talesofbeyond.js, Core-Backend #435).
   { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
-    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00.",
+    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Summer Tickets buy the Military Llama (500) in the Loot tab while this or Wargames is on. Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00.",
     flags: ["EventFlag.Season9", "EventFlag.Season9.Phase1"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
