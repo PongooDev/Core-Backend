@@ -60,6 +60,8 @@ import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { linksRoutes } from "./services/links/links.js";
 import { createIslandLinkStore } from "./services/links/islands.js";
 import { creativeAdminRoutes } from "./admin/creative.js";
+import { backupAdminRoutes, importPath as backupImportPath } from "./admin/backup.js";
+import { createBackupService } from "./backup/service.js";
 import { dssRoutes } from "./services/dss/dss.js";
 import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
@@ -221,6 +223,8 @@ export function createContext(config) {
     // The local https certificate (tls/service.js, Core-Backend #377), made when first needed.
     tls: createLocalTls(config.dataDir),
     dataDir: config.dataDir,
+    // The data folder's backups and the automatic ones' timer (backup/service.js, started by createServer).
+    backups: createBackupService(config.dataDir),
     config
   };
 }
@@ -274,7 +278,7 @@ export function createApp(config, context = createContext(config)) {
   const json = express.json();
   // So does the Creative island upload (admin/creative.js, PongooDev/CoreV2#488), and an island file's import, the
   // player's (services/core/islands.js) and the admin's (Core-Launcher #21).
-  const ownBody = (url) => url === "/admin/api/news/image" || url === islandImportPath
+  const ownBody = (url) => url === "/admin/api/news/image" || url === islandImportPath || url === backupImportPath
     || /^\/admin\/api\/accounts\/[^/]+\/creative\/([^/]+\/upload|import)$/.test(url);
   app.use((req, res, next) => (ownBody(req.path) ? next() : json(req, res, next)));
   app.use(express.urlencoded({ extended: false }));
@@ -329,6 +333,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(networkAdminRoutes(context));
   // The admin panel's Creative tab and its players' islands (admin/creative.js, PongooDev/CoreV2#488).
   app.use(creativeAdminRoutes(context));
+  app.use(backupAdminRoutes(context));
   app.use(adminRoutes(context));
 
   // The game asks Epic's launcher bucket for its launcher, Fortnite and default app icons

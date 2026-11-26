@@ -2061,6 +2061,10 @@
             <path
               d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg><span>Settings</span></a>
+        <a href="#/backup" data-view="backup" title="Backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+          </svg><span>Backup</span></a>
         <a href="#/logs" data-view="logs" title="Logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
@@ -3116,7 +3120,7 @@
       // A view that redraws itself in place for the sidebar's season (matchmaking's LTM dates) sets this; others don't.
       state.onActiveSeason = null;
       const resolvedView = view === "sessions" ? "matchmaking" : view;
-      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "arena", "creative", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
+      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "arena", "creative", "reports", "logs", "backup", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -3182,7 +3186,7 @@
       if (state.view === "tournaments") {
         state.tournamentEventId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, arena: showArena, creative: showCreative, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, arena: showArena, creative: showCreative, reports: showReports, logs: showLogs, backup: showBackup, settings: showSettings })[state.view]();
     }
     function syncSeasonDropdown() {
       const sel = $("sidebar-season-select");
@@ -6068,7 +6072,88 @@ Each starts active; quests the account already has are left as they are.`, {
       renderLogLines();
       await pullLogs();
       every(2000, pullLogs);
-    }    /* ---------- news ---------- */
+    }
+    /* ---------- backup (Core-Backend #438) ---------- */
+    async function showBackup(prefetched) {
+      const data = prefetched ?? await act(api("/admin/api/backup"));
+      if (!data || state.view !== "backup") return;
+      const size = (n) => (n >= 1073741824 ? `${(n / 1073741824).toFixed(2)} GB` : n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : n >= 1024 ? `${Math.round(n / 1024)} KB` : `${n ?? 0} B`);
+      const redraw = (next) => { if (next) showBackup(next); };
+      const restartNote = "The restore is applied when the backend next starts: restart it (close it and start it again) for it to take effect. Until then nothing changes. Everyone signs in again afterwards. The data as it is now is saved first as a \"Before a restore\" backup.";
+
+      const tls = el("input", { type: "checkbox", id: "backup-tls" });
+      const tlsLabel = el("label", { class: "note", style: "display:flex; gap:8px; align-items:center; margin:8px 0" }, tls, "Include the local HTTPS private key (tls/). Keep such an archive private.");
+
+      const upload = el("input", { type: "file", accept: ".gz,.tgz,application/gzip", style: "display:none" });
+      upload.addEventListener("change", async () => {
+        const file = upload.files[0];
+        upload.value = "";
+        if (!file) return;
+        const ok = await confirmModal(`Import ${file.name} (${size(file.size)})?\n${restartNote}\nThe archive is checked first: only Core's data paths are accepted, no links, no paths outside the data folder.`, { title: "Import data", confirmText: "Check and stage", confirmKind: "danger" });
+        if (!ok) return;
+        try {
+          const response = await fetch(`/admin/api/backup/import?confirm=1${tls.checked ? "&tls=1" : ""}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: file });
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(body.errorMessage ?? `${response.status} ${response.statusText}`);
+          toast(`Import checked: ${body.staged.files} files staged. Restart the backend to apply it.`);
+          redraw(body);
+        } catch (error) {
+          toast(error.message, true);
+        }
+      });
+
+      const pending = data.pending && el("section", { class: "panel" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Restore waiting for a restart" })),
+        el("p", { class: "note", text: `${data.pending.source}: ${data.pending.files} files (${size(data.pending.bytes)}), staged ${new Date(data.pending.staged).toLocaleString()}. Restart the backend to apply it; the current data is backed up first.` }),
+        el("div", { class: "actions" }, btn("Cancel the restore", async () => redraw(await act(api("/admin/api/backup/pending/cancel", {}), "Restore cancelled")), "ghost")));
+
+      const make = btn("Back up now", async () => {
+        const made = await act(api("/admin/api/backup/create", { tls: tls.checked }), (r) => `Backed up to ${r.name} (${size(r.size)})`);
+        redraw(made);
+      }, "primary");
+
+      const interval = el("input", { class: "field", type: "number", min: "0", max: String(data.schedule.maxIntervalHours), step: "1", value: String(data.schedule.intervalHours), style: "width:90px" });
+      const keep = el("input", { class: "field", type: "number", min: "1", max: "365", step: "1", value: String(data.schedule.keep), style: "width:90px" });
+      const saveSchedule = btn("Save", async () => redraw(await act(api("/admin/api/backup/schedule", { intervalHours: Number(interval.value), keep: Number(keep.value) }, "PUT"), "Schedule saved")), "primary");
+
+      const rows = el("div", {}, table([
+        ["Backup", (b) => el("span", { class: "mono", text: b.name })],
+        ["Kind", (b) => data.kinds[b.kind] ?? b.kind],
+        ["Made", (b) => `${new Date(b.created).toLocaleString()} (${ago(b.created)})`],
+        ["Size", (b) => size(b.size)],
+        ["", (b) => el("div", { class: "actions" },
+          el("a", { class: "btn ghost", href: `/admin/api/backup/files/${encodeURIComponent(b.name)}`, download: b.name }, el("span", { text: "Download" })),
+          btn("Restore", async () => {
+            if (!await confirmModal(`Restore ${b.name}?\nThis replaces the accounts, profiles, settings and the rest of the data with this backup's.\n${restartNote}`, { title: "Restore a backup", confirmText: "Stage the restore", confirmKind: "danger" })) return;
+            redraw(await act(api(`/admin/api/backup/files/${encodeURIComponent(b.name)}/restore`, { confirm: true }), "Restore staged: restart the backend to apply it"));
+          }, "ghost"),
+          btn("Delete", async () => {
+            if (!await confirmModal(`Delete ${b.name}? This cannot be undone.`, { title: "Delete a backup", confirmText: "Delete", confirmKind: "danger" })) return;
+            redraw(await act(api(`/admin/api/backup/files/${encodeURIComponent(b.name)}`, undefined, "DELETE"), "Backup deleted"));
+          }, "ghost"))]
+      ], data.backups, "No backups yet."));
+
+      const next = data.schedule.nextAt ? `The next automatic backup: ${new Date(data.schedule.nextAt).toLocaleString()}.` : "Automatic backups are off.";
+      $("view").replaceChildren(
+        el("div", { class: "view-head" }, el("div", {}, el("h1", { text: "Backup" }),
+          el("div", { class: "muted", text: "Export, import, back up and restore the backend's data folder." }))),
+        pending,
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Export and import" })),
+          el("p", { class: "note", text: `Included: ${data.included.join(", ")}. Not included: ${data.excluded.join("; ")}. The local HTTPS key (${data.optional[0].path}) only when ticked below.` }),
+          tlsLabel,
+          el("div", { class: "actions" },
+            el("a", { class: "btn primary", id: "backup-export", href: "/admin/api/backup/export", download: "" }, el("span", { text: "Export data" })),
+            btn("Import data…", () => upload.click(), "ghost"), make, upload),
+          el("p", { class: "note", text: "An import or a restore replaces the data, and needs a restart of the backend to take effect: the backend keeps its data in memory while it runs. Archives are checked before anything is staged." })),
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Automatic backups" })),
+          el("div", { class: "actions", style: "align-items:center" }, "Every", interval, "hours (0 = off), keeping the newest", keep, saveSchedule),
+          el("p", { class: "note", text: `${next} Only automatic backups are removed, past the count kept. Backups are in the data folder's backups/ and are not part of any archive.` })),
+        el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Backups" })), rows));
+      tls.addEventListener("change", () => { $("backup-export").href = `/admin/api/backup/export${tls.checked ? "?tls=1" : ""}`; });
+    }
+    /* ---------- news ---------- */
     async function showNews() {
       const data = await act(api("/admin/api/news"));
       if (!data || state.view !== "news") return;

@@ -1,5 +1,6 @@
 import http from "node:http";
 import tls from "node:tls";
+import { applyPendingRestore } from "./backup/service.js";
 import { createApp, createContext } from "./app.js";
 import { isLoopback } from "./network.js";
 import { enableProxy } from "./proxy.js";
@@ -10,7 +11,10 @@ import { enableTls } from "./tls/service.js";
 import { enableXmpp } from "./xmpp/service.js";
 
 export async function createServer(config) {
+  // A restore the admin panel staged (backup/service.js) goes in before any store reads the data folder.
+  if (config.dataDir) await applyPendingRestore(config.dataDir);
   const context = createContext(config);
+  context.backups?.start();
   const server = http.createServer(createApp(config, context));
   // Picture hosts (Core-Backend #260; the tournaments' too, #336) are tunnelled to the real site; every other CONNECT is
   // the backend's own.
