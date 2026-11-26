@@ -188,6 +188,11 @@ const season8IslandsBuild = 5625478;
 const tropicalPlotTemplateId = "CreativePlot:tropical_medium";
 const riversEdgePlotTemplateId = "CreativePlot:military_medium";
 const tropicalIslandsBuild = 5793395;
+// Update v9.00's "Added Meadow Island - a 105x105 tiles flat, grass island": FlatGrass_Large ("Meadow Island {islandIndex}",
+// PID_Playset_105x105_Composed_FlatGrass, 105 x 105), new in 9.00's (CL-6337466) paks; 9.01's and 9.10's add no other plot.
+// One, as for Season 8's.
+const meadowPlotTemplateId = "CreativePlot:flatgrass_large";
+const meadowIslandBuild = 6337466;
 // A player's island types: the plot definition, how many of it an account gets (the island limit of that type), the first
 // build that has it, and its display name without the {islandIndex} (the definitions' own names, above).
 export const playerPlotTypes = [
@@ -199,15 +204,16 @@ export const playerPlotTypes = [
   { templateId: volcanoPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Volcano Island" },
   { templateId: blackGlassPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Black Glass Island" },
   { templateId: tropicalPlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Tropical Island" },
-  { templateId: riversEdgePlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Rivers Edge Island" }
+  { templateId: riversEdgePlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Rivers Edge Island" },
+  { templateId: meadowPlotTemplateId, count: 1, firstBuild: meadowIslandBuild, name: "Meadow Island" }
 ];
 // The island type of a plot template id (any case), or null.
 export const playerPlotType = (templateId) => playerPlotTypes.find((type) => type.templateId.toLowerCase() === String(templateId ?? "").toLowerCase()) ?? null;
 const plotSets = (build = currentBuild()) => playerPlotTypes.filter((type) => type.templateId === plotTemplateId || Number(build) >= type.firstBuild);
 
 // The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, from
-// 7.20 a Frosty Fortress, from 8.20 a Sandbar, a Volcano and a Black Glass island, and from 8.30 a Tropical and a Rivers
-// Edge island.
+// 7.20 a Frosty Fortress, from 8.20 a Sandbar, a Volcano and a Black Glass island, from 8.30 a Tropical and a Rivers Edge
+// island, and from 9.00 a Meadow island.
 // Returns how many were given.
 export function settleCreativePlots(session, now = new Date()) {
   if (!hasCreative() || !creativeEntitled(session, now)) return 0;

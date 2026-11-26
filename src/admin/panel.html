@@ -10114,7 +10114,8 @@ Each starts active; quests the account already has are left as they are.`, {
     const islandTemplateName = (templateId) => ({ "creativeplot:temperate_medium": "Island", "creativeplot:arctic_medium": "Arctic Island",
       "creativeplot:theblock_season7": "The Block", "creativeplot:arctic_competitive_medium1": "Frosty Fortress",
       "creativeplot:sandbar_large": "Sandbar Island", "creativeplot:volcano_large": "Volcano Island", "creativeplot:blackglass_medium": "Black Glass Island",
-      "creativeplot:tropical_medium": "Tropical Island", "creativeplot:military_medium": "Rivers Edge Island" })[String(templateId).toLowerCase()] ?? String(templateId).replace(/^CreativePlot:/i, "");
+      "creativeplot:tropical_medium": "Tropical Island", "creativeplot:military_medium": "Rivers Edge Island",
+      "creativeplot:flatgrass_large": "Meadow Island" })[String(templateId).toLowerCase()] ?? String(templateId).replace(/^CreativePlot:/i, "");
     async function showCreative() {
       const view = await act(api("/admin/api/creative"));
       if (!view || state.view !== "creative") return;

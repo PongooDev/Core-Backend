@@ -16,7 +16,9 @@ import { hasLtm, ltmOn } from "../src/events/ltms.js";
 import { unvaultingFlagsNow } from "../src/events/unvaulting.js";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { dataBuild } from "../src/gamedata/read.js";
+import { isForeignTemplate } from "../src/gamedata/templates.js";
 import { athenaQuestLogin, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
+import { plotsOf, settleCreativePlots } from "../src/profiles/creative.js";
 import { buildOfSeason, buyBattlePass, buyTiers } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -331,4 +333,51 @@ test("a 9.00 player's 10th Fortbyte gives Sentinel's back bling and his tier 99 
     const backpack = Object.values(tracker.profile.items).find(({ templateId }) => templateId === "AthenaBackpack:bid_261_rooster");
     assert.ok(backpack.attributes.variants.some(({ channel, owned }) => channel === "Particle" && owned.includes("Particle2")));
   }));
+});
+
+// Core-Backend #441: Update v9.00's Meadow Island (FlatGrass_Large), from 9.00, the only plot 9.00's, 9.01's and 9.10's paks
+// add; 8.51 doesn't get it, and an account made on 8.51 gets it at its first 9.00 login.
+test("Season 9's Creative island: 9.00, 9.01 and 9.10 a Meadow island, 8.51 none; an 8.51 account gets it on 9.00", () => {
+  const [v901, v910] = ["6428087", "6639283"];
+  const seasons = { mode: "auto", seasonStarts: { 8: "2019-02-28", 9: "2019-05-09" } };
+  const now = at("2019-06-20T12:00:00Z");
+  const idsOf = (session) => plotsOf(session.profile("creative").profile).map(([, item]) => item.templateId.replace("CreativePlot:", ""));
+  const plots = (build, name) => withConfig(seasons, () => withSession(build, name, (session) => {
+    settleCreativePlots(session, now);
+    return idsOf(session);
+  }));
+  const season8 = ["temperate_medium", "arctic_medium", "theblock_season7", "arctic_competitive_medium1", "sandbar_large",
+    "volcano_large", "blackglass_medium", "tropical_medium", "military_medium"];
+  const count = (list, id) => list.filter((plot) => plot === id).length;
+  assert.deepEqual([...new Set(plots(v851, "plots851-441"))].sort(), [...season8].sort());
+  for (const [build, name] of [[v900, "plots900-441"], [v901, "plots901-441"], [v910, "plots910-441"]]) {
+    const list = plots(build, name);
+    assert.deepEqual([...new Set(list)].sort(), [...season8, "flatgrass_large"].sort(), build);
+    assert.equal(count(list, "flatgrass_large"), 1, build);
+    assert.equal(list.some((plot) => plot.startsWith("razor")), false, build);
+  }
+  assert.equal(inBuild(v851, () => isForeignTemplate("CreativePlot:flatgrass_large")), true);
+  assert.equal(inBuild(v900, () => isForeignTemplate("CreativePlot:flatgrass_large")), false);
+  assert.equal(inBuild(v910, () => isForeignTemplate("CreativePlot:flatgrass_large")), false);
+
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "core-900-"));
+  try {
+    withConfig(seasons, () => {
+      const store = createProfileStore(dir);
+      inBuild(v851, () => {
+        const session = openSession(store, "meadow441");
+        settleCreativePlots(session, now);
+        session.commit();
+      });
+      const given = inBuild(v900, () => {
+        const session = openSession(store, "meadow441");
+        const added = settleCreativePlots(session, now);
+        assert.equal(count(idsOf(session), "flatgrass_large"), 1);
+        return added;
+      });
+      assert.equal(given, 1, "only the Meadow island is new at the 9.00 login");
+    });
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });
