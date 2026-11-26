@@ -22,9 +22,9 @@ import { bucketPlaylist, serverHosts, serverModeLabel, serverModesOf } from "./s
 // Gameservers (-EnableMMS, MatchmakingServiceDedicatedServer): once their session is created they take a ticket from
 // /fortnite/api/game/v2/matchmakingservice/ticket/session/{sessionId}?bucketIds=<netcl>:0:<region>:*,...&minPlayers=
 // &maxPlayers=, connect the same way and wait for Registered, then AssignMatch {matchId, bucketId, matchOptions,
-// teams: [[[accountId]]] (team, party, players)}. They register the players on the session, answer AssignMatchResult
-// {matchId, result: "ready"|"failed"}, and on the socket's close with 1000 start the match on the playlist the bucket
-// names (AFortGameModeAthena::OnGivenMatchAssignment). Both sides ping with the text "ping".
+// matchOptionsV2 (8.30 on), teams: [[[accountId]]] (team, party, players)}. They register the players on the session,
+// answer AssignMatchResult {matchId, result: "ready"|"failed"}, and on the socket's close with 1000 start the match on
+// the playlist the bucket names (AFortGameModeAthena::OnGivenMatchAssignment). Both sides ping with the text "ping".
 
 const ticketTypes = { player: "mms-player", session: "mms-session" };
 // How long a match on a registered server takes in more parties before it is assigned. Once assigned, the server's
@@ -1189,7 +1189,14 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const build = forming.parties.find((party) => party.ticket.build)?.ticket.build ?? server.build;
     const matchBucket = iceStormMatchBucket(forming.bucketId, build);
     if (matchBucket !== forming.bucketId) say(`Match ${forming.matchId} plays bucket ${matchBucket}, the Ice Storm's, for ${forming.bucketId}: the Ice Storm comes within the half hour`);
-    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(matchBucket, server.build), matchOptions: options, teams }));
+    // matchOptionsV2 (CoreV2 #674): the AssignMatch parser of 8.30 (CL-5793395, the field's name is in its exe) to 9.00
+    // (CL-6337466 0x90DA20, 8.51 0x932FF0, 8.50 0x9533A0) reads matchId, bucketId, teams, matchOptionsV2 and spectators,
+    // no matchOptions, and OnGivenMatchAssignment (9.00 0x137C760) takes customKey, customMatchOptions and the rest from
+    // matchOptionsV2's object. Without it a 9.00 Playground server logged "Field matchOptionsV2 was not found" and played
+    // none of the party's options. 8.00 still read matchOptions (#541's Playground overrides); a build that reads one
+    // passes over the other.
+    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(matchBucket, server.build), matchOptions: options,
+      matchOptionsV2: options, teams }));
   }
 
   function onAssignResult(server, payload) {

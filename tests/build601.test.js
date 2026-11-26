@@ -504,6 +504,8 @@ test("a 6.01 player matchmakes on either changelist: Solo, 50v50 and Playground 
         assert.equal(assign.payload.matchOptions["match.option.customMatchOptions"], playlist === "playlist_playground" ? customOptionsText : undefined,
           `${build} ${playlist}`);
         assert.equal(assign.payload.matchOptions["match.option.warmupRequiredPlayerCount"], "1");
+        // 8.30 and later read the options only from matchOptionsV2 (CoreV2 #674).
+        assert.deepEqual(assign.payload.matchOptionsV2, assign.payload.matchOptions, `${build} ${playlist}`);
         gameserver.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
         const play = await nextOf(client, "Play");
         assert.deepEqual([play.payload.matchId, play.payload.sessionId], [assign.payload.matchId, session.id]);
