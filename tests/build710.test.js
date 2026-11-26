@@ -141,6 +141,15 @@ test("a 7.10 player gets the 14 Days' schedule while it runs, and a challenge fo
     const boxes = Object.values(session.profile("profile0").profile.items).filter((item) => item.templateId.toLowerCase() === "giftbox:gb_14daysoffortnite");
     assert.equal(boxes.length, 1);
     assert.ok(boxes[0].attributes.lootList.some(({ itemType }) => String(itemType).toLowerCase() === "athenaloadingscreen:lsid_072_winterlauncher"));
+    // Day 1's "Start or join a Creative server" (complete_athena_creative_mode, AthenaRank in Athena.Creative): a Creative
+    // match reports no results, so the gameserver's UpdateQuests counts it (CoreV2 #676).
+    advanceAthenaObjectives(session, [{ statName: "fdf_play_athena_creative_mode", count: 1 }]);
+    const creative = Object.values(session.profile("athena").profile.items).find((item) => item.templateId === "Quest:quest_br_fdf_play_creative_mode");
+    assert.ok(["Completed", "Claimed"].includes(creative.attributes.quest_state), creative.attributes.quest_state);
+    // A Battle Royale placement row is still counted from the match's results only.
+    advanceAthenaObjectives(session, [{ statName: "fdf_play_athena_match_friends", count: 1 }]);
+    const friends = Object.values(session.profile("athena").profile.items).find((item) => item.templateId === "Quest:quest_br_fdf_play_match_friends");
+    assert.equal(friends.attributes.completion_fdf_play_athena_match_friends ?? 0, 0);
   }));
   withConfig({ mode: "auto", seasonStarts: { 7: replayDaysAgo(17) } }, () => withSession(v700, "fourteen700", (session) => {
     setUpAthena(session);

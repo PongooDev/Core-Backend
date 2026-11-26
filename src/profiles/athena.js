@@ -1323,13 +1323,17 @@ const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((on
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
 
 const onlyPlayers = (tags) => (tags ?? "").split(",").map((one) => one.trim().toLowerCase()).filter(Boolean).join(",") === "homebase.class";
+// A Creative match (7.00+, Playlist_PlaygroundV2, whose context tag is Athena.Creative) has no place, so it reports no
+// results: its AthenaRank rows (complete_athena_creative_mode, 7.10's "Start or join a Creative server") come from the
+// gameserver's UpdateQuests as the player leaves the server (CoreV2 #676).
+const creativeContext = (row) => (row.contextTags ?? "").trim().toLowerCase() === "athena.creative";
 function countedFromResults(stat) {
   const row = stat && athenaObjectiveStat(stat);
   // A kill row with a condition is a kill somewhere (3.0's challenges: "Source.Tags HasTag Athena.Location.POI.FatalFields
   // || ..."), which the match results can't tell, so the gameserver counts it. The results' kills are players: a row whose
   // target isn't one (6.20's Fortnitemares Cube Monsters, killingblow_athena_deimos_monster, _fiend and _brute: target
   // NPC.CharacterType) is the gameserver's too, which sends its kills with UpdateQuests.
-  return row?.type === "AthenaRank" || (row?.type === "Kill" && onlyPlayers(row.sourceTags) && onlyPlayers(row.targetTags) && !row.condition);
+  return (row?.type === "AthenaRank" && !creativeContext(row)) || (row?.type === "Kill" && onlyPlayers(row.sourceTags) && onlyPlayers(row.targetTags) && !row.condition);
 }
 
 // An AthenaRank row's condition: the match's place (Athena.Rank <=25) or, from 2.2's "Play matches with a friend"
