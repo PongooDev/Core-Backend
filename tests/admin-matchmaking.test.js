@@ -59,7 +59,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       partyAtPleasantPark: true, nflRumble: true, wildWestDuos730: true,
       // 7.40's Love Shot (Duos), Sword Fight (Squads), Catch! and Driftin', on by default; their other playlists by their switches.
       loveShotDuos: true, loveShotSolo: false, loveShotSquads: false, swordFightSquads: true, swordFightSolo: false, swordFightDuos: false,
-      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false, endgame: false, endgame48: false, endgame64: false, unvaulting: true, arenaSolo: true, arenaDuos: true, fiftyFiftySeason9: true, triosSeason9: false, solidGoldSeason9Squads: false, oneShotSeason9Squads: false });
+      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false, endgame: false, endgame48: false, endgame64: false, unvaulting: true, arenaSolo: true, arenaDuos: true, fiftyFiftySeason9: true, triosSeason9: false, solidGoldSeason9Squads: false, oneShotSeason9Squads: false, wicksBountySquads: false, wicksBountyDuos: false, wicksBountySolo: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
@@ -78,9 +78,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // 7.30's three (Party at Pleasant Park, NFL Rumble, Wild West Duos), 7.40's twelve (Love Shot's, Sword Fight's,
     // Catch!'s and Driftin's three each), and 8.00's seven (Season 8's 50v50, Close Encounters, Team Rumble, Fly Explosives,
     // One Shot, Solid Gold and Classic), and 8.20's nine (Slide, the Getaway's two, Floor is Lava's three, Sniper
-    // Shootout's two and Going Green), and 8.40's two (Air Royale's duos and Food Fight: Deep Fried), and 8.50's three (Endgame's), and 8.51's one (the Unvaulting), and 9.00's four (Season 9's 50v50, Trios, Solid Gold and One Shot). 7.00's Creative is a
+    // Shootout's two and Going Green), and 8.40's two (Air Royale's duos and Food Fight: Deep Fried), and 8.50's three (Endgame's), and 8.51's one (the Unvaulting), and 9.00's four (Season 9's 50v50, Trios, Solid Gold and One Shot), and 9.01's three (Wick's Bounty's). 7.00's Creative is a
     // game mode always on, with no switch (#375).
-    assert.equal(ov.playlists.length, 193);
+    assert.equal(ov.playlists.length, 196);
     assert.equal(ov.playlists.some((p) => p.id === "creative"), false);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
@@ -111,7 +111,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "fiftyFiftySeason8", "closeEncountersSeason8Squads", "teamRumbleSeason8", "flyExplosivesSeason8Squads", "oneShotSeason8Squads",
       "solidGoldSeason8Squads", "classicSeason8Squads", "slideSeason8Duos", "getawaySeason8Squads", "getawaySeason8Duos",
       "floorIsLavaSquads", "floorIsLavaDuos", "floorIsLavaSolo", "sniperShootoutSeason8Duos", "sniperShootoutSeason8Squads", "goingGreenSquads",
-      "airRoyaleDuos", "foodFightDeepFried", "endgame", "endgame48", "endgame64", "unvaulting", "fiftyFiftySeason9", "triosSeason9", "solidGoldSeason9Squads", "oneShotSeason9Squads", "arenaSolo", "arenaDuos"]);
+      "airRoyaleDuos", "foodFightDeepFried", "endgame", "endgame48", "endgame64", "unvaulting", "fiftyFiftySeason9", "triosSeason9", "solidGoldSeason9Squads", "oneShotSeason9Squads", "wicksBountySquads", "wicksBountyDuos", "wicksBountySolo", "arenaSolo", "arenaDuos"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -268,7 +268,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       partyAtPleasantPark: true, nflRumble: true, wildWestDuos730: true,
       // 7.40's Love Shot (Duos), Sword Fight (Squads), Catch! and Driftin', on by default; their other playlists by their switches.
       loveShotDuos: true, loveShotSolo: false, loveShotSquads: false, swordFightSquads: true, swordFightSolo: false, swordFightDuos: false,
-      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false, endgame: false, endgame48: false, endgame64: false, unvaulting: true, arenaSolo: true, arenaDuos: true, fiftyFiftySeason9: true, triosSeason9: false, solidGoldSeason9Squads: false, oneShotSeason9Squads: false });
+      catchSolo: true, catchDuos: true, catchSquads: true, driftin: true, driftin40: false, driftin20s: false, fiftyFiftySeason8: true, closeEncountersSeason8Squads: false, teamRumbleSeason8: false, flyExplosivesSeason8Squads: false, oneShotSeason8Squads: false, solidGoldSeason8Squads: false, classicSeason8Squads: false, slideSeason8Duos: false, getawaySeason8Squads: false, getawaySeason8Duos: false, floorIsLavaSquads: false, floorIsLavaDuos: false, floorIsLavaSolo: false, sniperShootoutSeason8Duos: false, sniperShootoutSeason8Squads: false, goingGreenSquads: false, airRoyaleDuos: false, foodFightDeepFried: false, endgame: false, endgame48: false, endgame64: false, unvaulting: true, arenaSolo: true, arenaDuos: true, fiftyFiftySeason9: true, triosSeason9: false, solidGoldSeason9Squads: false, oneShotSeason9Squads: false, wicksBountySquads: false, wicksBountyDuos: false, wicksBountySolo: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

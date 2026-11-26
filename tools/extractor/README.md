@@ -604,6 +604,16 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `world.json`, `objectivestats.json`, `characters.json`, `cardpacks.json`, `collectionbook.json`,
   `alterations.json`, `banners.json`, `dailyrewards.json`, `expeditions.json`, `fabricator.json`, `transmog.json`
   and `upgrades.json`; the other five are 8.51's.
+  9.01's (CL-6428087, Update v9.01) is `4.23.0-6428087+++Fortnite+Release-9.01` (no `Build.version`; its Dumper-7 SDK is
+  4.23.0-6428087; the build folder is `windows-9.01`) with 9.00's full data (Cert's files with `gamedata/6337466` applied)
+  as the fifth argument and the main key FModel's settings hold for its build folder. 9.00's layout with only the keyed
+  pakchunk1000 and 1001, of which the keychain opens 1001. Its mission alerts are still the fifth argument's. No extractor
+  change. Against 9.00 four files change: `athena.json` (7 cosmetics: John Wick, his Simple Sledge, Assassin Pack, the
+  One Shot umbrella, the Gold Token back bling and the Be Seeing You and Bulletproof emotes; the Wick's Bounty quests'
+  9.01 counts, 120, 20 and 5, and their damage rows' Homebase.Class target; Season8_Paid_Schedule kept past Season 8, as
+  9.01's AthenaSeason8 no longer takes it at the season's end), `items.json` and `characters.json` (John
+  Wick's hero and Simple Sledge), and `objectivestats.json` (nine craft rows whose conditions name 9.00's rarities, Rare
+  and Epic, where 9.00's named Sturdy and Quality); the other files are 9.00's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

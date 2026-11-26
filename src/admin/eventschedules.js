@@ -169,8 +169,8 @@ export const eventCards = [
   { id: "block830", kind: "dated", dated: "block830", seasons: [8], name: "The Block's community builds (8.30, 8.40)", builds: "8.30 – 8.40", ranges: [[5793395, 6005771]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Llama Sphinx goes up", endLabel: "Cordial Courtyard goes up",
     about: "8.30's two community-built islands on the Block, each a level in its paks: Llama Sphinx (Prudiz; Update v8.30, 10 April 2019; 8.30 came out mid-season, so it is up from the replay's first day) and Cordial Courtyard (GonzoTheWizard, 17 April, Update v8.40's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
-  // 9.00's Block (events/block.js): Modern Mansion, then Custom Car Carpet on 9.01's day (both in 9.00's paks).
-  { id: "block900", kind: "dated", dated: "block900", seasons: [9], name: "The Block's community builds (9.00)", builds: "9.00", ranges: [[6337466, 6337466]], always: true,
+  // 9.00's Block (events/block.js): Modern Mansion, then Custom Car Carpet on 9.01's day (both in 9.00's paks); 9.01's is 9.00's.
+  { id: "block900", kind: "dated", dated: "block900", seasons: [9], name: "The Block's community builds (9.00, 9.01)", builds: "9.00 – 9.01", ranges: [[6337466, 6428087]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Modern Mansion goes up", endLabel: "Custom Car Carpet goes up",
     about: "9.00's two community-built islands on the Block, each a level in its paks: Maka's Modern Mansion (MakaMakes_YT; Update v9.00, 9 May 2019, Season 9's first day) and Custom Car Carpet (Rallred84, 15 May, Update v9.01's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
   // 8.50's Block (events/block.js): Tricky Tracks, then Alien Sanctuary on 8.51's day (both in 8.50's paks); 8.51's is 8.50's.
@@ -216,16 +216,21 @@ export const eventCards = [
     about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 to 8.51 carry no other Battle Royale lobby flag.",
     flags: ["EventFlag.LobbySeason8"] },
   // 9.00's (events/events.js): Season 9's lobby, which is also the Fortbytes' event (events/fortbytes.js).
-  { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00", ranges: [[6337466, 6337466]],
+  { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00 – 9.01", ranges: [[6337466, 6428087]],
     about: "Battle Royale's Season 9 lobby: EventFlag.LobbySeason9 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season9). It is also the event of the Battle Pass's Fortbytes (Season9_Fortbyte_Schedule): each Fortbyte unlocks its set number of days after the flag's start, Season 9's first day on its replay.",
     flags: ["EventFlag.LobbySeason9"] },
+  // 9.01's Wick's Bounty Challenges (events/wicksbounty.js).
+  { id: "wicksBounty", kind: "dated", dated: "wicksBounty", seasons: [9], name: "Wick's Bounty Challenges", builds: "9.01", ranges: [[6428087, 6428087]],
+    key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
+    about: "Update v9.01's Wick's Bounty Challenges (Schedule_LTM_Wax), all six from the start: win a match of Wick's Bounty for the One Shot umbrella, play 5 matches for the Boogeyman wrap, collect 120 gold tokens, 20 in a single match, and deal 500 damage with shotguns and with assault rifles (500 XP each); any 5 for the Gold Token back bling. From 16 May 2019, the mode's first day, by the Fortnite Wiki; the mode itself is events/ltms.js's Wick's Bounty. 🟡 The wiki's end (19 May) is before Epic's 20 May post still promoting them: to the end of 21 May, 00:00 UTC.",
+    flags: ["EventFlag.LTM_Wax", "CalendarEvent_Season9_Wax"] },
   // 9.00's Save the World Wargames (events/wargames.js, PongooDev/CoreV2#655).
-  { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
-    about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
+  { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00 – 9.01", ranges: [[6337466, 6428087]],
+    about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone, and on 9.01 Mist Pods) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
     flags: ["EventFlag.Outpost"] },
   // 9.00's Save the World Tales of Beyond (events/talesofbeyond.js, Core-Backend #435).
-  { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00", ranges: [[6337466, 6337466]],
-    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Summer Tickets buy the Military Llama (500) in the Loot tab while this or Wargames is on. Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00.",
+  { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00 – 9.01", ranges: [[6337466, 6428087]],
+    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Summer Tickets buy the Military Llama (500) in the Loot tab while this or Wargames is on; on 9.01 the Event Store sells Prehistoric Izza (2,800 Gold) while this is on. Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00 and 9.01.",
     flags: ["EventFlag.Season9", "EventFlag.Season9.Phase1"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);

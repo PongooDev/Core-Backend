@@ -309,6 +309,14 @@ const playlistTeamsFrom850 = {
   258: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 }
 };
 const playlistTeams850Build = 6058028;
+// 9.01 (CL-6428087): Wick's Bounty's Playlist_Wax_Solo, _Duos and _Squads (1002 to 1004), by their assets: MaxTeamCount 72
+// (MaxPlayers 72) in teams of 1, 2 and 4.
+const playlistTeamsFrom901 = {
+  1002: { maxTeamCount: 72, maxTeamSize: 1, maxSquadSize: 1 },
+  1003: { maxTeamCount: 72, maxTeamSize: 2, maxSquadSize: 2 },
+  1004: { maxTeamCount: 72, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams901Build = 6428087;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -514,6 +522,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams901Build && playlistTeamsFrom901[playlistId]) return playlistTeamsFrom901[playlistId];
   if (Number(build) >= playlistTeams850Build && playlistTeamsFrom850[playlistId]) return playlistTeamsFrom850[playlistId];
   if (Number(build) >= playlistTeams820Build && playlistTeamsFrom820[playlistId]) return playlistTeamsFrom820[playlistId];
   if (Number(build) >= playlistTeams740Build && playlistTeamsFrom740[playlistId]) return playlistTeamsFrom740[playlistId];

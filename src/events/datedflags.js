@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
+  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
   unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
@@ -23,6 +23,8 @@ export const airRoyaleCalendarEvent = "CalendarEvent_Season8_AirRoyale";
 export const endgameCalendarEvent = "CalendarEvent_Season8_Ashton";
 // 8.51's Season8_ExtraCredit_Schedule (the Season 8 Overtime Challenges) the same way, its bundle's flag beside it.
 export const extraCreditCalendarEvent = "CalendarEvent_Season8_ExtraCredit";
+// 9.01's Schedule_LTM_Wax (the Wick's Bounty Challenges) the same way.
+export const wicksBountyCalendarEvent = "CalendarEvent_Season9_Wax";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -238,6 +240,11 @@ const endgameEnd = Date.parse("2019-05-06T00:00:00.000Z");
 // fifth days itself (DaysFromEventStart 2 and 4).
 const extraCreditAt = Date.parse("2019-05-03T00:00:00.000Z");
 const extraCreditEnd = Date.parse("2019-05-09T00:00:00.000Z");
+// 9.01's Wick's Bounty Challenges (events/wicksbounty.js): the Fortnite Wiki's from May 16th 2019, the mode's first day. Its
+// "to May 19th 2019" is contradicted by Epic's 20 May post ("complete challenges to earn ... before it ends"), so 🟡 to the
+// end of 21 May, the day before Update v9.10; 00:00 UTC. Every challenge comes with the bundle.
+const wicksBountyAt = Date.parse("2019-05-16T00:00:00.000Z");
+const wicksBountyEnd = Date.parse("2019-05-22T00:00:00.000Z");
 // 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it and the sources). The Fortnite Wiki's Unvaulting: 4 May 2019,
 // 2:00 to 2:05 PM ET (18:00 UTC); its Vault: "April 30th 2019: An orange hologram appeared above one of The Vault rune
 // slots. May 1st 2019: The fifth rune has appeared above the Volcano ... May 3rd 2019: The fifth and final rune has entered
@@ -472,6 +479,11 @@ export const datedEvents = [
   { id: "extraCredit", name: "the Season 8 Overtime Challenges (8.51)", season: 8, flag: lteS8ExtraCredit, anchor: "challenges", parts: 1,
     challenges: "Season8_ExtraCredit_Schedule", steps: [
       step("challenges", "The Season 8 Overtime Challenges", [lteS8ExtraCredit, extraCreditCalendarEvent], extraCreditAt, extraCreditEnd)
+    ] },
+  // 9.01's Wick's Bounty Challenges (events/wicksbounty.js): one step, the flag and the schedule's calendar event.
+  { id: "wicksBounty", name: "the Wick's Bounty Challenges (9.01)", season: 9, flag: ltmWax, anchor: "challenges", parts: 1,
+    challenges: "Schedule_LTM_Wax", steps: [
+      step("challenges", "The Wick's Bounty Challenges", [ltmWax, wicksBountyCalendarEvent], wicksBountyAt, wicksBountyEnd)
     ] },
   // 8.51's Unvaulting (events/unvaulting.js): the fifth rune, the countdown, the event and the island after it. "Start now"
   // (or any time on the event's step) plays it then, the steps before it at Epic's spacing.

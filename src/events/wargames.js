@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { currentBuild } from "../builds/context.js";
 import { getQuest, questIds } from "../gamedata/quests.js";
 import { grant } from "../profiles/progress.js";
 import { findQuestItem, isDone, questIdOf } from "../profiles/quests.js";
@@ -31,8 +32,15 @@ export { wargames, wargamesFlag };
 // (Stat.Mission.IronCity.MidlandHusknado), "Hot Spots" (Eruption), "Denied" (Anomaly) and "Safety Zone" (Generators),
 // the notes' "The first four". Pods (Stat.Mission.IronCity.Pods) has quests and a banner in 9.00's paks but isn't in the
 // list, so its computer entry stays off and its quests aren't given. All nine challenges are in the list.
+// 9.01 (CL-6428087): Update v9.01's "New Wargames simulation: Mist Pods" ("more chances for Event Tickets, a new player
+// banner, and more variety to the Daily Quests"). 9.01's shipped DefaultGame.ini still lists 9.00's four, and its Pods
+// quests, banner and daily quests are 9.00's, so 🟡 Epic's hotfix turned it on (not kept): the hotfix adds
+// Stat.Mission.IronCity.Pods to the list on 9.01, and its quests and dailies are given with the other simulations'.
 const simulations = ["anomaly", "generators", "lava", "tornado"];
 const offSimulation = /(^|_)pods(_|$)/;
+export const mistPodsBuild = 6428087;
+const mistPodsOn = (changelist = currentBuild()) => Number(changelist) >= mistPodsBuild;
+const simulationsOn = () => (mistPodsOn() ? [...simulations, "pods"] : simulations);
 const zones = ["stonewood", "plankerton", "canny", "twine"];
 
 // Quests/Outpost/Wargames: Wargame_Quest_FirstOpen (the computer's first opening, its Claim conversation), the hidden
@@ -41,19 +49,19 @@ const zones = ["stonewood", "plankerton", "canny", "twine"];
 // Boot Camp quests' hidden rewards.
 const isWargamesQuest = (questId) => questId === "wargame_quest_firstopen" || /^wargames_(visibilityquest|quest)_/.test(questId);
 export function wargamesQuests() {
-  return questIds().filter((questId) => isWargamesQuest(questId) && !questId.endsWith("_repeatable") && !offSimulation.test(questId)
+  return questIds().filter((questId) => isWargamesQuest(questId) && !questId.endsWith("_repeatable") && (mistPodsOn() || !offSimulation.test(questId))
     && !getQuest(questId).deprecated);
 }
 
 // Daily/<Zone>/Wargames_DailyQuest_<Sim>_With_<Challenge>_<Zone>: 15 a zone, each with its MissionConfigMetadata
 // (Stat.Mission.IronCity, Stat.Mission.IronCity.Challenge, Activities.ConfigData.<Zone>), which the computer reads to
-// show the zone's daily (IronCityContent, BP_PlayerController_Outpost WargamesDailyQuests). Pods' are left out.
+// show the zone's daily (IronCityContent, BP_PlayerController_Outpost WargamesDailyQuests). Pods' are left out before 9.01.
 const dailyPattern = /^wargames_dailyquest_([a-z]+)_with_[a-z]+_([a-z]+)$/;
 const isWargamesDaily = (questId) => dailyPattern.test(questId);
 export function wargamesDailyQuests(zone) {
   return questIds().filter((questId) => {
     const match = dailyPattern.exec(questId);
-    return match && simulations.includes(match[1]) && (zone === undefined || match[2] === zone);
+    return match && simulationsOn().includes(match[1]) && (zone === undefined || match[2] === zone);
   });
 }
 
@@ -114,5 +122,6 @@ export function wargameBadgeRewards(earnedBadgeData) {
   return [{ templateId: wargameRewardPack(zone), quantity: challenge ? 2 : 1 }];
 }
 
-// The hotfix's UFortGlobals line while the event runs on a build that has it.
-export const wargamesGlobals = (changelist) => (isEventActive(wargames, changelist) ? ["bEnableIronCity=true"] : []);
+// The hotfix's UFortGlobals lines while the event runs on a build that has it: the switch, and from 9.01 Mist Pods.
+export const wargamesGlobals = (changelist) => (isEventActive(wargames, changelist)
+  ? ["bEnableIronCity=true", ...(mistPodsOn(changelist) ? ["+IronCityWargameTagList=Stat.Mission.IronCity.Pods"] : [])] : []);

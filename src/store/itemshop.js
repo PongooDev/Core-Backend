@@ -189,7 +189,9 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 9.00 (CL-6337466) is Season 9, with its own shop the same way: Epic's of Season 9, day by day from its first day, 9 May
 // 2019, to its last, 31 July 2019 (itemshop-season9.json, the same wiki pages; a day split in two pages from its Part 1),
 // replayed in an 84-day cycle from the day 9.00 is first served. Its items are those 9.00's data has (754 of the 1,184
-// the pages list); the later updates' (John Wick, the Hang Time and World Cup sets...) wait for their builds' data.
+// the pages list); the later updates' (John Wick, the Hang Time and World Cup sets...) wait for their builds' data. 9.01
+// (CL-6428087) adds the 4 of its cosmetics the shop sold, 26 times from 17 May on: John Wick, his Simple Sledge pickaxe and
+// the Be Seeing You and Bulletproof emotes (780 of 1,184). Only 9.01's data has them, so 9.00's days are as they were.
 // Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
 // data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

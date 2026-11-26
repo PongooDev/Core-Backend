@@ -68,6 +68,8 @@ import { currentEventsConfig } from "./events.js";
 // (events/endgame.js); High Stakes, Buccaneer's Bounty and Air Royale run to 8.50 (its paks keep their schedules).
 // 8.51's (CL-6165369) are 8.50's: every one runs to 8.51, and LTE_S8_ExtraCredit, the Season 8 Overtime Challenges, is
 // served by their dates (events/extracredit.js; its schedule runs with its bundle's flag).
+// 9.00's (CL-6337466) Season 8 ones end with 8.51. 9.01's (CL-6428087) new one is LTM_Wax, the Wick's Bounty Challenges,
+// served by their dates (events/wicksbounty.js); 9.00's paks have its schedule but not the mode, so it is 9.01's alone.
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -104,6 +106,7 @@ const b830 = 5793395;
 const b840 = 6005771;
 const b850 = 6058028;
 const b851 = 6165369;
+const b901 = 6428087;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -309,6 +312,11 @@ export const season4FlagGroups = [
   // events/extracredit.js): served by their dates on Season 8's replay, or always or never by their switch.
   { id: "extraCredit", name: "Battle Royale: the Season 8 Overtime Challenges (8.51)", flags: [
     flag("LTE_S8_ExtraCredit", [b851, b851], "The Season 8 Overtime Challenges (Season8_ExtraCredit_Schedule: collect coins in featured Creative islands and a top 10 in squads with a friend, then two more on each of the third and fifth days; the Battle Pass's two-stage styles for Sidewinder, Ember and Master Key; the Season 8 loading screen for 6; from 3 to 8 May 2019)")
+  ] },
+  // 9.01's Wick's Bounty Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Wax, events/wicksbounty.js):
+  // served by their dates on Season 9's replay, or always or never by their switch.
+  { id: "wicksBounty", name: "Battle Royale: the Wick's Bounty Challenges (9.01)", flags: [
+    flag("LTM_Wax", [b901, b901], "The Wick's Bounty Challenges (Schedule_LTM_Wax: win Wick's Bounty for the One Shot umbrella, play 5 matches for the Boogeyman wrap, gold tokens, 20 in one match, shotgun and assault rifle damage; any 5 for the Gold Token back bling; from 16 May 2019)")
   ] },
   { id: "rocket", name: "Battle Royale map: Blast Off (the rocket launch)", managedBy: "rocketLaunch", flags: [
     { flag: geodeCountdown, builds: [b450, b45], description: "The hologram counts down to the launch" },

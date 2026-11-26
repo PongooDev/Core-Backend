@@ -702,9 +702,13 @@ const build840 = 6005771;
 const build850 = 6058028;
 const build851 = 6165369;
 const build900 = 6337466;
-const season9Window = [{ builds: [build900, build900], start: "2019-05-09", end: "2019-08-01" }];
+const build901 = 6428087;
+const season9Window = [{ builds: [build900, build901], start: "2019-05-09", end: "2019-08-01" }];
 // 9.00's rotation (Update v9.00's "Limited Time Mode Rotation"): 🟡 no source gives its days; from 9.00's day to 9.01's.
-const rotation900Window = [{ builds: [build900, build900], start: "2019-05-09", end: "2019-05-15" }];
+const rotation900Window = [{ builds: [build900, build901], start: "2019-05-09", end: "2019-05-15" }];
+// 9.01's Wick's Bounty (below): the Fortnite Wiki's first days, Squads 16 May, Duos 19 May, Solo 20 May 2019; 🟡 no source
+// gives the ends: to the end of 21 May, the day before Update v9.10, as its challenges (events/datedflags.js wicksBounty).
+const wicksBountyWindow = (start) => [{ builds: [build901, build901], start, end: "2019-05-22" }];
 const season8Window = [{ builds: [build800, build851], start: "2019-02-28", end: "2019-05-09" }];
 const season7Window = [{ builds: [build700, build740], start: "2018-12-06", end: "2019-02-28" }];
 const loveShotWindow = [{ builds: [build740, build740], start: "2019-02-14", end: "2019-02-16" }];
@@ -986,7 +990,7 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build900], seasons: [5, 6, 7, 8, 9], defaultOn: true,
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build901], seasons: [5, 6, 7, 8, 9], defaultOn: true,
     original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window, ...season8Window, ...season9Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -1498,18 +1502,33 @@ export const ltms = [
   // (Playlist_Trios, 201), Solid Gold and One Shot (🟡 the notes name no team size: Squads, as Season 8's runs; Playlist_
   // SolidGold_Squads, 27, and Playlist_Low_Squads, 252), each by its Original dates from 9.00's day to 9.01's (🟡) and off by
   // default, as 9.00's lobby ships none of them. Season 8's entries end with 8.51: 9.00 is a new season (seasonOf).
-  { id: "fiftyFiftySeason9", name: "50v50 (Season 9)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build900, build900], seasons: [9], defaultOn: true,
+  { id: "fiftyFiftySeason9", name: "50v50 (Season 9)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build900, build901], seasons: [9], defaultOn: true,
     original: season9Window,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height: 9.00's lobby ships it on (Playlist_50v50, 9.00's)." },
-  { id: "triosSeason9", name: "Trios (Season 9)", playlistId: 201, playlistName: "Playlist_Trios", eventFlag: null, builds: [build900, build900], seasons: [9],
+  { id: "triosSeason9", name: "Trios (Season 9)", playlistId: 201, playlistName: "Playlist_Trios", eventFlag: null, builds: [build900, build901], seasons: [9],
     original: rotation900Window,
     teams: "33 Teams × 3", description: "Classic Battle Royale in squads of three: Update v9.00's limited time mode rotation (Playlist_Trios, 9.00's)." },
-  { id: "solidGoldSeason9Squads", name: "Solid Gold (Season 9, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build900, build900], seasons: [9],
+  { id: "solidGoldSeason9Squads", name: "Solid Gold (Season 9, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build900, build901], seasons: [9],
     original: rotation900Window,
     teams: "100 Teams × 4", description: "Every weapon Legendary: Update v9.00's limited time mode rotation (Playlist_SolidGold_Squads, 9.00's)." },
-  { id: "oneShotSeason9Squads", name: "One Shot (Season 9, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build900, build900], seasons: [9],
+  { id: "oneShotSeason9Squads", name: "One Shot (Season 9, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build900, build901], seasons: [9],
     original: rotation900Window,
     teams: "100 Teams × 4", description: "Low gravity, 50 health, snipers only and Bandages the only healing: Update v9.00's limited time mode rotation (Playlist_Low_Squads, 9.00's)." },
+  // 9.01 (CL-6428087, Update v9.01, 15 May 2019): its 146 playlist assets are 9.00's, the same PlaylistNames, ids and sizes,
+  // and three more, Wick's Bounty's Athena/Playlists/Wax/Playlist_Wax_Solo, _Duos and _Squads (1002 to 1004, "Wick's
+  // Bounty", 72 players in teams of 1, 2 and 4, Athena.Playlist.Wax, MutatorControlledGoalScore: the first team to the
+  // token count wins, three lives). Its DefaultGame.ini's lobby is 9.00's, so every Season 9 entry here runs to 9.01 and
+  // Wick's Bounty is off by default, served by its Original dates. Athena.Playlist.Wax is its challenges' context tag
+  // (complete_athena_wax, win_athena_wax: events/wicksbounty.js). No Epic tile is recorded, so it keeps the default picture.
+  { id: "wicksBountySquads", name: "Wick's Bounty (Squads)", playlistId: 1004, playlistName: "Playlist_Wax_Squads", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build901], seasons: [9],
+    advertise: "New", original: wicksBountyWindow("2019-05-16"),
+    teams: "18 Teams × 4", description: "The High Table's contract: three lives, gold tokens for eliminations, the first team to the token count wins and the leaders show on the map (Playlist_Wax_Squads, 9.01's)." },
+  { id: "wicksBountyDuos", name: "Wick's Bounty (Duos)", playlistId: 1003, playlistName: "Playlist_Wax_Duos", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build901], seasons: [9],
+    advertise: "New", original: wicksBountyWindow("2019-05-19"),
+    teams: "36 Teams × 2", description: "Wick's Bounty in duos (Playlist_Wax_Duos, 9.01's)." },
+  { id: "wicksBountySolo", name: "Wick's Bounty (Solo)", playlistId: 1002, playlistName: "Playlist_Wax_Solo", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build901], seasons: [9],
+    advertise: "New", original: wicksBountyWindow("2019-05-20"),
+    teams: "72 Teams × 1", description: "Wick's Bounty alone (Playlist_Wax_Solo, 9.01's)." },
   // Season 8's Arena (Core-Backend #420, tournaments/arena.js): Update v8.20's "Arena Game Mode (Solo & Duos)", on the Pop-Up
   // Cups' Playlist_ShowdownAlt_Solo and _Duos (58074, 58075), which 8.20's to 8.51's paks name "Arena" ("Prove your skill in
   // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
@@ -1546,7 +1565,7 @@ export const ltms = [
   // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
   // v7.00's early access). 9.00's lobby keeps it (Playlist_PlaygroundV2, 9.00's DefaultGame.ini).
-  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build900], seasons: [7, 8, 9], defaultOn: true,
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build901], seasons: [7, 8, 9], defaultOn: true,
     alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];

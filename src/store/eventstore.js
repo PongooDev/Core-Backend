@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
 import { blockbuster2018, cramSession2018, fortnitemares2018, frostnite2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, spring2019,
-  spring2019Phase2, storm2018, winter2017 } from "../events/events.js";
+  spring2019Phase2, storm2018, talesOfBeyond, winter2017 } from "../events/events.js";
 import { cramSession2018End, cramSessionEventItems } from "../events/cramsession2018.js";
 import { frostnite2018StoreEnd, frostniteEventItems } from "../events/frostnite2018.js";
 import { getItem } from "../gamedata/items.js";
@@ -381,6 +381,7 @@ function storeEventNow() {
   if (isEventActive(fortnitemares2018)) return fortnitemares2018;
   if (isEventActive(frostnite2018)) return frostnite2018;
   if (isEventActive(spring2019Phase2)) return spring2019;
+  if (Number(currentBuild()) >= season9StoreBuild && isEventActive(talesOfBeyond)) return talesOfBeyond;
   return null;
 }
 const storms2018 = () => storeEventNow() === mutantStorms2018;
@@ -535,22 +536,33 @@ export const yarrrEventItems = [{ templateId: "Hero:hid_ninja_026_reddragonninja
 const yarrrItems = () => yarrrEventItems.filter(({ fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))).map(({ fromBuild, ...item }) => item);
 export const spring2019StoreEnd = "2019-05-09T00:00:00.000Z";
 const yarrrNow = () => storeEventNow() === spring2019;
+// 9.01's (CL-6428087) Season 9 store, while Tales of Beyond runs (events/talesofbeyond.js): Update v9.01's "We've added a
+// new Hero to the Event store! Prehistoric Izza, A new Dinosaur Constructor! ... Available in the Event Store on May 15 at
+// 8 PM Eastern Time" (Hero:HID_Constructor_027_DinoConstructor_SR_T01, "Prehistoric Izza", already in 9.00's data), 2,800
+// Gold by the Fortnite Wiki; 🟡 one, and on 9.01 from its first day, as Yarrr!'s heroes. 9.00's notes put nothing in the
+// Event Store, so 9.00's store stays the persistent weekly one alone. Its trackers are Season9.* (Core's name); its items
+// count down to Season 9's end, 1 August 2019, on Season 9's replay.
+const season9StoreBuild = 6428087;
+export const season9EventItems = [{ templateId: "Hero:hid_constructor_027_dinoconstructor_sr_t01", price: 2800, limit: 1 }];
+const season9Items = (now) => season9EventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
+export const season9StoreEnd = "2019-08-01T00:00:00.000Z";
+const season9Now = () => storeEventNow() === talesOfBeyond;
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
 const noEventNow = () => storeEventNow() === null;
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = (now = new Date()) => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems(now)
   : roadTripNow() ? roadTripEventItems(now) : cramSessionNow() ? cramSessionItems(now) : fortnitemaresNow() ? fortnitemaresItems(now)
-    : frostniteNow() ? frostniteItems(now) : yarrrNow() ? yarrrItems() : persistentOnlyNow() ? [] : eventItems);
+    : frostniteNow() ? frostniteItems(now) : yarrrNow() ? yarrrItems() : season9Now() ? season9Items(now) : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
     : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : cramSessionNow() ? "CramSession2018.STWSpecialEventStoreFront"
       : fortnitemaresNow() ? "Fortnitemares2018.STWSpecialEventStoreFront" : frostniteNow() ? "Winter2018.STWSpecialEventStoreFront"
-        : yarrrNow() ? "Spring2019.STWSpecialEventStoreFront" : eventStoreInstance);
+        : yarrrNow() ? "Spring2019.STWSpecialEventStoreFront" : season9Now() ? "Season9.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront"
     : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : cramSessionNow() ? "CramSession2018.STWRotationalEventStorefront"
       : fortnitemaresNow() ? "Fortnitemares2018.STWRotationalEventStorefront" : frostniteNow() ? "Winter2018.STWRotationalEventStorefront"
-        : yarrrNow() ? "Spring2019.STWRotationalEventStorefront" : weeklyStoreInstance);
+        : yarrrNow() ? "Spring2019.STWRotationalEventStorefront" : season9Now() ? "Season9.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
 // On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster, 5.0's Road Trip or 6.00's Cram Session) and its data has
@@ -571,7 +583,7 @@ export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
   const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End
     : roadTripNow() ? roadTrip2018End : cramSessionNow() ? cramSession2018End : fortnitemaresNow() ? fortnitemares2018StoreEnd
-      : frostniteNow() ? frostnite2018StoreEnd : yarrrNow() ? spring2019StoreEnd : persistentOnlyNow() ? null : winter2017End;
+      : frostniteNow() ? frostnite2018StoreEnd : yarrrNow() ? spring2019StoreEnd : season9Now() ? season9StoreEnd : persistentOnlyNow() ? null : winter2017End;
   if (!end) return { stwEventStoreEnd: weeklyStoreEnd(now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
