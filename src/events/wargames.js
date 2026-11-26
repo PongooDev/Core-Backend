@@ -36,11 +36,27 @@ export { wargames, wargamesFlag };
 // banner, and more variety to the Daily Quests"). 9.01's shipped DefaultGame.ini still lists 9.00's four, and its Pods
 // quests, banner and daily quests are 9.00's, so 🟡 Epic's hotfix turned it on (not kept): the hotfix adds
 // Stat.Mission.IronCity.Pods to the list on 9.01, and its quests and dailies are given with the other simulations'.
+// 9.10: Update v9.10's "New Wargames simulation: Space Rocks" (meteors on the base; WargamesMissionConfigData_Wargame_Meteor's
+// tag is Stat.Mission.IronCity.MStorm) and Content Update v9.10's "Hexed" (cursed heroes cleanse it at statues;
+// _Wargame_Tiki's Stat.Mission.IronCity.Tiki), each with a banner (CardPack_Wargames_Banner_Meteor, _Tiki), simulation and
+// challenge quests and 12 dailies, all new in CL-6639283's data. Its shipped list has Pods and MStorm (as
+// Stat.Mission.Ironcity.*) but not Tiki, so the hotfix adds Tiki there. CL-6573057 (Update v9.10, no paks here) plays on
+// that data but came out before Hexed: Tiki's quests and dailies aren't given on it, and 🟡 its shipped list isn't known,
+// so its hotfix adds MStorm (and Pods) too. A "+" line adds only a tag the list doesn't already have.
 const simulations = ["anomaly", "generators", "lava", "tornado"];
-const offSimulation = /(^|_)pods(_|$)/;
+// Each later simulation by its quests' name, its tag and the first build that runs it.
+const laterSimulations = [
+  { name: "pods", tag: "Stat.Mission.IronCity.Pods", build: 6428087 },
+  { name: "meteor", tag: "Stat.Mission.IronCity.MStorm", build: 6573057 },
+  { name: "tiki", tag: "Stat.Mission.IronCity.Tiki", build: 6639283 }
+];
 export const mistPodsBuild = 6428087;
-const mistPodsOn = (changelist = currentBuild()) => Number(changelist) >= mistPodsBuild;
-const simulationsOn = () => (mistPodsOn() ? [...simulations, "pods"] : simulations);
+export const spaceRocksBuild = 6573057;
+export const hexedBuild = 6639283;
+const laterOn = (changelist = currentBuild()) => laterSimulations.filter(({ build }) => Number(changelist) >= build);
+const laterOff = (changelist = currentBuild()) => laterSimulations.filter(({ build }) => Number(changelist) < build);
+const simulationsOn = () => [...simulations, ...laterOn().map(({ name }) => name)];
+const ofSimulation = (questId, name) => new RegExp(`(^|_)${name}(_|$)`).test(questId);
 const zones = ["stonewood", "plankerton", "canny", "twine"];
 
 // Quests/Outpost/Wargames: Wargame_Quest_FirstOpen (the computer's first opening, its Claim conversation), the hidden
@@ -49,13 +65,15 @@ const zones = ["stonewood", "plankerton", "canny", "twine"];
 // Boot Camp quests' hidden rewards.
 const isWargamesQuest = (questId) => questId === "wargame_quest_firstopen" || /^wargames_(visibilityquest|quest)_/.test(questId);
 export function wargamesQuests() {
-  return questIds().filter((questId) => isWargamesQuest(questId) && !questId.endsWith("_repeatable") && (mistPodsOn() || !offSimulation.test(questId))
-    && !getQuest(questId).deprecated);
+  const off = laterOff();
+  return questIds().filter((questId) => isWargamesQuest(questId) && !questId.endsWith("_repeatable")
+    && !off.some(({ name }) => ofSimulation(questId, name)) && !getQuest(questId).deprecated);
 }
 
 // Daily/<Zone>/Wargames_DailyQuest_<Sim>_With_<Challenge>_<Zone>: 15 a zone, each with its MissionConfigMetadata
 // (Stat.Mission.IronCity, Stat.Mission.IronCity.Challenge, Activities.ConfigData.<Zone>), which the computer reads to
-// show the zone's daily (IronCityContent, BP_PlayerController_Outpost WargamesDailyQuests). Pods' are left out before 9.01.
+// show the zone's daily (IronCityContent, BP_PlayerController_Outpost WargamesDailyQuests). A later simulation's are left out
+// before its build (laterSimulations).
 const dailyPattern = /^wargames_dailyquest_([a-z]+)_with_[a-z]+_([a-z]+)$/;
 const isWargamesDaily = (questId) => dailyPattern.test(questId);
 export function wargamesDailyQuests(zone) {
@@ -122,6 +140,7 @@ export function wargameBadgeRewards(earnedBadgeData) {
   return [{ templateId: wargameRewardPack(zone), quantity: challenge ? 2 : 1 }];
 }
 
-// The hotfix's UFortGlobals lines while the event runs on a build that has it: the switch, and from 9.01 Mist Pods.
+// The hotfix's UFortGlobals lines while the event runs on a build that has it: the switch, and the later simulations its
+// build runs (from 9.01 Mist Pods, from 9.10 Space Rocks, on Content Update v9.10's build Hexed).
 export const wargamesGlobals = (changelist) => (isEventActive(wargames, changelist)
-  ? ["bEnableIronCity=true", ...(mistPodsOn(changelist) ? ["+IronCityWargameTagList=Stat.Mission.IronCity.Pods"] : [])] : []);
+  ? ["bEnableIronCity=true", ...laterOn(changelist).map(({ tag }) => `+IronCityWargameTagList=${tag}`)] : []);

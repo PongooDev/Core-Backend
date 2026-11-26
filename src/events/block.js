@@ -53,8 +53,11 @@ import { currentEventsConfig } from "./events.js";
 // - 9.00 (CL-6337466) the same way: SLAB_1 streams Athena/Maps/Block/9_00's Block_25x25_ModernMansion (MakaMakes_YT), SLAB_2
 //   Block_25x25_CustomCarCarpet (Rallred84); BP_SlabScripting watches slab1 to slab3. 9.00's paks no longer have 8.50's two.
 // - 9.01 (CL-6428087): 9.00's Block exactly (the same two 9_00 levels), so it plays block900's dates.
+// - 9.10 (CL-6639283) the same way: SLAB_1 streams Athena/Maps/Block/9_10's Block_25x25_SwashBucklingSeas (TheBoneRattler),
+//   SLAB_2 Block_25x25_SaltyScorpion (Josh822382); BP_SlabScripting watches slab1 to slab3. 9.10's paks no longer have 9.00's
+//   two. CL-6573057 (Update v9.10, no paks here) plays its dates too.
 // So this serves each build its own names by Epic's dates on Season 7's replay (events/datedflags.js block700 and
-// block710, block720, block730, block740, block800, block820, block830, block850 and block900; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
+// block710, block720, block730, block740, block800, block820, block830, block850, block900 and block910; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
 // match's playlist before it takes the hotfix (7.00's: the playlist's data at frame 393, the hotfix at 506, the calendar
 // at 526), so a Default.Slab.Disabled row would come after BP_SlabScripting had read it; and 7.10 shipped with Grimy Greens
 // up, so its dates start with it. The calendar comes after both builds' watchers are made, and a match keeps what it
@@ -73,10 +76,13 @@ export const block850Build = 6058028;
 export const block851Build = 6165369;
 export const block900Build = 6337466;
 export const block901Build = 6428087;
+export const block9100Build = 6573057;
+export const block910Build = 6639283;
 const blockEvents = { [block700Build]: "block700", [block710Build]: "block710", [block720Build]: "block720", [block730Build]: "block730",
   [block740Build]: "block740", [block800Build]: "block800", [block820Build]: "block820",
   [block830Build]: "block830", [block840Build]: "block830",
-  [block850Build]: "block850", [block851Build]: "block850", [block900Build]: "block900", [block901Build]: "block900" };
+  [block850Build]: "block850", [block851Build]: "block850", [block900Build]: "block900", [block901Build]: "block900",
+  [block9100Build]: "block910", [block910Build]: "block910" };
 
 export const block700Event = datedEvent("block700");
 export const block710Event = datedEvent("block710");
@@ -88,6 +94,7 @@ export const block820Event = datedEvent("block820");
 export const block830Event = datedEvent("block830");
 export const block850Event = datedEvent("block850");
 export const block900Event = datedEvent("block900");
+export const block910Event = datedEvent("block910");
 // The build's own (null: a build without BP_SlabScripting's calendar names).
 export const blockEventOf = (changelist = currentBuild()) => datedEvent(blockEvents[Number(changelist)]) ?? null;
 

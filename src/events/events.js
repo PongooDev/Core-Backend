@@ -551,6 +551,12 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // (QuestMapData's Wargames callout, events/wargames.js). It serves LobbySeason9, Tales of Beyond's two flags,
 // EventFlag.Outpost and nothing of Season 8's: its lobby, Spring 2019 (QuestMapData has no Spring2019QuestMap any more),
 // the Season 8 challenges' events and the Unvaulting end with 8.51. Neo Tilted, Mega Mall and the Slipstreams are 9.00's map itself: no calendar name gates them.
+//
+// 9.01 (CL-6428087): its EventFlag.* and CalendarEvent_* names are 9.00's (events/wicksbounty.js serves LTM_Wax). 9.10
+// (CL-6639283; CL-6573057 plays on its data): 9.01's 61 (the same byte scan, 559,480 files; the keychain opens all its keyed
+// paks but pakchunk1005) and two more, EventFlag.LTM_Vigilante and CalendarEvent_Season9_Vigilante
+// (BundleSchedule_Event_VigilanteBoard, the Downtown Drop Challenges: events/downtowndrop.js). Season 9's lobby, Wargames
+// and Tales of Beyond run on; Hot Spots and their Loot Carriers are 9.10's map and playlists, no calendar name.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
@@ -573,6 +579,8 @@ export const ltmAshton = "EventFlag.LTM_Ashton";
 export const lteS8ExtraCredit = "EventFlag.LTE_S8_ExtraCredit";
 // 9.01's Wick's Bounty Challenges (events/wicksbounty.js).
 export const ltmWax = "EventFlag.LTM_Wax";
+// 9.10's Downtown Drop Challenges (events/downtowndrop.js).
+export const ltmVigilante = "EventFlag.LTM_Vigilante";
 export const frostnite = "EventFlag.Frostnite";
 export const frostnite2018 = "Frostnite2018";
 export const blockbuster2018 = "Blockbuster2018";
@@ -743,6 +751,7 @@ const build850 = 6058028;
 const build851 = 6165369;
 const build900 = 6337466;
 const build901 = 6428087;
+const build910 = 6639283;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -797,13 +806,13 @@ const events = [
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
   // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.51's too.
   { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build851 },
-  // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event; 9.01's too.
-  { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build901 },
-  // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js), on 9.01 too.
-  { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build901 },
-  // 9.00's Tales of Beyond (events/talesofbeyond.js), on 9.01 too.
-  { name: talesOfBeyond, flag: season9Flag, firstBuild: build900, lastBuild: build901 },
-  { name: talesOfBeyond, flag: season9Phase1, firstBuild: build900, lastBuild: build901 },
+  // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event; 9.01's and 9.10's too.
+  { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build910 },
+  // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js), on 9.01 and 9.10 too.
+  { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build910 },
+  // 9.00's Tales of Beyond (events/talesofbeyond.js), on 9.01 and 9.10 too.
+  { name: talesOfBeyond, flag: season9Flag, firstBuild: build900, lastBuild: build910 },
+  { name: talesOfBeyond, flag: season9Phase1, firstBuild: build900, lastBuild: build910 },
   { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },

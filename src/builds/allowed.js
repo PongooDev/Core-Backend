@@ -7,13 +7,15 @@ import { buildVersions, versionOf } from "./detect.js";
 export const otherBuilds = "other";
 export const buildChoices = () => [...Object.keys(buildVersions), otherBuilds];
 
-// A changelist ("3724489"), its version ("1.8") or "other", as a choice; undefined for anything else.
+// A changelist ("3724489"), its version ("1.8": every build of that name, as 9.10's two) or "other", as choices; undefined
+// for anything else.
 function buildChoice(entry) {
   if (typeof entry !== "string" && typeof entry !== "number") return undefined;
   const text = String(entry).trim().replace(/^CL-/i, "");
-  if (text.toLowerCase() === otherBuilds) return otherBuilds;
-  if (text in buildVersions) return text;
-  return Object.keys(buildVersions).find((changelist) => buildVersions[changelist] === text);
+  if (text.toLowerCase() === otherBuilds) return [otherBuilds];
+  if (text in buildVersions) return [text];
+  const named = Object.keys(buildVersions).filter((changelist) => buildVersions[changelist] === text);
+  return named.length ? named : undefined;
 }
 
 // allowedBuilds as given (the admin panel, config.json): null or "all" for every build, else a list of choices, oldest
@@ -22,8 +24,9 @@ function buildChoice(entry) {
 export function allowedBuildList(value) {
   if (value === null || (typeof value === "string" && value.trim().toLowerCase() === "all")) return null;
   if (!Array.isArray(value) || value.length === 0) return undefined;
-  const chosen = value.map(buildChoice);
-  if (chosen.includes(undefined)) return undefined;
+  const choiceLists = value.map(buildChoice);
+  if (choiceLists.includes(undefined)) return undefined;
+  const chosen = choiceLists.flat();
   const choices = buildChoices();
   return choices.every((choice) => chosen.includes(choice)) ? null : choices.filter((choice) => chosen.includes(choice));
 }

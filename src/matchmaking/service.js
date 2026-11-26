@@ -317,6 +317,10 @@ const playlistTeamsFrom901 = {
   1004: { maxTeamCount: 72, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams901Build = 6428087;
+// 9.10 (CL-6573057, on CL-6639283's assets): Unvaulted's Playlist_Unvaulted_Squads (332), Update v9.10's rotation, by its
+// asset: MaxTeamCount 100 in teams and squads of 4.
+const playlistTeamsFrom910 = { 332: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 } };
+const playlistTeams910Build = 6573057;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -522,6 +526,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams910Build && playlistTeamsFrom910[playlistId]) return playlistTeamsFrom910[playlistId];
   if (Number(build) >= playlistTeams901Build && playlistTeamsFrom901[playlistId]) return playlistTeamsFrom901[playlistId];
   if (Number(build) >= playlistTeams850Build && playlistTeamsFrom850[playlistId]) return playlistTeamsFrom850[playlistId];
   if (Number(build) >= playlistTeams820Build && playlistTeamsFrom820[playlistId]) return playlistTeamsFrom820[playlistId];

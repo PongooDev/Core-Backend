@@ -141,15 +141,16 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // names for them (below). 7.30's Party at Pleasant Park (Playlist_Music_Highest) has none: that page names its playlist only
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
   // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422), and
-  // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile. 9.00's Trios (Playlist_Trios) and 9.01's Wick's
-  // Bounty (Playlist_Wax_*) have none recorded (🟡 the default tile until one of Epic's is found).
+  // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile. 9.00's Trios (Playlist_Trios), 9.01's Wick's
+  // Bounty (Playlist_Wax_*) and 9.10's Unvaulted (Playlist_Unvaulted_Squads) have none recorded (🟡 the default tile until
+  // one of Epic's is found).
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads",
-    "Playlist_Trios", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"]);
+    "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
   for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]) assert.equal(epicPlaylistImages[name], score, name);
   // Season 5's others, as Epic's page of 28 August 2018 named them.
@@ -347,7 +348,7 @@ const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_S
   // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
   "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads",
   // 9.00's Trios: no tile of Epic's recorded.
-  "Playlist_Trios", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"];
+  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);
@@ -357,8 +358,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 9.01 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6428087"]);
+test("every build from 4.0 to 9.10 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6639283"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

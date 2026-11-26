@@ -542,9 +542,17 @@ const yarrrNow = () => storeEventNow() === spring2019;
 // Gold by the Fortnite Wiki; 🟡 one, and on 9.01 from its first day, as Yarrr!'s heroes. 9.00's notes put nothing in the
 // Event Store, so 9.00's store stays the persistent weekly one alone. Its trackers are Season9.* (Core's name); its items
 // count down to Season 9's end, 1 August 2019, on Season 9's replay.
+// 9.10 adds Update v9.10's "We've added a new Hero to the Event store: Rex Jonesy" (Hero:HID_Commando_029_DinoSoldier_SR_T01,
+// "Saurian Might", new in CL-6639283's data; the Fortnite Wiki: from 22 May, 8 PM ET, 2,800 Gold) and Content Update
+// v9.10's Fossil Southie (Hero:HID_Outlander_027_DinoOutlander_SR_T01, "Saurian Focus": "Available in the Event Store
+// starting May 29 at 8 PM Eastern Time", 2,800 Gold by the wiki), each from its build (CL-6573057 plays on CL-6639283's data
+// but came out before Fossil Southie). 🟡 one of each, and the notes' "added" keeps the earlier heroes on sale.
 const season9StoreBuild = 6428087;
-export const season9EventItems = [{ templateId: "Hero:hid_constructor_027_dinoconstructor_sr_t01", price: 2800, limit: 1 }];
-const season9Items = (now) => season9EventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
+export const season9EventItems = [{ templateId: "Hero:hid_constructor_027_dinoconstructor_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_commando_029_dinosoldier_sr_t01", price: 2800, limit: 1, fromBuild: 6573057 },
+  { templateId: "Hero:hid_outlander_027_dinooutlander_sr_t01", price: 2800, limit: 1, fromBuild: 6639283 }];
+const season9Items = (now) => season9EventItems.filter(({ templateId, fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))
+  && !weeklyFeatured(now).some((item) => item.templateId === templateId)).map(({ fromBuild, ...item }) => item);
 export const season9StoreEnd = "2019-08-01T00:00:00.000Z";
 const season9Now = () => storeEventNow() === talesOfBeyond;
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.

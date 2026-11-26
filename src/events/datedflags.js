@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
+  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
   unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
@@ -25,6 +25,8 @@ export const endgameCalendarEvent = "CalendarEvent_Season8_Ashton";
 export const extraCreditCalendarEvent = "CalendarEvent_Season8_ExtraCredit";
 // 9.01's Schedule_LTM_Wax (the Wick's Bounty Challenges) the same way.
 export const wicksBountyCalendarEvent = "CalendarEvent_Season9_Wax";
+// 9.10's BundleSchedule_Event_VigilanteBoard (the Downtown Drop Challenges) the same way.
+export const downtownDropCalendarEvent = "CalendarEvent_Season9_Vigilante";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -186,6 +188,14 @@ const blockBuilds850 = [["2019-02-28", "Tricky Tracks, by Callum5tewart"], ["201
 // Mansion" on 9 May 2019 (Season 9's first day), "Custom Car Carpet" on 15 May (Update v9.01's day; 9.00's paks already have
 // it), on to the season's end (🟡 the wiki's next build, 22 May, isn't in 9.00's paks).
 const blockBuilds900 = [["2019-05-09", "Modern Mansion, by MakaMakes_YT"], ["2019-05-15", "Custom Car Carpet, by Rallred84"]];
+// 9.10 (CL-6639283, Content Update v9.10, 29 May 2019): SLAB_1 streams Athena/Maps/Block/9_10's
+// Block_25x25_SwashBucklingSeas ("Swash-buckling Seas", TheBoneRattler), SLAB_2 Block_25x25_SaltyScorpion ("Salty Scorpion",
+// Josh822382), SLAB_3 the blank Block (not served); BP_SlabScripting still watches slab1 to slab3. 9.10's paks no longer
+// have 9.00's two. The Fortnite Wiki's The Block: Swash-buckling Seas on 22 May 2019 (Update v9.10's day), Salty Scorpion on
+// 28 May, on to the season's end (🟡 the wiki's next build, 6 June, is 9.20's). 9.10 came out mid-season, so its first build
+// is up from the lap's first day, as 8.50's. CL-6573057 (Update v9.10), whose paks Core has no copy of, plays the same
+// (🟡 its paks may not have had Salty Scorpion, 28 May being after its day).
+const blockBuilds910 = [["2019-05-09", "Swash-buckling Seas, by TheBoneRattler"], ["2019-05-28", "Salty Scorpion, by Josh822382"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -245,6 +255,11 @@ const extraCreditEnd = Date.parse("2019-05-09T00:00:00.000Z");
 // end of 21 May, the day before Update v9.10; 00:00 UTC. Every challenge comes with the bundle.
 const wicksBountyAt = Date.parse("2019-05-16T00:00:00.000Z");
 const wicksBountyEnd = Date.parse("2019-05-22T00:00:00.000Z");
+// 9.10's Downtown Drop Challenges (events/downtowndrop.js): the Fortnite Wiki's "available from May 22nd 2019 to June 4th
+// 2019", Update v9.10's day to Update v9.20's (🟡 00:00 UTC, no hours recorded). Two challenges come with the bundle, the
+// rest a day at a time from the flag's start (DaysFromEventStart).
+const downtownDropAt = Date.parse("2019-05-22T00:00:00.000Z");
+const downtownDropEnd = Date.parse("2019-06-04T00:00:00.000Z");
 // 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it and the sources). The Fortnite Wiki's Unvaulting: 4 May 2019,
 // 2:00 to 2:05 PM ET (18:00 UTC); its Vault: "April 30th 2019: An orange hologram appeared above one of The Vault rune
 // slots. May 1st 2019: The fifth rune has appeared above the Volcano ... May 3rd 2019: The fifth and final rune has entered
@@ -409,6 +424,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds850) },
   { id: "block900", name: "The Block's community builds (9.00)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds900) },
+  { id: "block910", name: "The Block's community builds (9.10)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds910) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
@@ -484,6 +501,11 @@ export const datedEvents = [
   { id: "wicksBounty", name: "the Wick's Bounty Challenges (9.01)", season: 9, flag: ltmWax, anchor: "challenges", parts: 1,
     challenges: "Schedule_LTM_Wax", steps: [
       step("challenges", "The Wick's Bounty Challenges", [ltmWax, wicksBountyCalendarEvent], wicksBountyAt, wicksBountyEnd)
+    ] },
+  // 9.10's Downtown Drop Challenges (events/downtowndrop.js): one step, the flag and the schedule's calendar event.
+  { id: "downtownDrop", name: "the Downtown Drop Challenges (9.10)", season: 9, flag: ltmVigilante, anchor: "challenges", parts: 1,
+    challenges: "BundleSchedule_Event_VigilanteBoard", steps: [
+      step("challenges", "The Downtown Drop Challenges", [ltmVigilante, downtownDropCalendarEvent], downtownDropAt, downtownDropEnd)
     ] },
   // 8.51's Unvaulting (events/unvaulting.js): the fifth rune, the countdown, the event and the island after it. "Start now"
   // (or any time on the event's step) plays it then, the steps before it at Epic's spacing.

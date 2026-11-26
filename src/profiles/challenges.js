@@ -519,6 +519,10 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // too, as the Fortnite Wiki has the challenges "for all Battle Pass owners who unlocked Ruin" (🟡 from 28 April 2019 there;
 // here from 8.40's first day). 8.40's BundleSchedule_Styles_SpaceBunny is Gemini's (CID_389), an outfit Epic never released
 // (the wiki: scrapped and recycled into Astro Assassin), so no one is given it.
+// 9.10 (CL-6639283, Update v9.10's Hang Time set) adds BundleSchedule_Styles_Vigilante_Male, Grind's (CID_424_Athena_Commando_M
+// _Vigilante: play a Creative game, change 100 tiles' color, collect basketballs; all 3 for his VTID_229 style), and
+// BundleSchedule_Styles_Painter, Clutch's (CID_423_Athena_Commando_F_Painter: collect 100 coins and shoes, play a game; all
+// 3 for VTID_232), both ChallengeCategory.Style: the notes' "a challenge pack unique to the set".
 export const isStylesCategory = (category) => category === "Styles" || category === "ChallengeCategory.Style" || String(category ?? "").startsWith("Styles_");
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
@@ -527,7 +531,9 @@ export const styleSchedules = {
   bundleschedule_styles_icequeen: "AthenaCharacter:cid_330_athena_commando_f_icequeen",
   bundleschedule_styles_cupiddark: "AthenaCharacter:cid_343_athena_commando_m_cupiddark",
   bundleschedule_styles_redsuitguy: "AthenaCharacter:cid_370_athena_commando_m_evilsuit",
-  season8_ruin_schedule: "AthenaCharacter:cid_378_athena_commando_m_furnaceface"
+  season8_ruin_schedule: "AthenaCharacter:cid_378_athena_commando_m_furnaceface",
+  bundleschedule_styles_vigilante_male: "AthenaCharacter:cid_424_athena_commando_m_vigilante",
+  bundleschedule_styles_painter: "AthenaCharacter:cid_423_athena_commando_f_painter"
 };
 export function settleStyleSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules() ?? {};

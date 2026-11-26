@@ -192,6 +192,9 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // the pages list); the later updates' (John Wick, the Hang Time and World Cup sets...) wait for their builds' data. 9.01
 // (CL-6428087) adds the 4 of its cosmetics the shop sold, 26 times from 17 May on: John Wick, his Simple Sledge pickaxe and
 // the Be Seeing You and Bulletproof emotes (780 of 1,184). Only 9.01's data has them, so 9.00's days are as they were.
+// 9.10 (CL-6639283, and CL-6573057 on its data) adds the 22 of its cosmetics the shop sold, 63 times from 23 May on: Doggo's
+// and Takara's sets, Scimitar and Sandstorm, the Fish Face, Fishy, Slippery and Ripple wraps, the Chrono contrail and seven emotes (843 of
+// 1,184); the Hang Time set was sold as its bundle only, left out as bundles are. 9.00's and 9.01's days are as they were.
 // Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
 // data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

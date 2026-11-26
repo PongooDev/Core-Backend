@@ -614,6 +614,19 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   9.01's AthenaSeason8 no longer takes it at the season's end), `items.json` and `characters.json` (John
   Wick's hero and Simple Sledge), and `objectivestats.json` (nine craft rows whose conditions name 9.00's rarities, Rare
   and Epic, where 9.00's named Sturdy and Quality); the other files are 9.00's.
+  9.10's (CL-6639283, Content Update v9.10) is `4.23.0-6639283+++Fortnite+Release-9.10` (no `Build.version`; its Dumper-7
+  SDK is 4.23.0-6639283; the build folder is `windows-9.10`, its `9.10` folder) with 9.01's full data (Cert's files with
+  `gamedata/6428087` applied) as the fifth argument and the main key FModel's settings hold for its build folder. 9.01's
+  layout with the keyed pakchunk1000 to 1009, of which the keychain opens all but 1005. Its mission alerts are still the
+  fifth argument's. No extractor change. Against 9.01 ten files change: `athena.json` (1,841 cosmetics, 39 more, none
+  gone: the Hang Time set's Grind and Clutch, the Back Board and the Downtown Drop sprays, Takara, Doggo, Wilde, Scimitar and
+  Sandstorm, Dark Vertex, emotes and wraps; the Downtown Drop Challenges, BundleSchedule_Event_VigilanteBoard,
+  and the Hang Time styles' schedules; 20 variant tokens; 78 objective stats), `items.json` and `fabricator.json` (the Burst SMG, Creative's
+  Grind power-up, prefabs and galleries), `characters.json` and `collectionbook.json` (Save the World's Rex Jonesy and
+  Fossil Southie), `quests.json` and `world.json` (the Space Rocks and Hexed Wargames: simulation, challenge and daily
+  quests), `cardpacks.json` (their banners), `alterations.json` and `upgrades.json` (the RetroSciFi heroes' and burst
+  rifle's rows ahead of their update); the other files are 9.01's. CL-6573057 (Update v9.10) has no copy here and plays on
+  this data (`src/gamedata/read.js` laterData).
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

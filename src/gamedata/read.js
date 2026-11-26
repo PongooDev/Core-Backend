@@ -31,9 +31,13 @@ export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(di
 // would otherwise get 6.01's, without the Quad Launcher, 6.02's cosmetics and the Skull Trooper Challenges. 6.10's CL-4464155
 // (6.10.0) and CL-4476098 (6.10.1), the two earlier of Update v6.10's three builds, whose paks Core has no copy of either,
 // play on CL-4480234's (gamedata/4480234); they would otherwise get 6.02's, without 6.10's cosmetics, weeks 4 to 7 of Season
-// 6's challenges as Epic ran them and the Showdown (tournament) playlists' data.
+// 6's challenges as Epic ran them and the Showdown (tournament) playlists' data. 9.10's CL-6573057 (Update v9.10's, the
+// earlier of its two builds), whose paks Core has no copy of, plays on CL-6639283's (gamedata/6639283, Content Update
+// v9.10's, a week later in the same season); it would otherwise get 9.01's, without the Hang Time set, the Downtown Drop
+// Challenges, Space Rocks and Rex Jonesy. Content Update v9.10's own additions in that data (the Burst SMG, Hexed's quests,
+// Fossil Southie) are gated by changelist where they are served (events/wargames.js, store/eventstore.js).
 export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610", 4225813: "4240749",
-  4395664: "4402180", 4417689: "4424678", 4442095: "4461277", 4464155: "4480234", 4476098: "4480234" };
+  4395664: "4402180", 4417689: "4424678", 4442095: "4461277", 4464155: "4480234", 4476098: "4480234", 6573057: "6639283" };
 
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;
