@@ -2,6 +2,7 @@ import { currentBuild } from "../builds/context.js";
 import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 import { leakyLakeState } from "./butterfly.js";
+import { eventPlaylistLock, eventPlaylistsLockOn } from "./eventplaylists.js";
 import { iceKingOnEpicDates, iceKingState, iceKingStormSoon } from "./icestorm.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
@@ -1661,10 +1662,19 @@ export function inOriginalWindow(id, build, now = new Date(), settingsValue = se
 export const allGameModesOn = (settingsValue) => settingsValue?.allGameModes === true;
 const defaultModeIds = ["solo", "duo", "squad"];
 
+// A live event with its own playlist (Core-Backend #436, events/eventplaylists.js): {event, ltm, since, until} while the
+// build's lobby offers that playlist alone, over the switches, Original dates and All game modes; null otherwise.
+export function ltmEventLock(build, settingsValue = settingsProvider(), now = new Date()) {
+  const lock = eventPlaylistLock(build, settingsValue, now);
+  return lock && hasLtm(lock.ltm, build) ? lock : null;
+}
+
 // The matchmaking modes in force ({solo, duo, ..., <ltm id>: boolean}): the admin's, with each LTM's by its original
 // window while Original dates is on, every one on while All game modes is. settingsValue is the settings store's value.
 export function ltmModes(build, settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes;
+  const lock = ltmEventLock(build, settingsValue, now);
+  if (lock) return Object.fromEntries([...defaultModeIds, ...ltms.map(({ id }) => id)].map((id) => [id, id === lock.ltm]));
   if (allGameModesOn(settingsValue)) return { ...(modes ?? {}), ...Object.fromEntries([...defaultModeIds, ...ltms.map(({ id }) => id)].map((id) => [id, true])) };
   if (settingsValue?.ltmOriginalDates !== true) return modes;
   return { ...(modes ?? {}), ...Object.fromEntries(ltms.map(({ id }) => [id, inOriginalWindow(id, build, now, settingsValue)])) };
@@ -1682,6 +1692,8 @@ export const currentSettings = () => settingsProvider();
 export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
   const ltm = byId.get(id);
   if (!ltm || !hasLtm(id, build) || ltm.tournament || ltm.arena) return false;
+  const lock = ltmEventLock(build, settingsValue, now);
+  if (lock) return id === lock.ltm;
   // A game mode always on where the build has it (7.00's Creative, #375), whatever the settings say.
   if (ltm.alwaysOn || isNewIn(ltm, build)) return true;
   // 6.21's Fortnitemares modes (Core-Backend #354): the Leaky Lake's state, not the dates; off once the Butterfly has
@@ -1828,6 +1840,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     fortnitemaresReplacesDefaults: replacesDefaultsOn(settingsValue),
     // Whether Original dates replays Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367).
     fortnitemaresOutage: fortnitemaresOutageOn(settingsValue),
+    // Whether a live event with its own playlist offers it alone around the event (#436).
+    lockEventPlaylists: eventPlaylistsLockOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     // Neither a tournament playlist (the Tournaments tab's) nor a game mode always on (7.00's Creative, #375) has a switch.
     list: ltms.filter((ltm) => !ltm.tournament && !ltm.alwaysOn).map((ltm) => ({

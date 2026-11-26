@@ -8,7 +8,7 @@ import { isServerAccountName } from "../../accounts/password.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
-import { defaultReplacements, lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
+import { defaultReplacements, lastSelectedPlaylistOf, ltmEventLock, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { unvaultingRows } from "../../events/unvaulting.js";
@@ -106,6 +106,9 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // 7.00's (CL-4629139) shipped list adds Creative, Playlist_PlaygroundV2 (PongooDev/CoreV2#471, events/ltms.js `creative`):
 // kept as shipped, always enabled (a game mode with no switch, Core-Backend #375), AdvertiseType New and no limited-time
 // banner (the LTM's limitedTime).
+// A live event with its own playlist (Core-Backend #436, events/ltms.js ltmEventLock): Solo, Duos and Squads are listed
+// off and hidden like a replaced default, every other entry is off (ltmOn), and the event's playlist is listed as the
+// lobby's default (bIsDefaultPlaylist, as a replacing mode is) until the event ends.
 // UFortMatchmakingContext's matchmaking starts (0x111DA10, 0x114AF10, 0x114CF20 ...) run the same check through 0x112D820
 // (IsWaitingOnUpdateManager is its pending handle, +0x1B8), and UFortMatchmakingV2::OnUpdateCheckComplete cancels the
 // matchmaking "to receive update" when it brought one. The hotfix manager compares the listing's hashes with the last
@@ -120,14 +123,20 @@ function frontEndPlaylistLines(changelist) {
   if (!playlists.length) return [];
   const advertise = (type) => (Number(changelist) >= advertiseTypeBuild ? `AdvertiseType=${type}` : `bDisplayAsNew=${type === "New"}`);
   const entry = (name, access) => `+FrontEndPlaylistData=(PlaylistName=${name}, PlaylistAccess=(${access}))`;
-  const replaced = defaultReplacements(changelist);
+  const lock = ltmEventLock(changelist);
+  const replaced = lock ? {} : defaultReplacements(changelist);
   const priorityOf = Object.fromEntries(frontEndDefaults);
   const replacing = new Map(Object.entries(replaced).map(([name, ltm]) => [ltm.playlistName, priorityOf[name]]));
   return ["!FrontEndPlaylistData=ClearArray",
-    ...frontEndDefaults.map(([name, priority]) => entry(name, replaced[name]
+    ...frontEndDefaults.map(([name, priority]) => entry(name, lock || replaced[name]
       ? `bEnabled=false, bIsDefaultPlaylist=true, bVisibleWhenDisabled=false, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`
       : `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
     ...playlists.map(({ name, enabled, priority, ltm }, index) => {
+      if (lock && ltm.id === lock.ltm) {
+        return entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ${advertise(ltm.advertise ?? "None")}, ` +
+          `bDisplayAsLimitedTime=${ltm.limitedTime !== false}, DisplayPriority=0`);
+      }
+      if (lock) return entry(name, `bEnabled=false, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`);
       if (replacing.has(name)) {
         return entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ${advertise("None")}, bDisplayAsLimitedTime=false, ` +
           `DisplayPriority=${replacing.get(name)}`);

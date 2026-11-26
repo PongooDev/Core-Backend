@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
-import { ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
+import { ltmEventLock, ltmModes, ltmOfBucketPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
 import { creativeEntitled, creativePartyHosts, earlyAccessMessage, settleCreativePlots } from "../../profiles/creative.js";
 import { openSession } from "../../profiles/session.js";
@@ -69,6 +69,14 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     // not currently active.", "You need to be in a full party for this tournament."). The match is an ordinary one of
     // the playlist: the event's points come from its results (services/fortnite/battleroyale.js). An invite-only event
     // (Core-Backend #383) takes the party only when each of its players is invited.
+    // A live event with its own playlist (Core-Backend #436, events/eventplaylists.js): its playlist alone until the event
+    // ends, the tournaments, the Arena and Creative too refused.
+    const lock = ltmEventLock(currentBuild(), settingsValue);
+    if (lock && ltm?.id !== lock.ltm) {
+      log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: only ${lock.ltm} is offered until ` +
+        `${new Date(lock.until).toISOString()} (admin panel, Matchmaking, Live events offer only their playlist)`);
+      return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode ?? playlistId} is currently disabled`);
+    }
     let tournamentEvent = null;
     if (ltm?.tournament) {
       const { event, error } = showdownTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),

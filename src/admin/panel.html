@@ -4740,7 +4740,9 @@ Each starts active; quests the account already has are left as they are.`, {
         // 6.20's and 6.21's Fortnitemares modes in Solo's, Duos' and Squads' place while on (#348).
         fortnitemaresReplacesDefaults: data.ltms?.fortnitemaresReplacesDefaults !== false,
         // With Original dates, Fortnitemares Duos' and Squads' launch-day outage on 6.20 (#367), off by default.
-        fortnitemaresOutage: data.ltms?.fortnitemaresOutage === true
+        fortnitemaresOutage: data.ltms?.fortnitemaresOutage === true,
+        // A live event with its own playlist offers it alone from shortly before the event to its end (#436), on by default.
+        lockEventPlaylists: data.ltms?.lockEventPlaylists !== false
       };
 
       const saveConfig = async () => {
@@ -5307,6 +5309,10 @@ Each starts active; quests the account already has are left as they are.`, {
         form.fortnitemaresOutage = checked;
       });
 
+      const lockEventPlaylistsToggle = toggleSwitch(form.lockEventPlaylists, (checked) => {
+        form.lockEventPlaylists = checked;
+      });
+
       const showReplayDay = () => {
         const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
         replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : `Season ${ltmSeason}: no LTM dates`;
@@ -5602,6 +5608,11 @@ Each starts active; quests the account already has are left as they are.`, {
             el("div", { class: "font-semibold", text: "Fortnitemares launch-day outage (6.20)" }),
             el("div", { class: "muted", text: "With Original dates on: Fortnitemares Duos and Squads go off from 11:15 to 15:15 UTC on 24 October (the replay's clock), as Epic took them down for about four hours on launch day, and the normal Duos and Squads take their place again. Fortnitemares Solo stays. Off by default. Save, then restart the game: the lobby's list comes at start-up." })),
           fortnitemaresOutageToggle),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Live events offer only their playlist (7.30 Showtime, 8.51 Unvaulting)" }),
+            el("div", { class: "muted", text: "As in Epic's lobby: from shortly before a live event with its own playlist to the event's end (the Unvaulting: its last 30 minutes; each Showtime show: 30 minutes before it), that playlist is the only one offered: Solo, Duos, Squads, every other mode and All game modes come back afterwards. On Epic's dates, the event's own times or Start now (Events page). The lobby takes the change on its way back to the lobby or before matchmaking." })),
+          lockEventPlaylistsToggle),
         queueHeaderEl,
         activeModesTableBox);
 
