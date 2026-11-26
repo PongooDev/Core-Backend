@@ -163,11 +163,13 @@ test("Season 9's LTMs: 9.00's lobby's 50v50 and Playground, Update v9.00's rotat
       assert.equal(ltmOn(id, v900, dated, at("2019-05-20T12:00:00Z")), false, `${id} after 9.01's day`);
       assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [true, false], id);
     }
-    // Season 8's modes, the Arena and the tournaments end with 8.51; Air Royale's and Sword Fight's playlists are gone.
+    // Season 8's modes and tournaments end with 8.51; Air Royale's and Sword Fight's playlists are gone. The Arena carries
+    // on in Season 9 (#442, tests/arena-season9.test.js), and Season 9's tournaments are on the same playlists.
     // Endgame's playlist is still in 9.00's paks (#440, below): the build has it, off unless the admin turns it on.
-    for (const id of ["fiftyFiftySeason8", "airRoyaleDuos", "unvaulting", "arenaSolo", "tournamentS8Solo"]) {
+    for (const id of ["fiftyFiftySeason8", "airRoyaleDuos", "unvaulting", "tournamentS8Solo"]) {
       assert.deepEqual([hasLtm(id, v900), hasLtm(id, v851)], [false, true], id);
     }
+    assert.deepEqual([hasLtm("arenaSolo", v900), hasLtm("arenaSolo", v851), hasLtm("tournamentS9Solo", v900), hasLtm("tournamentS9Solo", v851)], [true, true, true, false]);
     assert.deepEqual([hasLtm("endgame", v900), ltmOn("endgame", v900, {}, at("2019-05-20T12:00:00Z"))], [true, false]);
   });
 });

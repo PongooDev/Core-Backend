@@ -1,5 +1,5 @@
 import { regionMembers, serverRegionCodes } from "../matchmaking/regions.js";
-import { arenaEvents, arenaPlayerOf, hasArena } from "./arena.js";
+import { arenaEvents, arenaPlayerOf, arenaSeasonOf, hasArena } from "./arena.js";
 import { eliminationsStat, eventWindowsOf, eventsServiceBuild, hasShowdown, historiesOf, placementStat, showdownEvents, showdownPlaylistOf, showdownTiers,
   teamOf, tournamentIdOf } from "./showdown.js";
 import { matchWindowOf, rankRows, scoringOf } from "./store.js";
@@ -99,10 +99,11 @@ export function configureArena(provider) {
 }
 
 // FEventsServicePlayer. On a build with the Arena (8.20 on, #420) it holds the player's division tokens and their Hype
-// (persistentScores, which 8.20's reader has: CL-5625478 "persistentScores"; 7.40's has none).
+// (persistentScores, which 8.20's reader has: CL-5625478 "persistentScores"; 7.40's has none), the build's season's (#442).
 export const eventsPlayerOf = (accountId, gameId = eventsGameId, build = null, arena = arenaProvider()) => {
   if (!hasArena(build)) return { gameId, accountId, tokens: [], pendingPayouts: [], teams: {} };
-  const { tokens, persistentScores } = arenaPlayerOf(arena?.get?.(accountId));
+  const season = arenaSeasonOf(build);
+  const { tokens, persistentScores } = arenaPlayerOf(arena?.get?.(accountId, season), season);
   return { gameId, accountId, tokens, persistentScores, pendingPayouts: [], teams: {} };
 };
 

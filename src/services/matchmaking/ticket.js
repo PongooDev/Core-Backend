@@ -12,7 +12,7 @@ import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
 import { customMatchOptionsOf, customMatchOptionsText, parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
 import { defaultHostingIps, httpsProxied, requestAddress, viaHttpProxy } from "../../network.js";
-import { arenaTicket } from "../../tournaments/arena.js";
+import { arenaSeasonOf, arenaTicket } from "../../tournaments/arena.js";
 import { showdownTicket, tournamentIdOf } from "../../tournaments/showdown.js";
 import { notRegionHost } from "./sessions.js";
 
@@ -88,15 +88,16 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       }
       tournamentEvent = event;
     }
-    // Season 8's Arena (Core-Backend #420, tournaments/arena.js): the client names the Arena event and the division window
-    // its tournament manager picked; the window must be one the player holds, the party full. 🟡 One queue for every
+    // Season 8's and 9's Arena (Core-Backend #420, #442, tournaments/arena.js): the client names the Arena event and the
+    // division window its tournament manager picked; the window must be one the player holds in the build's season, the
+    // party full. 🟡 One queue for every
     // division: Epic matched by Hype, widening the gap the longer a ticket waited until any player would do (the playlists'
     // PriorityRatingExpansion, RatingDelta -1 after 1200 s), and Core's player counts are always past that.
     let arenaDivision = null;
     if (ltm?.arena) {
       const ticketed = arenaTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),
         windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild(),
-        record: arena?.get?.(accountId), settingsValue });
+        record: arena?.get?.(accountId, arenaSeasonOf(currentBuild())), settingsValue });
       if (ticketed.error) {
         log("Matchmaking", `Refused ${accountId}'s Arena ticket for bucket ${bucketId}: ${ticketed.error.message} (${ticketed.error.code})`);
         return sendError(res, 400, ticketed.error.code, ticketed.error.message);

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasLtm, ltms } from "../events/ltms.js";
-import { arenaWindowHours, showsArena } from "./arena.js";
+import { arenaWindowHoursOf, showsArena } from "./arena.js";
 import { newsImageUrl } from "../services/content/images.js";
 import { payoutLines, rewardTableOf } from "./payouts.js";
 import { matchPoints, matchWindowOf, runningWindowOf, scoringOf, statusOf, windowsOf } from "./store.js";
@@ -522,7 +522,7 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
   const ltm = showdownPlaylistOf(event);
   const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4,
     scavengerSolo: 1, scavengerDuos: 2, scavengerSquads: 4, iceStormShowSolo: 1, iceStormShowDuos: 2, iceStormShowSquads: 4,
-    tournamentS8Solo: 1, tournamentS8Duos: 2, tournamentS8Squads: 4 }[ltm.id];
+    tournamentS8Solo: 1, tournamentS8Duos: 2, tournamentS8Squads: 4, tournamentS9Solo: 1, tournamentS9Duos: 2, tournamentS9Squads: 4 }[ltm.id];
   if (partySize !== teamSize) return refuse("wrong_number_of_event_players", "You need to be in a full party for this tournament.");
   return { event };
 }
@@ -549,15 +549,16 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
 //   callout is, of every window not in CancelledEvents and not "locked", whose endTime hasn't passed and whose length
 //   (endTime - beginTime) is under MaximumEventLengthHoursForCallout hours, the one that begins first. An event without an
 //   end runs to FDateTime's last day, longer than any such limit, so it never had the box. 🟡 The limit served is the
-//   Arena windows' length less an hour (tournaments/arena.js arenaWindowHours): every admin event's window qualifies, as
-//   every running event had the box on 6.10 to 7.40, and the Arena's (#420), which begin first, never do.
+//   Arena windows' length less an hour (tournaments/arena.js arenaWindowHoursOf, the build's season's: Season 9's begin
+//   later, #442): every admin event's window qualifies, as every running event had the box on 6.10 to 7.40, and the
+//   Arena's (#420), which begin first, never do.
 const calloutLengthBuild = 5625478;
 export function showdownRuntimeOptions(build, settingsValue, now = new Date(), store = storeProvider()) {
   if (!hasShowdown(build)) return [];
-  // 8.20 to 8.40 keep it on: their Arena (tournaments/arena.js, #420) is a division event of the same manager, and the
+  // 8.20 to 9.10 keep it on: their Arena (tournaments/arena.js, #420) is a division event of the same manager, and the
   // Events tab lists no division event (8.20 CL-5625478 0x34B4F80).
   if (!showdownEvents(build, now, store).length && settingsValue?.hideEmptyEventsTab === true && !showsArena(build, settingsValue)) return ["bEnableShowdown=false"];
-  return ["ShowdownTournamentCacheExpirationHours=0", ...(Number(build) >= calloutLengthBuild ? [`MaximumEventLengthHoursForCallout=${arenaWindowHours - 1}`] : [])];
+  return ["ShowdownTournamentCacheExpirationHours=0", ...(Number(build) >= calloutLengthBuild ? [`MaximumEventLengthHoursForCallout=${arenaWindowHoursOf(build) - 1}`] : [])];
 }
 
 // Keeps the lobbies of the builds with the Events tab in step with the events (Core-Backend #336). The client's tournament

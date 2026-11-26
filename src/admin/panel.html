@@ -9922,12 +9922,17 @@ Each starts active; quests the account already has are left as they are.`, {
           }, "ghost")));
     }
 
-    // Season 8's Arena (8.20 to 8.40, tournaments/arena.js): the players by Hype, their reset, and the Hype each division takes
-    // to leave (Core's guesses from #420). Its Solo and Duos tiles are switched on the Matchmaking tab.
+    // The Arena (tournaments/arena.js): Season 8's (8.20 to 8.51) or Season 9's (9.00 to 9.10, #442) players by Hype, their
+    // reset, and the Hype each division takes to leave (Core's guesses from #420, both seasons'). Its Solo and Duos tiles are
+    // switched on the Matchmaking tab.
     async function showArena() {
-      const data = await act(api("/admin/api/arena"));
+      const season = state.arenaSeason ?? 8;
+      const data = await act(api(`/admin/api/arena?season=${season}`));
       if (!data || state.view !== "arena") return;
       const rerender = () => showArena();
+      const seasonSelect = el("select", { class: "field", "aria-label": "Arena season" },
+        ...data.seasons.map((number) => el("option", { value: String(number), text: `Season ${number}`, selected: number === data.season })));
+      seasonSelect.addEventListener("change", () => { state.arenaSeason = Number(seasonSelect.value); rerender(); });
       const inputs = data.hypeToLeave.map((value, index) => el("input", { class: "field num", type: "number", min: "1", max: String(data.maxHypeToLeave),
         step: "1", value: String(value), style: "width:110px;", "aria-label": `Hype to leave Division ${index + 1}` }));
       const saveThresholds = async () => {
@@ -9941,20 +9946,21 @@ Each starts active; quests the account already has are left as they are.`, {
         el("div", { class: "view-head" },
           el("h1", { text: "Arena" }),
           el("div", { class: "actions" },
+            seasonSelect,
             chip(`${data.players.length} players`, "accent"),
             btn("Refresh", rerender, "ghost"),
             btn("Reset everyone", async () => {
-              if (!await confirmModal("Reset every player's Arena Hype to 0 and their division to Division 1? Players lose the divisions they reached.", { title: "Reset Arena", confirmText: "Reset everyone", confirmKind: "danger" })) return;
-              if (await act(api("/admin/api/arena/reset", {}), "Every player's Arena Hype and division reset")) rerender();
+              if (!await confirmModal(`Reset every player's Season ${data.season} Arena Hype to 0 and their division to Division 1? Players lose the divisions they reached.`, { title: "Reset Arena", confirmText: "Reset everyone", confirmKind: "danger" })) return;
+              if (await act(api("/admin/api/arena/reset", { season: data.season }), `Every player's Season ${data.season} Arena Hype and division reset`)) rerender();
             }, "ghost"))),
         el("section", { class: "panel" },
           el("div", { class: "panel-head" }, el("h2", { text: "Modes" })),
-          el("div", { class: "note", text: "Season 8's Arena (8.20 to 8.40) has a tile in the game's mode select for each mode below. Show or hide a mode on the Matchmaking tab: a hidden mode has no event in the events download, no tile and no ticket." }),
+          el("div", { class: "note", text: "The Arena has a tile in the game's mode select for each mode below: Season 8's on 8.20 to 8.51, Season 9's on 9.00 to 9.10. Each season keeps its own Hype and divisions; the season picked above is the one listed and reset here. Show or hide a mode on the Matchmaking tab: a hidden mode has no event in the events download, no tile and no ticket." }),
           el("div", { style: "display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;" },
             ...data.modes.map((mode) => chip(`${mode.name}: ${mode.shown ? "shown" : "hidden"}`, mode.shown ? "good" : "warn")))),
         el("section", { class: "panel", style: "margin-top:16px;" },
           el("div", { class: "panel-head" }, el("h2", { text: "Hype to leave each division" })),
-          el("div", { class: "note", text: "The Hype a player needs in total to move up from each division (cumulative). Epic's numbers aren't recorded: the defaults are Core's guesses from community records of Season 8. Each is above the one before; Division 7 (the Champion League) has no next division. A change reaches the game's events at a player's next lobby visit; players keep the divisions they have reached and move up by their next match's Hype." }),
+          el("div", { class: "note", text: "The Hype a player needs in total to move up from each division (cumulative), in both seasons. Epic's numbers aren't recorded: the defaults are Core's guesses from community records of Season 8. Each is above the one before; Division 7 (the Champion League) has no next division. A change reaches the game's events at a player's next lobby visit; players keep the divisions they have reached and move up by their next match's Hype." }),
           el("div", { style: "display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:flex-end;" },
             ...inputs.map((input, index) => el("label", { style: "display:flex; flex-direction:column; gap:4px;" },
               el("span", { class: "muted", style: "font-size:12px;", text: `Division ${index + 1} (${data.divisions[index].league})` }), input))),
@@ -9973,10 +9979,10 @@ Each starts active; quests the account already has are left as they are.`, {
             ["Division", (row) => chip(`Division ${row.division} (${row.league})`, row.division > 6 ? "accent" : row.division > 3 ? "sky" : "")],
             ["Matches", (row) => String(row.matches), "num"],
             ["", (row) => el("div", { class: "actions" }, btn("Reset", async () => {
-              if (!await confirmModal(`Reset ${row.displayName}'s Arena Hype (${row.hype}) and division (${row.division}) to 0 and Division 1?`, { title: "Reset Player", confirmText: "Reset", confirmKind: "danger" })) return;
-              if (await act(api(`/admin/api/arena/accounts/${row.accountId}/reset`, {}), `${row.displayName}'s Arena Hype and division reset`)) rerender();
+              if (!await confirmModal(`Reset ${row.displayName}'s Season ${data.season} Arena Hype (${row.hype}) and division (${row.division}) to 0 and Division 1?`, { title: "Reset Player", confirmText: "Reset", confirmKind: "danger" })) return;
+              if (await act(api(`/admin/api/arena/accounts/${row.accountId}/reset`, { season: data.season }), `${row.displayName}'s Season ${data.season} Arena Hype and division reset`)) rerender();
             }, "ghost"))]
-          ], data.players, "No player has played the Arena yet."))
+          ], data.players, `No player has played Season ${data.season}'s Arena yet.`))
       );
     }
 

@@ -1571,11 +1571,13 @@ export const ltms = [
   // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
   // No lobby mode (arena): the events service's Arena events put the tile in the mode select, and a ticket for one is taken
   // for the division the player holds (services/matchmaking/ticket.js). Its switch (on by default, #423) shows or hides the
-  // tile: a hidden mode's event stays out of the events download (tournaments/arena.js).
-  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build851], seasons: [8], arena: true, defaultOn: true,
-    teams: "100 Teams × 1", description: "Season 8's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League (Playlist_ShowdownAlt_Solo, 8.20's)." },
-  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build851], seasons: [8], arena: true, defaultOn: true,
-    teams: "100 Teams × 2", description: "Season 8's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
+  // tile: a hidden mode's event stays out of the events download (tournaments/arena.js). Season 9 keeps it (#442): 9.00's to
+  // 9.10's paks hold the same two playlists (58074, 58075, "Arena", ArenaScoringHUD in the match), and 9.00 on serve
+  // Season 9's events and Hype, apart from Season 8's (tournaments/arena.js arenaSeasonOf).
+  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build910], seasons: [8, 9], arena: true, defaultOn: true,
+    teams: "100 Teams × 1", description: "Seasons 8 and 9's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League, each season's Hype its own (Playlist_ShowdownAlt_Solo, 8.20's)." },
+  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build910], seasons: [8, 9], arena: true, defaultOn: true,
+    teams: "100 Teams × 2", description: "Seasons 8 and 9's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
   // Season 8's in-game tournaments (Core-Backend #421): 8.20's paks add Athena/Playlists/Showdown/Tournament's
   // Playlist_ShowdownTournament_Solo, _Duos and _Squads (58082 to 58084, "Tournament": bIsTournament, MinPlayers 100,
   // ShowdownLoading and ShowdownScoringHUD, full parties; 8.30's to 8.51's are 8.20's; 8.51's add the tag Athena.Playlist.Tournament), the Season 8 cups' (Update v8.20's
@@ -1588,6 +1590,15 @@ export const ltms = [
     teams: "100 Teams × 2", description: "Season 8's in-game tournaments' Duos playlist, for full duos: the Luxe Cup's and the Online Opens' (Playlist_ShowdownTournament_Duos, 8.20's)." },
   { id: "tournamentS8Squads", name: "Tournament (Season 8, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build820, build851], seasons: [8], tournament: true,
     teams: "100 Teams × 4", description: "Season 8's in-game tournaments' Squads playlist, for full squads (Playlist_ShowdownTournament_Squads, 8.20's)." },
+  // Season 9's in-game tournaments (Core-Backend #442): 9.00's to 9.10's paks keep the three (58082 to 58084, 8.51's, with
+  // Athena.Playlist.Tournament), the Season 9 cups' (the Fortnite World Cup Online Opens' later weeks). An admin panel event
+  // of one is listed in the Events tab of 9.00 to 9.10, beside Season 9's Arena, as on 8.20 to 8.51.
+  { id: "tournamentS9Solo", name: "Tournament (Season 9, Solo)", playlistId: 58082, playlistName: "Playlist_ShowdownTournament_Solo", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+    teams: "100 Teams × 1", description: "Season 9's in-game tournaments' Solo playlist (Playlist_ShowdownTournament_Solo, 9.00's)." },
+  { id: "tournamentS9Duos", name: "Tournament (Season 9, Duos)", playlistId: 58083, playlistName: "Playlist_ShowdownTournament_Duos", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+    teams: "100 Teams × 2", description: "Season 9's in-game tournaments' Duos playlist, for full duos: the Online Opens' (Playlist_ShowdownTournament_Duos, 9.00's)." },
+  { id: "tournamentS9Squads", name: "Tournament (Season 9, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+    teams: "100 Teams × 4", description: "Season 9's in-game tournaments' Squads playlist, for full squads (Playlist_ShowdownTournament_Squads, 9.00's)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
   // Your rules.": MinPlayers 1, MaxPlayers 16, MaxSocialPartySize 4, bAllowJoinInProgress, bEnableCreativeMode,

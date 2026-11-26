@@ -1,5 +1,5 @@
 import { payPlayerOnSession } from "../../tournaments/payouts.js";
-import { arenaMatchPoints, arenaModeOf } from "../../tournaments/arena.js";
+import { arenaMatchPoints, arenaModeOf, arenaSeasonOf } from "../../tournaments/arena.js";
 import { isShowdownPlaylist, tournamentsCompleteMessage } from "../../tournaments/showdown.js";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
@@ -273,17 +273,19 @@ export function battleRoyaleRoutes(context) {
         const event = context.tournaments.get(eventId);
         if (event) payPlayerOnSession(context.tournaments, event, session);
       }
-      // Season 8's Arena (Core-Backend #420, tournaments/arena.js): the match's Hype, by the division the player held, for
-      // the team's place and eliminations together (the team as above: the report's players of this place).
+      // Season 8's and 9's Arena (Core-Backend #420, #442, tournaments/arena.js): the match's Hype, by the division the
+      // player held in the build's season, for the team's place and eliminations together (the team as above: the report's
+      // players of this place).
       const arenaBuild = build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null);
       const arenaMode = context.arena ? arenaModeOf(playlistId, arenaBuild) : null;
       if (arenaMode) {
         const mates = results.filter((other) => other?.place === result.place && typeof other?.accountId === "string");
         const teamKills = mates.reduce((total, other) => total + (count(other.kills, 1000) ?? 0), 0);
-        const { division } = context.arena.get(result.accountId);
+        const arenaSeason = arenaSeasonOf(arenaBuild);
+        const { division } = context.arena.get(result.accountId, arenaSeason);
         const hype = arenaMatchPoints(arenaMode, division, { place, teamKills });
-        const record = context.arena.record(result.accountId, { matchId, points: hype });
-        if (record) log("Battle Royale", `${result.accountId} earned ${hype} Hype in Arena ${arenaMode} (division ${division + 1}): ${record.hype} Hype, division ${record.division + 1}`);
+        const record = context.arena.record(result.accountId, { matchId, points: hype }, arenaSeason);
+        if (record) log("Battle Royale", `${result.accountId} earned ${hype} Hype in Season ${arenaSeason}'s Arena ${arenaMode} (division ${division + 1}): ${record.hype} Hype, division ${record.division + 1}`);
       }
       // A custom matchmaking key's match (Core-Backend #186) gives no V-Bucks, season XP or challenge progress while the
       // admin panel's "Custom matches give no challenge progress or rewards" is on (its default), as Epic's custom matches

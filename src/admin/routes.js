@@ -85,7 +85,7 @@ import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, displayColorFields, displayTextFields, leaderboardOf, matchesInWindow, maxQualifierPlaces, maxWindows,
   rulesets, scoringOf, statusOf, tournamentPlaylists, windowsOf } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownColors, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
-import { arenaLtms, divisionThresholdsOf } from "../tournaments/arena.js";
+import { arenaLtms, arenaSeason, arenaSeasons, divisionThresholdsOf } from "../tournaments/arena.js";
 import { payEvent, payoutLines, settleEvent, unknownPayoutItems } from "../tournaments/payouts.js";
 import { createWinterRoyale, winterRoyaleFirstDay, winterRoyaleRegions } from "../tournaments/winterroyale.js";
 
@@ -2853,13 +2853,17 @@ export function adminRoutes(context) {
     const unknown = unknownPayoutItems(table);
     return unknown.length ? `No build has ${[...new Set(unknown)].join(", ")}: a prize can't give it.` : null;
   };
-  // The Arena tab (Core-Backend #423, tournaments/arena.js): Season 8's Arena players by Hype, their reset, and the Hype each
-  // division takes to leave.
+  // The Arena tab (Core-Backend #423, tournaments/arena.js): a season's Arena players by Hype (Season 8's, or Season 9's
+  // with ?season=9 or a body's season, #442), their reset, and the Hype each division takes to leave (both seasons').
   const arenaLeagues = ["Open League", "Open League", "Open League", "Contender League", "Contender League", "Contender League", "Champion League"];
-  function arenaPayload() {
+  const arenaSeasonAsked = (req) => {
+    const asked = Number(req.query?.season ?? req.body?.season ?? arenaSeason);
+    return arenaSeasons.includes(asked) ? asked : null;
+  };
+  function arenaPayload(season = arenaSeason) {
     const s = settings.get();
     const thresholds = divisionThresholdsOf(s);
-    const players = context.arena.list().map((record) => {
+    const players = context.arena.list(season).map((record) => {
       const account = accounts.get(record.accountId);
       return { accountId: record.accountId, displayName: account?.displayName ?? record.accountId, hype: record.hype, division: record.division + 1,
         league: arenaLeagues[Math.min(record.division, arenaLeagues.length - 1)], matches: record.matches.length };
@@ -2876,17 +2880,23 @@ export function adminRoutes(context) {
       maxPoints: maxArenaPoints,
       // The Arena's tiles by mode (matchmaking's switches, on by default), on the builds that have them.
       modes: arenaLtms.map((ltm) => ({ id: ltm.id, name: ltm.name, shown: s.matchmakingModes?.[ltm.id] !== false })),
+      season,
+      seasons: arenaSeasons,
       players
     };
   }
-  router.get("/admin/api/arena", (req, res) => res.json(arenaPayload()));
+  router.get("/admin/api/arena", (req, res) => {
+    const season = arenaSeasonAsked(req);
+    if (!season) return invalid(res, `season must be one of ${arenaSeasons.join(", ")}`);
+    res.json(arenaPayload(season));
+  });
   // The Hype to leave Divisions I to VI: {hypeToLeave: [6 whole numbers, each above the one before]}, null for the defaults.
   router.post("/admin/api/arena/thresholds", (req, res) => {
     const asked = req.body?.hypeToLeave === null ? defaultArenaDivisionHype : arenaDivisionHypeValue(req.body?.hypeToLeave, null);
     if (!asked) return invalid(res, `hypeToLeave must be ${defaultArenaDivisionHype.length} whole numbers from 1 to ${maxArenaDivisionHype}, each above the one before`);
     settings.update({ arenaDivisionHype: asked });
     log("Admin", `Arena Hype to leave each division set to ${asked.join(", ")}`);
-    res.json({ success: true, ...arenaPayload() });
+    res.json({ success: true, ...arenaPayload(arenaSeasonAsked(req) ?? arenaSeason) });
   });
   // The scoring: {scoring: {victoryPoints, placements, eliminationPoints, busFares}} (settings/store.js arenaScoring), null for the defaults.
   router.post("/admin/api/arena/scoring", (req, res) => {
@@ -2894,17 +2904,21 @@ export function adminRoutes(context) {
     if (!asked) return invalid(res, `Points are whole numbers from 0 to ${maxArenaPoints}, each mode has three top-N tiers (N from 2 to 100, rising) and the seven divisions each a bus fare`);
     settings.update({ arenaScoring: asked });
     log("Admin", "Arena scoring set");
-    res.json({ success: true, ...arenaPayload() });
+    res.json({ success: true, ...arenaPayload(arenaSeasonAsked(req) ?? arenaSeason) });
   });
   router.post("/admin/api/arena/accounts/:accountId/reset", (req, res) => {
-    if (!context.arena.reset(req.params.accountId)) return notFound(res, `No Arena record for ${req.params.accountId}`);
-    log("Admin", `Arena Hype and division of ${req.params.accountId} reset`);
-    res.json({ success: true, ...arenaPayload() });
+    const season = arenaSeasonAsked(req);
+    if (!season) return invalid(res, `season must be one of ${arenaSeasons.join(", ")}`);
+    if (!context.arena.reset(req.params.accountId, season)) return notFound(res, `No Season ${season} Arena record for ${req.params.accountId}`);
+    log("Admin", `Season ${season} Arena Hype and division of ${req.params.accountId} reset`);
+    res.json({ success: true, ...arenaPayload(season) });
   });
   router.post("/admin/api/arena/reset", (req, res) => {
-    const reset = context.arena.resetAll();
-    log("Admin", `Arena Hype and division of every player reset (${reset})`);
-    res.json({ success: true, reset, ...arenaPayload() });
+    const season = arenaSeasonAsked(req);
+    if (!season) return invalid(res, `season must be one of ${arenaSeasons.join(", ")}`);
+    const reset = context.arena.resetAll(season);
+    log("Admin", `Season ${season} Arena Hype and division of every player reset (${reset})`);
+    res.json({ success: true, reset, ...arenaPayload(season) });
   });
   router.get("/admin/api/tournaments", (req, res) => res.json(tournamentsPayload()));
   router.post("/admin/api/tournaments", (req, res) => {

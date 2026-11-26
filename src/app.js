@@ -141,7 +141,7 @@ export function createContext(config) {
   // The admin panel's tournament events (#263), whose dedicated servers and bots (#282) the matchmaking service follows.
   const tournaments = createTournamentStore(config.dataDir);
   configureShowdown(() => tournaments);
-  // Season 8's Arena: each player's Hype and division (Core-Backend #420).
+  // Season 8's and 9's Arena: each player's Hype and division in each season (Core-Backend #420, #442).
   const arena = createArenaStore(config.dataDir);
   configureArena(() => arena);
   const stats = createStatsStore(config.dataDir);
