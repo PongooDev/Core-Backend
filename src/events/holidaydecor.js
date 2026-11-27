@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows } from "./datedflags.js";
-import { currentEventsConfig, holidayDecor710, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, eventsActiveUntil, holidayDecor710, holidayDecorProps710, ltm14DaysOfFortnite, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // 7.10's holiday decor (CL-4667333, CoreV2 #699). Battle Royale's seasonal decor events are AthenaSeasonalDecorEvents
@@ -14,21 +14,33 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // Its other decor stays off: BR_Decor_SupplyDropGift is 1.11's EventFlag.SupplyDropGift, BR_Decor_BiplaneHoliday (the Santa
 // Stormwing) names no RequiredEventTag, BR_Decor_HalloweenBus is 6.20's.
 // The lobby is LobbySeason7's (Frontend_Lobby_Winter_BR, events/events.js), which 7.10 serves by itself: its paks have no
-// other lobby. The 14 Days of Fortnite's giant candy canes and holiday trees are BP_CalendarProps instances in the
-// client's map levels, each watching a calendar event its level names; those levels aren't in the server-assets pak, so
-// their names aren't served here (🟡).
+// other lobby. The island's decor is BP_CalendarProps (Athena/Prototype/Blueprints/CalendarProps) placed in 7.10's client
+// map levels: 68 of them in 54 building and POI levels and five streaming cells, each with an EventName HLDY_01 to HLDY_07
+// (events/events.js holidayDecorProps710) and its props (Winter_StringLights, Prop_Winter_Wreath, Prop_Llama_LawnOrnament,
+// Prop_SnowFlake_01 to _03, Tree_Pine_05_Christmas3_Athena, Tiered_Athena_FloorLoot_01; HLDY_07's Prop_Athena_Quest_CandyCane,
+// the 14 Days' giant candy canes). At BeginPlay the authority watches its event (FortAsyncAction_CalendarEventWatcher) and,
+// on OnEventActive, spawns its props for good: a progress range only matters to BP_CalendarProps_Progressive, whose 7.10
+// instances watch SP (7.30's Ice Storm, events/icestorm.js), not the holidays. The 14 Days' Visit Giant Candy Canes (day 2),
+// Dance at Holiday Trees (day 9) and Destroy Snowflake Decorations (day 12) need them, so the 14 Days' switch serves them too.
+// Not served: Athena_NYE_Celebration's BP_NewYearTimer (NYE, the New Year's Eve countdown; 🟡 Epic's times not recorded).
 export const holidayDecorEvent = datedEvent("holidayDecor");
 const decorBuild = 4667333;
 
 // The decor as calendar events in parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
 // that holds now on: on 7.10 with the seasonal events on, in the Automatic mode, on Season 7's replay (events/datedflags.js
 // has the dates), the admin's own times or off. The switch (events/season4flags.js) serves TopSecret always or never, so
-// it isn't scheduled here then.
+// it isn't scheduled here then, and the island's decor with it; the 14 Days' switch on serves the island's decor always
+// too, unless the decor's switch is off.
 export function holidayDecorStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(holidayDecor710);
   if (!entry || Number(changelist) !== decorBuild || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
+  const decorOff = off.includes(holidayDecor710);
+  const propsAlways = !decorOff && (on.includes(holidayDecor710) || on.includes(ltm14DaysOfFortnite));
   const nowMs = now.getTime();
   const windows = datedWindows(holidayDecorEvent, datedSettings(config).holidayDecor, nowMs, seasonMoment(now, null, 7).getTime());
-  return datedParts(windows, nowMs, holidayDecorEvent.parts, new Set([...off, ...on]));
+  const parts = datedParts(windows, nowMs, holidayDecorEvent.parts, new Set([...off, ...on, ...(decorOff || propsAlways ? holidayDecorProps710 : [])]));
+  if (!propsAlways) return parts;
+  const props = holidayDecorProps710.map((eventType) => ({ eventType, activeUntil: eventsActiveUntil }));
+  return parts.map((part) => ({ ...part, events: [...part.events, ...props] }));
 }

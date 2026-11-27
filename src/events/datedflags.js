@@ -1,5 +1,5 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
-  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, holidayDecor710,
+  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, holidayDecor710, holidayDecorProps710,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
   lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
@@ -403,8 +403,10 @@ export const datedEvents = [
   // start (Yahoo, 18 December 2018: players "jump out of a festive Battle Bus"), Update v7.10's "Starting December 19, log
   // in each day at 9 AM ET(1400 UTC)". 🟡 Epic's end isn't recorded: on to the 14 Days' extension's end, 15 January 2019,
   // Update v7.20's day, the last of 7.10's.
-  { id: "holidayDecor", name: "the holiday Battle Bus and supply drops (7.10)", season: 7, flag: holidayDecor710, anchor: "decor", parts: 2, steps: [
-    step("decor", "The Winter Bus and the holiday supply drops", [holidayDecor710], Date.parse("2018-12-19T14:00:00.000Z"),
+  // The island's decor (HLDY_01 to HLDY_07) comes and goes with them: the 14 Days' second challenge, the next day, visits
+  // HLDY_07's giant candy canes. 🟡 Epic's own times for the seven aren't recorded.
+  { id: "holidayDecor", name: "the holiday Battle Bus, supply drops and decor (7.10)", season: 7, flag: holidayDecor710, anchor: "decor", parts: 2, steps: [
+    step("decor", "The Winter Bus, the holiday supply drops and the island's decor", [holidayDecor710, ...holidayDecorProps710], Date.parse("2018-12-19T14:00:00.000Z"),
       Date.parse("2019-01-15T00:00:00.000Z"))
   ] },
   { id: "birthday", name: "the Birthday Challenges (5.10 – 5.21)", flag: anniversary2018BR, anchor: "challenges", parts: 1,

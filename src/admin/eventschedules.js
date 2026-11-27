@@ -94,10 +94,10 @@ export const eventCards = [
     about: "The 14 Days of Fortnite challenges: the first at the start, one more each day for thirteen days, a gift each and the 14 Days ribbon for all fourteen (from 19 December 2018, 9 AM ET, to 2 January, and back for 7 to 14 January). Its modes are the Battle Royale game modes' (Original dates).",
     flags: ["EventFlag.LTM_14DaysOfFortnite", "CalendarEvent_Season7_14DaysOfFortnite"] },
   // 7.10's holiday decor (events/holidaydecor.js): the Winter Bus and the holiday supply drops on their dates.
-  { id: "holidayDecor", kind: "dated", dated: "holidayDecor", seasons: [7], name: "The holiday Battle Bus and supply drops", builds: "7.10", ranges: [[4667333, 4667333]],
+  { id: "holidayDecor", kind: "dated", dated: "holidayDecor", seasons: [7], name: "The holiday Battle Bus, supply drops and decor", builds: "7.10", ranges: [[4667333, 4667333]],
     key: "decor", endOfKey: true, startLabel: "The decor starts", endLabel: "The decor ends",
-    about: "Battle Royale's festive Winter Bus (with its Christmas music) and the holiday supply drops, from the 14 Days of Fortnite's start (19 December 2018, 9 AM ET) to 15 January 2019. The lobby is Season 7's own snowy one, which 7.10 always shows. A match takes the bus and supply drops it starts with. 🟡 Epic's end isn't recorded.",
-    flags: ["TopSecret"] },
+    about: "Battle Royale's festive Winter Bus (with its Christmas music), the holiday supply drops and the island's decor (string lights, wreaths, llama lawn ornaments, snowflakes, Christmas trees and the giant candy canes the 14 Days' challenges visit), from the 14 Days of Fortnite's start (19 December 2018, 9 AM ET) to 15 January 2019. The 14 Days' switch on brings the island's decor too. The lobby is Season 7's own snowy one, which 7.10 always shows. A match takes the bus and supply drops it starts with, and the decor appears in a running match once it starts. 🟡 Epic's end isn't recorded.",
+    flags: ["TopSecret", "HLDY_01", "HLDY_02", "HLDY_03", "HLDY_04", "HLDY_05", "HLDY_06", "HLDY_07"] },
   { id: "frostnite2018", kind: "build", seasons: [7], name: "Frostnite", builds: "7.10 – 7.40", ranges: [[4667333, 5046157]],
     about: "Save the World's Frostnite: the quest map's Frostnite page, its theater on the world map (the Endless missions at every Frostnite difficulty, each week's challenge from Slip Out on, its own backpack), its WinterQuest_2018 quests, the Winter Llama for Snowflake Tickets and Cloaked Shadow in the Event Store.",
     flags: ["EventFlag.Frostnite"] },

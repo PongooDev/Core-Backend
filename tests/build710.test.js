@@ -6,7 +6,7 @@ import path from "node:path";
 import { allowedBuildList } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
-import { activeEventFlags, configureEvents, frostnite, holidayDecor710, lobbySeason7, ltm14DaysOfFortnite } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, eventsActiveUntil, frostnite, holidayDecor710, holidayDecorProps710, lobbySeason7, ltm14DaysOfFortnite } from "../src/events/events.js";
 import { holidayDecorStates } from "../src/events/holidaydecor.js";
 import { fourteenDaysCalendarEvent, fourteenDaysDay, fourteenDaysFlagsNow, fourteenDaysStates } from "../src/events/fourteendays.js";
 import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmOfPlaylist, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
@@ -123,16 +123,21 @@ test("the 14 Days' flag and calendar event: its dates on Season 7's replay, on 7
   assert.deepEqual(season4Flag(ltm14DaysOfFortnite).builds, [4667333, 5046157], "7.20 to 7.40: by the switch only");
 });
 
-test("7.10's holiday decor (CoreV2 #699): TopSecret on Season 7's replay from the 14 Days' start, by its switch, on 7.10 only", () => {
-  // BR_Decor_WinterBus's and BR_Decor_SupplyDropHoliday's RequiredEventTag in 7.10's server-assets pak.
+test("7.10's holiday decor (CoreV2 #699): TopSecret and HLDY_01 to HLDY_07 on Season 7's replay from the 14 Days' start, by its switch, on 7.10 only", () => {
+  // BR_Decor_WinterBus's and BR_Decor_SupplyDropHoliday's RequiredEventTag in 7.10's server-assets pak; the EventNames of
+  // the BP_CalendarProps in 7.10's client map levels.
   assert.equal(holidayDecor710, "TopSecret");
+  assert.deepEqual(holidayDecorProps710, ["HLDY_01", "HLDY_02", "HLDY_03", "HLDY_04", "HLDY_05", "HLDY_06", "HLDY_07"]);
+  const decor = [holidayDecor710, ...holidayDecorProps710];
+  const events = (iso, build = v710) => inBuild(build, () => holidayDecorStates(at(iso)))[0]?.events ?? [];
   withConfig(season7, () => {
     const types = (iso, build = v710) => inBuild(build, () => holidayDecorStates(at(iso)))[0]?.events.map(({ eventType }) => eventType) ?? [];
-    assert.deepEqual(types("2018-12-19T13:00:00Z"), []);
-    assert.deepEqual(types("2018-12-19T14:00:00Z"), [holidayDecor710], "the 14 Days' 9 AM ET");
-    const decor = inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z")))[0].events[0];
-    assert.deepEqual([decor.activeSince, decor.activeUntil], ["2018-12-19T14:00:00.000Z", "2019-01-15T00:00:00.000Z"]);
-    assert.deepEqual(types("2019-01-04T12:00:00Z"), [holidayDecor710], "on between the 14 Days' end and its extension");
+    assert.deepEqual(types("2018-12-19T13:00:00Z"), [], "the reporter's 8 AM UTC is before the start");
+    assert.deepEqual(types("2018-12-19T14:00:00Z"), decor, "the 14 Days' 9 AM ET");
+    for (const event of inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z")))[0].events) {
+      assert.deepEqual([event.activeSince, event.activeUntil], ["2018-12-19T14:00:00.000Z", "2019-01-15T00:00:00.000Z"], event.eventType);
+    }
+    assert.deepEqual(types("2019-01-04T12:00:00Z"), decor, "on between the 14 Days' end and its extension");
     assert.deepEqual(types("2019-01-15T00:00:00Z"), []);
     assert.deepEqual(types("2018-12-25T12:00:00Z", v700), [], "7.00's decor names EventFlag.WinterBattleBus");
     assert.deepEqual(types("2018-12-25T12:00:00Z", "4727874"), [], "7.20's decor wasn't read");
@@ -141,11 +146,21 @@ test("7.10's holiday decor (CoreV2 #699): TopSecret on Season 7's replay from th
   });
   withConfig({ ...season7, season4Flags: { overrides: { [holidayDecor710]: "on" } } }, () => {
     assert.ok(inBuild(v710, () => activeEventFlags()).includes(holidayDecor710), "switched on, always served");
-    assert.deepEqual(inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z"))).flatMap(({ events }) => events), [], "and not scheduled twice");
+    for (const iso of ["2018-12-10T12:00:00Z", "2018-12-25T12:00:00Z"]) {
+      assert.deepEqual(events(iso), holidayDecorProps710.map((eventType) => ({ eventType, activeUntil: eventsActiveUntil })), `the island's decor always, once (${iso})`);
+    }
     assert.ok(!inBuild(v700, () => activeEventFlags()).includes(holidayDecor710), "7.10's switch only");
   });
+  withConfig({ ...season7, season4Flags: { overrides: { [ltm14DaysOfFortnite]: "on" } } }, () => {
+    assert.deepEqual(events("2018-12-10T12:00:00Z").map(({ eventType }) => eventType), holidayDecorProps710, "the 14 Days' switch: the props its challenges visit");
+    assert.deepEqual(events("2018-12-25T12:00:00Z").map(({ eventType }) => eventType), decor, "and the bus and drops on their dates");
+    assert.deepEqual(events("2018-12-25T12:00:00Z", v700), [], "on 7.10 only");
+  });
+  withConfig({ ...season7, season4Flags: { overrides: { [ltm14DaysOfFortnite]: "on", [holidayDecor710]: "off" } } }, () => {
+    assert.deepEqual(events("2018-12-25T12:00:00Z"), [], "the decor's switch off turns the island's decor off too");
+  });
   withConfig({ ...season7, datedFlags: { holidayDecor: { mode: "off" } } }, () => {
-    assert.deepEqual(inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z"))).flatMap(({ events }) => events), []);
+    assert.deepEqual(events("2018-12-25T12:00:00Z"), []);
   });
   assert.deepEqual(season4Flag(holidayDecor710).builds, [4667333, 4667333]);
 });
@@ -165,6 +180,9 @@ test("a 7.10 calendar serves TopSecret once the admin starts the holiday decor, 
     const after = await timeline();
     assert.ok(after.activeEvents.some(({ eventType }) => eventType === holidayDecor710), "the calendar's active events");
     assert.ok(after.state.activeEventFlags.includes(holidayDecor710), "the seasonal event manager's flags");
+    for (const name of holidayDecorProps710) {
+      assert.ok(after.activeEvents.some(({ eventType }) => eventType === name), `${name}, the island's decor`);
+    }
   } finally {
     await backend.close();
   }

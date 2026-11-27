@@ -604,6 +604,10 @@ export const lobbySeason7 = "EventFlag.LobbySeason7";
 // (SupplyDropOverride AthenaSupplyDrop_Holiday), both AthenaSeasonalDecorEvents, in 7.10's server-assets pak. 7.00's paks name
 // EventFlag.WinterBattleBus instead; 7.10's name it nowhere and carry this plain name, as Epic's calendar served it.
 export const holidayDecor710 = "TopSecret";
+// 7.10's holiday decor on the island (events/holidaydecor.js): the calendar events its BP_CalendarProps watch, HLDY_01 to
+// HLDY_07, each in the building and POI levels 7.10's client paks place it in (string lights, wreaths, llama lawn
+// ornaments, snowflakes, Christmas trees, floor loot; HLDY_07's four Prop_Athena_Quest_CandyCane are the giant candy canes).
+export const holidayDecorProps710 = ["HLDY_01", "HLDY_02", "HLDY_03", "HLDY_04", "HLDY_05", "HLDY_06", "HLDY_07"];
 export const lobbySeason8 = "EventFlag.LobbySeason8";
 export const lobbySeason9 = "EventFlag.LobbySeason9";
 // Save the World's Wargames (9.00, PongooDev/CoreV2#655, events/wargames.js): QuestMapData's "WARGAMES" event callout
