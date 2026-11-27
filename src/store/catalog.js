@@ -11,7 +11,7 @@ import { frostnite2018, winterLlama2018 } from "../events/frostnite2018.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
 import { springTickets } from "../events/spring2019.js";
 import { intoTheStormLlama } from "../events/storm2018.js";
-import { militaryLlama, summerTickets, talesOfBeyond } from "../events/talesofbeyond.js";
+import { militaryLlama, sciFiLlama, stellarHorizon, summerTickets, talesOfBeyond } from "../events/talesofbeyond.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
@@ -142,7 +142,12 @@ const voucherOffers = perBuild(() => itemIds()
 // Epic's Save the World roadmap (7 June 2019) calls the Year 2 Birthday Llama's 1,000 Summer Tickets "Same ticket type as
 // the previous season 9 Llamas" and turns leftover tickets into Sci-Fi Llamas "(not Military or BDay)". At 500 Summer
 // Tickets (🟡 the wikis' price; Epic's notes for it aren't kept), Yarrr!'s Pirate Llama's.
+// 9.20's Sci-Fi Llama (CardPack_Event_2019_Season9, events/talesofbeyond.js) takes its place: Update v9.20's "New Sci-Fi
+// Llama is available in the store ... Costs 500 Summer Tickets", and the roadmap's "(not Military or BDay)" has the Military
+// Llama off sale beside it. 9.00's to 9.10's paks have the pack too, as a "(Temp) Placeholder Llama", so it is sold only
+// where its event is: Beyond the Stellar Horizon (9.20's), or Tales of Beyond and Wargames on 9.20.
 const pirateLlama2019 = "CardPack:cardpack_event_2019_pirate";
+const sciFiLlamaBuild = 6822798;
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -175,12 +180,16 @@ const eventOffers = [
   { offerId: "core_event_pirate2019_llama", templateId: pirateLlama2019, title: "Pirate Llama",
     currencyType: "GameItem", currencySubType: springTickets, price: 500, always: true, event: spring2019Phase2 },
   { offerId: "core_event_military2019_llama", templateId: militaryLlama, title: "Military Llama",
-    currencyType: "GameItem", currencySubType: summerTickets, price: 500, always: true, event: [talesOfBeyond, wargames] }
+    currencyType: "GameItem", currencySubType: summerTickets, price: 500, always: true, event: [talesOfBeyond, wargames] },
+  { offerId: "core_event_scifi2019_llama", templateId: sciFiLlama, title: "Sci-Fi Llama", currencyType: "GameItem",
+    currencySubType: summerTickets, price: 500, always: true, event: [stellarHorizon, talesOfBeyond, wargames], fromBuild: sciFiLlamaBuild,
+    replaces: "core_event_military2019_llama" }
 ];
 
 // An event's offers are on sale while the requesting build runs the event (one of them, for a list) and has their llama,
 // but not one a later llama of the same event on sale replaces.
-const onSaleAlone = (offer) => !offer.event || ([offer.event].flat().some((event) => isEventActive(event)) && Boolean(getCardPack(offer.templateId)));
+const onSaleAlone = (offer) => !offer.event || (!(Number(currentBuild()) < (offer.fromBuild ?? 0))
+  && [offer.event].flat().some((event) => isEventActive(event)) && Boolean(getCardPack(offer.templateId)));
 const onSale = (offer) => onSaleAlone(offer) && !eventOffers.some((other) => other.replaces === offer.offerId && onSaleAlone(other));
 
 const allOffers = () => {

@@ -1,5 +1,5 @@
 {
- "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.weirdgloop.org, ?action=raw; May 9th 2019 - July 31st 2019, Season 9 whole run, 84 days; a day split in two pages (May 17th, May 22nd, June 6th, June 12th, July 20th, July 26th) from its Part 1, the shop at UTC midnight), read 2026-11-25, the items and prices as charged that day (featured = the wiki featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki ImageCycler) listed; the items of one tile carry {tile: n}, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back). Each item is matched to 9.10's (CL-6639283) data, which has every cosmetic of 9.01's (CL-6428087), itself 9.00's (CL-6337466) and seven more, and 39 more, by its display name and type (an Emote never to an emoticon, spray or toy of the same name: July's Crabby emote is a later build's, not 4.0's Crabby emoticon); a build serves the ones its own data has. Items 9.10 lacks are left out (the later updates' cosmetics: the World Cup set...; the Hang Time set was sold only as its bundle); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too.",
+ "source": "Fortnite Wiki Item Shop History/<Month> <day><ordinal> 2019 pages (fortnite.weirdgloop.org, ?action=raw; May 9th 2019 - July 31st 2019, Season 9 whole run, 84 days; a day split in two pages (May 17th, May 22nd, June 6th, June 12th, July 20th, July 26th) from its Part 1, the shop at UTC midnight), read 2026-11-25, the items and prices as charged that day (featured = the wiki featured tiles, daily = its daily tiles, each item of a cycling tile (the wiki ImageCycler) listed; the items of one tile carry {tile: n}, and its callout as {banner}: \"Pick your Style!\" PickYourStyle, \"Collect the Set!\" CollectTheSet, \"It's Back!\" Back). Each item is matched to 9.20's (CL-6822798) data, which has every cosmetic of 9.10's (CL-6639283) but Gemini (never sold) and 49 more, 9.10's being 9.01's (CL-6428087) and 39 more, itself 9.00's (CL-6337466) and seven more, by its display name and type (an Emote never to an emoticon, spray or toy of the same name: July's Crabby emote is a later build's, not 4.0's Crabby emoticon); a build serves the ones its own data has. Items 9.20 lacks are left out (the later updates' cosmetics: the World Cup set...; the Hang Time set was sold only as its bundle); Battle Pass Tiers, bundles, free (0 V-Bucks) items and Limited Time Offers / real-money tiles are left out too.",
  "days": [
   {
    "date": "2019-05-09",
@@ -2537,7 +2537,30 @@
   },
   {
    "date": "2019-06-07",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaPickaxe:pickaxe_id_218_stormsoldier",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_151_stormsoldier",
+     1200,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_430_athena_commando_m_stormsoldier",
+     2000
+    ],
+    [
+     "AthenaCharacter:cid_431_athena_commando_f_stormpilot",
+     800
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_324_athena_commando_f_barbarian",
@@ -2565,6 +2588,36 @@
    "date": "2019-06-08",
    "featured": [
     [
+     "AthenaCharacter:cid_430_athena_commando_m_stormsoldier",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_431_athena_commando_f_stormpilot",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_218_stormsoldier",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_151_stormsoldier",
+     1200,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
      "AthenaCharacter:cid_257_athena_commando_m_samuraiultra",
      2000,
      {
@@ -2581,6 +2634,10 @@
     ]
    ],
    "daily": [
+    [
+     "AthenaDance:eid_alien",
+     500
+    ],
     [
      "AthenaCharacter:cid_387_athena_commando_f_golf",
      800
@@ -2624,6 +2681,14 @@
       "tile": 1,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaCharacter:cid_436_athena_commando_m_reconspecialist",
+     800
+    ],
+    [
+     "AthenaCharacter:cid_433_athena_commando_f_tacticaldesert",
+     800
     ]
    ],
    "daily": [
@@ -2855,6 +2920,10 @@
      800
     ],
     [
+     "AthenaDance:eid_runningmanv3",
+     500
+    ],
+    [
      "AthenaGlider:glider_prismatic",
      800
     ],
@@ -2933,6 +3002,10 @@
     ]
    ],
    "daily": [
+    [
+     "AthenaDance:eid_electroshuffle_v2",
+     800
+    ],
     [
      "AthenaCharacter:cid_297_athena_commando_f_math",
      1200
@@ -3062,6 +3135,10 @@
       "tile": 2,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_220_forkknife1h",
+     500
     ]
    ],
    "daily": [
@@ -3094,6 +3171,20 @@
   {
    "date": "2019-06-16",
    "featured": [
+    [
+     "AthenaCharacter:cid_425_athena_commando_f_cyberrunner",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_076_cyberrunner",
+     500,
+     {
+      "tile": 1
+     }
+    ],
     [
      "AthenaCharacter:cid_100_athena_commando_m_cuchulainn",
      2000,
@@ -3171,6 +3262,20 @@
    "date": "2019-06-17",
    "featured": [
     [
+     "AthenaCharacter:cid_425_athena_commando_f_cyberrunner",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_076_cyberrunner",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
      "AthenaCharacter:cid_229_athena_commando_f_darkbomber",
      1200,
      {
@@ -3192,6 +3297,10 @@
       "tile": 2,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaItemWrap:wrap_078_slurpjuice",
+     700
     ]
    ],
    "daily": [
@@ -3223,7 +3332,30 @@
   },
   {
    "date": "2019-06-18",
-   "featured": [],
+   "featured": [
+    [
+     "AthenaPickaxe:pickaxe_id_216_demonhunter1h",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_152_demonhunter",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_426_athena_commando_f_demonhunter",
+     1200
+    ],
+    [
+     "AthenaCharacter:cid_427_athena_commando_m_demonhunter",
+     1200
+    ]
+   ],
    "daily": [
     [
      "AthenaCharacter:cid_410_athena_commando_m_cyberscavenger",
@@ -3269,10 +3401,47 @@
      }
     ],
     [
+     "AthenaPickaxe:pickaxe_id_219_bandageninja1h",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
      "AthenaGlider:glider_id_133_bandageninja",
      2000,
      {
       "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaCharacter:cid_426_athena_commando_f_demonhunter",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaCharacter:cid_427_athena_commando_m_demonhunter",
+     1200,
+     {
+      "tile": 3
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_216_demonhunter1h",
+     800,
+     {
+      "tile": 3,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_152_demonhunter",
+     800,
+     {
+      "tile": 3,
       "banner": "CollectTheSet"
      }
     ]
@@ -3562,6 +3731,10 @@
     [
      "AthenaPickaxe:pickaxe_id_186_demonstone",
      1200
+    ],
+    [
+     "AthenaDance:eid_alien",
+     500
     ]
    ]
   },
@@ -3642,6 +3815,13 @@
    "date": "2019-06-27",
    "featured": [
     [
+     "AthenaCharacter:cid_440_athena_commando_f_bullseyegreenplastic",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
      "AthenaCharacter:cid_412_athena_commando_f_raptor",
      2000,
      {
@@ -3670,6 +3850,10 @@
       "tile": 2,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaCharacter:cid_435_athena_commando_m_munitionsexpertgreenplastic",
+     800
     ]
    ],
    "daily": [
@@ -3712,6 +3896,20 @@
       "tile": 1,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaCharacter:cid_435_athena_commando_m_munitionsexpertgreenplastic",
+     800,
+     {
+      "tile": 2
+     }
+    ],
+    [
+     "AthenaCharacter:cid_440_athena_commando_f_bullseyegreenplastic",
+     800,
+     {
+      "tile": 2
+     }
     ]
    ],
    "daily": [
@@ -3728,8 +3926,16 @@
      200
     ],
     [
+     "AthenaItemWrap:wrap_080_blackout1",
+     500
+    ],
+    [
      "AthenaCharacter:cid_387_athena_commando_f_golf",
      1200
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_221_skullbriteeclipse",
+     800
     ],
     [
      "AthenaDance:eid_irishjig",
@@ -3762,12 +3968,24 @@
    ],
    "daily": [
     [
+     "AthenaDance:eid_electroshuffle_v2",
+     800
+    ],
+    [
      "AthenaCharacter:cid_021_athena_commando_f",
      1200
     ],
     [
+     "AthenaDance:eid_takethew",
+     500
+    ],
+    [
      "AthenaCharacter:cid_037_athena_commando_f_wintercamo",
      1200
+    ],
+    [
+     "AthenaDance:eid_runningmanv3",
+     500
     ],
     [
      "AthenaPickaxe:pickaxe_id_079_modernmilitary",
@@ -4105,6 +4323,36 @@
    "date": "2019-07-09",
    "featured": [
     [
+     "AthenaCharacter:cid_430_athena_commando_m_stormsoldier",
+     2000,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_431_athena_commando_f_stormpilot",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_218_stormsoldier",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
+     "AthenaGlider:glider_id_151_stormsoldier",
+     1200,
+     {
+      "tile": 1,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
      "AthenaCharacter:cid_396_athena_commando_f_swashbuckler",
      1500,
      {
@@ -4118,6 +4366,10 @@
       "tile": 2,
       "banner": "CollectTheSet"
      }
+    ],
+    [
+     "AthenaItemWrap:wrap_077_stormsoldier",
+     500
     ]
    ],
    "daily": [
@@ -4460,6 +4712,20 @@
    "date": "2019-07-15",
    "featured": [
     [
+     "AthenaCharacter:cid_433_athena_commando_f_tacticaldesert",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaCharacter:cid_436_athena_commando_m_reconspecialist",
+     800,
+     {
+      "tile": 1
+     }
+    ],
+    [
      "AthenaItemWrap:wrap_018_magma",
      700
     ]
@@ -4522,12 +4788,20 @@
      800
     ],
     [
+     "AthenaPickaxe:pickaxe_id_221_skullbriteeclipse",
+     800
+    ],
+    [
      "AthenaDance:eid_whirlwind",
      500
     ],
     [
      "AthenaDance:eid_easternbloc",
      800
+    ],
+    [
+     "AthenaItemWrap:wrap_080_blackout1",
+     500
     ],
     [
      "AthenaCharacter:cid_087_athena_commando_f_redsilk",
@@ -4586,6 +4860,10 @@
     ],
     [
      "AthenaDance:eid_kpopdance04",
+     500
+    ],
+    [
+     "AthenaDance:eid_alien",
      500
     ]
    ]
@@ -4810,6 +5088,20 @@
    "date": "2019-07-24",
    "featured": [
     [
+     "AthenaCharacter:cid_425_athena_commando_f_cyberrunner",
+     1500,
+     {
+      "tile": 1
+     }
+    ],
+    [
+     "AthenaItemWrap:wrap_076_cyberrunner",
+     500,
+     {
+      "tile": 1
+     }
+    ],
+    [
      "AthenaCharacter:cid_044_athena_commando_f_scipop",
      1200,
      {
@@ -4913,6 +5205,10 @@
      1200
     ],
     [
+     "AthenaDance:eid_takethew",
+     500
+    ],
+    [
      "AthenaCharacter:cid_387_athena_commando_f_golf",
      1200
     ],
@@ -4953,6 +5249,10 @@
     [
      "AthenaCharacter:cid_247_athena_commando_m_guanyu",
      1500
+    ],
+    [
+     "AthenaCharacter:cid_427_athena_commando_m_demonhunter",
+     1200
     ],
     [
      "AthenaItemWrap:wrap_074_teriyakifishvr",
@@ -5309,6 +5609,14 @@
      }
     ],
     [
+     "AthenaPickaxe:pickaxe_id_219_bandageninja1h",
+     800,
+     {
+      "tile": 2,
+      "banner": "CollectTheSet"
+     }
+    ],
+    [
      "AthenaGlider:glider_id_133_bandageninja",
      1500,
      {
@@ -5321,6 +5629,10 @@
     [
      "AthenaDance:eid_warehouse",
      800
+    ],
+    [
+     "AthenaPickaxe:pickaxe_id_220_forkknife1h",
+     500
     ],
     [
      "AthenaCharacter:cid_344_athena_commando_m_icecream",

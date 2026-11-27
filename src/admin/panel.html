@@ -2194,7 +2194,7 @@
       { id: "6", label: "Season 6 (6.00 – 6.31)", from: "6.00+", days: 70 },
       { id: "7", label: "Season 7 (7.00 – 7.40)", from: "7.00+", days: 84 },
       { id: "8", label: "Season 8 (8.00 – 8.51)", from: "8.00+", days: 70 },
-      { id: "9", label: "Season 9 (9.00 – 9.10)", from: "9.00+", days: 84 }
+      { id: "9", label: "Season 9 (9.00 – 9.20)", from: "9.00+", days: 84 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;

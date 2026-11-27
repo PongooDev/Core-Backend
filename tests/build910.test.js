@@ -62,7 +62,7 @@ const withSession = (build, name, run) => {
 };
 const templatesOf = (session) => Object.values(session.profile("athena").profile.items).map(({ templateId }) => templateId);
 
-test("9.10's two builds are known as 9.10; Update v9.10's plays on Content Update v9.10's data, Season 9's newest", () => {
+test("9.10's two builds are known as 9.10; Update v9.10's plays on Content Update v9.10's data", () => {
   assert.deepEqual([versionOf(v9100), versionOf(v910)], ["9.10", "9.10"]);
   assert.equal(allowedBuildList(["9.10"]).join(), `${v9100},${v910}`, "the version name allows both");
   assert.equal(allowedBuildList(["CL-6639283"]).join(), v910);
@@ -72,8 +72,8 @@ test("9.10's two builds are known as 9.10; Update v9.10's plays on Content Updat
   assert.equal(dataBuild("6600000"), v901, "a build Core doesn't know before 9.10's content update plays on 9.01's");
   assert.equal(dataBuild("6700000"), v910);
   assert.deepEqual([releasedOn(v9100), releasedOn(v910)], [Date.UTC(2019, 4, 22), Date.UTC(2019, 4, 29)]);
-  assert.equal(buildOfSeason(9), v910);
-  assert.equal(seasonName(9), "Season 9 (9.00 – 9.10)");
+  assert.equal(buildOfSeason(9), "6822798", "9.20 is Season 9's newest");
+  assert.equal(seasonName(9), "Season 9 (9.00 – 9.20)");
   for (const build of [v9100, v910]) {
     const season = inBuild(build, athenaSeason);
     assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [9, "BRSeason9", 100]);
@@ -117,9 +117,9 @@ test("the Downtown Drop Challenges: 9.10's schedule, served 22 May to 3 June on 
   withConfig({ ...season9, season4Flags: { overrides: { [ltmVigilante]: "on" } } }, () => {
     assert.ok(inBuild(v910, () => activeEventFlags()).includes(ltmVigilante), "switched on, always served");
   });
-  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6639283]);
-  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6639283]);
-  assert.deepEqual(eventCard("downtownDrop").ranges, [[6573057, 6639283]]);
+  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6822798]);
+  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6822798]);
+  assert.deepEqual(eventCard("downtownDrop").ranges, [[6573057, 6822798]]);
   withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(14) } }, () => withSession(v910, "drop910", (session) => {
     setUpAthena(session);
     athenaQuestLogin(session);
@@ -173,7 +173,7 @@ test("Season 9's events run on 9.10, and its Block plays Swash-buckling Seas, th
     assert.deepEqual(typesOf(inBuild(v910, () => blockStates(at("2019-05-20T12:00:00Z")))), [blockSlab(1)]);
     assert.deepEqual(typesOf(inBuild(v910, () => blockStates(at("2019-05-29T12:00:00Z")))), [blockSlab(2)]);
   });
-  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6639283]], id);
+  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6822798]], id);
   assert.deepEqual(eventCard("block910").ranges, [[6573057, 6639283]]);
 });
 

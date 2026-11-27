@@ -95,9 +95,10 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // Season 8's Arena (8.20 to 8.51, Core-Backend #423, tournaments/arena.js): its Solo and Duos tiles in the mode select.
   "arenaSolo", "arenaDuos",
   // 9.00's (CL-6337466) 50v50 and Update v9.00's rotation: Trios, Solid Gold and One Shot; 9.01's Wick's Bounty; 9.10's
-  // rotations (Sniper Shootout, Unvaulted, Close Encounters) and Team Rumble.
+  // rotations (Sniper Shootout, Unvaulted, Close Encounters) and Team Rumble; 9.20's Sword Fight.
   "fiftyFiftySeason9", "triosSeason9", "solidGoldSeason9Squads", "oneShotSeason9Squads", "wicksBountySquads", "wicksBountyDuos",
-  "wicksBountySolo", "sniperShootoutSeason9Duos", "unvaultedSeason9Squads", "closeEncountersSeason9Squads", "teamRumbleSeason9"];
+  "wicksBountySolo", "sniperShootoutSeason9Duos", "unvaultedSeason9Squads", "closeEncountersSeason9Squads", "teamRumbleSeason9",
+  "swordFightSeason9Squads", "swordFightSeason9Solo", "swordFightSeason9Duos"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.

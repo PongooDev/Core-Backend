@@ -196,6 +196,13 @@ const blockBuilds900 = [["2019-05-09", "Modern Mansion, by MakaMakes_YT"], ["201
 // is up from the lap's first day, as 8.50's. CL-6573057 (Update v9.10), whose paks Core has no copy of, plays the same
 // (🟡 its paks may not have had Salty Scorpion, 28 May being after its day).
 const blockBuilds910 = [["2019-05-09", "Swash-buckling Seas, by TheBoneRattler"], ["2019-05-28", "Salty Scorpion, by Josh822382"]];
+// 9.20 (CL-6822798, Update v9.20, 6 June 2019): Athena_POI_Foundations' SLAB_1 streams Athena/Maps/Block/9_20's
+// Block_25x25_Firebase_Omega ("Firebase Omega", DrDoofenschmerz), SLAB_2 Block_25x25_Mythical_Mayhem ("Mythical Mayhem",
+// TeamFusion), SLAB_3 the blank Block (not served). The Fortnite Wiki's The Block: Firebase Omega on 6 June 2019 (Update
+// v9.20's day), Mythical Mayhem on 12 June (Update v9.21's; 9.20's paks already have it), on to the season's end (🟡 the
+// wiki's next build, 18 June, is 9.30's). 9.20 came out mid-season, so its first build is up from the lap's first day, as
+// 9.10's.
+const blockBuilds920 = [["2019-05-09", "Firebase Omega, by DrDoofenschmerz"], ["2019-06-12", "Mythical Mayhem, by TeamFusion"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -426,6 +433,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds900) },
   { id: "block910", name: "The Block's community builds (9.10)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds910) },
+  { id: "block920", name: "The Block's community builds (9.20)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+    steps: blockSteps(blockBuilds920) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).

@@ -51,7 +51,8 @@ import { eliminationsStat, placementStat, showdownColors, showdownImagePath, sho
 // visual issue), Division I asks no token; the windows run from 8.20's release with no end (Epic's ended with the season);
 // bus fare is taken when the match's result is recorded (Epic took it at the bus); matchCap 0 (none).
 //
-// Season 9's Arena (Core-Backend #442). 9.00 (CL-6337466), 9.01 (CL-6428087) and 9.10 (CL-6573057, CL-6639283) keep it:
+// Season 9's Arena (Core-Backend #442). 9.00 (CL-6337466), 9.01 (CL-6428087), 9.10 (CL-6573057, CL-6639283) and 9.20
+// (CL-6822798, the same two playlist assets as 9.10's) keep it:
 // their paks' Playlist_ShowdownAlt_Solo and _Duos are 8.20's (58074, 58075, "Arena", bUseMultidivisionQueues, the
 // DivisionLoading screen) but for the in-match widget, now UI/Competitive/Arena/ArenaScoringHUD; the seven division badges
 // are still there, and 9.01's exe still reads divisionRank, ThresholdToAdvanceDivision, persistentScoreId and

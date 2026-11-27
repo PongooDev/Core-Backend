@@ -177,6 +177,10 @@ export const eventCards = [
   { id: "block910", kind: "dated", dated: "block910", seasons: [9], name: "The Block's community builds (9.10)", builds: "9.10", ranges: [[6573057, 6639283]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Swash-buckling Seas goes up", endLabel: "Salty Scorpion goes up",
     about: "9.10's two community-built islands on the Block, each a level in its paks: Swash-buckling Seas (TheBoneRattler; Update v9.10, 22 May 2019; 9.10 came out mid-season, so it is up from the replay's first day) and Salty Scorpion (Josh822382, 28 May, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC); Update v9.10's own build (CL-6573057) has no paks here and plays Content Update v9.10's." },
+  // 9.20's Block (events/block.js): Firebase Omega, then Mythical Mayhem (both in 9.20's paks).
+  { id: "block920", kind: "dated", dated: "block920", seasons: [9], name: "The Block's community builds (9.20)", builds: "9.20", ranges: [[6822798, 6822798]], always: true,
+    key: "slab1", endStep: "slab2", startLabel: "Firebase Omega goes up", endLabel: "Mythical Mayhem goes up",
+    about: "9.20's two community-built islands on the Block, each a level in its paks: Firebase Omega (DrDoofenschmerz; Update v9.20, 6 June 2019; 9.20 came out mid-season, so it is up from the replay's first day) and Mythical Mayhem (TeamFusion, 12 June, Update v9.21's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
   // 8.50's Block (events/block.js): Tricky Tracks, then Alien Sanctuary on 8.51's day (both in 8.50's paks); 8.51's is 8.50's.
   { id: "block850", kind: "dated", dated: "block850", seasons: [8], name: "The Block's community builds (8.50, 8.51)", builds: "8.50 – 8.51", ranges: [[6058028, 6165369]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Tricky Tracks goes up", endLabel: "Alien Sanctuary goes up",
@@ -220,27 +224,31 @@ export const eventCards = [
     about: "Battle Royale's Season 8 lobby: EventFlag.LobbySeason8 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season8), which puts the frontend's lobby in Maps/UI/Frontend_Lobby_Season8_B; without the flag the lobby has no background at all. 8.00 to 8.51 carry no other Battle Royale lobby flag.",
     flags: ["EventFlag.LobbySeason8"] },
   // 9.00's (events/events.js): Season 9's lobby, which is also the Fortbytes' event (events/fortbytes.js).
-  { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00 – 9.10", ranges: [[6337466, 6639283]],
+  { id: "season9Lobby", kind: "build", seasons: [9], name: "Season 9 lobby and Fortbytes", builds: "9.00 – 9.20", ranges: [[6337466, 6822798]],
     about: "Battle Royale's Season 9 lobby: EventFlag.LobbySeason9 turns on the lobby background takeover (Items/Events/Shared/LobbyBG_Season9). It is also the event of the Battle Pass's Fortbytes (Season9_Fortbyte_Schedule): each Fortbyte unlocks its set number of days after the flag's start, Season 9's first day on its replay.",
     flags: ["EventFlag.LobbySeason9"] },
   // 9.01's Wick's Bounty Challenges (events/wicksbounty.js).
-  { id: "wicksBounty", kind: "dated", dated: "wicksBounty", seasons: [9], name: "Wick's Bounty Challenges", builds: "9.01 – 9.10", ranges: [[6428087, 6639283]],
+  { id: "wicksBounty", kind: "dated", dated: "wicksBounty", seasons: [9], name: "Wick's Bounty Challenges", builds: "9.01 – 9.20", ranges: [[6428087, 6822798]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Update v9.01's Wick's Bounty Challenges (Schedule_LTM_Wax), all six from the start: win a match of Wick's Bounty for the One Shot umbrella, play 5 matches for the Boogeyman wrap, collect 120 gold tokens, 20 in a single match, and deal 500 damage with shotguns and with assault rifles (500 XP each); any 5 for the Gold Token back bling. From 16 May 2019, the mode's first day, by the Fortnite Wiki; the mode itself is events/ltms.js's Wick's Bounty. 🟡 The wiki's end (19 May) is before Epic's 20 May post still promoting them: to the end of 21 May, 00:00 UTC.",
     flags: ["EventFlag.LTM_Wax", "CalendarEvent_Season9_Wax"] },
   // 9.10's Downtown Drop Challenges (events/downtowndrop.js).
-  { id: "downtownDrop", kind: "dated", dated: "downtownDrop", seasons: [9], name: "Downtown Drop Challenges", builds: "9.10", ranges: [[6573057, 6639283]],
+  { id: "downtownDrop", kind: "dated", dated: "downtownDrop", seasons: [9], name: "Downtown Drop Challenges", builds: "9.10 – 9.20", ranges: [[6573057, 6822798]],
     key: "challenges", endOfKey: true, startLabel: "Challenges start", endLabel: "Challenges end",
     about: "Update v9.10's Downtown Drop Challenges (BundleSchedule_Event_VigilanteBoard, Fortnite x Jordan): 13 challenges in the Downtown Drop LTM's island, two from the start and the rest a day at a time; any 1 for the Back Board back bling, each for a spray or a Back Board style, all 13 for its Sweaty style. From 22 May to 4 June 2019 by the Fortnite Wiki. Core doesn't serve the LTM (its island was the creators' published island, not in the paks), so the challenges show but can't be done. 🟡 00:00 UTC.",
     flags: ["EventFlag.LTM_Vigilante", "CalendarEvent_Season9_Vigilante"] },
   // 9.00's Save the World Wargames (events/wargames.js, PongooDev/CoreV2#655).
-  { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00 – 9.10", ranges: [[6337466, 6639283]],
-    about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone, from 9.01 Mist Pods, from 9.10 Space Rocks, and on Content Update v9.10's build Hexed) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
+  { id: "wargames", kind: "build", seasons: [9], name: "Wargames (Save the World)", builds: "9.00 – 9.20", ranges: [[6337466, 6822798]],
+    about: "Save the World's Wargames: the Storm Shield computer's simulations (Torn Apart, Hot Spots, Denied, Safety Zone, from 9.01 Mist Pods, from 9.10 Space Rocks, from Content Update v9.10's build Hexed, and from 9.20 Invasion) and its nine challenges (the hotfix's bEnableIronCity), the quest map's Wargames callout, the Boot Camp, simulation and challenge quests and their repeatables, and a Daily Challenge quest a day in each zone whose first Storm Shield Defense is done, up to 4. Its rewards are Event Tickets, Gold, the simulations' banners and each zone's Wargames Rewards pack.",
     flags: ["EventFlag.Outpost"] },
   // 9.00's Save the World Tales of Beyond (events/talesofbeyond.js, Core-Backend #435).
-  { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00 – 9.10", ranges: [[6337466, 6639283]],
-    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Summer Tickets buy the Military Llama (500) in the Loot tab while this or Wargames is on; from 9.01 the Event Store sells Prehistoric Izza (2,800 Gold) while this is on, from 9.10 Rex Jonesy and on Content Update v9.10's build Fossil Southie (2,800 each). Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. 🟡 Epic's days aren't recorded: on for all of 9.00 to 9.10.",
-    flags: ["EventFlag.Season9", "EventFlag.Season9.Phase1"] }
+  { id: "talesOfBeyond", kind: "build", seasons: [9], name: "Tales of Beyond (Save the World)", builds: "9.00 – 9.20", ranges: [[6337466, 6822798]],
+    about: "Save the World's Season 9 quest line on the quest map's Tales of Beyond pages: Lok has gone missing. 15 quests from Lok Out, each opening the next, paying Summer Tickets and Gold, with the Paleo Luna hero on the ninth. Summer Tickets buy the Military Llama (500) in the Loot tab while this or Wargames is on; from 9.01 the Event Store sells Prehistoric Izza (2,800 Gold) while this is on, from 9.10 Rex Jonesy and on Content Update v9.10's build Fossil Southie (2,800 each). Wargames has its own callout beside it. 9.00's quest map has no Spring 2019 pages, so Love Storm and Yarrr! (the pirate line) end with 8.51. On 9.20 the Sci-Fi Llama (500 Summer Tickets) takes the Military Llama's place, the Event Store adds the Tar Pit trap (600 Gold) and the Weekly Store has Archeolo-Jess from 6 to 13 June; 9.20's paks no longer name EventFlag.Season9. 🟡 Epic's days aren't recorded: on for all of 9.00 to 9.20.",
+    flags: ["EventFlag.Season9", "EventFlag.Season9.Phase1"] },
+  // 9.20's Save the World Beyond the Stellar Horizon (events/talesofbeyond.js).
+  { id: "stellarHorizon", kind: "build", seasons: [9], name: "Beyond the Stellar Horizon (Save the World)", builds: "9.20", ranges: [[6822798, 6822798]],
+    about: "Update v9.20's Save the World quest line on the quest map's Beyond the Stellar Horizon pages: the VSS Gallant takes flight once more. 15 quests from S9_Fetch_Quest_B1, each opening the next, paying Summer Tickets and Gold, with the Mythic outlander Azalea Clark on the fourteenth. Summer Tickets buy the Sci-Fi Llama (500) in the Loot tab while this, Tales of Beyond or Wargames is on. Tales of Beyond runs beside it. 🟡 Epic's days aren't recorded: on for all of 9.20.",
+    flags: ["EventFlag.Season9.Phase2"] }
 ];
 export const eventCard = (id) => eventCards.find((card) => card.id === id);
 

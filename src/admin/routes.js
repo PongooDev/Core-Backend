@@ -212,7 +212,8 @@ const eventBuilds = [
   { version: "9.00", cl: 6337466, event: "Season 9 lobby, the Fortbytes" },
   { version: "9.01", cl: 6428087, event: "Season 9 lobby, the Fortbytes, Wick's Bounty" },
   { version: "9.10", cl: 6573057, event: "Season 9 lobby, the Fortbytes, Downtown Drop's challenges" },
-  { version: "9.10", cl: 6639283, event: "Season 9 lobby, the Fortbytes, Downtown Drop's challenges" }
+  { version: "9.10", cl: 6639283, event: "Season 9 lobby, the Fortbytes, Downtown Drop's challenges" },
+  { version: "9.20", cl: 6822798, event: "Season 9 lobby, the Fortbytes, Beyond the Stellar Horizon" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin

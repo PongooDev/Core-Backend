@@ -62,9 +62,9 @@ test("9.00 is known, on its own data, Season 9's first build", () => {
   assert.equal(dataBuild("6300000"), v851, "a build between 8.51 and 9.00 plays on 8.51's");
   assert.equal(dataBuild("6400000"), v900, "a later build Core doesn't know plays on 9.00's");
   assert.equal(releasedOn(v900), Date.UTC(2019, 4, 9));
-  assert.equal(buildOfSeason(9), "6639283", "9.10's Content Update build is Season 9's newest");
+  assert.equal(buildOfSeason(9), "6822798", "9.20 is Season 9's newest");
   assert.equal(buildOfSeason(8), v851, "8.51 stays Season 8's newest");
-  assert.equal(seasonName(9), "Season 9 (9.00 – 9.10)");
+  assert.equal(seasonName(9), "Season 9 (9.00 – 9.20)");
   const season = inBuild(v900, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels, season.numSeasonLevels], [9, "BRSeason9", 100, 100]);
   assert.equal(inBuild(v900, seasonOfBuild), 9);
@@ -252,7 +252,7 @@ test("9.00's lobby and Block: LobbySeason9, Modern Mansion then Custom Car Carpe
     assert.deepEqual(inBuild(v900, () => unvaultingFlagsNow(at("2019-05-10T12:00:00Z"))), [], "the Unvaulting is 8.51's");
   });
   assert.deepEqual(eventCard("block900").ranges, [[6337466, 6428087]]);
-  assert.deepEqual(eventCard("season9Lobby").ranges, [[6337466, 6639283]]);
+  assert.deepEqual(eventCard("season9Lobby").ranges, [[6337466, 6822798]]);
 });
 
 test("9.00's SetCompetitiveRegion is accepted with no profile change", async () => {

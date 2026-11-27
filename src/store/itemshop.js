@@ -195,6 +195,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 9.10 (CL-6639283, and CL-6573057 on its data) adds the 22 of its cosmetics the shop sold, 63 times from 23 May on: Doggo's
 // and Takara's sets, Scimitar and Sandstorm, the Fish Face, Fishy, Slippery and Ripple wraps, the Chrono contrail and seven emotes (843 of
 // 1,184); the Hang Time set was sold as its bundle only, left out as bundles are. 9.00's and 9.01's days are as they were.
+// 9.20 (CL-6822798) adds the 24 of its cosmetics the shop sold, 54 times from 7 June on: Tempest's and Bolt's set (Storm
+// Bolt, Storm Eye, Turbulent), Synapse and Hex Wave, Asmodeus, Callisto, Batso and Foul Play, Relay, Desert Dominator, Toy
+// Trooper and Plastic Patroller, the Fork Knife, Talons and Stark Splitter pickaxes, the Slurp! and Contrast wraps and four
+// emotes (897 of 1,184); 9.10's days are as they were.
 // Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
 // data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

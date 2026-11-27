@@ -627,6 +627,21 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   quests), `cardpacks.json` (their banners), `alterations.json` and `upgrades.json` (the RetroSciFi heroes' and burst
   rifle's rows ahead of their update); the other files are 9.01's. CL-6573057 (Update v9.10) has no copy here and plays on
   this data (`src/gamedata/read.js` laterData).
+  9.20's (CL-6822798, Update v9.20) is `4.23.0-6822798+++Fortnite+Release-9.20` (no `Build.version`; no Dumper-7 SDK at its
+  extraction; the build folder is `9.20-CL-6822798\9.20-CL-6822798\Fortnite`) with 9.10's full data (Cert's files with
+  `gamedata/6639283` applied) as the fifth argument and the main key FModel's settings hold for its build folder. 9.10's
+  layout with the keyed pakchunk1000 to 1016, of which the keychain opens all but 1008 and 1012. Its mission alerts are
+  still the fifth argument's. No extractor change. Against 9.10 thirteen files change (banners, inventory, squads and
+  transmog only in key order): `athena.json` (1,889 cosmetics, 49 more and Gemini gone: Tempest and Bolt's set, Breakpoint,
+  Asmodeus and Callisto, the Toy Trooper pair, the World Cup music; Breakpoint's styles and Update v9.21's Horde Rush
+  challenges; the Fortbytes' new rows), `items.json`, `fabricator.json` and `upgrades.json` (the Retro Sci-Fi weapons,
+  the Tar Pit, Creative's trigger, storm controller, power-ups and Pueblo prefabs, Update v9.21's Proximity Grenade
+  Launcher), `characters.json` and
+  `collectionbook.json` (the Retro Sci-Fi heroes and Azalea Clark), `quests.json` and `world.json` (Invasion's and Update
+  v9.21's Quantum Countdown's Wargames quests, the endless Storm Shield quests, Beyond the Stellar Horizon's missions,
+  the weekly quests' new rewards), `cardpacks.json` (the Sci-Fi Llama and the two banners), `alterations.json`,
+  `homebasenodes.json` (QuestReward_SecondaryAttack gone: the notes' heavy attacks from the start), `expeditions.json` and
+  `objectivestats.json`; the other files are 9.10's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

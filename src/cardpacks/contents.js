@@ -344,6 +344,20 @@ function militaryLlama2019() {
   return [...llama(llamas.cardpack_bronze), ...pickOne(militaryLlama2019Items(weighted([["vr", 75], ["sr", 25]])))];
 }
 
+// The Sci-Fi Llama (CardPack_Event_2019_Season9, 9.20), sold for Summer Tickets (store/catalog.js): "Guarantees at least one
+// Epic or better limited time Sci-Fi weapon or Hero!", its inner packs CardPack_Event_2019_Season9_VR and _SR (group
+// CardPack_Event_2019_Season9_Inner). Update v9.20's "4 new Sci-Fi Heroes, and 5 new Sci-Fi Weapons": Extraterrestrial Rio
+// (Commando_030), ED-EE (Constructor_028), Cyberclops (Outlander_029) and Intergalactic Ken (Ninja_030), and the Atomic
+// Light Expander (spear), Blastotron 9000 (sniper), Blastotron Mini (auto pistol), Gammatron 9000 (burst assault) and Husk
+// Warper (hammer). An Upgrade Llama's items and one of them, as the Military Llama's (🟡 the odds are Core's).
+const sciFiLlama2019Items = (rarity) => [...["piercing_spear_retroscifi", "sniper_retroscifi", "pistol_auto_retroscifi",
+  "assault_burst_retroscifi", "blunt_hammer_retroscifi"].map((name) => `Schematic:sid_${name}_${rarity}_ore_t01`),
+...["commando_030_retroscifisoldier", "constructor_028_retroscificonstructor", "outlander_029_retroscifioutlander",
+  "ninja_030_retroscifininja"].map((name) => `Hero:hid_${name}_${rarity}_t01`)].filter(hasItem);
+function sciFiLlama2019() {
+  return [...llama(llamas.cardpack_bronze), ...pickOne(sciFiLlama2019Items(weighted([["vr", 75], ["sr", 25]])))];
+}
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -376,6 +390,8 @@ export function rollContents(templateId) {
   if (group === "cardpack_event_2019_pirate") return pirateLlama2019();
   if (group === "cardpack_event_2019_military") return militaryLlama2019();
   if (group === "cardpack_event_2019_military_inner") return pickOne(militaryLlama2019Items(/_(vr|sr)$/.exec(templateId.toLowerCase())?.[1] ?? "vr"));
+  if (group === "cardpack_event_2019_season9") return sciFiLlama2019();
+  if (group === "cardpack_event_2019_season9_inner") return pickOne(sciFiLlama2019Items(/_(vr|sr)$/.exec(templateId.toLowerCase())?.[1] ?? "vr"));
   const vindertechWeapon = vindertechPack(group);
   if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);

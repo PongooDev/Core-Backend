@@ -706,16 +706,20 @@ const build900 = 6337466;
 const build901 = 6428087;
 const build9100 = 6573057;
 const build910 = 6639283;
-const season9Window = [{ builds: [build900, build910], start: "2019-05-09", end: "2019-08-01" }];
+const build920 = 6822798;
+const season9Window = [{ builds: [build900, build920], start: "2019-05-09", end: "2019-08-01" }];
 // 9.00's rotation (Update v9.00's "Limited Time Mode Rotation"): 🟡 no source gives its days; from 9.00's day to 9.01's.
-const rotation900Window = [{ builds: [build900, build910], start: "2019-05-09", end: "2019-05-15" }];
+const rotation900Window = [{ builds: [build900, build920], start: "2019-05-09", end: "2019-05-15" }];
 // 9.01's Wick's Bounty (below): the Fortnite Wiki's first days, Squads 16 May, Duos 19 May, Solo 20 May 2019; 🟡 no source
 // gives the ends: to the end of 21 May, the day before Update v9.10, as its challenges (events/datedflags.js wicksBounty).
-const wicksBountyWindow = (start) => [{ builds: [build901, build910], start, end: "2019-05-22" }];
+const wicksBountyWindow = (start) => [{ builds: [build901, build920], start, end: "2019-05-22" }];
 // 9.10's rotations (below): Update v9.10's, 22 May 2019, and Content Update v9.10's, 29 May; 🟡 no source gives their days:
 // each from its update's day to the next update's (Content Update v9.10, then Update v9.20 on 4 June).
-const rotation910Window = [{ builds: [build9100, build910], start: "2019-05-22", end: "2019-05-29" }];
-const rotation910ContentWindow = [{ builds: [build9100, build910], start: "2019-05-29", end: "2019-06-04" }];
+const rotation910Window = [{ builds: [build9100, build920], start: "2019-05-22", end: "2019-05-29" }];
+const rotation910ContentWindow = [{ builds: [build9100, build920], start: "2019-05-29", end: "2019-06-04" }];
+// 9.20's rotation (Update v9.20's "Limited Time Mode Rotation: Sword Fight"): 🟡 no source gives its days: from 9.20's day,
+// 6 June 2019 (the Fortnite Wiki's), to Update v9.21's, 12 June.
+const rotation920Window = [{ builds: [build920, build920], start: "2019-06-06", end: "2019-06-12" }];
 const season8Window = [{ builds: [build800, build851], start: "2019-02-28", end: "2019-05-09" }];
 const season7Window = [{ builds: [build700, build740], start: "2018-12-06", end: "2019-02-28" }];
 const loveShotWindow = [{ builds: [build740, build740], start: "2019-02-14", end: "2019-02-16" }];
@@ -997,7 +1001,7 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build910], seasons: [5, 6, 7, 8, 9], defaultOn: true,
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build920], seasons: [5, 6, 7, 8, 9], defaultOn: true,
     original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window, ...season7Window, ...season8Window, ...season9Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -1509,16 +1513,16 @@ export const ltms = [
   // (Playlist_Trios, 201), Solid Gold and One Shot (🟡 the notes name no team size: Squads, as Season 8's runs; Playlist_
   // SolidGold_Squads, 27, and Playlist_Low_Squads, 252), each by its Original dates from 9.00's day to 9.01's (🟡) and off by
   // default, as 9.00's lobby ships none of them. Season 8's entries end with 8.51: 9.00 is a new season (seasonOf).
-  { id: "fiftyFiftySeason9", name: "50v50 (Season 9)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build900, build910], seasons: [9], defaultOn: true,
+  { id: "fiftyFiftySeason9", name: "50v50 (Season 9)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build900, build920], seasons: [9], defaultOn: true,
     original: season9Window,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height: 9.00's lobby ships it on (Playlist_50v50, 9.00's)." },
-  { id: "triosSeason9", name: "Trios (Season 9)", playlistId: 201, playlistName: "Playlist_Trios", eventFlag: null, builds: [build900, build910], seasons: [9],
+  { id: "triosSeason9", name: "Trios (Season 9)", playlistId: 201, playlistName: "Playlist_Trios", eventFlag: null, builds: [build900, build920], seasons: [9],
     original: rotation900Window,
     teams: "33 Teams × 3", description: "Classic Battle Royale in squads of three: Update v9.00's limited time mode rotation (Playlist_Trios, 9.00's)." },
-  { id: "solidGoldSeason9Squads", name: "Solid Gold (Season 9, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build900, build910], seasons: [9],
+  { id: "solidGoldSeason9Squads", name: "Solid Gold (Season 9, Squads)", playlistId: 27, playlistName: "Playlist_SolidGold_Squads", eventFlag: null, builds: [build900, build920], seasons: [9],
     original: [...rotation900Window, ...rotation910ContentWindow],
     teams: "100 Teams × 4", description: "Every weapon Legendary: Update v9.00's and Content Update v9.10's limited time mode rotations (Playlist_SolidGold_Squads, 9.00's)." },
-  { id: "oneShotSeason9Squads", name: "One Shot (Season 9, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build900, build910], seasons: [9],
+  { id: "oneShotSeason9Squads", name: "One Shot (Season 9, Squads)", playlistId: 252, playlistName: "Playlist_Low_Squads", eventFlag: null, builds: [build900, build920], seasons: [9],
     original: rotation900Window,
     teams: "100 Teams × 4", description: "Low gravity, 50 health, snipers only and Bandages the only healing: Update v9.00's limited time mode rotation (Playlist_Low_Squads, 9.00's)." },
   // 9.01 (CL-6428087, Update v9.01, 15 May 2019): its 146 playlist assets are 9.00's, the same PlaylistNames, ids and sizes,
@@ -1527,14 +1531,14 @@ export const ltms = [
   // token count wins, three lives). Its DefaultGame.ini's lobby is 9.00's, so every Season 9 entry here runs to 9.01 and
   // Wick's Bounty is off by default, served by its Original dates. Athena.Playlist.Wax is its challenges' context tag
   // (complete_athena_wax, win_athena_wax: events/wicksbounty.js). No Epic tile is recorded, so it keeps the default picture.
-  // 9.10's paks keep the three (the same assets), so they run to 9.10 with their switches.
-  { id: "wicksBountySquads", name: "Wick's Bounty (Squads)", playlistId: 1004, playlistName: "Playlist_Wax_Squads", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build910], seasons: [9],
+  // 9.10's and 9.20's paks keep the three (the same assets), so they run to 9.20 with their switches.
+  { id: "wicksBountySquads", name: "Wick's Bounty (Squads)", playlistId: 1004, playlistName: "Playlist_Wax_Squads", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build920], seasons: [9],
     advertise: "New", original: wicksBountyWindow("2019-05-16"),
     teams: "18 Teams × 4", description: "The High Table's contract: three lives, gold tokens for eliminations, the first team to the token count wins and the leaders show on the map (Playlist_Wax_Squads, 9.01's)." },
-  { id: "wicksBountyDuos", name: "Wick's Bounty (Duos)", playlistId: 1003, playlistName: "Playlist_Wax_Duos", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build910], seasons: [9],
+  { id: "wicksBountyDuos", name: "Wick's Bounty (Duos)", playlistId: 1003, playlistName: "Playlist_Wax_Duos", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build920], seasons: [9],
     advertise: "New", original: wicksBountyWindow("2019-05-19"),
     teams: "36 Teams × 2", description: "Wick's Bounty in duos (Playlist_Wax_Duos, 9.01's)." },
-  { id: "wicksBountySolo", name: "Wick's Bounty (Solo)", playlistId: 1002, playlistName: "Playlist_Wax_Solo", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build910], seasons: [9],
+  { id: "wicksBountySolo", name: "Wick's Bounty (Solo)", playlistId: 1002, playlistName: "Playlist_Wax_Solo", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build920], seasons: [9],
     advertise: "New", original: wicksBountyWindow("2019-05-20"),
     teams: "72 Teams × 1", description: "Wick's Bounty alone (Playlist_Wax_Solo, 9.01's)." },
   // 9.10 (CL-6639283, Content Update v9.10, 29 May 2019; CL-6573057, Update v9.10, 22 May, has no paks here and plays on its
@@ -1554,29 +1558,45 @@ export const ltms = [
   // the creators' published island (NotNellaf and Tollmolia's), which isn't in the paks, so a Core server would have only
   // the empty island and Creative_Vigilante_Quests' markers; its challenges are events/downtowndrop.js's. Neither are the
   // Creative play-only, _B_*_G and Fortlite playlists (no record of Epic running them on 9.10).
-  { id: "sniperShootoutSeason9Duos", name: "Sniper Shootout (Season 9, Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build9100, build910], seasons: [9],
+  { id: "sniperShootoutSeason9Duos", name: "Sniper Shootout (Season 9, Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build9100, build920], seasons: [9],
     original: rotation910Window,
     teams: "100 Teams × 2", description: "Sniper rifles only, and downed is eliminated: Update v9.10's limited time mode rotation (Playlist_Snipers_Duos, 9.10's)." },
-  { id: "unvaultedSeason9Squads", name: "Unvaulted (Season 9, Squads)", playlistId: 332, playlistName: "Playlist_Unvaulted_Squads", eventFlag: null, builds: [build9100, build910], seasons: [9],
-    original: [{ builds: [build9100, build910], start: "2019-05-22", end: "2019-06-04" }],
+  { id: "unvaultedSeason9Squads", name: "Unvaulted (Season 9, Squads)", playlistId: 332, playlistName: "Playlist_Unvaulted_Squads", eventFlag: null, builds: [build9100, build920], seasons: [9],
+    original: [{ builds: [build9100, build920], start: "2019-05-22", end: "2019-06-04" }],
     teams: "100 Teams × 4", description: "A limited set of weapons made up entirely of items vaulted in the standard modes: Update v9.10's and Content Update v9.10's rotations (Playlist_Unvaulted_Squads, 9.10's)." },
-  { id: "closeEncountersSeason9Squads", name: "Close Encounters (Season 9, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build9100, build910], seasons: [9],
-    original: [{ builds: [build9100, build910], start: "2019-05-22", end: "2019-06-04" }],
+  { id: "closeEncountersSeason9Squads", name: "Close Encounters (Season 9, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build9100, build920], seasons: [9],
+    original: [{ builds: [build9100, build920], start: "2019-05-22", end: "2019-06-04" }],
     teams: "100 Teams × 4", description: "Shotguns and jetpacks only, close quarters: Update v9.10's and Content Update v9.10's rotations (Playlist_Close_Squad, whose asset is Playlist_Close_Squads; 9.10's)." },
-  { id: "teamRumbleSeason9", name: "Team Rumble (Season 9)", playlistId: 280, playlistName: "Playlist_Respawn_24", eventFlag: null, builds: [build9100, build910], seasons: [9],
-    original: [{ builds: [build9100, build910], start: "2019-05-22", end: "2019-08-01" }],
+  { id: "teamRumbleSeason9", name: "Team Rumble (Season 9)", playlistId: 280, playlistName: "Playlist_Respawn_24", eventFlag: null, builds: [build9100, build920], seasons: [9],
+    original: [{ builds: [build9100, build920], start: "2019-05-22", end: "2019-08-01" }],
     teams: "2 Teams × 20", description: "Two teams of twenty, respawning, the first to the eliminations goal wins: Season 9's core mode (Playlist_Respawn_24, 9.10's)." },
+  // 9.20 (CL-6822798, Update v9.20, 6 June 2019). Its 177 playlist assets are 9.10's (every one the same asset but
+  // Creative's play-only playlists, Downtown Drop's, Playground V2's, the Fortnite_B_*_G, Lite_* and Gungame_Reverse
+  // ones, none served) and 12 more: 7.40's Playlist_Sword_Solo, _Duos and _Squads back (335 to 337, the same names, ids
+  // and sizes, "Sword Fight": "Treasure chests contain Epic or better weapons as well as the occasional Infinity Blade!"),
+  // Update v9.21's Horde Rush (Playlist_Mash_Squads, 514, a later build's: not served), Playlist_Tutorial_1 and seven
+  // Creative play-only playlists (35, Beach Assault, Puppy Hugs, Creative Map 16 to 100; no record of Epic running them on
+  // 9.20). Its DefaultGame.ini's lobby is 9.10's. Update v9.20's rotation is Sword Fight, its team size not named: 🟡 Squads
+  // by its Original dates (rotation920Window), as Season 7's run and the Fortnite Wiki's Sword Fight (Squads); Solo and
+  // Duos by their switches. Off by default, as 9.20's lobby ships none of them.
+  { id: "swordFightSeason9Squads", name: "Sword Fight (Season 9, Squads)", playlistId: 337, playlistName: "Playlist_Sword_Squads", eventFlag: null, builds: [build920, build920], seasons: [9],
+    original: rotation920Window,
+    teams: "100 Teams × 4", description: "Epic or better weapons in chests, now and then an Infinity Blade, a faster storm: Update v9.20's limited time mode rotation (Playlist_Sword_Squads, 9.20's)." },
+  { id: "swordFightSeason9Solo", name: "Sword Fight (Season 9, Solo)", playlistId: 335, playlistName: "Playlist_Sword_Solo", eventFlag: null, builds: [build920, build920], seasons: [9],
+    teams: "100 Teams × 1", description: "Epic or better weapons and the Infinity Blade in chests (Playlist_Sword_Solo, 9.20's)." },
+  { id: "swordFightSeason9Duos", name: "Sword Fight (Season 9, Duos)", playlistId: 336, playlistName: "Playlist_Sword_Duos", eventFlag: null, builds: [build920, build920], seasons: [9],
+    teams: "100 Teams × 2", description: "Epic or better weapons and the Infinity Blade in chests (Playlist_Sword_Duos, 9.20's)." },
   // Season 8's Arena (Core-Backend #420, tournaments/arena.js): Update v8.20's "Arena Game Mode (Solo & Duos)", on the Pop-Up
   // Cups' Playlist_ShowdownAlt_Solo and _Duos (58074, 58075), which 8.20's to 8.51's paks name "Arena" ("Prove your skill in
   // this competitive mode! During each match, you'll earn Hype ..."; bIsTournament, bUseMultidivisionQueues, full parties).
   // No lobby mode (arena): the events service's Arena events put the tile in the mode select, and a ticket for one is taken
   // for the division the player holds (services/matchmaking/ticket.js). Its switch (on by default, #423) shows or hides the
   // tile: a hidden mode's event stays out of the events download (tournaments/arena.js). Season 9 keeps it (#442): 9.00's to
-  // 9.10's paks hold the same two playlists (58074, 58075, "Arena", ArenaScoringHUD in the match), and 9.00 on serve
+  // 9.20's paks hold the same two playlists (58074, 58075, "Arena", ArenaScoringHUD in the match), and 9.00 on serve
   // Season 9's events and Hype, apart from Season 8's (tournaments/arena.js arenaSeasonOf).
-  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build910], seasons: [8, 9], arena: true, defaultOn: true,
+  { id: "arenaSolo", name: "Arena (Solo)", playlistId: 58074, playlistName: "Playlist_ShowdownAlt_Solo", eventFlag: null, builds: [build820, build920], seasons: [8, 9], arena: true, defaultOn: true,
     teams: "100 Teams × 1", description: "Seasons 8 and 9's Arena: Hype for placements and eliminations, seven divisions from the Open League to the Champion League, each season's Hype its own (Playlist_ShowdownAlt_Solo, 8.20's)." },
-  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build910], seasons: [8, 9], arena: true, defaultOn: true,
+  { id: "arenaDuos", name: "Arena (Duos)", playlistId: 58075, playlistName: "Playlist_ShowdownAlt_Duos", eventFlag: null, builds: [build820, build920], seasons: [8, 9], arena: true, defaultOn: true,
     teams: "100 Teams × 2", description: "Seasons 8 and 9's Arena in duos, for full duos (Playlist_ShowdownAlt_Duos, 8.20's)." },
   // Season 8's in-game tournaments (Core-Backend #421): 8.20's paks add Athena/Playlists/Showdown/Tournament's
   // Playlist_ShowdownTournament_Solo, _Duos and _Squads (58082 to 58084, "Tournament": bIsTournament, MinPlayers 100,
@@ -1590,14 +1610,14 @@ export const ltms = [
     teams: "100 Teams × 2", description: "Season 8's in-game tournaments' Duos playlist, for full duos: the Luxe Cup's and the Online Opens' (Playlist_ShowdownTournament_Duos, 8.20's)." },
   { id: "tournamentS8Squads", name: "Tournament (Season 8, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build820, build851], seasons: [8], tournament: true,
     teams: "100 Teams × 4", description: "Season 8's in-game tournaments' Squads playlist, for full squads (Playlist_ShowdownTournament_Squads, 8.20's)." },
-  // Season 9's in-game tournaments (Core-Backend #442): 9.00's to 9.10's paks keep the three (58082 to 58084, 8.51's, with
+  // Season 9's in-game tournaments (Core-Backend #442): 9.00's to 9.20's paks keep the three (58082 to 58084, 8.51's, with
   // Athena.Playlist.Tournament), the Season 9 cups' (the Fortnite World Cup Online Opens' later weeks). An admin panel event
-  // of one is listed in the Events tab of 9.00 to 9.10, beside Season 9's Arena, as on 8.20 to 8.51.
-  { id: "tournamentS9Solo", name: "Tournament (Season 9, Solo)", playlistId: 58082, playlistName: "Playlist_ShowdownTournament_Solo", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+  // of one is listed in the Events tab of 9.00 to 9.20, beside Season 9's Arena, as on 8.20 to 8.51.
+  { id: "tournamentS9Solo", name: "Tournament (Season 9, Solo)", playlistId: 58082, playlistName: "Playlist_ShowdownTournament_Solo", eventFlag: null, builds: [build900, build920], seasons: [9], tournament: true,
     teams: "100 Teams × 1", description: "Season 9's in-game tournaments' Solo playlist (Playlist_ShowdownTournament_Solo, 9.00's)." },
-  { id: "tournamentS9Duos", name: "Tournament (Season 9, Duos)", playlistId: 58083, playlistName: "Playlist_ShowdownTournament_Duos", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+  { id: "tournamentS9Duos", name: "Tournament (Season 9, Duos)", playlistId: 58083, playlistName: "Playlist_ShowdownTournament_Duos", eventFlag: null, builds: [build900, build920], seasons: [9], tournament: true,
     teams: "100 Teams × 2", description: "Season 9's in-game tournaments' Duos playlist, for full duos: the Online Opens' (Playlist_ShowdownTournament_Duos, 9.00's)." },
-  { id: "tournamentS9Squads", name: "Tournament (Season 9, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build900, build910], seasons: [9], tournament: true,
+  { id: "tournamentS9Squads", name: "Tournament (Season 9, Squads)", playlistId: 58084, playlistName: "Playlist_ShowdownTournament_Squads", eventFlag: null, builds: [build900, build920], seasons: [9], tournament: true,
     teams: "100 Teams × 4", description: "Season 9's in-game tournaments' Squads playlist, for full squads (Playlist_ShowdownTournament_Squads, 9.00's)." },
   // 7.00's Creative (PongooDev/CoreV2#471): Athena/Playlists/Creative/Playlist_PlaygroundV2 (PlaylistId 35, as Playground's,
   // "Creative", "Design games with friends, race around your island or build your dream Fortnite. Your island. Your friends.
@@ -1613,7 +1633,7 @@ export const ltms = [
   // party's alone, as Playground's (matchmaking/service.js isPartyOnlyBucket: a free server per party), never with bots
   // (matchmaking/botmodes.js), and before 13 December 2018 only Battle Pass owners queue it (profiles/creative.js, Update
   // v7.00's early access). 9.00's lobby keeps it (Playlist_PlaygroundV2, 9.00's DefaultGame.ini).
-  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build910], seasons: [7, 8, 9], defaultOn: true,
+  { id: "creative", name: "Creative", playlistId: 35, playlistName: "Playlist_PlaygroundV2", eventFlag: null, builds: [build700, build920], seasons: [7, 8, 9], defaultOn: true,
     alwaysOn: true, advertise: "New", limitedTime: false,
     teams: "Party only, up to 16 players", description: "Your own islands to build on with friends: the Creative hub, four islands that save, prefabs, devices and fly mode (Playlist_PlaygroundV2, 7.00's)." }
 ];

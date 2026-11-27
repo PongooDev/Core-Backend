@@ -557,6 +557,13 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // paks but pakchunk1005) and two more, EventFlag.LTM_Vigilante and CalendarEvent_Season9_Vigilante
 // (BundleSchedule_Event_VigilanteBoard, the Downtown Drop Challenges: events/downtowndrop.js). Season 9's lobby, Wargames
 // and Tales of Beyond run on; Hot Spots and their Loot Carriers are 9.10's map and playlists, no calendar name.
+//
+// 9.20 (CL-6822798, Update v9.20, 6 June 2019): 9.10's 63 (the same byte scan, 610,136 files; the keychain opens all its
+// keyed paks but pakchunk1008 and 1012) less EventFlag.Season9, which its QuestMapScreen no longer names, and three more:
+// EventFlag.Season9.Phase2 (QuestMap2's Season9BQuestMap and Season9SciFiQuestData, "BEYOND THE STELLAR HORIZON": Update
+// v9.20's quest line, events/talesofbeyond.js), and EventFlag.LTM_Mash and CalendarEvent_Season9_Mash (Schedule_LTM_Mash,
+// Horde Rush's challenges: Update v9.21's LTM, 13 June 2019 by the Fortnite Wiki, not 9.20's, so not served). Season 9's
+// lobby, Wargames and Tales of Beyond run on; EventQuestMapSideBarData shows Tales of Beyond's row on Phase1 or Phase2.
 export const ltm14DaysOfFortnite = "EventFlag.LTM_14DaysOfFortnite";
 export const ltmWinterDeimos = "EventFlag.LTM_WinterDeimos";
 export const lteFestivus = "EventFlag.LTE_Festivus";
@@ -604,6 +611,10 @@ export const wargamesFlag = "EventFlag.Outpost";
 export const talesOfBeyond = "TalesOfBeyond";
 export const season9Flag = "EventFlag.Season9";
 export const season9Phase1 = "EventFlag.Season9.Phase1";
+// 9.20's Beyond the Stellar Horizon (events/talesofbeyond.js): Season9SciFiQuestData's callout and Season9BQuestMap's five
+// pages, all EventFlag.Season9.Phase2.
+export const stellarHorizon = "StellarHorizon";
+export const season9Phase2 = "EventFlag.Season9.Phase2";
 // 7.00's Save the World Season 7 Warmup (above): the Mutant Storms with Snowflake Tickets, the Mini-Bosses without tickets.
 export const season7Warmup2018 = "Season7Warmup2018";
 // 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
@@ -752,6 +763,7 @@ const build851 = 6165369;
 const build900 = 6337466;
 const build901 = 6428087;
 const build910 = 6639283;
+const build920 = 6822798;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -806,13 +818,15 @@ const events = [
   { name: lobbySeason7, flag: lobbySeason7, firstBuild: build700, lastBuild: build740 },
   // 8.00's (above): Season 8's lobby background, the frontend's lobby map (LobbyBG_Season8); 8.20's to 8.51's too.
   { name: lobbySeason8, flag: lobbySeason8, firstBuild: build800, lastBuild: build851 },
-  // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event; 9.01's and 9.10's too.
-  { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build910 },
-  // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js), on 9.01 and 9.10 too.
-  { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build910 },
-  // 9.00's Tales of Beyond (events/talesofbeyond.js), on 9.01 and 9.10 too.
+  // 9.00's (above): Season 9's lobby background (LobbyBG_Season9), and the Fortbytes' event; 9.01's to 9.20's too.
+  { name: lobbySeason9, flag: lobbySeason9, firstBuild: build900, lastBuild: build920 },
+  // 9.00's Wargames (Update v9.00: "Introducing: Wargames!", events/wargames.js), on 9.01 to 9.20 too.
+  { name: wargames, flag: wargamesFlag, firstBuild: build900, lastBuild: build920 },
+  // 9.00's Tales of Beyond (events/talesofbeyond.js), on 9.01 to 9.20 too; 9.20's paks no longer name EventFlag.Season9.
   { name: talesOfBeyond, flag: season9Flag, firstBuild: build900, lastBuild: build910 },
-  { name: talesOfBeyond, flag: season9Phase1, firstBuild: build900, lastBuild: build910 },
+  { name: talesOfBeyond, flag: season9Phase1, firstBuild: build900, lastBuild: build920 },
+  // 9.20's Beyond the Stellar Horizon (events/talesofbeyond.js).
+  { name: stellarHorizon, flag: season9Phase2, firstBuild: build920, lastBuild: build920 },
   { name: spring2019, flag: spring2019Flag, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase1, firstBuild: build800, lastBuild: build851 },
   { name: spring2019, flag: spring2019Phase2, firstBuild: build820, lastBuild: build851 },

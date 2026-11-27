@@ -64,7 +64,7 @@ test("9.01 is known, on its own data", () => {
   assert.equal(dataBuild("6400000"), v900, "a build between 9.00 and 9.01 plays on 9.00's");
   assert.equal(dataBuild("6500000"), v901, "a build between 9.01 and 9.10 plays on 9.01's");
   assert.equal(releasedOn(v901), Date.UTC(2019, 4, 15));
-  assert.equal(seasonName(9), "Season 9 (9.00 – 9.10)");
+  assert.equal(seasonName(9), "Season 9 (9.00 – 9.20)");
   const season = inBuild(v901, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [9, "BRSeason9", 100]);
   assert.equal(inBuild(v901, seasonOfBuild), 9);
@@ -106,8 +106,8 @@ test("the Wick's Bounty Challenges: 9.01's schedule, its 9.01 counts, served 16 
   withConfig({ ...season9, season4Flags: { overrides: { [ltmWax]: "on" } } }, () => {
     assert.ok(inBuild(v901, () => activeEventFlags()).includes(ltmWax), "switched on, always served");
   });
-  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6639283]);
-  assert.deepEqual(eventCard("wicksBounty").ranges, [[6428087, 6639283]]);
+  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6822798]);
+  assert.deepEqual(eventCard("wicksBounty").ranges, [[6428087, 6822798]]);
 });
 
 test("a 9.01 player gets the Wick's Bounty Challenges at quest login while they run", () => {
@@ -152,7 +152,7 @@ test("Season 9's modes and events run on 9.01 as on 9.00: 50v50, Playground, Cre
   const flags = activeEventFlags(v901);
   for (const flag of [lobbySeason9, wargamesFlag, season9Flag, season9Phase1]) assert.ok(flags.includes(flag), flag);
   assert.equal(blockEventOf(v901)?.id, "block900");
-  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6639283]], id);
+  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6822798]], id);
   assert.deepEqual(eventCard("block900").ranges, [[6337466, 6428087]]);
 });
 

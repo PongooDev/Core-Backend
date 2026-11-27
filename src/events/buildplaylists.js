@@ -18,6 +18,10 @@
 // data (gamedata/read.js laterData): the 20 playlists 6639283 added (Creative's play-only ones, Downtown Drop, Fortnite_B_*_G,
 // Lite_*) are none of an earlier season's, and the other ids and sizes are 9.01's in both, so its list is 6639283's; whether
 // Content Update v9.10 changed a held playlist's other assets from Update v9.10 is not knowable without its paks.
+// 9.20 (CL-6822798): 9.10's 72. Each of the 72 assets is the same in 9.20's paks as in 9.10's, and every asset each one
+// names is in 9.20's paks. 9.20's 12 added assets: 7.40's Playlist_Sword_* (335 to 337), which 9.20's own rotation runs
+// (events/ltms.js), Update v9.21's Horde Rush (Playlist_Mash_Squads, a later build's), Playlist_Tutorial_1 and seven
+// Creative play-only playlists, none an earlier season's mode.
 const held900 = {
   Playlist_33: [151, 3, 33, 4],
   Playlist_50v50HE: [203, 2, 50, 4],
@@ -174,5 +178,6 @@ export const buildPlaylists = {
   6337466: held900,
   6428087: held900,
   6573057: held910,
-  6639283: held910
+  6639283: held910,
+  6822798: held910
 };

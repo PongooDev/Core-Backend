@@ -43,16 +43,24 @@ export { wargames, wargamesFlag };
 // Stat.Mission.Ironcity.*) but not Tiki, so the hotfix adds Tiki there. CL-6573057 (Update v9.10, no paks here) plays on
 // that data but came out before Hexed: Tiki's quests and dailies aren't given on it, and 🟡 its shipped list isn't known,
 // so its hotfix adds MStorm (and Pods) too. A "+" line adds only a tag the list doesn't already have.
+// 9.20 (CL-6822798): Update v9.20's "New Wargames simulation: Invasion" ("A UFO invades the sky above your Storm Shield";
+// WargamesMissionConfigData_Wargame_Saucer, Stat.Mission.IronCity.Saucer; CardPack_Wargames_Banner_Saucer), "Available in
+// Wargames on June 5 at 8 PM Eastern Time", 9.20's first day on UTC: its quests and 12 dailies are new in 9.20's data, and
+// 9.20's shipped list has it (with Pods, MStorm and Tiki). 9.20's paks also hold Update v9.21's Quantum Countdown
+// (Wargame_Telebomb, Stat.Mission.IronCity.TeleBomb, not in the shipped list), whose quests and dailies wait for 9.21.
 const simulations = ["anomaly", "generators", "lava", "tornado"];
 // Each later simulation by its quests' name, its tag and the first build that runs it.
 const laterSimulations = [
   { name: "pods", tag: "Stat.Mission.IronCity.Pods", build: 6428087 },
   { name: "meteor", tag: "Stat.Mission.IronCity.MStorm", build: 6573057 },
-  { name: "tiki", tag: "Stat.Mission.IronCity.Tiki", build: 6639283 }
+  { name: "tiki", tag: "Stat.Mission.IronCity.Tiki", build: 6639283 },
+  { name: "saucer", tag: "Stat.Mission.IronCity.Saucer", build: 6822798 },
+  { name: "telebomb", tag: "Stat.Mission.IronCity.TeleBomb", build: 6922310 }
 ];
 export const mistPodsBuild = 6428087;
 export const spaceRocksBuild = 6573057;
 export const hexedBuild = 6639283;
+export const invasionBuild = 6822798;
 const laterOn = (changelist = currentBuild()) => laterSimulations.filter(({ build }) => Number(changelist) >= build);
 const laterOff = (changelist = currentBuild()) => laterSimulations.filter(({ build }) => Number(changelist) < build);
 const simulationsOn = () => [...simulations, ...laterOn().map(({ name }) => name)];
@@ -141,6 +149,6 @@ export function wargameBadgeRewards(earnedBadgeData) {
 }
 
 // The hotfix's UFortGlobals lines while the event runs on a build that has it: the switch, and the later simulations its
-// build runs (from 9.01 Mist Pods, from 9.10 Space Rocks, on Content Update v9.10's build Hexed).
+// build runs (from 9.01 Mist Pods, from 9.10 Space Rocks, on Content Update v9.10's build Hexed, from 9.20 Invasion).
 export const wargamesGlobals = (changelist) => (isEventActive(wargames, changelist)
   ? ["bEnableIronCity=true", ...laterOn(changelist).map(({ tag }) => `+IronCityWargameTagList=${tag}`)] : []);

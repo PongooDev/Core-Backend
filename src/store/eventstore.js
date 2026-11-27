@@ -286,7 +286,16 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // legendary schematic's 1,680 Gold, one each (🟡 Epic's prices and limits aren't recorded; Core keeps the Cocoa .45 after 2
 // January). Update v7.10's own Weekly Store names nothing (its Cloaked Shadow is the Event Store's, its Winter Llama the
 // llamas', neither offered yet).
+// 9.20's (CL-6822798): Update v9.20's "Archeolo-Jess returns to the Weekly Store! ... Start Date: June 5 at 8 PM Eastern
+// Time, End Date: June 12 at 8 PM Eastern Time" (Hero:HID_Outlander_ZoneHarvest_BlockBuster_SR_T01, Blockbuster's
+// "Archaeolo-Jess", 2,800 Gold by the Fortnite Wiki): from 6 to 13 June 00:00 UTC on Season 9's replay, one (🟡 the limit).
+// 9.00 to 9.10 name no weekly item.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 6822798, season: 9, weeks: [
+    { from: "2019-06-13T00:00:00.000Z", items: [] },
+    { from: "2019-06-06T00:00:00.000Z", items: [{ templateId: "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", price: 2800, limit: 1 }] },
+    { from: null, items: [] }
+  ] },
   { firstBuild: 4667333, season: 7, weeks: [
     { from: "2018-12-27T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_silenced_christmas_sr_ore_t01", price: 1680, limit: 1 }] },
     { from: "2018-12-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_sniper_bbgun_sr_ore_t01", price: 1680, limit: 1 }] },
@@ -547,10 +556,15 @@ const yarrrNow = () => storeEventNow() === spring2019;
 // v9.10's Fossil Southie (Hero:HID_Outlander_027_DinoOutlander_SR_T01, "Saurian Focus": "Available in the Event Store
 // starting May 29 at 8 PM Eastern Time", 2,800 Gold by the wiki), each from its build (CL-6573057 plays on CL-6639283's data
 // but came out before Fossil Southie). 🟡 one of each, and the notes' "added" keeps the earlier heroes on sale.
+// 9.20 (CL-6822798) adds Update v9.20's Tar Pit trap ("Introducing the new Tar Pit Trap ... Available in the Event Store on
+// June 5 at 8 PM Eastern Time", 9.20's first day on UTC): the Fortnite Wiki's "An Epic Tar Pit Schematic can now be
+// purchased from the Event Store for 600 Gold" (Schematic:SID_Floor_Tar_VR_T01, new in 9.20's data); 🟡 one, as the
+// heroes.
 const season9StoreBuild = 6428087;
 export const season9EventItems = [{ templateId: "Hero:hid_constructor_027_dinoconstructor_sr_t01", price: 2800, limit: 1 },
   { templateId: "Hero:hid_commando_029_dinosoldier_sr_t01", price: 2800, limit: 1, fromBuild: 6573057 },
-  { templateId: "Hero:hid_outlander_027_dinooutlander_sr_t01", price: 2800, limit: 1, fromBuild: 6639283 }];
+  { templateId: "Hero:hid_outlander_027_dinooutlander_sr_t01", price: 2800, limit: 1, fromBuild: 6639283 },
+  { templateId: "Schematic:sid_floor_tar_vr_t01", price: 600, limit: 1, fromBuild: 6822798 }];
 const season9Items = (now) => season9EventItems.filter(({ templateId, fromBuild }) => !(Number(currentBuild()) < (fromBuild ?? 0))
   && !weeklyFeatured(now).some((item) => item.templateId === templateId)).map(({ fromBuild, ...item }) => item);
 export const season9StoreEnd = "2019-08-01T00:00:00.000Z";
