@@ -290,7 +290,17 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // Time, End Date: June 12 at 8 PM Eastern Time" (Hero:HID_Outlander_ZoneHarvest_BlockBuster_SR_T01, Blockbuster's
 // "Archaeolo-Jess", 2,800 Gold by the Fortnite Wiki): from 6 to 13 June 00:00 UTC on Season 9's replay, one (🟡 the limit).
 // 9.00 to 9.10 name no weekly item.
+// 9.21's (CL-6922310): Update v9.21's "A new weapon, the Plasmatron 9000 arrives in the Weekly Store ... Available Wednesday,
+// June 12 at 8 PM Eastern Time until Wednesday, June 19 at 8 PM Eastern Time" (Schematic:SID_Pistol_RetroSciFi_SR_Ore_T01,
+// "Plasmatron 9000", Legendary, in 9.20's and 9.21's data): from 13 to 20 June 00:00 UTC on Season 9's replay, after
+// Archeolo-Jess's week; 🟡 one, at a legendary schematic's 1,680 Gold (Epic's price isn't recorded).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 6922310, season: 9, weeks: [
+    { from: "2019-06-20T00:00:00.000Z", items: [] },
+    { from: "2019-06-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_retroscifi_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2019-06-06T00:00:00.000Z", items: [{ templateId: "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", price: 2800, limit: 1 }] },
+    { from: null, items: [] }
+  ] },
   { firstBuild: 6822798, season: 9, weeks: [
     { from: "2019-06-13T00:00:00.000Z", items: [] },
     { from: "2019-06-06T00:00:00.000Z", items: [{ templateId: "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", price: 2800, limit: 1 }] },

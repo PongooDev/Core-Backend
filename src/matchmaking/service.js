@@ -321,6 +321,10 @@ const playlistTeams901Build = 6428087;
 // asset: MaxTeamCount 100 in teams and squads of 4.
 const playlistTeamsFrom910 = { 332: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 } };
 const playlistTeams910Build = 6573057;
+// 9.21 (CL-6922310): Horde Rush's Playlist_Mash_Squads (514), by its asset: one team of 4 (MaxTeamCount 1, MaxTeamSize 4,
+// MaxPlayers 4, MaxSquadSize 4), the squad against the mode's Fiends.
+const playlistTeamsFrom921 = { 514: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 } };
+const playlistTeams921Build = 6922310;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -530,6 +534,7 @@ export const teamsOfPlaylist = (playlistId, build = null) => {
   // Playlist_Final_12 is 103, 8 teams of 12, where 5.30 gave 103 to Score Royale Squads).
   const held = build === null ? null : heldPlaylistTeams(playlistId, build);
   if (held) return held;
+  if (Number(build) >= playlistTeams921Build && playlistTeamsFrom921[playlistId]) return playlistTeamsFrom921[playlistId];
   if (Number(build) >= playlistTeams910Build && playlistTeamsFrom910[playlistId]) return playlistTeamsFrom910[playlistId];
   if (Number(build) >= playlistTeams901Build && playlistTeamsFrom901[playlistId]) return playlistTeamsFrom901[playlistId];
   if (Number(build) >= playlistTeams850Build && playlistTeamsFrom850[playlistId]) return playlistTeamsFrom850[playlistId];

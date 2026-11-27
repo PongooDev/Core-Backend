@@ -142,11 +142,11 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
   // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422), and
   // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile. 9.00's Trios (Playlist_Trios), 9.01's Wick's
-  // Bounty (Playlist_Wax_*) and 9.10's Unvaulted (Playlist_Unvaulted_Squads) have none recorded (🟡 the default tile until
-  // one of Epic's is found).
+  // Bounty (Playlist_Wax_*), 9.10's Unvaulted (Playlist_Unvaulted_Squads) and 9.21's Horde Rush (Playlist_Mash_Squads) have
+  // none recorded (🟡 the default tile until one of Epic's is found).
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
-    "Playlist_Music_Highest",
+    "Playlist_Mash_Squads", "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads",
@@ -348,7 +348,9 @@ const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_S
   // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
   "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads",
   // 9.00's Trios: no tile of Epic's recorded.
-  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"];
+  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads",
+  // 9.21's Horde Rush: no tile of Epic's recorded.
+  "Playlist_Mash_Squads"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);
@@ -358,8 +360,8 @@ const pageTiles = (build) => {
   return { page, entries, byName: new Map(entries.map((entry) => [entry.name, entry])) };
 };
 
-test("every build from 4.0 to 9.20 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
-  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6822798"]);
+test("every build from 4.0 to 9.21 gives every playlist it serves Epic's tile, or none where Epic made none, and names no other", () => {
+  assert.deepEqual([tileBuilds[0], tileBuilds.at(-1)], ["4039451", "6922310"]);
   assert.deepEqual(Object.keys(tileOf).sort(), Object.keys(epicPlaylistImages).sort(), "the table covers every Epic tile Core serves");
   for (const build of tileBuilds) {
     const { page, entries, byName } = pageTiles(build);

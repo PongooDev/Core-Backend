@@ -198,7 +198,8 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 9.20 (CL-6822798) adds the 24 of its cosmetics the shop sold, 54 times from 7 June on: Tempest's and Bolt's set (Storm
 // Bolt, Storm Eye, Turbulent), Synapse and Hex Wave, Asmodeus, Callisto, Batso and Foul Play, Relay, Desert Dominator, Toy
 // Trooper and Plastic Patroller, the Fork Knife, Talons and Stark Splitter pickaxes, the Slurp! and Contrast wraps and four
-// emotes (897 of 1,184); 9.10's days are as they were.
+// emotes (897 of 1,184); 9.10's days are as they were. 9.21 (CL-6922310) has 9.20's cosmetics (its data is 9.20's but one
+// Fortbyte quest), so its shop is 9.20's.
 // Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
 // data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

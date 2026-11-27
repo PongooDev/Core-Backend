@@ -11,8 +11,10 @@ import { effectiveBots } from "../tournaments/store.js";
 // switch and win over this one, as they win over the rest of the panel's.
 const defaultModeOfPlaylist = { 2: "solo", 10: "duo", 9: "squad" };
 // The modes whose matches never take the panel's bots, and which its Player bots card doesn't list: 7.00's Creative
-// (PongooDev/CoreV2#471, Core-Backend #375), a party's own islands, a game mode always on with no switch of its own.
-export const noBotModes = new Set(["creative"]);
+// (PongooDev/CoreV2#471, Core-Backend #375), a party's own islands, a game mode always on with no switch of its own; and
+// 9.21's Horde Rush (events/ltms.js hordeRush), one squad against the mode's own Fiends (Athena_AI_Settings_Mash), which
+// Epic played without player bots.
+export const noBotModes = new Set(["creative", "hordeRush"]);
 export const botModeIds = ["solo", "duo", "squad", ...ltmIds];
 const known = new Set(botModeIds);
 

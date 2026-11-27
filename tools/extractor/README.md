@@ -642,6 +642,13 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   the weekly quests' new rewards), `cardpacks.json` (the Sci-Fi Llama and the two banners), `alterations.json`,
   `homebasenodes.json` (QuestReward_SecondaryAttack gone: the notes' heavy attacks from the start), `expeditions.json` and
   `objectivestats.json`; the other files are 9.10's.
+  9.21's (CL-6922310, Update v9.21) is `4.23.0-6922310+++Fortnite+Release-9.21` (no `Build.version`; the build folder is
+  `windows-9.21`, with `FortniteGame` at its top) with 9.20's full data (Cert's files with `gamedata/6822798` applied) as
+  the fifth argument and the main key FModel's settings hold for its build folder. 9.20's layout with the keyed
+  pakchunk1000 to 1013, of which the keychain opens all but 1007 and 1010. No extractor change. Against 9.20 only
+  `athena.json` changes in content: `quest_br_s9_rooster_collectglyphs_01_a`'s next stage is a reward, not a hidden one.
+  Update v9.21's Horde Rush challenges, Proximity Grenade Launcher, Quantum Countdown quests and Plasmatron 9000 are
+  already 9.20's data. The overlay is still a full one against Cert, as every build's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

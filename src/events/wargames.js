@@ -48,6 +48,9 @@ export { wargames, wargamesFlag };
 // Wargames on June 5 at 8 PM Eastern Time", 9.20's first day on UTC: its quests and 12 dailies are new in 9.20's data, and
 // 9.20's shipped list has it (with Pods, MStorm and Tiki). 9.20's paks also hold Update v9.21's Quantum Countdown
 // (Wargame_Telebomb, Stat.Mission.IronCity.TeleBomb, not in the shipped list), whose quests and dailies wait for 9.21.
+// 9.21 (CL-6922310): Update v9.21's "New Wargames simulation: Quantum Countdown" ("an unstable bomb is teleporting around
+// your base"): its quests and dailies are 9.20's data, and 9.21's shipped list is still 9.20's (no TeleBomb), so the
+// hotfix adds it there.
 const simulations = ["anomaly", "generators", "lava", "tornado"];
 // Each later simulation by its quests' name, its tag and the first build that runs it.
 const laterSimulations = [

@@ -12,7 +12,7 @@ import { rollContents } from "../src/cardpacks/contents.js";
 import { blockEventOf, blockStates } from "../src/events/block.js";
 import { activeEventFlags, blockSlab, configureEvents, isEventActive, lobbySeason9, ltmVigilante, ltmWax } from "../src/events/events.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
-import { hasLtm, isHeldLtm, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
+import { hasLtm, isHeldLtm, ltmOn } from "../src/events/ltms.js";
 import { season4Flag } from "../src/events/season4flags.js";
 import { sciFiLlama, season9Flag, season9Phase1, season9Phase2, stellarHorizon, stellarHorizonQuests, talesOfBeyondEventQuests } from "../src/events/talesofbeyond.js";
 import { wargamesDailyQuests, wargamesFlag, wargamesGlobals, wargamesQuests } from "../src/events/wargames.js";
@@ -25,7 +25,6 @@ import { teamsOfPlaylist } from "../src/matchmaking/service.js";
 import { styleSchedules } from "../src/profiles/challenges.js";
 import { playerPlotType, plotsOf, settleCreativePlots } from "../src/profiles/creative.js";
 import { grant } from "../src/profiles/progress.js";
-import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { refundMtxPurchase } from "../src/services/mcp/commands/RefundMtxPurchase.js";
@@ -63,17 +62,15 @@ const withSession = (build, name, run) => {
   }
 };
 
-test("9.20 is known as 9.20 on its own data, Season 9's newest", () => {
+test("9.20 is known as 9.20 on its own data", () => {
   assert.equal(versionOf(v920), "9.20");
   assert.equal(allowedBuildList(["9.20"]).join(), v920);
   assert.equal(dataBuild(v920), v920);
   assert.equal(dataBuild(v910), v910, "9.10 keeps its own data");
   assert.equal(dataBuild(v9100), v910, "Update v9.10's build still plays on Content Update v9.10's");
   assert.equal(dataBuild("6700000"), v910, "a build Core doesn't know before 9.20 plays on 9.10's");
-  assert.equal(dataBuild("6900000"), v920);
+  assert.equal(dataBuild("6900000"), v920, "a build Core doesn't know before 9.21 plays on 9.20's");
   assert.equal(releasedOn(v920), Date.UTC(2019, 5, 6));
-  assert.equal(buildOfSeason(9), v920);
-  assert.equal(seasonName(9), "Season 9 (9.00 – 9.20)");
   const season = inBuild(v920, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [9, "BRSeason9", 100]);
   assert.equal(inBuild(v920, seasonOfBuild), 9);
@@ -93,7 +90,7 @@ test("9.20's cosmetics: 9.10's but Gemini and 49 more; the Storm Flip; Breakpoin
   assert.equal(inBuild(v920, athenaChallengeSchedules).bundleschedule_styles_neonlines.category, "ChallengeCategory.Style");
 });
 
-test("9.20's modes: Sword Fight by its dates (Squads), Season 9's run on, Horde Rush isn't served", () => {
+test("9.20's modes: Sword Fight by its dates (Squads), Season 9's run on, Horde Rush is 9.21's", () => {
   const dated = { ltmOriginalDates: true };
   assert.equal(hasLtm("swordFightSeason9Squads", v920), true);
   assert.equal(ltmOn("swordFightSeason9Squads", v920, {}, at("2019-06-08T12:00:00Z")), false, "off by default");
@@ -109,7 +106,7 @@ test("9.20's modes: Sword Fight by its dates (Squads), Season 9's run on, Horde 
   assert.equal(ltmOn("teamRumbleSeason9", v920, dated, at("2019-06-08T12:00:00Z")), true);
   assert.deepEqual([335, 336, 337].map((id) => teamsOfPlaylist(id, v920)).map(({ maxTeamCount, maxTeamSize }) => [maxTeamCount, maxTeamSize]),
     [[100, 1], [100, 2], [100, 4]]);
-  assert.equal(playlistIdOfName("playlist_mash_squads", v920), null, "Update v9.21's Horde Rush");
+  assert.equal(hasLtm("hordeRush", v920), false, "Update v9.21's Horde Rush");
   // Core-Backend #440: 9.20 holds 9.10's 72 earlier seasons' playlists.
   for (const id of ["endgame", "getawaySeason8Squads", "foodFight"]) {
     assert.deepEqual([hasLtm(id, v920), isHeldLtm(id, v920), isHeldLtm(id, v851)], [true, true, false], id);
@@ -132,11 +129,11 @@ test("Season 9's events run on 9.20 with Beyond the Stellar Horizon; its Block p
     assert.deepEqual(typesOf(inBuild(v920, () => blockStates(at("2019-06-08T12:00:00Z")))), [blockSlab(1)]);
     assert.deepEqual(typesOf(inBuild(v920, () => blockStates(at("2019-06-14T12:00:00Z")))), [blockSlab(2)]);
   });
-  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6822798]], id);
-  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 6822798]]);
-  assert.deepEqual(eventCard("block920").ranges, [[6822798, 6822798]]);
-  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6822798]);
-  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6822798]);
+  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6922310]], id);
+  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 6922310]]);
+  assert.deepEqual(eventCard("block920").ranges, [[6822798, 6922310]]);
+  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6922310]);
+  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6922310]);
 });
 
 test("Beyond the Stellar Horizon: its first quest at quest login on 9.20, Azalea Clark on the fourteenth; 9.10 doesn't give it", () => {

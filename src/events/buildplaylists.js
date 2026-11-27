@@ -22,6 +22,8 @@
 // names is in 9.20's paks. 9.20's 12 added assets: 7.40's Playlist_Sword_* (335 to 337), which 9.20's own rotation runs
 // (events/ltms.js), Update v9.21's Horde Rush (Playlist_Mash_Squads, a later build's), Playlist_Tutorial_1 and seven
 // Creative play-only playlists, none an earlier season's mode.
+// 9.21 (CL-6922310): 9.20's. Its 177 playlist assets are 9.20's, each the same asset (the same scan of all its paks but the
+// keyed pakchunk1007 and 1010); Horde Rush (Playlist_Mash_Squads) is 9.21's own (events/ltms.js).
 const held900 = {
   Playlist_33: [151, 3, 33, 4],
   Playlist_50v50HE: [203, 2, 50, 4],
@@ -179,5 +181,6 @@ export const buildPlaylists = {
   6428087: held900,
   6573057: held910,
   6639283: held910,
-  6822798: held910
+  6822798: held910,
+  6922310: held910
 };

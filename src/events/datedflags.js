@@ -2,7 +2,7 @@ import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestina
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, holidayDecor710, holidayDecorProps710,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
-  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
+  lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmMash, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
   unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
@@ -27,6 +27,8 @@ export const extraCreditCalendarEvent = "CalendarEvent_Season8_ExtraCredit";
 export const wicksBountyCalendarEvent = "CalendarEvent_Season9_Wax";
 // 9.10's BundleSchedule_Event_VigilanteBoard (the Downtown Drop Challenges) the same way.
 export const downtownDropCalendarEvent = "CalendarEvent_Season9_Vigilante";
+// 9.21's Schedule_LTM_Mash (the Horde Rush Challenges) the same way.
+export const hordeRushCalendarEvent = "CalendarEvent_Season9_Mash";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -267,6 +269,10 @@ const wicksBountyEnd = Date.parse("2019-05-22T00:00:00.000Z");
 // rest a day at a time from the flag's start (DaysFromEventStart).
 const downtownDropAt = Date.parse("2019-05-22T00:00:00.000Z");
 const downtownDropEnd = Date.parse("2019-06-04T00:00:00.000Z");
+// 9.21's Horde Rush Challenges (events/horderush.js): the Fortnite Wiki's "available from June 13th 2019 to June 19th 2019"
+// (🟡 00:00 UTC, to the last day's end). Every challenge comes with the bundle.
+const hordeRushAt = Date.parse("2019-06-13T00:00:00.000Z");
+const hordeRushEnd = Date.parse("2019-06-20T00:00:00.000Z");
 // 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it and the sources). The Fortnite Wiki's Unvaulting: 4 May 2019,
 // 2:00 to 2:05 PM ET (18:00 UTC); its Vault: "April 30th 2019: An orange hologram appeared above one of The Vault rune
 // slots. May 1st 2019: The fifth rune has appeared above the Volcano ... May 3rd 2019: The fifth and final rune has entered
@@ -443,7 +449,7 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds900) },
   { id: "block910", name: "The Block's community builds (9.10)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds910) },
-  { id: "block920", name: "The Block's community builds (9.20)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
+  { id: "block920", name: "The Block's community builds (9.20, 9.21)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds920) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
@@ -525,6 +531,11 @@ export const datedEvents = [
   { id: "downtownDrop", name: "the Downtown Drop Challenges (9.10)", season: 9, flag: ltmVigilante, anchor: "challenges", parts: 1,
     challenges: "BundleSchedule_Event_VigilanteBoard", steps: [
       step("challenges", "The Downtown Drop Challenges", [ltmVigilante, downtownDropCalendarEvent], downtownDropAt, downtownDropEnd)
+    ] },
+  // 9.21's Horde Rush Challenges (events/horderush.js): one step, the flag and the schedule's calendar event.
+  { id: "hordeRush", name: "the Horde Rush Challenges (9.21)", season: 9, flag: ltmMash, anchor: "challenges", parts: 1,
+    challenges: "Schedule_LTM_Mash", steps: [
+      step("challenges", "The Horde Rush Challenges", [ltmMash, hordeRushCalendarEvent], hordeRushAt, hordeRushEnd)
     ] },
   // 8.51's Unvaulting (events/unvaulting.js): the fifth rune, the countdown, the event and the island after it. "Start now"
   // (or any time on the event's step) plays it then, the steps before it at Epic's spacing.
