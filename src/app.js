@@ -55,6 +55,7 @@ import { coreStatusRoutes } from "./services/core/status.js";
 import { coreTlsRoutes } from "./services/core/tls.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
+import { contentControlsRoutes } from "./services/contentcontrols/users.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { linksRoutes } from "./services/links/links.js";
@@ -323,6 +324,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(privacyRoutes(context));
+  app.use(contentControlsRoutes(context));
   app.use(friendsRoutes(context));
   // 8.30's party service (services/party/parties.js): without it its login fails at "Failed To Create Party".
   app.use(partyRoutes(context));
