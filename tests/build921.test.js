@@ -24,6 +24,7 @@ import { athenaQuestLogin, setUpAthena } from "../src/profiles/athena.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
+import { playlistInformationFor } from "../src/services/content/playlistimages.js";
 import { storefronts } from "../src/store/catalog.js";
 import { eventStorefront, weeklyStorefront } from "../src/store/eventstore.js";
 import { seasonOfBuild } from "../src/store/itemshop.js";
@@ -103,6 +104,10 @@ test("Horde Rush: 9.21's own, on by default and in the lobby, one squad of 4, no
   assert.equal(ltmFrontEndPlaylists(v920, {}, at("2019-06-14T12:00:00Z")).some(({ name }) => name === "Playlist_Mash_Squads"), false);
   assert.ok(noBotModes.has("hordeRush"));
   assert.equal(botsInMode({}, "hordeRush"), false);
+  // #446: the mode select tile is Epic's own, not the default picture.
+  assert.deepEqual(playlistInformationFor(v921).playlist_info.playlists.find((entry) => entry.playlist_name === "Playlist_Mash_Squads"), {
+    image: "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlistinformation/09BR_LTM_HordeRush_Mode_Tile-1024x512-a844840eb58db868b6abfbe18fc8a8f483e18c60.jpg",
+    playlist_name: "Playlist_Mash_Squads", special_border: "None", _type: "FortPlaylistInfo" });
 });
 
 test("9.21's other modes: 9.20's run on, Sword Fight by its switches", () => {

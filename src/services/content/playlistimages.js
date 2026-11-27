@@ -198,6 +198,10 @@ const deepFriedTile = `${cdn}/playlistinformation/EN_08BR_DeepFried_Mode_Tile-10
 // serves; _Md and _Lg are the same mode, so they take it too. No border. On Epic's CDN, checked 2026-11-24: 200, image/jpeg,
 // 818,679 bytes, the hash in its name the file's SHA-1.
 const endgameTile = `${cdn}/playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg`;
+// 9.21's (CL-6922310) Horde Rush (Core-Backend #446): Epic's later page (LawinServer's contentpages.json copy, its
+// playlistinformation lastModified 2019-10-29) names 09BR_LTM_HordeRush_Mode_Tile for Playlist_Mash_Squads, no border. On
+// Epic's CDN, checked 2026-11-27: 200, image/jpeg, 104,418 bytes, the hash in its name the file's SHA-1.
+const hordeRushTile = `${cdn}/playlistinformation/09BR_LTM_HordeRush_Mode_Tile-1024x512-a844840eb58db868b6abfbe18fc8a8f483e18c60.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -305,7 +309,9 @@ export const epicPlaylistImages = {
   // tile of it is recorded (the Wayback Machine's May 2019 captures of the CDN's fortnite-game folders have none).
   Playlist_Ashton_Sm: endgameTile,
   Playlist_Ashton_Md: endgameTile,
-  Playlist_Ashton_Lg: endgameTile
+  Playlist_Ashton_Lg: endgameTile,
+  // 9.21's Horde Rush (above).
+  Playlist_Mash_Squads: hordeRushTile
 };
 // The 14 Days of Fortnite's own tiles for playlists an earlier build's page already shows with another (7.10, CL-4667333,
 // and later): Disco Domination's holiday rerun (Playlist_Disco_32_Alt, BR_LTM_HolidayDisco) and Wild West's Squads

@@ -141,12 +141,12 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // names for them (below). 7.30's Party at Pleasant Park (Playlist_Music_Highest) has none: that page names its playlist only
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
   // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422), and
-  // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile. 9.00's Trios (Playlist_Trios), 9.01's Wick's
-  // Bounty (Playlist_Wax_*), 9.10's Unvaulted (Playlist_Unvaulted_Squads) and 9.21's Horde Rush (Playlist_Mash_Squads) have
-  // none recorded (🟡 the default tile until one of Epic's is found).
+  // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile, and 9.21's Horde Rush (Playlist_Mash_Squads) its
+  // 09BR_LTM_HordeRush_Mode_Tile (#446). 9.00's Trios (Playlist_Trios), 9.01's Wick's Bounty (Playlist_Wax_*) and 9.10's
+  // Unvaulted (Playlist_Unvaulted_Squads) have none recorded (🟡 the default tile until one of Epic's is found).
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
-    "Playlist_Mash_Squads", "Playlist_Music_Highest",
+    "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads",
@@ -329,7 +329,9 @@ const tileFiles = [
   [["Playlist_Barrier_16_B_Lava"], "playlistinformation/EN_08BR_DeepFried_Mode_Tile-1024x512-227979fa27053f858066a1a47d68b55f792fded1.jpg"],
   // 8.50's Endgame, the page's Playlist_Ashton_Sm tile for its three playlists.
   [["Playlist_Ashton_Sm", "Playlist_Ashton_Md", "Playlist_Ashton_Lg"],
-    "playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg"]
+    "playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg"],
+  // 9.21's Horde Rush (#446).
+  [["Playlist_Mash_Squads"], "playlistinformation/09BR_LTM_HordeRush_Mode_Tile-1024x512-a844840eb58db868b6abfbe18fc8a8f483e18c60.jpg"]
 ];
 const tileOf = Object.fromEntries(tileFiles.flatMap(([names, file]) => names.map((name) => [name, epicTile(file)])));
 // 7.10 on: the 14 Days of Fortnite's own tiles for two playlists the earlier pages show with another.
@@ -348,9 +350,7 @@ const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_S
   // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
   "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads",
   // 9.00's Trios: no tile of Epic's recorded.
-  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads",
-  // 9.21's Horde Rush: no tile of Epic's recorded.
-  "Playlist_Mash_Squads"];
+  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);

@@ -1600,7 +1600,7 @@ export const ltms = [
   // Athena.Playlist.Mash, its challenges' context: events/horderush.js). 9.20's paks already hold the asset, but Epic ran it
   // from 9.21, and Update v9.21's notes introduce it, so it is 9.21's alone. Epic turned it on from the calendar, not the
   // shipped lobby; it is the build's event playlist, as 8.51's Unvaulting, so it is on by default, and by its Original
-  // dates from 13 to 19 June (hordeRushWindow). No Epic tile is recorded, so it keeps the default picture. Its matches
+  // dates from 13 to 19 June (hordeRushWindow). Its tile is Epic's 09BR_LTM_HordeRush_Mode_Tile (playlistimages.js, #446). Its matches
   // take no player bots (matchmaking/botmodes.js noBotModes): the squad plays the mode's own Fiends.
   { id: "hordeRush", name: "Horde Rush", playlistId: 514, playlistName: "Playlist_Mash_Squads", playlistTag: "Athena.Playlist.Mash", eventFlag: null, builds: [build921, build921], seasons: [9],
     advertise: "New", defaultOn: true, original: hordeRushWindow,
