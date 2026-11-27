@@ -189,6 +189,13 @@ export function createAccountStore(dataDir) {
       save(account);
     },
 
+    // Parental controls (services/contentcontrols/users.js): the content-controls user and its rules, or none.
+    setContentControls(account, controls) {
+      if (controls) account.contentControls = controls;
+      else delete account.contentControls;
+      save(account);
+    },
+
     // The admin panel's Custom Matchmaking permission (Core-Backend #186): whether the player's party may open a custom
     // matchmaking key (matchmaking/service.js).
     setCustomMatchmaking(account, allowed) {

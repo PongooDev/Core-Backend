@@ -255,6 +255,13 @@ export function adminRoutes(context) {
       banned: isActiveBan(account.banned) ? account.banned : null,
       // The Custom Matchmaking permission (#186): the player's party may open a custom matchmaking key.
       customMatchmaking: account.customMatchmaking === true,
+      // Parental controls (services/contentcontrols/users.js); the PIN's hash is never sent.
+      contentControls: account.contentControls ? {
+        enabled: Boolean(account.contentControls.enabled),
+        pinGatedPurchasingEnabled: Boolean(account.contentControls.pinGatedPurchasingEnabled),
+        ageGate: account.contentControls.ageGate ?? 0,
+        rules: account.contentControls.rules ?? {}
+      } : null,
       hasPassword: Boolean(account.password),
       isServer: isServerAccountName(account.displayName)
     };
@@ -1243,6 +1250,14 @@ export function adminRoutes(context) {
     if (!account) return notFound(res, req.originalUrl);
     if (typeof req.body?.allowed !== "boolean") return invalid(res, "allowed must be true or false");
     accounts.setCustomMatchmaking(account, req.body.allowed);
+    res.json(details(account));
+  });
+
+  // Clears the player's parental controls and PIN (a forgotten PIN): the account goes back to no controls.
+  router.post("/admin/api/accounts/:accountId/content-controls/clear", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    accounts.setContentControls(account, null);
     res.json(details(account));
   });
 

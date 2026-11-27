@@ -4630,6 +4630,13 @@ Each starts active; quests the account already has are left as they are.`, {
             a.customMatchmaking
               ? btn("Revoke", () => post("custom-matchmaking", { allowed: false }, `${a.displayName} can no longer open custom matchmaking keys`), "ghost")
               : btn("Grant", () => post("custom-matchmaking", { allowed: true }, `${a.displayName} can open custom matchmaking keys`), "primary"))),
+        el("section", { class: "panel" }, el("h2", { text: "Parental Controls" }),
+          el("p", { class: "note", text: "Epic's content controls (9.20 and later), set up by the player in the game's settings with a PIN. Clearing removes the controls and the PIN, for a player who forgot it." }),
+          el("div", { class: "actions" },
+            a.contentControls?.enabled ? chip(`On${a.contentControls.pinGatedPurchasingEnabled ? ", PIN for purchases" : ""}`, "warn") : chip("Off", "good"),
+            a.contentControls
+              ? btn("Clear controls and PIN", () => post("content-controls/clear", {}, `${a.displayName}'s parental controls were cleared`), "danger")
+              : null)),
         el("section", { class: "panel" }, el("h2", { text: "Password" }),
           el("p", {
             class: "note", text: a.isServer
