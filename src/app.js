@@ -84,6 +84,7 @@ import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
 import { partyRoutes } from "./services/party/parties.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
+import { channelsRoutes } from "./services/channels/settings.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { ticketRoutes } from "./services/matchmaking/ticket.js";
 import { warmupRoutes } from "./services/matchmaking/warmup.js";
@@ -325,6 +326,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(friendsRoutes(context));
   // 8.30's party service (services/party/parties.js): without it its login fails at "Failed To Create Party".
   app.use(partyRoutes(context));
+  // 9.20's avatar settings (services/channels/settings.js).
+  app.use(channelsRoutes(context));
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes(context));
   app.use(corePresenceRoutes(context));

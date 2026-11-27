@@ -280,5 +280,16 @@ export function oauthRoutes({ accounts, bans, tokens, settings, resetTokens, exc
     res.status(204).end();
   });
 
+  // One auth session: FOnlineIdentityMcp's KillAuthSessions (9.20 0x5CDE90, bKillAuthSessionsOnShutdown) sends
+  // DELETE /account/api/oauth/sessions/kill/<its access token> with that token as its bearer when the game shuts down;
+  // its completion (0x59F750) only logs the code.
+  router.delete("/account/api/oauth/sessions/kill/:token", requireAuth(tokens), (req, res) => {
+    if (!tokens.killToken(req.session, req.params.token)) {
+      return sendError(res, 404, "errors.com.epicgames.account.auth_token.unknown_oauth_session",
+        `Sorry we could not find the auth session '${req.params.token}'`, [req.params.token]);
+    }
+    res.status(204).end();
+  });
+
   return router;
 }

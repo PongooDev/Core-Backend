@@ -49,6 +49,29 @@ test("killing other sessions logs out older logins of the same account", async (
   }
 });
 
+test("the game kills its own auth session on shutdown, and only that one", async () => {
+  const backend = await startBackend();
+  try {
+    const first = await userLogin(backend.port, "CoreTest");
+    const second = await userLogin(backend.port, "CoreTest");
+    const other = await userLogin(backend.port, "SomeoneElse");
+
+    const kill = await del(backend.port, `/account/api/oauth/sessions/kill/${first.token}`, first.token);
+    assert.equal(kill.status, 204);
+    assert.equal(kill.body, null);
+    assert.equal((await get(backend.port, "/account/api/oauth/verify", first.token)).status, 401);
+    assert.equal((await get(backend.port, "/account/api/oauth/verify", second.token)).status, 200);
+
+    // Another account's session isn't the caller's to end.
+    const refused = await del(backend.port, `/account/api/oauth/sessions/kill/${other.token}`, second.token);
+    assert.equal(refused.status, 404);
+    assert.equal(refused.body.errorCode, "errors.com.epicgames.account.auth_token.unknown_oauth_session");
+    assert.equal((await get(backend.port, "/account/api/oauth/verify", other.token)).status, 200);
+  } finally {
+    backend.close();
+  }
+});
+
 test("a gameserver's login leaves the other servers on its account logged in (CoreV2 #280)", async () => {
   const backend = await startBackend();
   try {

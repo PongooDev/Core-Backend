@@ -97,6 +97,16 @@ export function createTokenStore(dataDir) {
       save();
     },
 
+    // One access token of current's account, or current itself for a token with no account; false when there is none.
+    killToken(current, token) {
+      const session = access.get(token);
+      const ownsIt = session && (token === current.token || (session.accountId && session.accountId === current.accountId));
+      if (!ownsIt) return false;
+      access.delete(token);
+      save();
+      return true;
+    },
+
     // Every access and refresh token of an account (the admin panel's kick, ban and delete).
     revokeAccount(accountId) {
       for (const [token, session] of access) if (session.accountId === accountId) access.delete(token);
