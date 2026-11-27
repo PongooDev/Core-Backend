@@ -22,17 +22,21 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { teamsOfPlaylist } from "../src/matchmaking/service.js";
 import { styleSchedules } from "../src/profiles/challenges.js";
+import { grant } from "../src/profiles/progress.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
+import { refundMtxPurchase } from "../src/services/mcp/commands/RefundMtxPurchase.js";
 import { storefronts } from "../src/store/catalog.js";
 import { eventStorefront } from "../src/store/eventstore.js";
 import { configureItemShop, itemShopOffers, seasonOfBuild } from "../src/store/itemshop.js";
+import { hasUndo, purchaseHistoryOf, recordPurchase, undoCooldownMs, undoWindowMs } from "../src/store/refunds.js";
+import { clientToken, send, startBackend } from "./helpers.js";
 
 // Fortnite 9.20 (CL-6822798, Update v9.20, 6 June 2019), Season 9, on its own data (gamedata/6822798). Season 9's Battle
 // Pass, lobby, Fortbytes, Wargames, Tales of Beyond, Arena and earlier seasons' held playlists run on; its own: Sword Fight,
 // the Block's 9.20 builds, Breakpoint's styles, Save the World's Invasion, Beyond the Stellar Horizon, the Sci-Fi Llama,
-// the Tar Pit and Archeolo-Jess.
+// the Tar Pit and Archeolo-Jess, and the item shop's Undo.
 const v920 = "6822798";
 const v910 = "6639283";
 const v9100 = "6573057";
@@ -205,5 +209,57 @@ test("9.20's shop: Season 9's history with its cosmetics in, Tempest from 7 June
     assert.equal(offersOn(v910).includes(tempest), false);
   } finally {
     configureItemShop(null);
+  }
+});
+
+test("9.20's Undo: a purchase opens undo_timeout; RefundMtxPurchase {quickReturn} gives it back without a return, once per cooldown", () => {
+  assert.deepEqual([hasUndo(v920), hasUndo(v910)], [true, false]);
+  const undo = (session, purchaseId) => refundMtxPurchase({ req: { body: { purchaseId, quickReturn: true } }, session });
+  const vbucks = (session) => Object.values(session.profile("profile0").profile.items)
+    .filter(({ templateId }) => templateId.toLowerCase().startsWith("currency:mtx")).reduce((sum, item) => sum + item.quantity, 0);
+  withSession(v920, "undo920", (session) => {
+    const tracker = session.profile("profile0");
+    grant(session, "Currency:mtxpurchased", 800);
+    tracker.profile.items[Object.keys(tracker.profile.items).find((id) => tracker.profile.items[id].templateId.toLowerCase() === "currency:mtxpurchased")].quantity -= 800;
+    const now = new Date();
+    const entry = recordPurchase(tracker, { offerId: "core_br_test", lootResult: [], totalMtxPaid: 800, spent: { "Currency:mtxpurchased": 800 }, now });
+    const attributes = () => tracker.profile.stats.attributes;
+    assert.equal(Date.parse(attributes().undo_timeout), now.getTime() + undoWindowMs);
+    undo(session, entry.purchaseId);
+    assert.equal(vbucks(session), 800);
+    const history = purchaseHistoryOf(attributes());
+    assert.deepEqual([history.refundCredits, history.refundsUsed], [3, 0], "an undo spends no return");
+    assert.notEqual(history.purchases[0].refundDate, "max");
+    assert.equal(attributes().undo_timeout, "min");
+    assert.equal(attributes().undo_cooldowns.length, 1);
+    assert.equal(attributes().undo_cooldowns[0].offerId, "core_br_test");
+    assert.ok(Math.abs(Date.parse(attributes().undo_cooldowns[0].cooldownExpires) - (Date.now() + undoCooldownMs)) < 60000);
+    // The same offer bought again is on cooldown.
+    const again = recordPurchase(tracker, { offerId: "core_br_test", lootResult: [], totalMtxPaid: 800, spent: { "Currency:mtxpurchased": 800 } });
+    assert.throws(() => undo(session, again.purchaseId), /can't be undone again/);
+    // Another offer, once its window is over, can't be undone either.
+    const other = recordPurchase(tracker, { offerId: "core_br_other", lootResult: [], totalMtxPaid: 500, spent: { "Currency:mtxpurchased": 500 },
+      now: new Date(Date.now() - 2 * undoWindowMs) });
+    assert.throws(() => undo(session, other.purchaseId), /time to undo/);
+  });
+  withSession(v910, "undo910", (session) => {
+    const tracker = session.profile("profile0");
+    const entry = recordPurchase(tracker, { offerId: "core_br_test", lootResult: [], totalMtxPaid: 800, spent: { "Currency:mtxpurchased": 800 } });
+    assert.equal(tracker.profile.stats.attributes.undo_timeout, undefined, "9.10 has no Undo");
+    assert.throws(() => undo(session, entry.purchaseId), /no Undo/);
+  });
+});
+
+test("9.20's hotfix turns Undo on (bEnableUndoPurchase); 9.10's doesn't", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const options = async (version, build) => String((await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+      path: "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini",
+      headers: { "User-Agent": `Fortnite/++Fortnite+Release-${version}-CL-${build} Windows/10.0.19045.1.256.64bit`, Authorization: `bearer ${token}` } })).body ?? "");
+    assert.ok((await options("9.20", v920)).split("\r\n").includes("bEnableUndoPurchase=true"));
+    assert.equal((await options("9.10", v910)).includes("bEnableUndoPurchase"), false);
+  } finally {
+    backend.close();
   }
 });

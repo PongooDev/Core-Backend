@@ -6,14 +6,16 @@ import { hasRefunds, purchaseHistoryOf, refundPurchase } from "../../../store/re
 // returns an item shop purchase of the last 30 days, one of the account's three lifetime returns. The client sees the
 // change in common_core's mtx_purchase_history and its V-Bucks, and the athena profile's locker. A Support-A-Creator
 // payout the purchase made (Core-Backend #349, store/creatorpayouts.js) comes back from the creator.
+// From 9.20 {purchaseId, quickReturn: true} is the purchase screen's Undo (store/refunds.js undoRefusal), which spends no
+// return.
 export function refundMtxPurchase({ req, session, sessionFor, context }) {
   if (!hasRefunds()) throw new McpError("errors.com.epicgames.fortnite.operation_not_found", "This build has no cosmetic returns");
-  const { purchaseId } = req.body ?? {};
+  const { purchaseId, quickReturn } = req.body ?? {};
   if (typeof purchaseId !== "string" || !purchaseId) throw new McpError("errors.com.epicgames.common.invalid_parameter", "purchaseId is missing");
   const payout = purchaseHistoryOf(session.profile("profile0").profile.stats.attributes).purchases
     .find((entry) => entry.purchaseId === purchaseId)?.coreCreatorPayout;
   try {
-    refundPurchase(session, purchaseId);
+    refundPurchase(session, purchaseId, new Date(), { quickReturn: quickReturn === true });
   } catch (error) {
     if (error.refused) throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed", error.message);
     throw error;

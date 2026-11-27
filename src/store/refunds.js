@@ -39,6 +39,28 @@ const dayMs = 86400000;
 
 export const hasRefunds = (build = currentBuild()) => Number(build) >= refundsBuild;
 
+// 9.20's (CL-6822798) Undo (Update v9.20: "Immediately after you make a new purchase you will be able to Undo this item
+// purchase for a limited time as long as you stay on the purchase screen. After you Undo a purchase, there will be a
+// cooldown on using Undo on that same item ... the ownership of that item will be revoked and you will be granted back the
+// appropriate V-Bucks. Undo will follow the same eligibility requirements as Return Requests"). The client (9.20 IDB,
+// image base 0xffff80081dac0000) has had it since 9.10, behind UFortRuntimeOptions' bEnableUndoPurchase, which the
+// hotfix turns on from 9.20 (services/fortnite/cloudstorage.js):
+// - the purchase screen shows Undo (0xffff800821446F50) and counts it down each second (0xffff800821472010) by common_core's
+//   undo_timeout (0xffff80081F227B70: the stat's FDateTime less the server's now; none left hides the button);
+// - an offer is on cooldown while common_core's undo_cooldowns [{offerId, cooldownExpires}] has an entry for it whose
+//   cooldownExpires is after the server's now (0xffff80081F22D3E0);
+// - Undo sends RefundMtxPurchase with its QuickReturn parameter, {purchaseId, quickReturn: true}.
+// So a purchase sets undo_timeout, and an undo returns the purchase as a return does, without spending one of the three
+// returns, ends the window and starts the offer's cooldown. 🟡 Epic's window and cooldown aren't recorded: Core's 30
+// seconds and 24 hours.
+export const undoBuild = 6822798;
+export const undoWindowMs = 30000;
+export const undoCooldownMs = 86400000;
+export const hasUndo = (build = currentBuild()) => Number(build) >= undoBuild;
+export const undoTimeoutStat = "undo_timeout";
+export const undoCooldownsStat = "undo_cooldowns";
+const undoCooldownsOf = (attributes) => (Array.isArray(attributes?.[undoCooldownsStat]) ? attributes[undoCooldownsStat] : []);
+
 // The account's history, as the stat holds it or a fresh one: {purchases, refundCredits, refundsUsed}.
 export function purchaseHistoryOf(attributes) {
   const history = attributes?.mtx_purchase_history;
@@ -66,6 +88,7 @@ export function recordPurchase(tracker, { offerId, lootResult, totalMtxPaid, spe
     ...(creatorPayout ? { coreCreatorPayout: creatorPayout } : {})
   };
   tracker.setStat("mtx_purchase_history", { ...history, purchases: [...history.purchases, entry] });
+  if (hasUndo()) tracker.setStat(undoTimeoutStat, new Date(now.getTime() + undoWindowMs).toISOString());
   return entry;
 }
 
@@ -101,12 +124,29 @@ export function refundRefusal(history, purchaseId, now = new Date()) {
   return null;
 }
 
+// Whether the purchase can be undone now (9.20): null, or why not. Only the account's newest purchase, inside its window,
+// and not an offer still on cooldown.
+export function undoRefusal(attributes, purchaseId, now = new Date()) {
+  if (!hasUndo()) return "This build has no Undo";
+  const history = purchaseHistoryOf(attributes);
+  const entry = history.purchases.find((candidate) => candidate.purchaseId === purchaseId);
+  if (!entry) return `No purchase ${purchaseId}`;
+  if (entry.bHasBeenRefunded || isRefunded(entry)) return "That purchase was returned already";
+  if (history.purchases.at(-1) !== entry) return "Only the newest purchase can be undone";
+  const timeout = Date.parse(attributes?.[undoTimeoutStat] ?? "");
+  if (!(timeout > now.getTime())) return "The time to undo that purchase is over";
+  if (undoCooldownsOf(attributes).some((cooldown) => cooldown.offerId === entry.offerId && Date.parse(cooldown.cooldownExpires) > now.getTime())) {
+    return "That item can't be undone again yet";
+  }
+  return null;
+}
+
 // Returns the purchase: [{profileId, itemId, templateId, quantity}] of the V-Bucks given back. Throws (refused) when it
-// can't be.
-export function refundPurchase(session, purchaseId, now = new Date()) {
+// can't be. quickReturn is 9.20's Undo (above).
+export function refundPurchase(session, purchaseId, now = new Date(), { quickReturn = false } = {}) {
   const tracker = session.profile("profile0");
   const history = purchaseHistoryOf(tracker.profile.stats.attributes);
-  const why = refundRefusal(history, purchaseId, now);
+  const why = quickReturn ? undoRefusal(tracker.profile.stats.attributes, purchaseId, now) : refundRefusal(history, purchaseId, now);
   if (why) throw refusal(why);
   const entry = history.purchases.find((candidate) => candidate.purchaseId === purchaseId);
   for (const loot of entry.lootResult ?? []) if (loot.itemProfile === "athena") removeCosmeticItem(session, loot.itemGuid ?? loot.itemType);
@@ -114,6 +154,14 @@ export function refundPurchase(session, purchaseId, now = new Date()) {
   const returned = Object.entries(spent).filter(([, amount]) => amount > 0).flatMap(([templateId, amount]) => grant(session, templateId, amount));
   const purchases = history.purchases.map((candidate) => (candidate === entry
     ? { ...candidate, refundDate: now.toISOString() } : candidate));
+  if (quickReturn) {
+    tracker.setStat("mtx_purchase_history", { ...history, purchases });
+    const cooldowns = undoCooldownsOf(tracker.profile.stats.attributes).filter((cooldown) => cooldown.offerId !== entry.offerId
+      && Date.parse(cooldown.cooldownExpires) > now.getTime());
+    tracker.setStat(undoCooldownsStat, [...cooldowns, { offerId: entry.offerId, cooldownExpires: new Date(now.getTime() + undoCooldownMs).toISOString() }]);
+    tracker.setStat(undoTimeoutStat, "min");
+    return returned;
+  }
   tracker.setStat("mtx_purchase_history", { ...history, purchases, refundCredits: history.refundCredits - 1, refundsUsed: history.refundsUsed + 1 });
   return returned;
 }

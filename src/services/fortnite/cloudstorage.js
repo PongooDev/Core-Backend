@@ -21,6 +21,7 @@ import { creativeAccessGlobals } from "../../profiles/creative.js";
 import { wargamesGlobals } from "../../events/wargames.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { giftingRuntimeOptions } from "../../store/gifting.js";
+import { hasUndo } from "../../store/refunds.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
 import { creativeRuntimeOptions } from "../links/islands.js";
 import { createNetwork, httpsProxied, sentToHost } from "../../network.js";
@@ -235,6 +236,8 @@ const chatSection = (build) => ["[/Script/FortniteGame.FortOnlineAccount]", "bIs
 // keeps the tab's list from being cached, or hides the empty tab when the admin asks (tournaments/showdown.js, #336).
 // 6.31's (CL-4573279) gifting is off in it as shipped (bDisableGifting): the file turns it on with Epic's limits while the
 // admin panel has gifting on, and off again otherwise (store/gifting.js).
+// 9.20's (CL-6822798) Undo (store/refunds.js) is off in it as shipped (bEnableUndoPurchase, in the client since 9.10): the
+// file turns it on from 9.20, Update v9.20's.
 const replaysBuild = 4000805;
 const creatorsUrl = (req, network) => {
   const proxied = httpsProxied(req);
@@ -247,7 +250,7 @@ const runtimeOptionsFiles = (changelist, settingsValue, url = null, islandLinks 
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
     "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue, { creatorsUrl: url }),
     ...showdownRuntimeOptions(changelist, settingsValue), ...giftingRuntimeOptions(changelist, settingsValue),
-    ...creativeRuntimeOptions(changelist, islandLinks), ""].join("\r\n"), "utf8")
+    ...creativeRuntimeOptions(changelist, islandLinks), ...(hasUndo(changelist) ? ["bEnableUndoPurchase=true"] : []), ""].join("\r\n"), "utf8")
 } : {});
 // 7.00's (CL-4629139) and later Creative servers keep their islands in the DSS through the sidecar service
 // (services/dss/dss.js, PongooDev/CoreV2#471): USidecarSys's base URL is the "MCP" online subsystem's
