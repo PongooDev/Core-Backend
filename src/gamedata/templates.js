@@ -5,13 +5,15 @@ import { activeBuild, buildGameData, dataBuilds, overlay } from "./read.js";
 // 7.00's (CL-4629139) Temperate_Medium, from 7.10 (CL-4667333) Arctic_Medium and TheBlock_Season7, and from 7.20
 // (CL-4727874) Arctic_Competitive_Medium1 (Frosty Fortress), from 8.20 (CL-5625478) 8.10's Sandbar_Large and Volcano_Large
 // and 8.11's BlackGlass_Medium, from 8.30 (CL-5793395) Tropical_Medium and Military_Medium (Rivers Edge), and from 9.00
-// (CL-6337466) FlatGrass_Large (Meadow), so an earlier client isn't sent the islands an account was given on a later build.
+// (CL-6337466) FlatGrass_Large (Meadow), and from 9.20 (CL-6822798) Desert_Large (Canyon), so an earlier client isn't sent
+// the islands an account was given on a later build.
 const creativePlotTemplates = (build) => [...(Number(build) >= 4629139 ? ["CreativePlot:temperate_medium"] : []),
   ...(Number(build) >= 4667333 ? ["CreativePlot:arctic_medium", "CreativePlot:theblock_season7"] : []),
   ...(Number(build) >= 4727874 ? ["CreativePlot:arctic_competitive_medium1"] : []),
   ...(Number(build) >= 5625478 ? ["CreativePlot:sandbar_large", "CreativePlot:volcano_large", "CreativePlot:blackglass_medium"] : []),
   ...(Number(build) >= 5793395 ? ["CreativePlot:tropical_medium", "CreativePlot:military_medium"] : []),
-  ...(Number(build) >= 6337466 ? ["CreativePlot:flatgrass_large"] : [])];
+  ...(Number(build) >= 6337466 ? ["CreativePlot:flatgrass_large"] : []),
+  ...(Number(build) >= 6822798 ? ["CreativePlot:desert_large"] : [])];
 
 // Template ids a build's client still loads under an id of its own: its DefaultGame.ini's PrimaryAssetIdRedirects (the
 // asset manager's Old to New, at load). 7.30 (CL-4834550) renames Jumpshot and Triple Threat (the basketball outfits of

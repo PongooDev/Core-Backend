@@ -193,6 +193,11 @@ const tropicalIslandsBuild = 5793395;
 // One, as for Season 8's.
 const meadowPlotTemplateId = "CreativePlot:flatgrass_large";
 const meadowIslandBuild = 6337466;
+// Update v9.20's "New Canyon Island: A desert themed canyon with a river cutting through": Desert_Large ("Canyon Island",
+// PID_Playset_105x105_Composed_Desert, 105 x 105, bIsAvailableToUsers), new in 9.20's (CL-6822798) paks. One, as for
+// Meadow. 9.20's paks also add Loki_Large ("Prop Hunt Farm"), which no update note names: not given.
+const canyonPlotTemplateId = "CreativePlot:desert_large";
+const canyonIslandBuild = 6822798;
 // A player's island types: the plot definition, how many of it an account gets (the island limit of that type), the first
 // build that has it, and its display name without the {islandIndex} (the definitions' own names, above).
 export const playerPlotTypes = [
@@ -205,7 +210,8 @@ export const playerPlotTypes = [
   { templateId: blackGlassPlotTemplateId, count: 1, firstBuild: season8IslandsBuild, name: "Black Glass Island" },
   { templateId: tropicalPlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Tropical Island" },
   { templateId: riversEdgePlotTemplateId, count: 1, firstBuild: tropicalIslandsBuild, name: "Rivers Edge Island" },
-  { templateId: meadowPlotTemplateId, count: 1, firstBuild: meadowIslandBuild, name: "Meadow Island" }
+  { templateId: meadowPlotTemplateId, count: 1, firstBuild: meadowIslandBuild, name: "Meadow Island" },
+  { templateId: canyonPlotTemplateId, count: 1, firstBuild: canyonIslandBuild, name: "Canyon Island" }
 ];
 // The island type of a plot template id (any case), or null.
 export const playerPlotType = (templateId) => playerPlotTypes.find((type) => type.templateId.toLowerCase() === String(templateId ?? "").toLowerCase()) ?? null;
@@ -213,7 +219,7 @@ const plotSets = (build = currentBuild()) => playerPlotTypes.filter((type) => ty
 
 // The account's islands, once it is entitled, on 7.00 and later: four, from 7.10 four Arctic islands and two Blocks, from
 // 7.20 a Frosty Fortress, from 8.20 a Sandbar, a Volcano and a Black Glass island, from 8.30 a Tropical and a Rivers Edge
-// island, and from 9.00 a Meadow island.
+// island, from 9.00 a Meadow island, and from 9.20 a Canyon island.
 // Returns how many were given.
 export function settleCreativePlots(session, now = new Date()) {
   if (!hasCreative() || !creativeEntitled(session, now)) return 0;

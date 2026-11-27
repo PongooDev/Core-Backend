@@ -20,8 +20,10 @@ import { athenaChallengeSchedules, athenaCosmetics, athenaSeason } from "../src/
 import { getCardPack, getItem } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
+import { isForeignTemplate } from "../src/gamedata/templates.js";
 import { teamsOfPlaylist } from "../src/matchmaking/service.js";
 import { styleSchedules } from "../src/profiles/challenges.js";
+import { playerPlotType, plotsOf, settleCreativePlots } from "../src/profiles/creative.js";
 import { grant } from "../src/profiles/progress.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
@@ -36,7 +38,7 @@ import { clientToken, send, startBackend } from "./helpers.js";
 // Fortnite 9.20 (CL-6822798, Update v9.20, 6 June 2019), Season 9, on its own data (gamedata/6822798). Season 9's Battle
 // Pass, lobby, Fortbytes, Wargames, Tales of Beyond, Arena and earlier seasons' held playlists run on; its own: Sword Fight,
 // the Block's 9.20 builds, Breakpoint's styles, Save the World's Invasion, Beyond the Stellar Horizon, the Sci-Fi Llama,
-// the Tar Pit and Archeolo-Jess, and the item shop's Undo.
+// the Tar Pit and Archeolo-Jess, Creative's Canyon Island, and the item shop's Undo.
 const v920 = "6822798";
 const v910 = "6639283";
 const v9100 = "6573057";
@@ -191,6 +193,23 @@ test("9.20's Event Store adds the Tar Pit (600 Gold), its Weekly Store Archeolo-
     assert.equal(offers(v910, eventStorefront).some(([id]) => id === tarPit[0]), false);
   });
   assert.ok(inBuild(v920, () => getItem("Schematic:sid_floor_tar_vr_t01")));
+});
+
+test("9.20's Creative adds Canyon Island, not Prop Hunt Farm; 9.10 doesn't get it", () => {
+  const seasons = { mode: "auto", seasonStarts: { 8: "2019-02-28", 9: "2019-05-09" } };
+  const idsOf = (session) => plotsOf(session.profile("creative").profile).map(([, item]) => item.templateId.replace("CreativePlot:", ""));
+  const plots = (build, name) => withConfig(seasons, () => withSession(build, name, (session) => {
+    settleCreativePlots(session, at("2019-06-20T12:00:00Z"));
+    return idsOf(session);
+  }));
+  const p920 = plots(v920, "plots920");
+  assert.equal(p920.filter((plot) => plot === "desert_large").length, 1);
+  assert.equal(p920.filter((plot) => plot === "flatgrass_large").length, 1);
+  assert.equal(p920.some((plot) => plot.startsWith("loki")), false);
+  assert.equal(plots(v910, "plots910").includes("desert_large"), false);
+  assert.equal(inBuild(v910, () => isForeignTemplate("CreativePlot:desert_large")), true);
+  assert.equal(inBuild(v920, () => isForeignTemplate("CreativePlot:desert_large")), false);
+  assert.deepEqual([playerPlotType("CreativePlot:Desert_Large").name, playerPlotType("CreativePlot:Desert_Large").count], ["Canyon Island", 1]);
 });
 
 test("9.20's shop: Season 9's history with its cosmetics in, Tempest from 7 June; 9.10 never shows them", () => {
