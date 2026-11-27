@@ -288,6 +288,19 @@ export const season4FlagGroups = [
   { id: "holidayDecor", name: "Battle Royale: the holiday Battle Bus, supply drops and decor (7.10)", flags: [
     { flag: "TopSecret", builds: [b710, b710], description: "The Winter Bus (BBID_WinterBus), the holiday supply drops (AthenaSupplyDrop_Holiday) and the island's decor (HLDY_01 to HLDY_07: string lights, wreaths, snowflakes, Christmas trees, the giant candy canes): from 19 December 2018 to 15 January 2019" }
   ] },
+  // 6.21's Fortnitemares island decor (events/holidaydecor.js): the EventNames of the BP_CalendarProps in 6.21's
+  // client map levels, plain names. Served by their dates on Season 6's replay, or always or never each by its switch;
+  // LTM_Fortnitemares switched on serves all eight always.
+  { id: "fortnitemaresDecor", name: "Battle Royale: Fortnitemares' island decor (6.21)", flags: [
+    { flag: "HW_01", builds: [b621, b621], description: "3 BP_CalendarProps (Athena_POI_City_001, Athena_POI_CommunityPark_001, a house): 24 ghost decorations" },
+    { flag: "HW_02", builds: [b621, b621], description: "10 (Athena_POI_GolfCourse_001, its clubhouse and shops, the Palms houses and shops): 5 ghost decorations" },
+    { flag: "HW_03", builds: [b621, b621], description: "10 (Athena_POI_RangerOutpost, CTN and SUB houses and shops): 15 ghost decorations" },
+    { flag: "HW_04", builds: [b621, b621], description: "14 (the strip mall's McGuffinsBooks and Noms, gas stations, the camping store, SUB houses): 18 ghost decorations" },
+    { flag: "HW_05", builds: [b621, b621], description: "7 (the Palms resort, gas station and houses, two REC plots): 14 ghost decorations" },
+    { flag: "HW_06", builds: [b621, b621], description: "7 (Athena_POI_Diner_001, the SUB bunker and houses, three MCM plots): 9 ghost decorations" },
+    { flag: "HW_07", builds: [b621, b621], description: "6 (Athena_POI_RVPark_001, CTN plazas and towers): 29 ghost decorations" },
+    { flag: "HW_08", builds: [b621, b621], description: "4 (Athena_POI_DriveIn_001, Athena_POI_Junkyard_001, Athena_POI_Lake_002, Athena_POI_ToiletFactory_001): 25 ghost decorations" }
+  ] },
   // 7.20's Ice Storm Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_WinterDeimos, events/icestorm.js): served
   // by their dates on Season 7's replay, or always or never by their switch.
   { id: "iceStorm", name: "Battle Royale: the Ice Storm Challenges (7.20)", flags: [

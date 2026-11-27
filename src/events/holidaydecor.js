@@ -1,7 +1,8 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
 import { datedEvent, datedParts, datedSettings, datedWindows } from "./datedflags.js";
-import { currentEventsConfig, eventsActiveUntil, holidayDecor710, holidayDecorProps710, ltm14DaysOfFortnite, seasonalEventsOn } from "./events.js";
+import { currentEventsConfig, eventsActiveUntil, fortnitemaresDecor621, holidayDecor710, holidayDecorProps710, ltm14DaysOfFortnite, ltmFortnitemares,
+  seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // 7.10's holiday decor (CL-4667333, CoreV2 #699). Battle Royale's seasonal decor events are AthenaSeasonalDecorEvents
@@ -42,5 +43,31 @@ export function holidayDecorStates(now = new Date(), changelist = currentBuild()
   const parts = datedParts(windows, nowMs, holidayDecorEvent.parts, new Set([...off, ...on, ...(decorOff || propsAlways ? holidayDecorProps710 : [])]));
   if (!propsAlways) return parts;
   const props = holidayDecorProps710.map((eventType) => ({ eventType, activeUntil: eventsActiveUntil }));
+  return parts.map((part) => ({ ...part, events: [...part.events, ...props] }));
+}
+
+// 6.21's Fortnitemares decor (CL-4526925, CoreV2 #718): the island's Halloween props are BP_CalendarProps in 6.21's client
+// map levels, as 7.10's holiday decor is, watching HW_01 to HW_08 (events/events.js fortnitemaresDecor621). Nothing served
+// those names, so no ghost, pumpkin or gravestone spawned and the Fortnitemares Challenges' Destroy a Ghost Decoration in
+// different Named Locations (Quest_FNM_Destroy_ScavengerHunt_GhostDecos, Part 2: destroy_fortnitemares_ghostdeco_<place>,
+// TargetTags Building.Type.Prop.Athena.GhostDeco, SourceTags Athena.Location.POI.<place>, ContextTags
+// Athena.Playlist.Deimos) had nothing to destroy. A prop spawned by BP_CalendarProps is the class's own building actor
+// (Halloween_Ghost_a to _c carry the GhostDeco tag), so its destroy is credited as any prop's.
+export const fortnitemaresDecorEvent = datedEvent("fortnitemaresDecor");
+const fortnitemaresDecorBuild = 4526925;
+
+// The decor as calendar events in parts, from the part that holds now on: on 6.21 with the seasonal events on, in the
+// Automatic mode, on Season 6's replay (events/datedflags.js has the dates), the admin's own times or off. Each name's
+// switch (events/season4flags.js) serves it always or never, so it isn't scheduled here then; LTM_Fortnitemares switched
+// on serves every name always, unless its own switch is off.
+export function fortnitemaresDecorStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  if (Number(changelist) !== fortnitemaresDecorBuild || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  const { off, on } = season4Overrides(changelist, config);
+  const always = on.includes(ltmFortnitemares) ? fortnitemaresDecor621.filter((name) => !off.includes(name) && !on.includes(name)) : [];
+  const nowMs = now.getTime();
+  const windows = datedWindows(fortnitemaresDecorEvent, datedSettings(config).fortnitemaresDecor, nowMs, seasonMoment(now, null, 6).getTime());
+  const parts = datedParts(windows, nowMs, fortnitemaresDecorEvent.parts, new Set([...off, ...on, ...always]));
+  if (!always.length) return parts;
+  const props = always.map((eventType) => ({ eventType, activeUntil: eventsActiveUntil }));
   return parts.map((part) => ({ ...part, events: [...part.events, ...props] }));
 }

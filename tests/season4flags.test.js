@@ -51,9 +51,10 @@ test("every event flag of Season 4's paks is in the catalog, in a group", () => 
     // (8.00's LobbySeason8 and Spring2019 aren't switched),
     "LobbySeason7", "WinterBattleBus", "LTM_14DaysOfFortnite", "Frostnite", "LTM_WinterDeimos", "LTE_Festivus", "LTE_S7_OverTime",
     "LTM_HighStakes", "LTE_BootyBay", "LTM_Goose", "LTM_Ashton", "LTE_S8_ExtraCredit", "LTM_Wax", "LTM_Vigilante", "LTM_Mash"].map((name) => `EventFlag.${name}`)
-    // and that scripting's POI0 and POI1, which aren't EventFlag.* (events/events.js islandPoi), and 7.10's decor's TopSecret
-    // (CL-4667333's server-assets pak, events/holidaydecor.js).
-    .concat(["POI0", "POI1", "TopSecret"]);
+    // and that scripting's POI0 and POI1, which aren't EventFlag.* (events/events.js islandPoi), 7.10's decor's TopSecret
+    // (CL-4667333's server-assets pak, events/holidaydecor.js) and 6.21's island decor's HW_01 to HW_08 (its client map
+    // levels' BP_CalendarProps, events/holidaydecor.js).
+    .concat(["POI0", "POI1", "TopSecret", ...Array.from({ length: 8 }, (_, i) => `HW_0${i + 1}`)]);
   for (const flag of scanned) assert.ok(season4Flag(flag), flag);
   const all = season4FlagGroups.flatMap((group) => group.flags.map(({ flag }) => flag));
   assert.equal(new Set(all).size, all.length, "each flag once");

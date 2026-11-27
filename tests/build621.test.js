@@ -10,9 +10,10 @@ import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
 import { rollContents } from "../src/cardpacks/contents.js";
 import { activeEventFlags, configureEvents, cramSession2018, fortnitemares, fortnitemares2018, fortnitemaresPart4, halloweenBattleBus, hasEventEnded,
-  isEventActive, islandCrack, islandPoi, islandRune, lobbySeason6, lobbySeason6Halloween, ltmFortnitemares, ltmLilKevin } from "../src/events/events.js";
+  eventsActiveUntil, fortnitemaresDecor621, isEventActive, islandCrack, islandPoi, islandRune, lobbySeason6, lobbySeason6Halloween, ltmFortnitemares, ltmLilKevin } from "../src/events/events.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
 import { founderHeroes2018, owedFounderHeroes } from "../src/events/fortnitemares2018.js";
+import { fortnitemaresDecorStates } from "../src/events/holidaydecor.js";
 import { islandStates } from "../src/events/island.js";
 import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmOfPlaylist, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
 import { season4Flag } from "../src/events/season4flags.js";
@@ -235,6 +236,61 @@ test("a 6.21 gameserver's calendar has POI0 among the active events, until the a
     // 6.10 never had either.
     const old = (await asBuild(v610, "6.10")(backend.port, "/fortnite/api/calendar/v1/timeline", token)).body.channels["client-events"].states[0];
     assert.equal(old.activeEvents.some(({ eventType }) => /^POI\d$/.test(eventType)), false);
+  } finally {
+    await backend.close();
+  }
+});
+
+test("6.21's Fortnitemares decor (CoreV2 #718): HW_01 to HW_08 on Season 6's replay from 26 October to the Butterfly, by their switches and LTM_Fortnitemares', on 6.21 only", () => {
+  // The EventNames of the BP_CalendarProps in 6.21's client map levels; the ghost decorations the Fortnitemares Challenges
+  // destroy are among their props.
+  assert.deepEqual(fortnitemaresDecor621, ["HW_01", "HW_02", "HW_03", "HW_04", "HW_05", "HW_06", "HW_07", "HW_08"]);
+  const quest = inBuild(v621, () => getAthenaQuest("quest_fnm_destroy_scavengerhunt_ghostdecos"));
+  assert.deepEqual([quest.objectiveCompletionCount, quest.objectives.length], [7, 20], "seven of twenty Named Locations");
+  const events = (iso, build = v621) => inBuild(build, () => fortnitemaresDecorStates(at(iso)))[0]?.events ?? [];
+  const types = (iso, build = v621) => events(iso, build).map(({ eventType }) => eventType);
+  withConfig(replay, () => {
+    assert.deepEqual(types("2018-10-25T23:00:00Z"), []);
+    assert.deepEqual(types("2018-10-26T00:00:00Z"), fortnitemaresDecor621, "from 26 October");
+    for (const event of events("2018-11-01T12:00:00Z")) {
+      assert.deepEqual([event.activeSince, event.activeUntil], ["2018-10-26T00:00:00.000Z", "2018-11-04T18:00:00.000Z"], event.eventType);
+    }
+    assert.deepEqual(types("2018-11-04T18:00:00Z"), [], "over with the Butterfly");
+    assert.deepEqual(types("2018-11-01T12:00:00Z", v620), [], "6.20's levels weren't read");
+    assert.deepEqual(types("2018-11-01T12:00:00Z", "4543176"), [], "6.22's Battle Royale Fortnitemares is over");
+    assert.equal(activeEventFlags(v621).includes("HW_01"), false, "dated, not the build's own");
+  });
+  withConfig({ ...replay, season4Flags: { overrides: { HW_08: "on" } } }, () => {
+    assert.ok(activeEventFlags(v621).includes("HW_08"), "switched on, always served");
+    assert.deepEqual(types("2018-10-10T12:00:00Z"), []);
+    assert.deepEqual(types("2018-11-01T12:00:00Z"), fortnitemaresDecor621.filter((name) => name !== "HW_08"), "the switched one once");
+  });
+  withConfig({ ...replay, season4Flags: { overrides: { [ltmFortnitemares]: "on", HW_02: "off" } } }, () => {
+    const always = fortnitemaresDecor621.filter((name) => name !== "HW_02");
+    assert.deepEqual(events("2018-10-10T12:00:00Z"), always.map((eventType) => ({ eventType, activeUntil: eventsActiveUntil })), "the Fortnitemares Challenges' switch: always");
+    assert.deepEqual(types("2018-11-01T12:00:00Z"), always, "each once, the switched-off one not");
+    assert.deepEqual(types("2018-11-01T12:00:00Z", v620), []);
+  });
+  withConfig({ ...replay, datedFlags: { fortnitemaresDecor: { mode: "off" } } }, () => {
+    assert.deepEqual(types("2018-11-01T12:00:00Z"), []);
+  });
+  for (const name of fortnitemaresDecor621) assert.deepEqual(season4Flag(name).builds, [Number(v621), Number(v621)], name);
+});
+
+test("a 6.21 calendar serves HW_01 to HW_08 once the admin starts Fortnitemares' decor, and not before", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Decor621");
+    const timeline = async () => (await asBuild(v621)(backend.port, "/fortnite/api/calendar/v1/timeline", token)).body.channels["client-events"].states[0];
+    // A replay that starts today is on 27 September 2018: before the decor.
+    const before = await timeline();
+    assert.equal(before.activeEvents.some(({ eventType }) => fortnitemaresDecor621.includes(eventType)), false);
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", null, { event: "fortnitemaresDecor", mode: "now" })).status, 200);
+    const after = await timeline();
+    for (const name of fortnitemaresDecor621) {
+      assert.ok(after.activeEvents.some(({ eventType }) => eventType === name), `${name}, the calendar's active events`);
+      assert.ok(after.state.activeEventFlags.includes(name), `${name}, the seasonal event manager's flags`);
+    }
   } finally {
     await backend.close();
   }

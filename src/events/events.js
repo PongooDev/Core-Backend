@@ -648,6 +648,16 @@ export const islandCrack = "EventFlag.BR_S6_Island_Crack";
 export const islandDrain = "EventFlag.BR_S6_Island_Drain";
 export const ltmLilKevin = "EventFlag.LTM_LilKevin";
 export const fortnitemaresPart4 = "EventFlag.Fortnitemares_Part4";
+// 6.21's Fortnitemares decor on the island (CoreV2 #718, events/holidaydecor.js fortnitemaresDecorStates): the
+// calendar events its BP_CalendarProps watch. 6.21's client map levels place 62 in 60 building and POI levels (among
+// them Athena_POI_City_001, _CommunityPark_001, _GolfCourse_001, _DriveIn_001, _Junkyard_001, _Lake_002, _ToiletFactory_001,
+// _Diner_001, _RVPark_001 and _RangerOutpost), 61 with an EventName HW_01 to HW_08 (one, in Athena_SUB_5x5_House_a, names
+// none and stays empty) and its props (Halloween_Ghost_a to _c, jack-o'-lanterns, gravestones, haunted houses, witches,
+// spiders, webs, candy buckets, fog machines); none is a BP_CalendarProps_Progressive, so no progress range matters. The
+// ghosts (Building.Type.Prop.Athena.GhostDeco) are Quest_FNM_Destroy_ScavengerHunt_GhostDecos' targets: 139 of them under
+// these eight names. A few more stand as plain actors in levels that need no event
+// (Athena_POI_FarmStead_HW_002, the _FNM Farmstead barn and field, DurrrBurger_002, McGuffinsBooks).
+export const fortnitemaresDecor621 = ["HW_01", "HW_02", "HW_03", "HW_04", "HW_05", "HW_06", "HW_07", "HW_08"];
 // 6.00's Save the World mini-event (events/cramsession2018.js).
 export const cramSession2018 = "CramSession2018";
 export const roadTrip2018 = "RoadTrip2018";

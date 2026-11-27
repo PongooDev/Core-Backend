@@ -1,5 +1,5 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
-  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, holidayDecor710, holidayDecorProps710,
+  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, fortnitemaresDecor621, holidayDecor710, holidayDecorProps710,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
   lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmMash, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
@@ -414,6 +414,14 @@ export const datedEvents = [
   { id: "holidayDecor", name: "the holiday Battle Bus, supply drops and decor (7.10)", season: 7, flag: holidayDecor710, anchor: "decor", parts: 2, steps: [
     step("decor", "The Winter Bus, the holiday supply drops and the island's decor", [holidayDecor710, ...holidayDecorProps710], Date.parse("2018-12-19T14:00:00.000Z"),
       Date.parse("2019-01-15T00:00:00.000Z"))
+  ] },
+  // 6.21's Fortnitemares island decor (events/holidaydecor.js fortnitemaresDecorStates): HW_01 to HW_08, the
+  // BP_CalendarProps of 6.21's client map levels, ghosts, pumpkins and gravestones among them. 🟡 Epic's own times for the
+  // eight aren't recorded: from 26 October 2018 (00:00 UTC) to Battle Royale's Fortnitemares' end, the Butterfly (Update
+  // v6.21's "ends on Sunday, November 4 at 1 PM Eastern Time").
+  { id: "fortnitemaresDecor", name: "Fortnitemares' island decor (6.21)", season: 6, flag: fortnitemaresDecor621[0], anchor: "decor", parts: 2, steps: [
+    step("decor", "Fortnitemares' island decor: ghosts, jack-o'-lanterns, gravestones, haunted houses", fortnitemaresDecor621,
+      Date.parse("2018-10-26T00:00:00.000Z"), butterflyAt)
   ] },
   { id: "birthday", name: "the Birthday Challenges (5.10 – 5.21)", flag: anniversary2018BR, anchor: "challenges", parts: 1,
     challenges: "Schedule_Birthday2018_BR", modes: ["build", "dates", "custom", "off"], defaultMode: "build", steps: [
