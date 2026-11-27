@@ -822,3 +822,35 @@ test("#356: the Deep Freeze Bundle is sold at once on 6.30 and 6.31, from 14 Nov
     backend.close();
   }
 });
+
+test("#447: Season 9 offers Laguna until Wilde is available and grants the Wilde Pack once", async () => {
+  const wilde = findRealMoneyOffer("core_starter_br_s9");
+  const laguna = findRealMoneyOffer("core_starter_br_s8");
+  for (const [cl, hasWilde] of [["6337466", false], ["6428087", false], ["6639283", true],
+    ["6822798", true], ["6922310", true], ["7095426", true]]) {
+    assert.equal(inBuild(cl, () => isOffered(wilde)), hasWilde, cl);
+    assert.equal(inBuild(cl, () => isOffered(laguna)), !hasWilde, cl);
+  }
+  assert.equal(inBuild("6165369", () => isOffered(wilde)), false);
+
+  const backend = await startBackend();
+  const agent = "Fortnite/++Fortnite+Release-9.10-CL-6639283 Windows/10.0.19045.1.256.64bit";
+  try {
+    const player = await userLogin(backend.port, "WildeShopper");
+    const offer = currencyOf(await catalog(backend.port, player.token, agent)).catalogEntries.find((entry) => entry.offerId === wilde.offerId);
+    const id = offer.appStoreId[1];
+    assert.deepEqual([wilde.price, wilde.currencyCode, offer.title], [499, "USD", "The Wilde Pack"]);
+    const page = await open(backend.port, id, agent);
+    assert.equal(page.status, 200);
+    assert.equal((await complete(backend.port, purchaseIdOf(page.body))).status, 200);
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent);
+    assert.equal(owned(athena, "AthenaCharacter:CID_420_Athena_Commando_F_WhiteTiger").length, 1);
+    assert.equal(owned(athena, "AthenaBackpack:BID_277_WhiteTiger").length, 1);
+    const core = await query(backend.port, player.accountId, player.token, "common_core", agent);
+    assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
+    assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
+    assert.equal((await open(backend.port, id, agent)).status, 409);
+  } finally {
+    backend.close();
+  }
+});

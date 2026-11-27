@@ -165,8 +165,20 @@ const lagunaPack = {
   description: "Laguna outfit, Pineapple Strummer back bling, Pineapple wrap and 600 V-Bucks",
   displayAssetPath: displayAsset("DA_Featured_CID_367_Athena_Commando_F_Tropical"),
   season: 8,
+  sold: [{ season: 8 }, { season: 9, unlessOffered: "core_starter_br_s9" }],
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_367_Athena_Commando_F_Tropical", "AthenaBackpack:BID_231_TropicalFemale", "AthenaItemWrap:Wrap_033_TropicalGirl"]
+};
+// #447: 9.10 (CL-6639283) is the first supported Season 9 athena.json with both WhiteTiger cosmetics and Wilde's display asset.
+const wildePack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s9",
+  title: "The Wilde Pack",
+  description: "Wilde outfit, Palette Pack back bling and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_420_Athena_Commando_F_WhiteTiger"),
+  season: 9,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_420_Athena_Commando_F_WhiteTiger", "AthenaBackpack:BID_277_WhiteTiger"]
 };
 // The Deep Freeze Bundle (Core-Backend #356) is a Season 6 real-money pack: the Frostbite outfit
 // (CID_261_Athena_Commando_M_RaptorArcticCamo), the Freezing Point back bling (BID_142_RaptorArcticCamo), the Chill-Axe
@@ -223,7 +235,7 @@ const foundersPackOffer = (from, to) => {
 const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
 
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack, acePack, summitStrikerPack, cobaltPack, lagunaPack, deepFreezeBundle, ...foundersPackOffers];
+  wingmanPack, acePack, summitStrikerPack, cobaltPack, lagunaPack, wildePack, deepFreezeBundle, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);
