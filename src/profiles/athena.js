@@ -1016,8 +1016,12 @@ function collectEarlierRewards(session, itemId, quest) {
 // 7.10's (CL-4667333) 14 Days of Fortnite challenges each name the gift box their rewards come in (QuestBundle_14DaysOfFortnite's
 // QuestInfos' GiftBoxToUse, GB_14DaysofFortnite: its header widget ItemReceived14DaysPresent, Battle Royale's only): the
 // bundle's entry for the quest carries it (athena.json giftBox), and the quest's rewards the player now holds (the day's
-// cosmetic and its present token) are shown in it, as a bundle's completion rewards are in theirs (profiles/challenges.js
-// giveBundleRewards), the box's HeaderTemplateId the bundle. No earlier build's bundle names a quest's own box.
+// cosmetic) are shown in it, as a bundle's completion rewards are in theirs (profiles/challenges.js giveBundleRewards), the
+// box's HeaderTemplateId the bundle. No earlier build's bundle names a quest's own box.
+// The day's present token (Token:AthenaToken_BR14DaysPresent_S/M/L/XL, a shown reward that stands for the day's reward on
+// the challenge before it is done) is held but not listed: Epic's box showed only the cosmetic (CoreV2 #697, footage of
+// day 1's GG Ornament). No objective counts the presents.
+const unlistedQuestBoxRewards = /^token:athenatoken_br14dayspresent_/i;
 function giveQuestGiftBox(session, questItemId) {
   const tracker = session.profile("athena");
   const item = tracker.profile.items[questItemId];
@@ -1025,7 +1029,7 @@ function giveQuestGiftBox(session, questItemId) {
   const bundle = bundleItem && athenaChallengeBundles()?.[String(bundleItem.templateId).split(":")[1]?.toLowerCase()];
   const giftBox = bundle?.quests.find((entry) => entry.quest === questIdOf(item))?.giftBox;
   if (!giftBox) return;
-  const loot = (athenaQuestOf(item)?.rewards ?? []).map(({ templateId, quantity }) => {
+  const loot = (athenaQuestOf(item)?.rewards ?? []).filter(({ templateId }) => !unlistedQuestBoxRewards.test(templateId)).map(({ templateId, quantity }) => {
     const held = findItem(tracker.profile, templateId);
     return held ? { profileId: "athena", itemId: held, templateId: tracker.profile.items[held].templateId, quantity } : null;
   }).filter(Boolean);

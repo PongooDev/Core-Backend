@@ -134,13 +134,17 @@ test("a 7.10 player gets the 14 Days' schedule while it runs, and a challenge fo
     assert.equal(bundle.attributes.grantedquestinstanceids.length, day + 1);
     assert.ok(Object.values(items).some((item) => item.templateId === "Quest:quest_br_fdf_play_match_friends"), "day 2's");
     assert.equal(Object.values(items).some((item) => item.templateId === "Quest:quest_br_fdf_interact_chests_search"), false, "day 14's not yet");
-    // Day 2's done (two giant candy canes visited): its loading screen and present token, shown in the 14 Days' gift box.
+    // Day 2's done (two giant candy canes visited): its loading screen, shown in the 14 Days' gift box. Its present token is
+    // held but not listed: Epic's box showed only the day's cosmetic (CoreV2 #697).
     advanceAthenaObjectives(session, [{ statName: "fdf_visit_athena_giant_candy_cane_01", count: 1 }, { statName: "fdf_visit_athena_giant_candy_cane_02", count: 1 }]);
     const athena = session.profile("athena").profile.items;
     assert.ok(Object.values(athena).some((item) => item.templateId.toLowerCase() === "athenaloadingscreen:lsid_072_winterlauncher"), "Festive Firefight");
     const boxes = Object.values(session.profile("profile0").profile.items).filter((item) => item.templateId.toLowerCase() === "giftbox:gb_14daysoffortnite");
     assert.equal(boxes.length, 1);
     assert.ok(boxes[0].attributes.lootList.some(({ itemType }) => String(itemType).toLowerCase() === "athenaloadingscreen:lsid_072_winterlauncher"));
+    assert.deepEqual(boxes[0].attributes.lootList.map(({ itemType }) => String(itemType).toLowerCase()), ["athenaloadingscreen:lsid_072_winterlauncher"],
+      "only the day's cosmetic");
+    assert.ok(Object.values(athena).some((item) => item.templateId.toLowerCase() === "token:athenatoken_br14dayspresent_m"), "the present is still held");
     // Day 1's "Start or join a Creative server" (complete_athena_creative_mode, AthenaRank in Athena.Creative): a Creative
     // match reports no results, so the gameserver's UpdateQuests counts it (CoreV2 #676).
     advanceAthenaObjectives(session, [{ statName: "fdf_play_athena_creative_mode", count: 1 }]);
