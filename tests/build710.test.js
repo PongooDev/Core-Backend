@@ -6,7 +6,8 @@ import path from "node:path";
 import { allowedBuildList } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
-import { activeEventFlags, configureEvents, frostnite, lobbySeason7, ltm14DaysOfFortnite } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, frostnite, holidayDecor710, lobbySeason7, ltm14DaysOfFortnite } from "../src/events/events.js";
+import { holidayDecorStates } from "../src/events/holidaydecor.js";
 import { fourteenDaysCalendarEvent, fourteenDaysDay, fourteenDaysFlagsNow, fourteenDaysStates } from "../src/events/fourteendays.js";
 import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmOfPlaylist, ltmOn, playlistIdOfName } from "../src/events/ltms.js";
 import { season4Flag } from "../src/events/season4flags.js";
@@ -22,7 +23,7 @@ import { createProfileStore } from "../src/profiles/store.js";
 import { contentPage } from "../src/services/content/pages.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { configureItemShop, itemShopOffers } from "../src/store/itemshop.js";
-import { send, startBackend, userLogin } from "./helpers.js";
+import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 7.10 (Update v7.10, 18 December 2018; Season 7): CL-4667333, on its own data (gamedata/4667333). Battle Royale:
 // the 14 Days of Fortnite (its challenges a day at a time, its modes on Epic's days), Krampus and the holiday cosmetics in
@@ -120,6 +121,53 @@ test("the 14 Days' flag and calendar event: its dates on Season 7's replay, on 7
     assert.deepEqual(inBuild(v710, () => fourteenDaysFlagsNow(at("2018-12-25T12:00:00Z"))), []);
   });
   assert.deepEqual(season4Flag(ltm14DaysOfFortnite).builds, [4667333, 5046157], "7.20 to 7.40: by the switch only");
+});
+
+test("7.10's holiday decor (CoreV2 #699): TopSecret on Season 7's replay from the 14 Days' start, by its switch, on 7.10 only", () => {
+  // BR_Decor_WinterBus's and BR_Decor_SupplyDropHoliday's RequiredEventTag in 7.10's server-assets pak.
+  assert.equal(holidayDecor710, "TopSecret");
+  withConfig(season7, () => {
+    const types = (iso, build = v710) => inBuild(build, () => holidayDecorStates(at(iso)))[0]?.events.map(({ eventType }) => eventType) ?? [];
+    assert.deepEqual(types("2018-12-19T13:00:00Z"), []);
+    assert.deepEqual(types("2018-12-19T14:00:00Z"), [holidayDecor710], "the 14 Days' 9 AM ET");
+    const decor = inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z")))[0].events[0];
+    assert.deepEqual([decor.activeSince, decor.activeUntil], ["2018-12-19T14:00:00.000Z", "2019-01-15T00:00:00.000Z"]);
+    assert.deepEqual(types("2019-01-04T12:00:00Z"), [holidayDecor710], "on between the 14 Days' end and its extension");
+    assert.deepEqual(types("2019-01-15T00:00:00Z"), []);
+    assert.deepEqual(types("2018-12-25T12:00:00Z", v700), [], "7.00's decor names EventFlag.WinterBattleBus");
+    assert.deepEqual(types("2018-12-25T12:00:00Z", "4727874"), [], "7.20's decor wasn't read");
+    assert.ok(!inBuild(v710, () => activeEventFlags()).includes(holidayDecor710), "dated, not the build's own");
+    assert.ok(inBuild(v710, () => activeEventFlags()).includes(lobbySeason7), "7.10's lobby is Season 7's");
+  });
+  withConfig({ ...season7, season4Flags: { overrides: { [holidayDecor710]: "on" } } }, () => {
+    assert.ok(inBuild(v710, () => activeEventFlags()).includes(holidayDecor710), "switched on, always served");
+    assert.deepEqual(inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z"))).flatMap(({ events }) => events), [], "and not scheduled twice");
+    assert.ok(!inBuild(v700, () => activeEventFlags()).includes(holidayDecor710), "7.10's switch only");
+  });
+  withConfig({ ...season7, datedFlags: { holidayDecor: { mode: "off" } } }, () => {
+    assert.deepEqual(inBuild(v710, () => holidayDecorStates(at("2018-12-25T12:00:00Z"))).flatMap(({ events }) => events), []);
+  });
+  assert.deepEqual(season4Flag(holidayDecor710).builds, [4667333, 4667333]);
+});
+
+test("a 7.10 calendar serves TopSecret once the admin starts the holiday decor, and not before", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Decor710");
+    const timeline = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-7.10-CL-${v710}`, Authorization: `bearer ${token}` } }))
+      .body.channels["client-events"].states[0];
+    // A replay that starts today is on 6 December 2018: before the decor.
+    const before = await timeline();
+    assert.ok(!before.activeEvents.some(({ eventType }) => eventType === holidayDecor710));
+    assert.ok(before.state.activeEventFlags.includes(lobbySeason7));
+    assert.equal((await post(backend.port, "/admin/api/events/schedule", null, { event: "holidayDecor", mode: "now" })).status, 200);
+    const after = await timeline();
+    assert.ok(after.activeEvents.some(({ eventType }) => eventType === holidayDecor710), "the calendar's active events");
+    assert.ok(after.state.activeEventFlags.includes(holidayDecor710), "the seasonal event manager's flags");
+  } finally {
+    await backend.close();
+  }
 });
 
 test("a 7.10 player gets the 14 Days' schedule while it runs, and a challenge for each day it has run", () => {

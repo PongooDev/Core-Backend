@@ -599,6 +599,11 @@ export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
 export const lobbySeason6 = "EventFlag.LobbySeason6";
 export const lobbySeason7 = "EventFlag.LobbySeason7";
+// 7.10's holiday decor (CoreV2 #699, events/holidaydecor.js): the RequiredEventTag of Items/Events/Athena's BR_Decor_WinterBus
+// (BattleBusOverride BBID_WinterBus, the Winter Bus: B_BattleBus_Winter2018 and the Xmas bus music) and BR_Decor_SupplyDropHoliday
+// (SupplyDropOverride AthenaSupplyDrop_Holiday), both AthenaSeasonalDecorEvents, in 7.10's server-assets pak. 7.00's paks name
+// EventFlag.WinterBattleBus instead; 7.10's name it nowhere and carry this plain name, as Epic's calendar served it.
+export const holidayDecor710 = "TopSecret";
 export const lobbySeason8 = "EventFlag.LobbySeason8";
 export const lobbySeason9 = "EventFlag.LobbySeason9";
 // Save the World's Wargames (9.00, PongooDev/CoreV2#655, events/wargames.js): QuestMapData's "WARGAMES" event callout

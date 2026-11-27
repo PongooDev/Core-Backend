@@ -279,6 +279,11 @@ export const season4FlagGroups = [
   { id: "fourteenDays", name: "Battle Royale: the 14 Days of Fortnite (7.10)", flags: [
     flag("LTM_14DaysOfFortnite", [b710, b740], "The 14 Days of Fortnite challenges (Schedule_14DaysOfFortnite: one more each day, from 19 December 2018 to 15 January 2019; 7.20 to 7.40: by this switch only)")
   ] },
+  // 7.10's holiday decor (events/holidaydecor.js): BR_Decor_WinterBus's and BR_Decor_SupplyDropHoliday's RequiredEventTag,
+  // a plain name. Served by its dates on Season 7's replay, or always or never by its switch.
+  { id: "holidayDecor", name: "Battle Royale: the holiday Battle Bus and supply drops (7.10)", flags: [
+    { flag: "TopSecret", builds: [b710, b710], description: "The Winter Bus (BBID_WinterBus) and the holiday supply drops (AthenaSupplyDrop_Holiday): from 19 December 2018 to 15 January 2019" }
+  ] },
   // 7.20's Ice Storm Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_WinterDeimos, events/icestorm.js): served
   // by their dates on Season 7's replay, or always or never by their switch.
   { id: "iceStorm", name: "Battle Royale: the Ice Storm Challenges (7.20)", flags: [

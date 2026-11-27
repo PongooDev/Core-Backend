@@ -19,6 +19,7 @@ import { birthdayActiveUntil, birthdayChallengeStates } from "../../events/birth
 import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { fourteenDaysStates } from "../../events/fourteendays.js";
+import { holidayDecorStates } from "../../events/holidaydecor.js";
 import { iceKingStates, iceStormMeltStates, iceStormStates } from "../../events/icestorm.js";
 import { festivusStates, showtimeStates } from "../../events/festivus.js";
 import { overtimeStates } from "../../events/overtime.js";
@@ -123,14 +124,14 @@ export function calendarRoutes({ tokens, settings }) {
     // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
     // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
     // Butterfly (events/butterfly.js), the Birthday Challenges on the admin's times (events/birthday2018.js), Season 7's The
-    // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and 7.20's Ice Storm Challenges
+    // Block (events/block.js), 7.10's 14 Days of Fortnite (events/fourteendays.js) and holiday decor (events/holidaydecor.js) and 7.20's Ice Storm Challenges
     // (events/icestorm.js) and its Ice King and Ice Storm (events/icestorm.js iceKingStates), and 7.30's snow melting
     // (events/icestorm.js iceStormMeltStates), Showtime and its challenges (events/festivus.js), and 7.40's Overtime Challenges
     // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too), Season 8's event challenges,
     // 8.51's Overtime Challenges (events/extracredit.js) and the Unvaulting (events/unvaulting.js), 9.01's Wick's Bounty
     // Challenges (events/wicksbounty.js) and 9.10's Downtown Drop Challenges (events/downtowndrop.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
-      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now),
+      islandStates(now), butterflyStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now), holidayDecorStates(now),
       iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now), highStakes2019States(now), buccaneersBountyStates(now), airRoyaleStates(now), endgameStates(now),
       extraCreditStates(now), unvaultingStates(now), wicksBountyStates(now), downtownDropStates(now),
       earthquakesStates(now), s8HeatStates(now));

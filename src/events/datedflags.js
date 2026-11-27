@@ -1,5 +1,5 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
-  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil,
+  cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, holidayDecor710,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
   iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
   lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
@@ -399,6 +399,14 @@ export const datedEvents = [
       step("extended", "The challenges back for a week", [ltm14DaysOfFortnite, fourteenDaysCalendarEvent],
         Date.parse("2019-01-07T14:00:00.000Z"), Date.parse("2019-01-15T00:00:00.000Z"))
     ] },
+  // 7.10's holiday decor (events/holidaydecor.js): the Winter Bus and the holiday supply drops from the 14 Days of Fortnite's
+  // start (Yahoo, 18 December 2018: players "jump out of a festive Battle Bus"), Update v7.10's "Starting December 19, log
+  // in each day at 9 AM ET(1400 UTC)". 🟡 Epic's end isn't recorded: on to the 14 Days' extension's end, 15 January 2019,
+  // Update v7.20's day, the last of 7.10's.
+  { id: "holidayDecor", name: "the holiday Battle Bus and supply drops (7.10)", season: 7, flag: holidayDecor710, anchor: "decor", parts: 2, steps: [
+    step("decor", "The Winter Bus and the holiday supply drops", [holidayDecor710], Date.parse("2018-12-19T14:00:00.000Z"),
+      Date.parse("2019-01-15T00:00:00.000Z"))
+  ] },
   { id: "birthday", name: "the Birthday Challenges (5.10 – 5.21)", flag: anniversary2018BR, anchor: "challenges", parts: 1,
     challenges: "Schedule_Birthday2018_BR", modes: ["build", "dates", "custom", "off"], defaultMode: "build", steps: [
       step("challenges", "The Birthday Challenges", [anniversary2018BR], Date.parse("2018-07-24T00:00:00.000Z"), Date.parse("2018-08-07T00:00:00.000Z"))
