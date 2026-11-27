@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { butterflyBuilds, butterflyEvent, butterflyStates } from "../src/events/butterfly.js";
 import { datedFlagsStatus, shiftedDatedSchedule } from "../src/events/datedflags.js";
-import { activeEventFlags, configureEvents, eventsActiveUntil, islandCrack, islandDrain, islandPoi } from "../src/events/events.js";
+import { activeEventFlags, configureEvents, eventsActiveUntil, fortnitemaresDecor621, islandCrack, islandDrain, islandPoi } from "../src/events/events.js";
 import { season4Flag } from "../src/events/season4flags.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -89,8 +89,14 @@ test("a 6.21 gameserver's calendar with the Butterfly a minute away: POI0 and th
     const { token } = await userLogin(backend.port, "Butterfly621");
     const timeline = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
       headers: { "User-Agent": `Fortnite/++Fortnite+Release-6.21-CL-${v621} Windows/10.0.19045.1.256.64bit`, Authorization: `bearer ${token}` } })).body;
+    // Off: no schedule of the Butterfly's. Any later part is the Fortnitemares decor's (events/holidaydecor.js), on its
+    // dates on the replay.
+    const butterflyTypes = [islandPoi(1), islandCrack, islandDrain];
+    const onlyDecor = (states) => states.slice(1).every((state) => state.activeEvents.every(({ eventType }) =>
+      fortnitemaresDecor621.includes(eventType) || states[0].activeEvents.some((first) => first.eventType === eventType)));
     const before = (await timeline()).channels["client-events"].states;
-    assert.equal(before.length, 1, "off: no schedule");
+    assert.equal(before.some((state) => state.activeEvents.some(({ eventType }) => butterflyTypes.includes(eventType))), false, "off: no schedule");
+    assert.ok(onlyDecor(before), JSON.stringify(before.map(({ validFrom }) => validFrom)));
     const revision = (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
       headers: { Authorization: `bearer ${token}` } })).body.revision;
     const butterflyAt = new Date(Date.now() + 60000).toISOString();
@@ -115,7 +121,8 @@ test("a 6.21 gameserver's calendar with the Butterfly a minute away: POI0 and th
     // Off again: the build's own POI0.
     assert.equal((await post(backend.port, "/admin/api/events/dated-flags", null, { event: "butterfly", mode: "off" })).status, 200);
     const off = (await timeline()).channels["client-events"].states;
-    assert.equal(off.length, 1);
+    assert.equal(off.some((state) => state.activeEvents.some(({ eventType }) => butterflyTypes.includes(eventType))), false);
+    assert.ok(onlyDecor(off));
     assert.ok(off[0].activeEvents.some(({ eventType }) => eventType === islandPoi(0)));
   } finally {
     await backend.close();
