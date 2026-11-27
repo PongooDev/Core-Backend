@@ -1535,7 +1535,7 @@ export const ltms = [
   // Bounty", 72 players in teams of 1, 2 and 4, Athena.Playlist.Wax, MutatorControlledGoalScore: the first team to the
   // token count wins, three lives). Its DefaultGame.ini's lobby is 9.00's, so every Season 9 entry here runs to 9.01 and
   // Wick's Bounty is off by default, served by its Original dates. Athena.Playlist.Wax is its challenges' context tag
-  // (complete_athena_wax, win_athena_wax: events/wicksbounty.js). No Epic tile is recorded, so it keeps the default picture.
+  // (complete_athena_wax, win_athena_wax: events/wicksbounty.js). Its tile is Epic's WicksBounty_Announce_PlaylistTile (playlistimages.js).
   // 9.10's and 9.20's paks keep the three (the same assets), so they run to 9.20 with their switches.
   { id: "wicksBountySquads", name: "Wick's Bounty (Squads)", playlistId: 1004, playlistName: "Playlist_Wax_Squads", playlistTag: "Athena.Playlist.Wax", eventFlag: null, builds: [build901, build921], seasons: [9],
     advertise: "New", original: wicksBountyWindow("2019-05-16"),

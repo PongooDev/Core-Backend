@@ -142,15 +142,16 @@ test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#31
   // with a later event's tile, and no Showtime tile of Epic's was found (🟡 the default tile until the host sets one).
   // 8.40's Air Royale (Playlist_Goose_Duos) and Food Fight: Deep Fried (Playlist_Barrier_16_B_Lava) have Epic's (#422), and
   // 8.50's Endgame (Playlist_Ashton_*) the page's Playlist_Ashton_Sm tile, and 9.21's Horde Rush (Playlist_Mash_Squads) its
-  // 09BR_LTM_HordeRush_Mode_Tile (#446). 9.00's Trios (Playlist_Trios), 9.01's Wick's Bounty (Playlist_Wax_*) and 9.10's
-  // Unvaulted (Playlist_Unvaulted_Squads) have none recorded (🟡 the default tile until one of Epic's is found).
+  // 09BR_LTM_HordeRush_Mode_Tile (#446), 9.01's Wick's Bounty (Playlist_Wax_*) its WicksBounty_Announce_PlaylistTile and 9.10's
+  // Unvaulted (Playlist_Unvaulted_Squads) BR_LTM_Unvaulted. 9.00's Trios (Playlist_Trios) has none recorded (🟡 the default
+  // tile until one of Epic's is found).
   assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_Duo_WinterShow", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Solo_WinterShow",
     "Playlist_Deimos_SquadShow", "Playlist_Deimos_Squad_WinterShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Music_Highest",
     "Playlist_ShowdownAlt_Duos", "Playlist_ShowdownAlt_Solo", "Playlist_ShowdownAlt_Squads",
     "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads",
-    "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"]);
+    "Playlist_Trios"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
   for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]) assert.equal(epicPlaylistImages[name], score, name);
   // Season 5's others, as Epic's page of 28 August 2018 named them.
@@ -299,7 +300,7 @@ const tileFiles = [
   [["Playlist_Barrier", "Playlist_Barrier_12"], "playlistinformation/BR06_LobbyTile_FoodFight-1024x512-5e1540a0a2ba0a1f663d32c60cfec3a360278672.png"],
   [["Playlist_WW_Solo", "Playlist_WW_Duos", "Playlist_WW_Squads"], "playlistinformation/BR06_ModeTile_LTM_WildWest-1024x512-f67d9d1dd2ca0b290c92b1380240429f0f257a10.jpg"],
   [["Playlist_Respawn_24"], "playlistinformation/BR06_ModeTile_TDM-1024x512-878ba9f92deb153ec85f2bcbce925e185344290e.jpg"],
-  [["Playlist_Classic_Solo", "Playlist_Classic_Duos", "Playlist_Classic_Squads"], "playlistinformation/BR_LTM_Unvaulted-1024x512-d3cbe3c4a756190279af4ce98773d6599f7aab4f.jpg"],
+  [["Playlist_Classic_Solo", "Playlist_Classic_Duos", "Playlist_Classic_Squads", "Playlist_Unvaulted_Squads"], "playlistinformation/BR_LTM_Unvaulted-1024x512-d3cbe3c4a756190279af4ce98773d6599f7aab4f.jpg"],
   [["Playlist_Vamp_Solo", "Playlist_Vamp_Duo", "Playlist_Vamp_Squad"], "playlistinformation/BR_LTM_Siphon-1024x512-66cb27084be50387682989b50a01dbc9e42f5a5d.jpg"],
   [["Playlist_33"], "playlistinformation/BR07_14-DoF_Social-1024x512-5fa7dd4752d1f0cc1a101f09cb170d0f5b2a31cf.jpg"],
   [["Playlist_Hard_Squads"], "playlistinformation/BR_LTM_Barebones-1024x512-4a29337febb04e9043d57c9e61afe849f8a9e9c7.jpg"],
@@ -330,6 +331,9 @@ const tileFiles = [
   // 8.50's Endgame, the page's Playlist_Ashton_Sm tile for its three playlists.
   [["Playlist_Ashton_Sm", "Playlist_Ashton_Md", "Playlist_Ashton_Lg"],
     "playlistinformation/08BR_LTM_Endgame_InGame_Mode-Tile-1024x512-03bb0dc121ae8b2dcd27b8b386670737093d0c83.jpg"],
+  // 9.01's Wick's Bounty.
+  [["Playlist_Wax_Solo", "Playlist_Wax_Duos", "Playlist_Wax_Squads"],
+    "playlistinformation/09BR_Social_LTM_WicksBounty_Announce_PlaylistTile-1024x512-df3870c355530a7591c7a3fa453c15686c862989.jpg"],
   // 9.21's Horde Rush (#446).
   [["Playlist_Mash_Squads"], "playlistinformation/09BR_LTM_HordeRush_Mode_Tile-1024x512-a844840eb58db868b6abfbe18fc8a8f483e18c60.jpg"]
 ];
@@ -350,7 +354,7 @@ const noEpicTile = ["Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_S
   // Season 8's tournaments' (#421): their tiles are tournamentinformation's.
   "Playlist_ShowdownTournament_Solo", "Playlist_ShowdownTournament_Duos", "Playlist_ShowdownTournament_Squads",
   // 9.00's Trios: no tile of Epic's recorded.
-  "Playlist_Trios", "Playlist_Unvaulted_Squads", "Playlist_Wax_Duos", "Playlist_Wax_Solo", "Playlist_Wax_Squads"];
+  "Playlist_Trios"];
 const tileBuilds = Object.keys(buildVersions).filter((build) => Number(build) >= Number(v40));
 const pageTiles = (build) => {
   const page = contentPage(undefined, undefined, build);

@@ -202,6 +202,12 @@ const endgameTile = `${cdn}/playlistinformation/08BR_LTM_Endgame_InGame_Mode-Til
 // playlistinformation lastModified 2019-10-29) names 09BR_LTM_HordeRush_Mode_Tile for Playlist_Mash_Squads, no border. On
 // Epic's CDN, checked 2026-11-27: 200, image/jpeg, 104,418 bytes, the hash in its name the file's SHA-1.
 const hordeRushTile = `${cdn}/playlistinformation/09BR_LTM_HordeRush_Mode_Tile-1024x512-a844840eb58db868b6abfbe18fc8a8f483e18c60.jpg`;
+// 9.01's (CL-6428087) Wick's Bounty: the same page names 09BR_Social_LTM_WicksBounty_Announce_PlaylistTile for
+// Playlist_Wax_Solo, _Duos and _Squads, no border (on Epic's CDN, checked 2026-11-27: 200, image/jpeg, 126,054 bytes, the hash
+// in its name the file's SHA-1). 9.10's Unvaulted (Playlist_Unvaulted_Squads) has that page's BR_LTM_Unvaulted, 7.00's
+// unvaultedTile (checked again 2026-11-27: 200, 526,103 bytes, its SHA-1 the hash). Every other playlist 4.0 to 9.21 serve
+// that still has no tile is named on that page by no entry, or only by a later event's tile (Playlist_Music_Highest).
+const wicksBountyTile = `${cdn}/playlistinformation/09BR_Social_LTM_WicksBounty_Announce_PlaylistTile-1024x512-df3870c355530a7591c7a3fa453c15686c862989.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -310,6 +316,11 @@ export const epicPlaylistImages = {
   Playlist_Ashton_Sm: endgameTile,
   Playlist_Ashton_Md: endgameTile,
   Playlist_Ashton_Lg: endgameTile,
+  // 9.01's Wick's Bounty and 9.10's Unvaulted (above), on to 9.21.
+  Playlist_Wax_Solo: wicksBountyTile,
+  Playlist_Wax_Duos: wicksBountyTile,
+  Playlist_Wax_Squads: wicksBountyTile,
+  Playlist_Unvaulted_Squads: unvaultedTile,
   // 9.21's Horde Rush (above).
   Playlist_Mash_Squads: hordeRushTile
 };
