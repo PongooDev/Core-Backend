@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
+import { accountUri, channelUri, describeToken } from "../../vivox/tokens.js";
 
 // Epic's party service (/party/api/v1/{namespace}), which OnlineSubsystemMcp's FOnlinePartySystemMcpV2 uses when
 // [OnlineSubsystemMcp] bUsePartySystemV2 is set (CheckPartySystemVersion, 8.30 CL-5793395 0x56B180). 8.30's ini sets
@@ -26,6 +28,20 @@ import { sendError } from "../../errors.js";
 // already read ({ns, pinger_id, expires}, 9.10 0x566C80, with the pinger's display name), and the user summary lists the
 // pings sent to a player. The token's account is the pinger when it creates one, and the joiner when it joins from one:
 // either of the URL's two accounts, the other being the one pinged or the pinger.
+//
+// Voice (9.21, CL-6922310, addresses from the image base; not in 9.20 or 9.10): with [VoiceChatManager]
+// bObtainJoinTokenFromPartyService, the VoiceChatManager's party channel join (0x711F70, beside createJoinToken's
+// 0x7116C0) asks the party system for its Vivox join token instead of the MCP's createJoinToken:
+// FOnlinePartySystemMcpV2::GetVoiceChannelConnectionInfo (0x4EE470) runs
+// FOnlinePartyAsyncTaskGetVoiceChannelConnectionInfo, whose CreateHttpRequest (0x3F3D30) is POST
+// .../parties/{partyId}/members/{accountId}/conferences/connection with {"providers":{"vivox":{}}} (0x3A9880,
+// 0x42AEC0). The answer (FConferenceConnectionResponse 0x3DDEE0 -> FConferenceProviders 0x3DE170 -> FVivoxConnection
+// 0x3DE840) must have providers.vivox.authorization_token, channel_uri and user_uri, all strings. The manager joins its
+// own channel name (FVivoxVoiceChat's sip:confctl-g-<namespace>.p-<name>@<domain>, the name being the party id and a
+// suffix) with authorization_token as the credentials; channel_uri and user_uri are only kept. Answered while the
+// backend points the build at its Vivox emulator (vivox/service.js servesBuild), with the tokens
+// services/fortnite/voice.js gives 8.20+ (account ".<issuer>.<accountId>.", issuer as namespace); otherwise the unknown
+// route, as voice.js does.
 //
 // Parties live in memory, as they did for Epic only while their members were online: a restarted backend has none,
 // and the client makes a new one at its next login.
@@ -98,7 +114,7 @@ export function createPartyStore() {
   };
 }
 
-export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore() }) {
+export function partyRoutes({ tokens, accounts, xmpp, vivox, parties = createPartyStore() }) {
   const router = express.Router();
   const base = "/party/api/v1/:namespace";
   const now = () => new Date().toISOString();
@@ -395,6 +411,16 @@ export function partyRoutes({ tokens, accounts, xmpp, parties = createPartyStore
       members_count: party.members.length
     }, [invite.sent_to]);
     res.status(204).end();
+  });
+
+  const voiceServed = (req, res, next) => (vivox?.servesBuild(getBuild(req)) ? next() : next("route"));
+  router.post(`${base}/parties/:partyId/members/:accountId/conferences/connection`, voiceServed, auth, own, findParty, inParty, (req, res) => {
+    const { issuer, domain } = vivox.keys;
+    const player = `${issuer}.${req.params.accountId}`;
+    const channel = `confctl-g-${issuer}.p-${req.party.id}`;
+    const token = vivox.keys.mint({ action: "join", player, channel });
+    vivox.say(`party service join token for ${req.params.accountId}, party ${req.party.id} (build ${getBuild(req)}): ${describeToken(token)}`);
+    res.json({ providers: { vivox: { authorization_token: token, channel_uri: channelUri(channel, domain), user_uri: accountUri(player, domain) } } });
   });
 
   router.post(`${base}/parties/:partyId/invites/:accountId/decline`, auth, own, findParty, (req, res) => {

@@ -295,6 +295,47 @@ test("8.20+ (UE 4.23's VivoxVoiceChat): [VoiceChat.Vivox] in DefaultEngine.ini, 
   }
 });
 
+test("9.21's party voice: POST the party service's conferences/connection, answered providers.vivox; only for members, off with the switch", async () => {
+  const backend = await startVivoxBackend({ withSip: false });
+  try {
+    const keys = createVivoxKeys(backend.dataDir);
+    const v921 = agentOf("9.21", 6922310);
+    const call = (method, urlPath, token, body, agent = v921) => send({ host: "127.0.0.1", port: backend.port, method, path: urlPath,
+      headers: { "User-Agent": agent, Authorization: `bearer ${token}`, "Content-Type": "application/json" } }, body === undefined ? undefined : JSON.stringify(body));
+    const one = await userLogin(backend.port, "ConferenceOne");
+    const two = await userLogin(backend.port, "ConferenceTwo");
+    const base = "/party/api/v1/Fortnite";
+    const created = await call("POST", `${base}/parties`, one.token, { config: {}, join_info: { connection: { id: "one@prod.ol.epicgames.com/V2:Fortnite:WIN::1" } }, meta: {} });
+    assert.equal(created.status, 200);
+    const partyId = created.body.id;
+    const connection = (account, agent) => call("POST", `${base}/parties/${partyId}/members/${account.accountId}/conferences/connection`, account.token,
+      { providers: { vivox: {} } }, agent);
+
+    const answer = await connection(one);
+    assert.equal(answer.status, 200);
+    const vivox = answer.body.providers.vivox;
+    assert.deepEqual(Object.keys(vivox).sort(), ["authorization_token", "channel_uri", "user_uri"]);
+    assert.equal(vivox.channel_uri, `sip:confctl-g-core.p-${partyId}@core.vivox.invalid`);
+    assert.equal(vivox.user_uri, `sip:.core.${one.accountId}.@core.vivox.invalid`);
+    const check = keys.verify(vivox.authorization_token, { vxa: "join", user: `.core.${one.accountId}.`, to: vivox.channel_uri });
+    assert.equal(check.ok, true, check.reason);
+
+    // Epic's party errors: someone else's account, a player not in the party, a party that isn't there.
+    assert.equal((await call("POST", `${base}/parties/${partyId}/members/${two.accountId}/conferences/connection`, one.token, {})).status, 403);
+    assert.equal((await connection(two)).body.errorCode, "errors.com.epicgames.social.party.not_a_member");
+    assert.equal((await call("POST", `${base}/parties/nope/members/${one.accountId}/conferences/connection`, one.token, {})).body.errorCode,
+      "errors.com.epicgames.social.party.party_not_found");
+
+    // Builds not pointed at the emulator, and every build while the switch is off, get the unknown route.
+    assert.equal((await connection(one, agentOf("5.0", 4214610))).status, 404);
+    await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/admin/api/settings", headers: { "Content-Type": "application/json" } },
+      JSON.stringify({ vivoxVoice: false }));
+    assert.equal((await connection(one)).status, 404);
+  } finally {
+    backend.close();
+  }
+});
+
 // Canned messages as a SIP client sends them (compact headers, a folded line, the SDP offer).
 const register = [
   "REGISTER sip:core.vivox.invalid SIP/2.0",
