@@ -5,7 +5,8 @@ import { readJson, writeJson } from "../json-file.js";
 // Battle Royale's career stats (Core-Backend #59), one file per account (accounts/<id>/stats.json):
 //   {playlists: {<playlistId>: {placetop1, placetop<n>..., kills, matchesplayed, secondsplayed, score, lastmodified}},
 //    days: {<YYYY-MM-DD>: {<playlistId>: {<stat>: count}}},
-//    seasons: {<season>: {playlists, days}}}
+//    seasons: {<season>: {playlists, days}},
+//    ingested: {<stat>: value}}
 // days holds what each UTC day added, for 1.8's leaderboards, which rank by day, week and month as well as all time;
 // days older than the longest of those go. playlists and days are the career's, every season's matches; seasons holds
 // the matches of each season after the first (1.11's Season 2 on, Core-Backend #151) again, so a season's leaderboards
@@ -16,6 +17,8 @@ import { readJson, writeJson } from "../json-file.js";
 // recordwin), so Core's server reports every player's place, kills and time alive when their team is out or wins
 // (battleroyale/recordresults, CoreV2), with the win on a build that doesn't report it itself. Both builds' stats
 // screens ask for the same stats of the same playlists, so a player's stats are the same on either.
+// ingested holds the stats a 9.20+ gameserver uploads by their stats v2 names (services/fortnite/stats.js,
+// statsingestion): Horde Rush's best score and the Crucible's course times.
 
 // The places each playlist's stats count besides wins (Balance/DataTables/LeaderboardStats, the stats screen's tabs):
 // solo top 10 and 25, duo top 5 and 12, squad top 3 and 6. A place counts toward every one it is within, a win too.
@@ -80,7 +83,7 @@ export function createStatsStore(dataDir) {
   function load(id) {
     if (!cache.has(id)) {
       const saved = fs.existsSync(file(id)) ? readJson(file(id)) : {};
-      const stats = { playlists: saved.playlists ?? {}, days: saved.days ?? {}, seasons: saved.seasons ?? {} };
+      const stats = { playlists: saved.playlists ?? {}, days: saved.days ?? {}, seasons: saved.seasons ?? {}, ingested: saved.ingested ?? {} };
       withScores(stats.playlists);
       for (const byPlaylist of Object.values(stats.days)) withScores(byPlaylist);
       cache.set(id, stats);
@@ -169,6 +172,21 @@ export function createStatsStore(dataDir) {
     },
 
     windowed,
+
+    // {<stat>: value} the gameservers uploaded (ingest).
+    ingested: (accountId) => ({ ...load(accountId).ingested }),
+
+    // A gameserver's upload for one account, {<stat>: number}. 🟡 Epic's service aggregated each stat as configured on
+    // its side, which the exe doesn't name: a *_bestscore_* stat keeps the highest value uploaded (Horde Rush's
+    // GetPlayerBestScore reads it back), any other the latest.
+    ingest(accountId, uploaded) {
+      const stats = load(accountId);
+      for (const [name, value] of Object.entries(uploaded)) {
+        const previous = stats.ingested[name];
+        stats.ingested[name] = name.includes("_bestscore_") && previous !== undefined ? Math.max(previous, value) : value;
+      }
+      writeJson(file(accountId), stats);
+    },
 
     // A stat of a playlist in a window (and a season, when one is given), 0 when none was recorded.
     stat(accountId, playlistId, stat, window, now = new Date(), season = undefined) {

@@ -1,5 +1,5 @@
 import express from "express";
-import { requireAuth } from "../../accounts/auth.js";
+import { requireAuth, requireDedicatedServer } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { playlistNameOfId } from "../../events/ltms.js";
 import { seasonNumber } from "../../profiles/seasons.js";
@@ -110,10 +110,14 @@ export function statsRoutes({ tokens, stats, accounts }) {
   // reach that tab only under their own playlist's name.
   const allTimeEnd = 9223372036854775807;
 
-  // The recorded career stats in v2 names, limited to the names asked for when requested is given.
+  // The recorded career stats in v2 names, and the ones the gameservers uploaded, limited to the names asked for when
+  // requested is given.
   function statsV2(accountId, requested = null) {
     const recorded = stats.playlists(accountId);
     const answer = {};
+    for (const [statName, value] of Object.entries(stats.ingested(accountId))) {
+      if (!requested || requested.includes(statName)) answer[statName] = value;
+    }
     for (const [playlistId, counts] of Object.entries(recorded)) {
       const playlistName = playlistNameOfId(playlistId);
       if (!playlistName) continue;
@@ -169,6 +173,26 @@ export function statsRoutes({ tokens, stats, accounts }) {
       .sort((a, b) => b.value - a.value || a.account.localeCompare(b.account))
       .slice(0, maxSize);
     res.json({ entries, maxSize });
+  });
+
+  // Epic's stats ingestion service (FOnlineStatsIngestionServiceMcp; 9.21 UpdateStats 0x5393F0, IOnlineStats'
+  // UpdateStats 0x53A480), host statsingestion-public-service-live.ol.epicgames.com with no service path (CoreV2 #723's
+  // server log). 9.20 to 9.30's gameservers upload with the DedicatedServer client: AFortAthenaMutator_Mash::
+  // ReportLocalPlayerStats (0x11BECF0) each Horde Rush player's score as PlayerStatsNames[0]
+  // (mash_bestscore_gamepad_m0_playlist_mash_squads, MashMutator's default), and AFortAthenaMutator_Crucible::
+  // ReportCrucibleStatsRaw (0x11BE2E0) a Blueprint's TMap<FString, int64>. The body (0x5393F0) is
+  // {timestamp, appId, stats: [{ownerId, stats: {<stat>: number}}]}, POSTed to /api/stats/<appId> ("fortnite"); the
+  // answer's body is never read (0x53A750 logs only the result), so 🟡 Core answers 204. Stats v2 above then answers
+  // the uploaded stats by name.
+  router.post("/api/stats/:appId", requireAuth(tokens), requireDedicatedServer, (req, res) => {
+    const uploads = Array.isArray(req.body?.stats) ? req.body.stats : [];
+    for (const upload of uploads) {
+      const ownerId = upload?.ownerId;
+      if (typeof ownerId !== "string" || !accounts.get(ownerId) || !upload.stats || typeof upload.stats !== "object") continue;
+      const numbers = Object.fromEntries(Object.entries(upload.stats).filter(([, value]) => typeof value === "number" && Number.isFinite(value)));
+      if (Object.keys(numbers).length) stats.ingest(ownerId, numbers);
+    }
+    res.status(204).end();
   });
 
   return router;
