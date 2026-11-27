@@ -27,6 +27,7 @@ import { playerPlotType, plotsOf, settleCreativePlots } from "../src/profiles/cr
 import { grant } from "../src/profiles/progress.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
+import { viewProfile } from "../src/profiles/common.js";
 import { refundMtxPurchase } from "../src/services/mcp/commands/RefundMtxPurchase.js";
 import { storefronts } from "../src/store/catalog.js";
 import { eventStorefront } from "../src/store/eventstore.js";
@@ -241,6 +242,12 @@ test("9.20's Undo: a purchase opens undo_timeout; RefundMtxPurchase {quickReturn
     const entry = recordPurchase(tracker, { offerId: "core_br_test", lootResult: [], totalMtxPaid: 800, spent: { "Currency:mtxpurchased": 800 }, now });
     const attributes = () => tracker.profile.stats.attributes;
     assert.equal(Date.parse(attributes().undo_timeout), now.getTime() + undoWindowMs);
+    // The purchase screen reads the window from common_core (Core-Backend #445): the purchase's common_core changes carry it,
+    // and campaign has none of it.
+    const coreChanges = () => session.changedProfiles().find(({ profileId }) => profileId === "common_core").changes;
+    assert.ok(coreChanges().some(({ changeType, name }) => changeType === "statModified" && name === "undo_timeout"));
+    assert.equal(viewProfile(tracker.profile, "common_core").stats.attributes.undo_timeout, attributes().undo_timeout);
+    assert.equal(viewProfile(tracker.profile, "campaign").stats.attributes.undo_timeout, undefined);
     undo(session, entry.purchaseId);
     assert.equal(vbucks(session), 800);
     const history = purchaseHistoryOf(attributes());
@@ -249,6 +256,9 @@ test("9.20's Undo: a purchase opens undo_timeout; RefundMtxPurchase {quickReturn
     assert.equal(attributes().undo_timeout, "min");
     assert.equal(attributes().undo_cooldowns.length, 1);
     assert.equal(attributes().undo_cooldowns[0].offerId, "core_br_test");
+    assert.ok(coreChanges().some(({ changeType, name }) => changeType === "statModified" && name === "undo_cooldowns"));
+    assert.deepEqual(viewProfile(tracker.profile, "common_core").stats.attributes.undo_cooldowns, attributes().undo_cooldowns);
+    assert.equal(viewProfile(tracker.profile, "campaign").stats.attributes.undo_cooldowns, undefined);
     assert.ok(Math.abs(Date.parse(attributes().undo_cooldowns[0].cooldownExpires) - (Date.now() + undoCooldownMs)) < 60000);
     // The same offer bought again is on cooldown.
     const again = recordPurchase(tracker, { offerId: "core_br_test", lootResult: [], totalMtxPaid: 800, spent: { "Currency:mtxpurchased": 800 } });

@@ -72,9 +72,12 @@ export function itemView(templateId) {
 // profile0's stats that are common_core's (the account's purchases, gifts and platform, and its ban notice:
 // UFortMcpProfileCommonCore reads ban_status, commands/SetBansViewed.js). common_public's come from profile0's homebase
 // stat {townName, bannerIconId, bannerColorId}, which campaign keeps too.
+// 9.20's Undo stats (store/refunds.js) are common_core's too: the purchase screen reads undo_timeout and undo_cooldowns
+// from AFortPlayerController's CommonCoreMcpProfile (0x19C8; 9.21 0xffff80085C7798A0 and 0xffff80085C77F110). Sent with
+// campaign's, the screen found no window and hid Undo on its first one-second tick (Core-Backend #445).
 const coreStats = new Set(["current_mtx_platform", "in_app_purchases", "daily_purchases", "weekly_purchases", "monthly_purchases",
   "mtx_purchase_history", "mtx_affiliate", "mtx_affiliate_set_time", "gift_history", "allowed_to_receive_gifts", "allowed_to_send_gifts",
-  "import_friends_claimed", "mfa_enabled", "ban_status"]);
+  "import_friends_claimed", "mfa_enabled", "ban_status", "undo_timeout", "undo_cooldowns"]);
 
 export const statView = (name) => (coreStats.has(name) ? "common_core" : "campaign");
 
