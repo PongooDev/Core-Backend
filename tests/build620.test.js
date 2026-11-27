@@ -348,7 +348,7 @@ test("6.20's modes: Fortnitemares on by default by its dates, two more Disco Dom
   });
   // Fortnitemares' tournament playlists are in-game ones, as the Showdown ones (before 6.30's three, 7.20's three and
   // Season 8's three).
-  assert.deepEqual(tournamentPlaylists.slice(-12, -9).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
+  assert.deepEqual(tournamentPlaylists.filter(({ id }) => id.startsWith("fortnitemaresShow")).map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
     [["fortnitemaresShowSolo", 59071, true], ["fortnitemaresShowDuos", 59072, true], ["fortnitemaresShowSquads", 59073, true]]);
   assert.equal(hasShowdown(v620), true);
   const dir = tempDir();

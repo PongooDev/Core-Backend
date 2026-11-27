@@ -459,7 +459,9 @@ test("the tournament playlists: 4.2's Solo Showdown and 6.10's three, the in-gam
       // 7.20's Ice Storm ones (tests/build720.test.js).
       ["iceStormShowSolo", 58288, true], ["iceStormShowDuos", 58289, true], ["iceStormShowSquads", 58290, true],
       // Season 8's (#421, tests/tournaments-season8.test.js).
-      ["tournamentS8Solo", 58082, true], ["tournamentS8Duos", 58083, true], ["tournamentS8Squads", 58084, true]]);
+      ["tournamentS8Solo", 58082, true], ["tournamentS8Duos", 58083, true], ["tournamentS8Squads", 58084, true],
+      // Season 9's (#442, tests/arena-season9.test.js), the same three playlists.
+      ["tournamentS9Solo", 58082, true], ["tournamentS9Duos", 58083, true], ["tournamentS9Squads", 58084, true]]);
   const dir = tempDir();
   try {
     const store = createTournamentStore(dir);
@@ -837,7 +839,8 @@ test("a 6.10 client's Events tab end to end: the empty list, an admin's event li
           ["fortnitemaresShowSolo", true], ["fortnitemaresShowDuos", true], ["fortnitemaresShowSquads", true],
           ["scavengerSolo", true], ["scavengerDuos", true], ["scavengerSquads", true],
           ["iceStormShowSolo", true], ["iceStormShowDuos", true], ["iceStormShowSquads", true],
-          ["tournamentS8Solo", true], ["tournamentS8Duos", true], ["tournamentS8Squads", true]]);
+          ["tournamentS8Solo", true], ["tournamentS8Duos", true], ["tournamentS8Squads", true],
+          ["tournamentS9Solo", true], ["tournamentS9Duos", true], ["tournamentS9Squads", true]]);
       const listed = (await list()).body;
       assert.deepEqual(listed.eventTournaments.map(({ tournamentId, displayDataId }) => [tournamentId, displayDataId]), [[eventId, eventId]]);
       assert.equal(listed.eventTournaments[0].eventWindows[0].eventData.playlistId, "Playlist_Showdown_Solo");
