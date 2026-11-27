@@ -671,14 +671,18 @@ export function settleCompletedSchedules(session) {
 
 // A staged challenge ("Stage 1 of 5", Quest_BR_Land_Chain_03a to _03e): each stage's rewards name the next stage's quest
 // (Quest:quest_br_land_chain_03b), which the claim of the stage gives (athena.js claimAthenaQuest). The bundle lists the
-// first stage only (QuestInfos) and counts the challenge once, as before the later stages were linked to it, so the
-// stages it is given later (challenge_linked_quest_parent) are not counted again.
+// first stage only (QuestInfos) and counts the challenge once, when its last stage is done (countBundle).
 const nextStageOf = (questItem) => getAthenaQuest(idOf(questItem?.templateId) ?? "")?.rewards?.find(({ templateId }) => typeOf(templateId) === "quest");
 
 // The next stage of a challenge given with its bundle: the stage's quest item takes the bundle's challenge_bundle_id and
 // the bundle lists it (grantedquestinstanceids), as Epic's profile kept a linked quest (challenge_linked_quest_parent on
 // the stage, challenge_linked_quest_given on the one before). Without the bundle's id the challenges tab keeps showing the
 // stage done and never the next one. A stage held already (given before this link was made) is linked, not given twice.
+// Both links are item ids, not template ids (CoreV2 #709): the challenges tab finds a bundle's quests by
+// UFortChallengeBundleDefinition's GetQuests (6.21 0xE0CA30), which takes each QuestInfos entry's granted quest and follows
+// its challenge_linked_quest_given (UFortQuestItem +0x188) through the quest manager's lookup by item id (0x13084B0, the
+// one GrantedQuestInstanceIds go through), and shows the last stage it reaches. A template id there finds nothing, so the
+// tab stayed on stage 1, done. GetChallengeChainRewardInfo walks challenge_linked_quest_parent back the same way.
 export function grantLinkedQuest(tracker, parentItemId, questId, grantQuest) {
   const parent = tracker.profile.items[parentItemId];
   const held = heldQuest(tracker.profile, questId);
@@ -696,8 +700,8 @@ function linkStage(tracker, parentItemId, itemId) {
   if (!stage || !bundleItem) return;
   if (!stage.attributes.challenge_bundle_id) tracker.setItemAttribute(itemId, "challenge_bundle_id", bundleItemId);
   tracker.setItemAttribute(itemId, "challenge_linked_quest_given", stage.attributes.challenge_linked_quest_given ?? "");
-  tracker.setItemAttribute(itemId, "challenge_linked_quest_parent", parent.templateId);
-  tracker.setItemAttribute(parentItemId, "challenge_linked_quest_given", stage.templateId);
+  tracker.setItemAttribute(itemId, "challenge_linked_quest_parent", parentItemId);
+  tracker.setItemAttribute(parentItemId, "challenge_linked_quest_given", itemId);
   const listed = bundleItem.attributes.grantedquestinstanceids ?? [];
   if (listed.includes(itemId)) return;
   tracker.setItemAttribute(bundleItemId, "grantedquestinstanceids", [...listed, itemId]);
@@ -705,7 +709,8 @@ function linkStage(tracker, parentItemId, itemId) {
 }
 
 // A player who collected a stage before the link was made holds the next stage outside its bundle, or (a claim that
-// stopped half way) not at all: it is linked, or given and linked, at the quest login (settleChallengeSchedules).
+// stopped half way) not at all, or linked by template id (before #709): it is linked, or given and linked, at the quest
+// login (settleChallengeSchedules).
 function linkStagedQuests(session, athena) {
   const tracker = session.profile("athena");
   for (const [parentItemId, parent] of heldOf(tracker.profile, "quest")) {
@@ -718,7 +723,8 @@ function linkStagedQuests(session, athena) {
     if (!held) {
       grantLinkedQuest(tracker, parentItemId, questId, athena.grantAthenaQuest);
       log("Battle Royale", `${session.accountId}: ${idOf(parent.templateId)} was collected without ${questId}, which is given now`);
-    } else if (!(bundleItem.attributes.grantedquestinstanceids ?? []).includes(held[0]) || !held[1].attributes.challenge_bundle_id) {
+    } else if (!(bundleItem.attributes.grantedquestinstanceids ?? []).includes(held[0]) || !held[1].attributes.challenge_bundle_id
+      || parent.attributes.challenge_linked_quest_given !== held[0] || held[1].attributes.challenge_linked_quest_parent !== parentItemId) {
       linkStage(tracker, parentItemId, held[0]);
     }
   }
@@ -741,14 +747,34 @@ export function countBundleQuest(session, questItemId, giveReward) {
   return [bundleItemId, ...listing].filter(Boolean).flatMap((itemId) => countBundle(session, itemId, giveReward));
 }
 
+// A bundle's challenge is done when its last stage is (CoreV2 #709): the challenges tab shows a staged challenge at the
+// stage its links reach (linkStage), "Stage 2 of 3" until the last one is done, and the bundle's count (GetAchievedCount,
+// 6.21 0xE077A0: num_progress_quests_completed of QuestInfos.Num()) is the bundle's "complete all" too. A stage whose next
+// stage isn't given yet (collected later) isn't the end of its challenge; one leading to a quest the data lacks is.
+function isChainDone(profile, itemId) {
+  const seen = new Set();
+  for (let id = itemId; id && !seen.has(id);) {
+    seen.add(id);
+    const item = profile.items[id];
+    if (!["Completed", "Claimed"].includes(item?.attributes.quest_state)) return false;
+    const next = nextStageOf(item);
+    if (!next || !getAthenaQuest(idOf(next.templateId))) return true;
+    const linked = item.attributes.challenge_linked_quest_given;
+    id = profile.items[linked] ? linked : heldQuest(profile, idOf(next.templateId))?.[0];
+  }
+  return false;
+}
+
 function countBundle(session, bundleItemId, giveReward) {
   const tracker = session.profile("athena");
   const bundleItem = bundleItemId && tracker.profile.items[bundleItemId];
   if (!bundleItem) return [];
   const bundle = athenaChallengeBundles()[idOf(bundleItem.templateId)];
-  const done = (bundleItem.attributes.grantedquestinstanceids ?? [])
-    .filter((id) => ["Completed", "Claimed"].includes(tracker.profile.items[id]?.attributes.quest_state) && !tracker.profile.items[id].attributes.challenge_linked_quest_parent).length;
   const before = bundleItem.attributes.num_quests_completed ?? 0;
+  // A count made before #709 took a staged challenge at its first stage; it isn't taken back, so its rewards aren't paid
+  // again when the last stage is done.
+  const done = Math.max(before, (bundleItem.attributes.grantedquestinstanceids ?? [])
+    .filter((id) => !tracker.profile.items[id]?.attributes.challenge_linked_quest_parent && isChainDone(tracker.profile, id)).length);
   if (done === before) return [];
   tracker.setItemAttribute(bundleItemId, "num_quests_completed", done);
   tracker.setItemAttribute(bundleItemId, "num_progress_quests_completed", done);

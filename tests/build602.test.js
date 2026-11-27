@@ -585,9 +585,12 @@ test("the Skull Trooper Challenges: seven daily challenges collected count by th
 function finishBundle(session, bundleId, upTo = Infinity) {
   const tracker = session.profile("athena");
   const [, bundle] = heldOf(session, `ChallengeBundle:${bundleId}`);
-  for (const questItemId of bundle.attributes.grantedquestinstanceids.slice(0, upTo)) {
-    const questId = tracker.profile.items[questItemId].templateId.split(":")[1];
-    advanceAthenaObjectives(session, getAthenaQuest(questId).objectives.map(({ name }) => ({ statName: name, count: 1_000_000 })));
+  for (const firstItemId of bundle.attributes.grantedquestinstanceids.slice(0, upTo)) {
+    // A staged challenge is done at its last stage (CoreV2 #709): each stage's claim links the next one.
+    for (let questItemId = firstItemId; tracker.profile.items[questItemId]; questItemId = tracker.profile.items[questItemId].attributes.challenge_linked_quest_given) {
+      const questId = tracker.profile.items[questItemId].templateId.split(":")[1];
+      advanceAthenaObjectives(session, getAthenaQuest(questId).objectives.map(({ name }) => ({ statName: name, count: 1_000_000 })));
+    }
   }
   // The ones counted from match results (play matches, matches with an elimination).
   if (upTo === Infinity) for (let match = 0; match < 60; match++) recordMatchProgress(session, 2, { place: 10, kills: 1 });
