@@ -13,10 +13,16 @@ import { requireAuth } from "../../accounts/auth.js";
 //   (#000000 and #FFFFFF without one) and appInstalled as "has the app".
 // The service answered only the settings an account had saved, and only the Party Hub app saved them. No Core account
 // has used it, so every account has none.
+//
+// SendNotifyActive (9.21 CL-6922310 RVA 0x587EB0, completion 0x588450) POSTs /api/v1/user/<accountId>/notifyActive
+// (SendNotifyActiveUrl) with Content-Type application/json and no body; the "Playing" location it is given is only
+// logged. UFortAthenaMatchmakingWidget::HandlePlayClicked (0x374FE80) calls it with an unbound delegate, so the
+// completion only checks the status and logs the response. It told the Party Hub the player was in a match.
 export function channelsRoutes({ tokens }) {
   const router = express.Router();
 
   router.post("/api/v1/user/setting", requireAuth(tokens), (req, res) => res.json([]));
+  router.post("/api/v1/user/:accountId/notifyActive", requireAuth(tokens), (req, res) => res.status(204).end());
 
   return router;
 }
