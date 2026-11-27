@@ -130,11 +130,11 @@ test("Season 9's events run on 9.20 with Beyond the Stellar Horizon; its Block p
     assert.deepEqual(typesOf(inBuild(v920, () => blockStates(at("2019-06-08T12:00:00Z")))), [blockSlab(1)]);
     assert.deepEqual(typesOf(inBuild(v920, () => blockStates(at("2019-06-14T12:00:00Z")))), [blockSlab(2)]);
   });
-  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6922310]], id);
-  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 6922310]]);
+  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 7095426]], id);
+  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 7095426]]);
   assert.deepEqual(eventCard("block920").ranges, [[6822798, 6922310]]);
-  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6922310]);
-  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6922310]);
+  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 7095426]);
+  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 7095426]);
 });
 
 test("Beyond the Stellar Horizon: its first quest at quest login on 9.20, Azalea Clark on the fourteenth; 9.10 doesn't give it", () => {

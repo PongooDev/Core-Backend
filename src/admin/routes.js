@@ -214,7 +214,8 @@ const eventBuilds = [
   { version: "9.10", cl: 6573057, event: "Season 9 lobby, the Fortbytes, Downtown Drop's challenges" },
   { version: "9.10", cl: 6639283, event: "Season 9 lobby, the Fortbytes, Downtown Drop's challenges" },
   { version: "9.20", cl: 6822798, event: "Season 9 lobby, the Fortbytes, Beyond the Stellar Horizon" },
-  { version: "9.21", cl: 6922310, event: "Season 9 lobby, the Fortbytes, Beyond the Stellar Horizon, Horde Rush's challenges" }
+  { version: "9.21", cl: 6922310, event: "Season 9 lobby, the Fortbytes, Beyond the Stellar Horizon, Horde Rush's challenges" },
+  { version: "9.30", cl: 7095426, event: "Season 9 lobby, the Fortbytes, Beyond the Stellar Horizon, the 14 Days of Summer" }
 ];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin

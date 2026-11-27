@@ -176,11 +176,16 @@ const held910 = {
   Playlist_WW_Squads: [902, 100, 4, 4]
 };
 
+// 9.30 (CL-7095426): 9.21's less Solid Gold's Duos and Solo (Playlist_SolidGold_Duos and _Solo: 9.30's assets of those names
+// are The Blues, MissionGen_Blue and "All weapon drops are Rare", so no earlier Solid Gold holds there). Its other held
+// assets are 9.21's (the held910 sizes against 9.30's playlist dump; 237 assets, all its paks but the keyed pakchunk1011).
+const held930 = Object.fromEntries(Object.entries(held910).filter(([playlistName]) => !playlistName.startsWith("Playlist_SolidGold_")));
 export const buildPlaylists = {
   6337466: held900,
   6428087: held900,
   6573057: held910,
   6639283: held910,
   6822798: held910,
-  6922310: held910
+  6922310: held910,
+  7095426: held930
 };

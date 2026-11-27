@@ -1,9 +1,9 @@
 import { anniversary2018BR, blockLanded, blockRiskyReels, blockSlab, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake,
   cubeRune, cubeStartMove, cubeTurnOn, distantFogApproach, distantFogApproach630, distantFogOverlap, distantFogOverlap630, eventsActiveUntil, fortnitemaresDecor621, holidayDecor710, holidayDecorProps710,
   festivusCountdown, festivusLevel, festivusShow, iceKingClock, iceKingCountdown, iceKingCountdownCheck, iceKingIceLegion, iceKingLeadUp, iceKingLoadLevel, iceKingLoadSequence, iceKingStorm, iceKingStormPast,
-  iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus,
+  iceKingVisible, iceKingWarning, iceStormSnowMelt, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltm14DaysOfFortnite, ltmHeist, lteFestivus, ltm14DaysOfSummer,
   lteBootyBay, lteS7Overtime, lteS8ExtraCredit, ltmAshton, ltmGoose, ltmHighStakes, ltmMash, ltmVigilante, ltmWax, ltmWinterDeimos, riftCorrupt, s8Burnt, s8Cracked, s8Cracks, s8Heat, s8Tremors, tomatoRiftEvent, tomatoRiftTell, unvaultingAfter, unvaultingCountdown, unvaultingEvent,
-  unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
+  unvaultingDay, unvaultingLevel, unvaultingRune, unvaultingRuneWarmup } from "./events.js";
 
 // 7.10's 14 Days of Fortnite challenge bundle's CalendarEventName (QuestBundle_14DaysOfFortnite).
 export const fourteenDaysCalendarEvent = "CalendarEvent_Season7_14DaysOfFortnite";
@@ -29,6 +29,8 @@ export const wicksBountyCalendarEvent = "CalendarEvent_Season9_Wax";
 export const downtownDropCalendarEvent = "CalendarEvent_Season9_Vigilante";
 // 9.21's Schedule_LTM_Mash (the Horde Rush Challenges) the same way.
 export const hordeRushCalendarEvent = "CalendarEvent_Season9_Mash";
+// 9.30's Schedule_14DaysOfSummer (the 14 Days of Summer Challenges) the same way.
+export const fourteenDaysSummerCalendarEvent = "CalendarEvent_Season9_14DaysOfSummer";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
@@ -273,6 +275,13 @@ const downtownDropEnd = Date.parse("2019-06-04T00:00:00.000Z");
 // (🟡 00:00 UTC, to the last day's end). Every challenge comes with the bundle.
 const hordeRushAt = Date.parse("2019-06-13T00:00:00.000Z");
 const hordeRushEnd = Date.parse("2019-06-20T00:00:00.000Z");
+// 9.30's 14 Days of Summer (events/fourteendayssummer.js): Content Update v9.30's "The fun begins on June 25, 9 AM Eastern
+// Time" (13:00 UTC), a challenge and an unvaulted weapon a day for fourteen days, and the Fortnite Wiki's end, 15 July 2019
+// (🟡 to that day's end). Day n's weapon (EventFlag.Unvaulting.Day<n>) is in the loot for 24 hours from day n's start (the
+// wiki's "A weapon was unvaulted for 24 hours only").
+export const fourteenDaysSummerAt = Date.parse("2019-06-25T13:00:00.000Z");
+const fourteenDaysSummerEnd = Date.parse("2019-07-16T00:00:00.000Z");
+const summerDayMs = 24 * 60 * 60 * 1000;
 // 8.51's Unvaulting (events/unvaulting.js has how 8.51 plays it and the sources). The Fortnite Wiki's Unvaulting: 4 May 2019,
 // 2:00 to 2:05 PM ET (18:00 UTC); its Vault: "April 30th 2019: An orange hologram appeared above one of The Vault rune
 // slots. May 1st 2019: The fifth rune has appeared above the Volcano ... May 3rd 2019: The fifth and final rune has entered
@@ -541,9 +550,18 @@ export const datedEvents = [
       step("challenges", "The Downtown Drop Challenges", [ltmVigilante, downtownDropCalendarEvent], downtownDropAt, downtownDropEnd)
     ] },
   // 9.21's Horde Rush Challenges (events/horderush.js): one step, the flag and the schedule's calendar event.
-  { id: "hordeRush", name: "the Horde Rush Challenges (9.21)", season: 9, flag: ltmMash, anchor: "challenges", parts: 1,
+  { id: "hordeRush", name: "the Horde Rush Challenges (9.21, 9.30)", season: 9, flag: ltmMash, anchor: "challenges", parts: 1,
     challenges: "Schedule_LTM_Mash", steps: [
       step("challenges", "The Horde Rush Challenges", [ltmMash, hordeRushCalendarEvent], hordeRushAt, hordeRushEnd)
+    ] },
+  // 9.30's 14 Days of Summer (events/fourteendayssummer.js): the challenges' flag and calendar event for the whole event,
+  // and each day's unvaulted weapon for its day.
+  { id: "fourteenDaysSummer", name: "the 14 Days of Summer (9.30)", season: 9, flag: ltm14DaysOfSummer, anchor: "challenges", parts: 2,
+    challenges: "Schedule_14DaysOfSummer", steps: [
+      step("challenges", "The 14 Days of Summer: a challenge a day", [ltm14DaysOfSummer, fourteenDaysSummerCalendarEvent],
+        fourteenDaysSummerAt, fourteenDaysSummerEnd),
+      ...Array.from({ length: 14 }, (_, index) => step(`unvault${index + 1}`, `Day ${index + 1}'s unvaulted weapon`,
+        [unvaultingDay(index + 1)], fourteenDaysSummerAt + index * summerDayMs, fourteenDaysSummerAt + (index + 1) * summerDayMs))
     ] },
   // 8.51's Unvaulting (events/unvaulting.js): the fifth rune, the countdown, the event and the island after it. "Start now"
   // (or any time on the event's step) plays it then, the steps before it at Epic's spacing.

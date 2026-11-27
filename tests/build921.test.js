@@ -65,8 +65,8 @@ test("9.21 is known as 9.21 on its own data, Season 9's newest", () => {
   assert.equal(dataBuild(v920), v920, "9.20 keeps its own data");
   assert.equal(dataBuild("7000000"), v921);
   assert.equal(releasedOn(v921), Date.UTC(2019, 5, 12));
-  assert.equal(buildOfSeason(9), v921);
-  assert.equal(seasonName(9), "Season 9 (9.00 – 9.21)");
+  assert.equal(buildOfSeason(9), "7095426", "9.30 is Season 9's newest");
+  assert.equal(seasonName(9), "Season 9 (9.00 – 9.30)");
   const season = inBuild(v921, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.storefront, season.numBookLevels], [9, "BRSeason9", 100]);
   assert.equal(inBuild(v921, seasonOfBuild), 9);
@@ -139,8 +139,8 @@ test("the Horde Rush Challenges: 9.21's schedule, served 13 to 19 June on Season
   withConfig({ ...season9, season4Flags: { overrides: { [ltmMash]: "on" } } }, () => {
     assert.ok(inBuild(v921, () => activeEventFlags()).includes(ltmMash), "switched on, always served");
   });
-  assert.deepEqual(season4Flag(ltmMash).builds, [6922310, 6922310]);
-  assert.deepEqual(eventCard("hordeRush").ranges, [[6922310, 6922310]]);
+  assert.deepEqual(season4Flag(ltmMash).builds, [6922310, 7095426]);
+  assert.deepEqual(eventCard("hordeRush").ranges, [[6922310, 7095426]]);
   withConfig({ mode: "auto", seasonStarts: { 9: replayDaysAgo(36) } }, () => withSession(v921, "mash921", (session) => {
     setUpAthena(session);
     athenaQuestLogin(session);
@@ -160,10 +160,10 @@ test("Season 9's events run on 9.21; its Block is 9.20's, Firebase Omega, then M
     assert.deepEqual(typesOf(inBuild(v921, () => blockStates(at("2019-06-08T12:00:00Z")))), [blockSlab(1)]);
     assert.deepEqual(typesOf(inBuild(v921, () => blockStates(at("2019-06-14T12:00:00Z")))), [blockSlab(2)]);
   });
-  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 6922310]], id);
-  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 6922310]]);
-  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 6922310]);
-  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 6922310]);
+  for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 7095426]], id);
+  assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 7095426]]);
+  assert.deepEqual(season4Flag(ltmWax).builds, [6428087, 7095426]);
+  assert.deepEqual(season4Flag(ltmVigilante).builds, [6573057, 7095426]);
 });
 
 test("9.21's Wargames: Quantum Countdown joins Invasion; 9.20's unchanged", () => {

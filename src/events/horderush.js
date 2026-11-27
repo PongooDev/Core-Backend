@@ -13,7 +13,8 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // They count in Horde Rush (Playlist_Mash_Squads, Athena.Playlist.Mash: events/ltms.js hordeRush). The schedule is given
 // at the quest login while the flag is served (profiles/athena.js settleEventSchedules); the calendar serves the flag on
 // its dates (events/datedflags.js hordeRush), the admin's times, or off, and the switch serves it always or never
-// (events/season4flags.js). 9.20's paks already have the schedule but not the mode's server data, so only 9.21 serves them.
+// (events/season4flags.js). 9.20's paks already have the schedule but not the mode's server data, so 9.21 serves them first;
+// 9.30's (CL-7095426) keep them and the mode, and its first days (18 and 19 June) are the challenges' last.
 export const hordeRushEvent = datedEvent("hordeRush");
 export const hordeRushBuild = 6922310;
 

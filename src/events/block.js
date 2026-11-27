@@ -59,6 +59,8 @@ import { currentEventsConfig } from "./events.js";
 // - 9.20 (CL-6822798) the same way: SLAB_1 streams Athena/Maps/Block/9_20's Block_25x25_Firebase_Omega (DrDoofenschmerz),
 //   SLAB_2 Block_25x25_Mythical_Mayhem (TeamFusion), SLAB_3 the blank Block; BP_SlabScripting (the same Blueprint) watches
 //   slab1 to slab3. 9.20's paks no longer have 9.10's two. 9.21 (CL-6922310) has the same three levels: it plays 9.20's.
+// - 9.30 (CL-7095426) isn't served: its paks (all but the keyed pakchunk1011) have no 9_20 or later Block level, only 7.20's,
+//   8.10's, 8.50's and the blank one, and its BP_SlabScripting's HotfixSlabDisabled defaults to 1 (the blank Block).
 // So this serves each build its own names by Epic's dates on Season 7's replay (events/datedflags.js block700 and
 // block710, block720, block730, block740, block800, block820, block830, block850, block900, block910 and block920; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
 // match's playlist before it takes the hotfix (7.00's: the playlist's data at frame 393, the hotfix at 506, the calendar

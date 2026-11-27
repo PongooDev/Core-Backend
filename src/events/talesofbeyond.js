@@ -33,7 +33,7 @@ export const talesOfBeyondQuests = ["s9_fetch_quest_a1"];
 // (S9_Fetch_Quest_B14) the Mythic outlander Azalea Clark (hid_outlander_028_retroscifistoryoutlander_sr_t01, the notes'
 // "Available from the Beyond the Stellar Horizon quest line"). S9_Hidden_WatchVideo_B0 is on no page and nothing grants
 // it. Tales of Beyond runs on beside it: 9.20's EventQuestMapSideBarData shows its row on Phase1 or Phase2. 🟡 Epic's days
-// aren't recorded: on for all of 9.20, and of 9.21 (CL-6922310), whose quests are 9.20's.
+// aren't recorded: on for all of 9.20, and of 9.21 (CL-6922310) and 9.30 (CL-7095426), whose quests are 9.20's.
 export const stellarHorizonQuests = ["s9_fetch_quest_b1"];
 
 export const talesOfBeyondEventQuests = () => [

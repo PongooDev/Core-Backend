@@ -294,7 +294,27 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // June 12 at 8 PM Eastern Time until Wednesday, June 19 at 8 PM Eastern Time" (Schematic:SID_Pistol_RetroSciFi_SR_Ore_T01,
 // "Plasmatron 9000", Legendary, in 9.20's and 9.21's data): from 13 to 20 June 00:00 UTC on Season 9's replay, after
 // Archeolo-Jess's week; 🟡 one, at a legendary schematic's 1,680 Gold (Epic's price isn't recorded).
+// 9.30's (CL-7095426): Content Update v9.30's "Astro Bat 9000 swings into the Weekly Store ... Available from June 26 at 8 PM
+// Eastern Time until July 3 at 8 PM Eastern Time" (Schematic:SID_Blunt_Light_RetroSciFi_SR_Ore_T01, the Legendary Retro Sci-Fi
+// bat new in 9.30's data), then Content Update v9.30 #2's Star-Spangled Headhunter, Patriot Penny and Old Glory A.C.,
+// "Available in the Weekly Store from July 3 at 8 PM ET to July 10 at 8 PM ET" (Hero:HID_Commando_GunTough_F_4thJuly_SR_T01,
+// HID_Constructor_HammerPlasma_4thJuly_SR_T01 and HID_Outlander_010_M_4thJuly_SR_T01, the 4th of July heroes in 9.30's data
+// with War Cry's, Bull Rush's and T.E.D.D.Y.'s perks; the fourth, GunTough_M, Stars and Stripes Jonesy, is the summer quest's,
+// events/fourteendayssummer.js): from 27 June and 4 July 00:00 UTC on Season 9's replay, after 9.21's weeks; 🟡 one each, the
+// bat at a legendary schematic's 1,680 Gold and the heroes at a legendary hero's 2,800. Update v9.30's "The Chrome Commandos
+// Return!" names no store or days, so they aren't offered.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 7095426, season: 9, weeks: [
+    { from: "2019-07-11T00:00:00.000Z", items: [] },
+    { from: "2019-07-04T00:00:00.000Z", items: [{ templateId: "Hero:hid_commando_guntough_f_4thjuly_sr_t01", price: 2800, limit: 1 },
+      { templateId: "Hero:hid_constructor_hammerplasma_4thjuly_sr_t01", price: 2800, limit: 1 },
+      { templateId: "Hero:hid_outlander_010_m_4thjuly_sr_t01", price: 2800, limit: 1 }] },
+    { from: "2019-06-27T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_light_retroscifi_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2019-06-20T00:00:00.000Z", items: [] },
+    { from: "2019-06-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_retroscifi_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2019-06-06T00:00:00.000Z", items: [{ templateId: "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", price: 2800, limit: 1 }] },
+    { from: null, items: [] }
+  ] },
   { firstBuild: 6922310, season: 9, weeks: [
     { from: "2019-06-20T00:00:00.000Z", items: [] },
     { from: "2019-06-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_pistol_retroscifi_sr_ore_t01", price: 1680, limit: 1 }] },

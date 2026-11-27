@@ -51,6 +51,13 @@ export { wargames, wargamesFlag };
 // 9.21 (CL-6922310): Update v9.21's "New Wargames simulation: Quantum Countdown" ("an unstable bomb is teleporting around
 // your base"): its quests and dailies are 9.20's data, and 9.21's shipped list is still 9.20's (no TeleBomb), so the
 // hotfix adds it there.
+// 9.30 (CL-7095426): its shipped list adds TeleBomb, and its data three more simulations, each with a banner, prerequisite
+// and simulation quests and 12 dailies: Content Update v9.30's "New Wargames Simulation: Shortcut" (25 June 2019: "Strange
+// doors are appearing near the enemy spawners"; WargamesMissionConfigData_Wargame_Tprifts, Stat.Mission.IronCity.TpRifts),
+// Content Update v9.30 #2's "New Wargames simulation: Meltdown" (2 July: "your Storm Shield has gone critical and is
+// emitting a growing radiation field"; _Wargame_Overload, Stat.Mission.IronCity.AntiShield) and RiotCity
+// (Stat.Mission.IronCity.RiotCity), which no 9.30 note names: not given. Shortcut and Meltdown are added by the hotfix for
+// all of 9.30 (🟡 a Wargame is on for its build, not its day).
 const simulations = ["anomaly", "generators", "lava", "tornado"];
 // Each later simulation by its quests' name, its tag and the first build that runs it.
 const laterSimulations = [
@@ -58,7 +65,11 @@ const laterSimulations = [
   { name: "meteor", tag: "Stat.Mission.IronCity.MStorm", build: 6573057 },
   { name: "tiki", tag: "Stat.Mission.IronCity.Tiki", build: 6639283 },
   { name: "saucer", tag: "Stat.Mission.IronCity.Saucer", build: 6822798 },
-  { name: "telebomb", tag: "Stat.Mission.IronCity.TeleBomb", build: 6922310 }
+  { name: "telebomb", tag: "Stat.Mission.IronCity.TeleBomb", build: 6922310 },
+  { name: "tprifts", tag: "Stat.Mission.IronCity.TpRifts", build: 7095426 },
+  { name: "overload", tag: "Stat.Mission.IronCity.AntiShield", build: 7095426 },
+  // No build of Core's runs it yet.
+  { name: "riotcity", tag: "Stat.Mission.IronCity.RiotCity", build: Infinity }
 ];
 export const mistPodsBuild = 6428087;
 export const spaceRocksBuild = 6573057;
@@ -152,6 +163,7 @@ export function wargameBadgeRewards(earnedBadgeData) {
 }
 
 // The hotfix's UFortGlobals lines while the event runs on a build that has it: the switch, and the later simulations its
-// build runs (from 9.01 Mist Pods, from 9.10 Space Rocks, on Content Update v9.10's build Hexed, from 9.20 Invasion).
+// build runs (from 9.01 Mist Pods, from 9.10 Space Rocks, on Content Update v9.10's build Hexed, from 9.20 Invasion, from 9.21
+// Quantum Countdown, from 9.30 Shortcut and Meltdown).
 export const wargamesGlobals = (changelist) => (isEventActive(wargames, changelist)
   ? ["bEnableIronCity=true", ...laterOn(changelist).map(({ tag }) => `+IronCityWargameTagList=${tag}`)] : []);

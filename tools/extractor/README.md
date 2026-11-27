@@ -649,6 +649,16 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `athena.json` changes in content: `quest_br_s9_rooster_collectglyphs_01_a`'s next stage is a reward, not a hidden one.
   Update v9.21's Horde Rush challenges, Proximity Grenade Launcher, Quantum Countdown quests and Plasmatron 9000 are
   already 9.20's data. The overlay is still a full one against Cert, as every build's.
+  9.30's (CL-7095426, Update v9.30) is `4.23.0-7095426+++Fortnite+Release-9.30` (no `Build.version`; the build folder is
+  `9.30-CL-7095426\9.30-CL-7095426\Fortnite`) with 9.21's full data (Cert's files with `gamedata/6922310` applied) as the
+  fifth argument and the main key FModel's settings hold for its build folder. 9.21's layout with the keyed pakchunk1000 to
+  1027, of which the keychain opens all but 1011. Its mission alerts are still the fifth argument's. No extractor change.
+  Against 9.21 `athena.json` (90 more cosmetics: the summer outfits and Stars and Stripes back blings; the 14 Days of Summer's
+  schedule and bundle and Season9_Architect_Schedule; 31 more quests, 3 fewer), `items.json`, `quests.json` and `world.json` (Save the
+  World's SummerQuest_2019 line, Storm Shield Endurance's EnduranceWave30 quests and the Shortcut, Meltdown and RiotCity
+  Wargames), `cardpacks.json`, `characters.json`, `collectionbook.json`, `alterations.json`, `fabricator.json`, `banners.json`,
+  `objectivestats.json`
+  and `upgrades.json` change; the overlay is a full one against Cert.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

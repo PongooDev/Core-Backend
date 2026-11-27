@@ -44,6 +44,7 @@ import { setBansViewed } from "./SetBansViewed.js";
 import { removeGiftBox } from "./RemoveGiftBox.js";
 import { setBattleRoyaleBanner } from "./SetBattleRoyaleBanner.js";
 import { setCompetitiveRegion } from "./SetCompetitiveRegion.js";
+import { setContextTutorialInformation } from "./SetContextTutorialInformation.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
 import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
@@ -165,6 +166,7 @@ export const clientCommands = {
   SetBansViewed: setBansViewed,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
   SetCompetitiveRegion: setCompetitiveRegion,
+  SetContextTutorialInformation: setContextTutorialInformation,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,
   SetHeroModeLoadout: setHeroModeLoadout,

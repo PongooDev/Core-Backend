@@ -47,10 +47,11 @@ test("every event flag of Season 4's paks is in the catalog, in a group", () => 
     // drain (CL-4526925's server-assets pak),
     "BR_S6_Island_Crack", "LTM_LilKevin", "Fortnitemares_Part4", "BR_S6_Island_Drain",
     // and 7.00's two (events/events.js), and 7.10's two, and 7.20's one, and 7.30's one, and 7.40's one, and 8.20's High
-    // Stakes Challenges, 8.30's Buccaneer's Bounty Challenges, 8.40's Air Royale Challenges, 8.50's Endgame Challenges, 8.51's Season 8 Overtime Challenges, 9.01's Wick's Bounty Challenges, 9.10's Downtown Drop Challenges and 9.21's Horde Rush Challenges
+    // Stakes Challenges, 8.30's Buccaneer's Bounty Challenges, 8.40's Air Royale Challenges, 8.50's Endgame Challenges, 8.51's Season 8 Overtime Challenges, 9.01's Wick's Bounty Challenges, 9.10's Downtown Drop Challenges, 9.21's Horde Rush Challenges and 9.30's 14 Days of Summer (its challenges and its fourteen unvaulted weapons)
     // (8.00's LobbySeason8 and Spring2019 aren't switched),
     "LobbySeason7", "WinterBattleBus", "LTM_14DaysOfFortnite", "Frostnite", "LTM_WinterDeimos", "LTE_Festivus", "LTE_S7_OverTime",
-    "LTM_HighStakes", "LTE_BootyBay", "LTM_Goose", "LTM_Ashton", "LTE_S8_ExtraCredit", "LTM_Wax", "LTM_Vigilante", "LTM_Mash"].map((name) => `EventFlag.${name}`)
+    "LTM_HighStakes", "LTE_BootyBay", "LTM_Goose", "LTM_Ashton", "LTE_S8_ExtraCredit", "LTM_Wax", "LTM_Vigilante", "LTM_Mash", "LTM_14DaysOfSummer",
+    ...Array.from({ length: 14 }, (_, index) => `Unvaulting.Day${index + 1}`)].map((name) => `EventFlag.${name}`)
     // and that scripting's POI0 and POI1, which aren't EventFlag.* (events/events.js islandPoi), 7.10's decor's TopSecret
     // (CL-4667333's server-assets pak, events/holidaydecor.js) and 6.21's island decor's HW_01 to HW_08 (its client map
     // levels' BP_CalendarProps, events/holidaydecor.js).

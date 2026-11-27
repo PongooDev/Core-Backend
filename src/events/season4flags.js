@@ -74,7 +74,9 @@ import { currentEventsConfig } from "./events.js";
 // Downtown Drop Challenges, served by their dates (events/downtowndrop.js). 9.20's (CL-6822798) keep both schedules and
 // add LTM_Mash (Horde Rush's challenges, Update v9.21's: not served there), so LTM_Wax and LTM_Vigilante run to 9.20. 9.21's
 // (CL-6922310) keep all three: LTM_Wax and LTM_Vigilante run to 9.21, and LTM_Mash, the Horde Rush Challenges, is served
-// by their dates (events/horderush.js) on 9.21 only.
+// by their dates (events/horderush.js) on 9.21 only. 9.30's (CL-7095426) keep all three, so they run to 9.30 (Horde Rush's
+// last two days are 9.30's), and add LTM_14DaysOfSummer and Unvaulting.Day1 to Day14, the 14 Days of Summer, served by their
+// dates (events/fourteendayssummer.js).
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -116,6 +118,7 @@ const b9100 = 6573057;
 const b910 = 6639283;
 const b920 = 6822798;
 const b921 = 6922310;
+const b930 = 7095426;
 
 // 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
 // BP_Athena_Event_Components' crack.
@@ -343,18 +346,28 @@ export const season4FlagGroups = [
   ] },
   // 9.01's Wick's Bounty Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Wax, events/wicksbounty.js):
   // served by their dates on Season 9's replay, or always or never by their switch.
-  { id: "wicksBounty", name: "Battle Royale: the Wick's Bounty Challenges (9.01 – 9.21)", flags: [
-    flag("LTM_Wax", [b901, b921], "The Wick's Bounty Challenges (Schedule_LTM_Wax: win Wick's Bounty for the One Shot umbrella, play 5 matches for the Boogeyman wrap, gold tokens, 20 in one match, shotgun and assault rifle damage; any 5 for the Gold Token back bling; from 16 May 2019)")
+  { id: "wicksBounty", name: "Battle Royale: the Wick's Bounty Challenges (9.01 – 9.30)", flags: [
+    flag("LTM_Wax", [b901, b930], "The Wick's Bounty Challenges (Schedule_LTM_Wax: win Wick's Bounty for the One Shot umbrella, play 5 matches for the Boogeyman wrap, gold tokens, 20 in one match, shotgun and assault rifle damage; any 5 for the Gold Token back bling; from 16 May 2019)")
   ] },
   // 9.10's Downtown Drop Challenges (Athena/Items/ChallengeBundleSchedules/Styles/BundleSchedule_Event_VigilanteBoard,
   // events/downtowndrop.js): served by their dates on Season 9's replay, or always or never by their switch.
-  { id: "downtownDrop", name: "Battle Royale: the Downtown Drop Challenges (9.10 – 9.21)", flags: [
-    flag("LTM_Vigilante", [b9100, b921], "The Downtown Drop Challenges (BundleSchedule_Event_VigilanteBoard: 13 challenges in the Downtown Drop LTM's island, two at once and the rest a day at a time; any 1 for the Back Board back bling, each for a spray or a Back Board style, all 13 for its Sweaty style; from 22 May 2019)")
+  { id: "downtownDrop", name: "Battle Royale: the Downtown Drop Challenges (9.10 – 9.30)", flags: [
+    flag("LTM_Vigilante", [b9100, b930], "The Downtown Drop Challenges (BundleSchedule_Event_VigilanteBoard: 13 challenges in the Downtown Drop LTM's island, two at once and the rest a day at a time; any 1 for the Back Board back bling, each for a spray or a Back Board style, all 13 for its Sweaty style; from 22 May 2019)")
   ] },
   // 9.21's Horde Rush Challenges (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Mash, events/horderush.js): served
   // by their dates on Season 9's replay, or always or never by their switch.
-  { id: "hordeRush", name: "Battle Royale: the Horde Rush Challenges (9.21)", flags: [
-    flag("LTM_Mash", [b921, b921], "The Horde Rush Challenges (Schedule_LTM_Mash: headshots on the Horde, Poison Fiends or Explosive Brutes from 5 m, score multipliers, Spawn Obelisk damage, Gold Brutes, a win without being eliminated, four team-score stages; all 7 for the Fiend wrap; from 13 to 19 June 2019)")
+  { id: "hordeRush", name: "Battle Royale: the Horde Rush Challenges (9.21 – 9.30)", flags: [
+    flag("LTM_Mash", [b921, b930], "The Horde Rush Challenges (Schedule_LTM_Mash: headshots on the Horde, Poison Fiends or Explosive Brutes from 5 m, score multipliers, Spawn Obelisk damage, Gold Brutes, a win without being eliminated, four team-score stages; all 7 for the Fiend wrap; from 13 to 19 June 2019)")
+  ] },
+  // 9.30's 14 Days of Summer (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_14DaysOfSummer and Balance/
+  // ItemsForEventMapping, events/fourteendayssummer.js): served by their dates on Season 9's replay, or always or never by
+  // their switches.
+  { id: "fourteenDaysSummer", name: "Battle Royale and Save the World: the 14 Days of Summer (9.30)", flags: [
+    flag("LTM_14DaysOfSummer", [b930, b930], "The 14 Days of Summer challenges (Schedule_14DaysOfSummer: one more each day, all 14 for the Banana Smoothie back bling) and Save the World's summer quests (one a day, all 14 for the Boom Bow); from 25 June to 15 July 2019"),
+    ...["the Light Machine Gun", "the Quad Launcher", "the Burst Assault Rifle", "the Crossbow", "the Heavy Shotgun", "the Scoped Revolver",
+      "the Compact SMG", "the Thermal Scoped Assault Rifle", "the Six Shooter", "the Bottle Rockets", "the Double Barrel Shotgun",
+      "the Tactical Submachine Gun", "the Bolt-Action Sniper Rifle", "the Suppressed Assault Rifle"].map((weapon, index) =>
+      flag(`Unvaulting.Day${index + 1}`, [b930, b930], `Day ${index + 1}'s unvaulted weapon in the loot: ${weapon} (ItemsForEventMapping; ${25 + index > 30 ? `${index - 5} July` : `${25 + index} June`} 2019, for a day)`))
   ] },
   { id: "rocket", name: "Battle Royale map: Blast Off (the rocket launch)", managedBy: "rocketLaunch", flags: [
     { flag: geodeCountdown, builds: [b450, b45], description: "The hologram counts down to the launch" },

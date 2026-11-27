@@ -325,6 +325,32 @@ const playlistTeams910Build = 6573057;
 // MaxPlayers 4, MaxSquadSize 4), the squad against the mode's Fiends.
 const playlistTeamsFrom921 = { 514: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 } };
 const playlistTeams921Build = 6922310;
+// 9.30 (CL-7095426): the 14 Days of Summer's playlists, by their assets: Team Splashdown (1039, Playlist_Bison_Respawn), Team
+// Rumble: Siphon (1023, Playlist_Respawn_20_Sif) and Lava (1001, _Lava), 2 × 20 in squads of 4 (bIsLargeTeamGame, as Team
+// Rumble's 280); Tag! (Playlist_Tag_Squads 1029, _Solo 1028), 2 × 40 in parties of 4 and 1; Loadout Swap (1043,
+// Playlist_Swap_Squads_Respawn) and Rumble (283, Playlist_Respawn_Squads), 48 × 4; Power Up (1005, Playlist_Pow_Solo), 40 × 1;
+// Storm Chasers: Surfin' (1024, Playlist_Race), 20 × 2; Use With Care (1009), Headshots Only (1026) and Leave None Behind
+// (1018) Duos, 100 × 2; Builder's Paradise (1013), Heavy Metal (372), Strategic Structures (1038) and Tank Battle (1016)
+// Squads, 100 × 4.
+const playlistTeamsFrom930 = {
+  1039: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 },
+  1023: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 },
+  1001: { maxTeamCount: 2, maxTeamSize: 20, maxSquadSize: 4 },
+  1029: { maxTeamCount: 2, maxTeamSize: 40, maxSquadSize: 4 },
+  1028: { maxTeamCount: 2, maxTeamSize: 40, maxSquadSize: 1 },
+  1043: { maxTeamCount: 48, maxTeamSize: 4, maxSquadSize: 4 },
+  283: { maxTeamCount: 48, maxTeamSize: 4, maxSquadSize: 4 },
+  1005: { maxTeamCount: 40, maxTeamSize: 1, maxSquadSize: 1 },
+  1024: { maxTeamCount: 20, maxTeamSize: 2, maxSquadSize: 2 },
+  1009: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  1026: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  1018: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  1013: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  372: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  1038: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  1016: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams930Build = 7095426;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -534,6 +560,7 @@ export const teamsOfPlaylist = (playlistId, build = null) => {
   // Playlist_Final_12 is 103, 8 teams of 12, where 5.30 gave 103 to Score Royale Squads).
   const held = build === null ? null : heldPlaylistTeams(playlistId, build);
   if (held) return held;
+  if (Number(build) >= playlistTeams930Build && playlistTeamsFrom930[playlistId]) return playlistTeamsFrom930[playlistId];
   if (Number(build) >= playlistTeams921Build && playlistTeamsFrom921[playlistId]) return playlistTeamsFrom921[playlistId];
   if (Number(build) >= playlistTeams910Build && playlistTeamsFrom910[playlistId]) return playlistTeamsFrom910[playlistId];
   if (Number(build) >= playlistTeams901Build && playlistTeamsFrom901[playlistId]) return playlistTeamsFrom901[playlistId];

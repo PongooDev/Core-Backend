@@ -14,6 +14,7 @@ import { endgameFlagsNow } from "../events/endgame.js";
 import { wicksBountyFlagsNow } from "../events/wicksbounty.js";
 import { downtownDropFlagsNow } from "../events/downtowndrop.js";
 import { hordeRushFlagsNow } from "../events/horderush.js";
+import { fourteenDaysSummerFlagsNow } from "../events/fourteendayssummer.js";
 import { extraCreditFlagsNow } from "../events/extracredit.js";
 import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
@@ -1567,7 +1568,8 @@ function settleSeasonGrants(session) {
 // (events/extracredit.js), 9.01's Schedule_LTM_Wax (EventFlag.LTM_Wax, the Wick's Bounty Challenges) while its dates do
 // (events/wicksbounty.js), and 9.10's BundleSchedule_Event_VigilanteBoard (EventFlag.LTM_Vigilante, the Downtown Drop
 // Challenges) while its dates do (events/downtowndrop.js), and 9.21's Schedule_LTM_Mash (EventFlag.LTM_Mash, the Horde Rush
-// Challenges) while its dates do (events/horderush.js). A schedule the season's Battle Pass gives isn't one: 9.00's Season9_Fortbyte_Schedule names
+// Challenges) while its dates do (events/horderush.js), and 9.30's Schedule_14DaysOfSummer (EventFlag.LTM_14DaysOfSummer)
+// while its dates do (events/fourteendayssummer.js). A schedule the season's Battle Pass gives isn't one: 9.00's Season9_Fortbyte_Schedule names
 // EventFlag.LobbySeason9 only for its quests' DaysFromEventStart (events/fortbytes.js), and AthenaSeason9's tier 1 paid
 // rewards give it, so only Battle Pass owners have the Fortbytes (Update v9.00: "available to Battle Pass owners").
 const battlePassSchedules = () => new Set([...(athenaSeason()?.bookPaidRewards ?? []), ...(athenaSeason()?.bookFreeRewards ?? [])]
@@ -1578,7 +1580,7 @@ function settleEventSchedules(session) {
   const fromBattlePass = battlePassSchedules();
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName && !fromBattlePass.has(id.toLowerCase()));
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow(), ...endgameFlagsNow(), ...extraCreditFlagsNow(), ...wicksBountyFlagsNow(), ...downtownDropFlagsNow(), ...hordeRushFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow(), ...fourteenDaysFlagsNow(), ...iceStormFlagsNow(), ...showtimeFlagsNow(), ...overtimeFlagsNow(), ...highStakes2019FlagsNow(), ...buccaneersBountyFlagsNow(), ...airRoyaleFlagsNow(), ...endgameFlagsNow(), ...extraCreditFlagsNow(), ...wicksBountyFlagsNow(), ...downtownDropFlagsNow(), ...hordeRushFlagsNow(), ...fourteenDaysSummerFlagsNow()].map((flag) => flag.toLowerCase());
   const { profile } = session.profile("athena");
   for (const id of event) {
     // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.

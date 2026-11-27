@@ -199,7 +199,11 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Bolt, Storm Eye, Turbulent), Synapse and Hex Wave, Asmodeus, Callisto, Batso and Foul Play, Relay, Desert Dominator, Toy
 // Trooper and Plastic Patroller, the Fork Knife, Talons and Stark Splitter pickaxes, the Slurp! and Contrast wraps and four
 // emotes (897 of 1,184); 9.10's days are as they were. 9.21 (CL-6922310) has 9.20's cosmetics (its data is 9.20's but one
-// Fortbyte quest), so its shop is 9.20's.
+// Fortbyte quest), so its shop is 9.20's. 9.30 (CL-7095426) adds the 58 of its cosmetics the shop sold, 137 times from 20
+// June on: twenty outfits (Nitebeam and Flare, Summer Drift, Beach Bomber, Heist, Biz, Sofia, Bigfoot, Match Point, Starfish,
+// Gage, Doublecross, King Flamingo, Vector, Focus, Flutter, Pillar, Dare, and Stranger Things' Demogorgon and Chief Hopper)
+// with their gear, the Stars and Stripes back blings, the Saxy Groove music and eight emotes (1,034 of 1,184); 9.21's days
+// are as they were.
 // Battle Pass Tiers, bundles, free (0 V-Bucks) items and real-money offers are left out. A build's season is its athena
 // data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {

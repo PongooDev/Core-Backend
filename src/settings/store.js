@@ -95,10 +95,15 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // Season 8's Arena (8.20 to 8.51, Core-Backend #423, tournaments/arena.js): its Solo and Duos tiles in the mode select.
   "arenaSolo", "arenaDuos",
   // 9.00's (CL-6337466) 50v50 and Update v9.00's rotation: Trios, Solid Gold and One Shot; 9.01's Wick's Bounty; 9.10's
-  // rotations (Sniper Shootout, Unvaulted, Close Encounters) and Team Rumble; 9.20's Sword Fight; 9.21's Horde Rush.
+  // rotations (Sniper Shootout, Unvaulted, Close Encounters) and Team Rumble; 9.20's Sword Fight; 9.21's Horde Rush; 9.30's
+  // 14 Days of Summer modes and Content Update v9.30 #3's rotation.
   "fiftyFiftySeason9", "triosSeason9", "solidGoldSeason9Squads", "oneShotSeason9Squads", "wicksBountySquads", "wicksBountyDuos",
   "wicksBountySolo", "sniperShootoutSeason9Duos", "unvaultedSeason9Squads", "closeEncountersSeason9Squads", "teamRumbleSeason9",
-  "swordFightSeason9Squads", "swordFightSeason9Solo", "swordFightSeason9Duos", "hordeRush"];
+  "swordFightSeason9Squads", "swordFightSeason9Solo", "swordFightSeason9Duos", "hordeRush",
+  "teamSplashdown", "tagSquads", "tagSolo", "useWithCareDuos", "teamRumbleSiphon", "buildersParadiseSquads", "loadoutSwapSquads",
+  "headshotsDuos", "heavyMetalSquads", "powerUpSolo", "strategicStructuresSquads", "teamRumbleLava", "leaveNoneBehindDuos", "rumbleSquads",
+  "stormChasers", "tankBattleSquads",
+  "highExplosivesSeason9Squads", "sneakySilencersSeason9Solo", "classicSeason9Squads", "catchSeason9Squads", "blitzSeason9Squads"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
@@ -124,8 +129,12 @@ const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "
   "loveShotDuos", "swordFightSquads", "catchSolo", "catchDuos", "catchSquads", "driftin",
   // 8.00's 50v50, the mode its shipped lobby offers, and 8.51's Unvaulting, the event's playlist (as Party at Pleasant Park).
   "fiftyFiftySeason8", "unvaulting",
-  // 9.00's 50v50, the mode its shipped lobby offers, and 9.21's Horde Rush, the update's event playlist.
+  // 9.00's 50v50, the mode its shipped lobby offers, 9.21's Horde Rush, the update's event playlist, and 9.30's 14 Days of
+  // Summer modes, as 7.10's 14 Days of Fortnite's.
   "fiftyFiftySeason9", "hordeRush",
+  "teamSplashdown", "tagSquads", "tagSolo", "useWithCareDuos", "teamRumbleSiphon", "buildersParadiseSquads", "loadoutSwapSquads",
+  "headshotsDuos", "heavyMetalSquads", "powerUpSolo", "strategicStructuresSquads", "teamRumbleLava", "leaveNoneBehindDuos", "rumbleSquads",
+  "stormChasers", "tankBattleSquads",
   // The Arena's tiles (Core-Backend #423): shown until an admin hides one.
   "arenaSolo", "arenaDuos"];
 export const matchmakingModesRevision = 1;

@@ -21,5 +21,32 @@ export function contentControlsRoutes({ tokens }) {
     });
   });
 
+  // 9.30+ (CL-7095426): once DownloadUser succeeds, UFortContentControlsManager (0x1753670) downloads the user's rules for
+  // namespace "fn" (0x1744300): FOnlineContentControlsServiceMcp::DownloadRules (0x3DEDC0) sends GET
+  // /content-controls/{accountId}/rules/namespaces/{namespace} (DownloadRulesUrl, "/'UserId/rules/namespaces/'Namespace")
+  // and reads {"data": {"result", "namespaceSetting", "userSetting"}} (0x42B2A0), each a rule set (0x42B160):
+  // allowedToAcquire, allowedToMakePurchases, canSeeMatureLanguage, canAcceptFriendRequest, canRecieveInGameItems (Epic's
+  // spelling), canSeeThirdPartyNames, canDisplayMyUserName, canSeeOtherPlayersNames, canUseVoiceChat,
+  // canVoiceChatWithUnknowns (bool), playtimeReportingFrequency (FString, "none" by default) and purchaseReportingEnabled
+  // (bool). The manager keeps "result" (0x17535A0). 🟡 An account with no controls set up is allowed everything and
+  // reports nothing (Epic's answer for such an account isn't recorded; the client's own defaults are false and "none").
+  router.get("/content-controls/:accountId/rules/namespaces/:namespace", requireAuth(tokens), (req, res) => {
+    const rules = {
+      allowedToAcquire: true,
+      allowedToMakePurchases: true,
+      canSeeMatureLanguage: true,
+      canAcceptFriendRequest: true,
+      canRecieveInGameItems: true,
+      canSeeThirdPartyNames: true,
+      canDisplayMyUserName: true,
+      canSeeOtherPlayersNames: true,
+      canUseVoiceChat: true,
+      canVoiceChatWithUnknowns: true,
+      playtimeReportingFrequency: "none",
+      purchaseReportingEnabled: false,
+    };
+    res.json({ data: { result: rules, namespaceSetting: rules, userSetting: rules } });
+  });
+
   return router;
 }

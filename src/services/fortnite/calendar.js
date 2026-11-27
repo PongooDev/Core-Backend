@@ -30,6 +30,7 @@ import { endgameStates } from "../../events/endgame.js";
 import { wicksBountyStates } from "../../events/wicksbounty.js";
 import { downtownDropStates } from "../../events/downtowndrop.js";
 import { hordeRushStates } from "../../events/horderush.js";
+import { fourteenDaysSummerStates } from "../../events/fourteendayssummer.js";
 import { extraCreditStates } from "../../events/extracredit.js";
 import { unvaultingStates } from "../../events/unvaulting.js";
 import { earthquakesStates, s8HeatStates } from "../../events/s8leadup.js";
@@ -130,12 +131,12 @@ export function calendarRoutes({ tokens, settings }) {
     // (events/icestorm.js iceStormMeltStates), Showtime and its challenges (events/festivus.js), and 7.40's Overtime Challenges
     // (events/overtime.js) and the lead-up to Season 8 (events/s8leadup.js: 7.30's tremors too), Season 8's event challenges,
     // 8.51's Overtime Challenges (events/extracredit.js) and the Unvaulting (events/unvaulting.js), 9.01's Wick's Bounty
-    // Challenges (events/wicksbounty.js), 9.10's Downtown Drop Challenges (events/downtowndrop.js) and 9.21's Horde Rush
-    // Challenges (events/horderush.js) as one schedule.
+    // Challenges (events/wicksbounty.js), 9.10's Downtown Drop Challenges (events/downtowndrop.js), 9.21's Horde Rush
+    // Challenges (events/horderush.js) and 9.30's 14 Days of Summer (events/fourteendayssummer.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
       islandStates(now), butterflyStates(now), fortnitemaresDecorStates(now), distantFogStates(now), birthdayChallengeStates(now), blockStates(now), fourteenDaysStates(now), holidayDecorStates(now),
       iceStormStates(now), iceKingStates(now), iceStormMeltStates(now), festivusStates(now), showtimeStates(now), overtimeStates(now), highStakes2019States(now), buccaneersBountyStates(now), airRoyaleStates(now), endgameStates(now),
-      extraCreditStates(now), unvaultingStates(now), wicksBountyStates(now), downtownDropStates(now), hordeRushStates(now),
+      extraCreditStates(now), unvaultingStates(now), wicksBountyStates(now), downtownDropStates(now), hordeRushStates(now), fourteenDaysSummerStates(now),
       earthquakesStates(now), s8HeatStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
