@@ -13,7 +13,7 @@ import { activeEventFlags, configureEvents, frostnite, lobbySeason7, lteFestivus
 import { festivusStates, showtimeStates } from "../src/events/festivus.js";
 import { eventDaysOf } from "../src/events/fourteendays.js";
 import { iceStormMeltStates } from "../src/events/icestorm.js";
-import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmOfPlaylist, ltmOn } from "../src/events/ltms.js";
+import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmOfPlaylist, ltmOn, ltmPlaylistTag } from "../src/events/ltms.js";
 import { overtimeCalendarEvent, overtimeDay, overtimeFlagsNow, overtimeStates } from "../src/events/overtime.js";
 import { earthquakesStates, s8HeatStates } from "../src/events/s8leadup.js";
 import { season4Flag } from "../src/events/season4flags.js";
@@ -21,7 +21,7 @@ import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athe
 import { dataBuild } from "../src/gamedata/read.js";
 import { isForeignTemplate } from "../src/gamedata/templates.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
-import { athenaQuestLogin, grantCosmetic, lockerCosmetics, setUpAthena } from "../src/profiles/athena.js";
+import { athenaQuestLogin, grantCosmetic, lockerCosmetics, recordMatchProgress, setUpAthena } from "../src/profiles/athena.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -133,6 +133,27 @@ test("a 7.40 player gets the Overtime Challenges while they run, the later ones 
     assert.ok(bundle, "the bundle");
     assert.ok(Object.values(items).some((item) => item.templateId === "Quest:quest_br_ot_visit_waterfalls") === false, "the 6th day's isn't yet");
     assert.ok(Object.values(items).some((item) => item.templateId === "Quest:quest_br_visit_namedlocations"), "the 3rd day's");
+  }));
+});
+
+test("Driftin's matches with a friend in the squad count for the Overtime Challenge (CoreV2 #711)", () => {
+  // The replay's day 79 is 23 February 2019: the challenges' ninth day, which opens "Play matches of Driftin' with a friend"
+  // (play_driftboardltm_with_friend: AthenaRank, contextTags Athena.Playlist.Hover, SquadFriend.Count > 0).
+  withConfig({ mode: "auto", seasonStarts: { 7: replayDaysAgo(79) } }, () => withSession(v740, "driftin740", (session) => {
+    setUpAthena(session);
+    athenaQuestLogin(session);
+    const quest = () => Object.values(session.profile("athena").profile.items).find((item) => item.templateId === "Quest:quest_br_ot_play_driftboardltm_withfriend");
+    assert.ok(quest(), "the ninth day's challenge");
+    const progress = () => quest().attributes.completion_overtime_battlepass_play_driftboardltm_with_friend ?? 0;
+    for (const playlistId of [326, 320, 348]) assert.equal(ltmPlaylistTag(playlistId), "Athena.Playlist.Hover.LargeTeam", `${playlistId}`);
+    recordMatchProgress(session, 326, { place: 2, kills: 0, squadFriends: 1 });
+    assert.equal(progress(), 1);
+    recordMatchProgress(session, 326, { place: 2, kills: 0, squadFriends: 0 });
+    assert.equal(progress(), 1, "no friend in the squad");
+    recordMatchProgress(session, 9, { place: 2, kills: 0, squadFriends: 1 });
+    assert.equal(progress(), 1, "a Squads match isn't Driftin'");
+    recordMatchProgress(session, 348, { place: 1, kills: 0, squadFriends: 2 });
+    assert.equal(progress(), 2, "Driftin' 20's");
   }));
 });
 

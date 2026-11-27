@@ -1378,12 +1378,12 @@ export const ltms = [
   { id: "catchSquads", name: "Catch! (Squads)", playlistId: 342, playlistName: "Playlist_Toss_Squads", eventFlag: null, builds: [build740, build740], seasons: [7],
     advertise: "New", defaultOn: true, original: catchWindow,
     teams: "100 Teams × 4", description: "No guns: grenades and other throwables only, in squads (Playlist_Toss_Squads, 7.40's)." },
-  { id: "driftin", name: "Driftin'", playlistId: 326, playlistName: "Playlist_Hover_64", eventFlag: null, builds: [build740, build740], seasons: [7],
+  { id: "driftin", name: "Driftin'", playlistId: 326, playlistName: "Playlist_Hover_64", playlistTag: "Athena.Playlist.Hover.LargeTeam", eventFlag: null, builds: [build740, build740], seasons: [7],
     advertise: "New", defaultOn: true, original: driftinWindow,
     teams: "2 Teams × 32", description: "Two teams of 32: land by a Red Supply Drop, grab its Driftboard and weapons, no chests or ammo boxes, health and shields regenerate on the board: Content Update v7.40's limited time mode (Playlist_Hover_64)." },
-  { id: "driftin40", name: "Driftin' (40 v 40)", playlistId: 320, playlistName: "Playlist_Hover", eventFlag: null, builds: [build740, build740], seasons: [7],
+  { id: "driftin40", name: "Driftin' (40 v 40)", playlistId: 320, playlistName: "Playlist_Hover", playlistTag: "Athena.Playlist.Hover.LargeTeam", eventFlag: null, builds: [build740, build740], seasons: [7],
     teams: "2 Teams × 40", description: "Driftin' with two teams of 40 (Playlist_Hover, 7.40's)." },
-  { id: "driftin20s", name: "Driftin' 20's", playlistId: 348, playlistName: "Playlist_Hover_48", eventFlag: null, builds: [build740, build740], seasons: [7],
+  { id: "driftin20s", name: "Driftin' 20's", playlistId: 348, playlistName: "Playlist_Hover_48", playlistTag: "Athena.Playlist.Hover.LargeTeam", eventFlag: null, builds: [build740, build740], seasons: [7],
     teams: "2 Teams × 24", description: "Driftin' with two teams of 24 (Playlist_Hover_48, 7.40's)." },
   // 8.00 (CL-5203069, Update v8.00, 28 February 2019), Season 8's first build. Its Athena/Playlists (every playlist asset of
   // its paks, all but the keyed pakchunk1000 and 1002; 1001's key is in the keychain) are 7.40's less Gun Game's Playlist_Gungame_Solo and _Reverse
@@ -1721,7 +1721,9 @@ export const ltmOfPlaylist = (playlistId, build = currentBuild()) => {
   const of = ltms.filter((ltm) => ltm.playlistId === Number(playlistId));
   return of.find((ltm) => inRange(ltm.builds, build)) ?? heldOfId(playlistId, build)?.ltm ?? of[0] ?? null;
 };
-// The playlist asset's own tag its stats count in (playlistTag: 8.40's Air Royale, 8.50's Endgame), on the builds that
+// The playlist asset's own tag its stats count in (playlistTag: 8.40's Air Royale, 8.50's Endgame, 7.40's Driftin':
+// Athena.Playlist.Hover.LargeTeam, as the gameserver's GetAthenaPlaylistContextTags gives Playlist_Hover_64, for the
+// Overtime Challenges' play_driftboardltm_with_friend, contextTags Athena.Playlist.Hover; CoreV2 #711), on the builds that
 // have the LTM; null otherwise.
 export const ltmPlaylistTag = (playlistId, build = currentBuild()) => {
   const ltm = ltms.find((entry) => entry.playlistId === Number(playlistId) && entry.playlistTag && inRange(entry.builds, build))
