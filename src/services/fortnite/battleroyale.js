@@ -34,7 +34,7 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
-//   [{accountId, place, kills, botKills, secondsAlive, side}], countWins, matchId}, when a team is out of the match or has won: its
+//   [{accountId, place, kills, botKills, secondsAlive, playersOutlived?, side}], countWins, matchId}, when a team is out of the match or has won: its
 //   players' match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
 //   "battleroyale/recordwin" in its exe), so CoreV2 sends countWins: true from a build without it and a place 1 there
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
@@ -240,6 +240,7 @@ export function battleRoyaleRoutes(context) {
       const place = count(result?.place, 1000);
       const kills = count(result?.kills, 1000);
       const secondsAlive = count(result?.secondsAlive, 24 * 60 * 60);
+      const playersOutlived = count(result?.playersOutlived, 0x7fffffff);
       const questKills = kills === null ? null : questKillsOf(rewards, kills, result?.botKills);
       if (!place || kills === null || secondsAlive === null || !recordable(req, result.accountId)) {
         log("Battle Royale", `Result skipped: ${JSON.stringify(result)}`);
@@ -294,7 +295,7 @@ export function battleRoyaleRoutes(context) {
         log("Battle Royale", `${result.accountId}'s match was a custom match (key ${customKeyOf(sessions, result.accountId)}): no V-Bucks, XP or challenge progress`);
         if (session.hasProfile("athena")) answered.push(nothingGained(result.accountId));
         // Its stats still count, as they did before the rewards.
-        stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
+        stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, playersOutlived, score, win, season });
         session.commit();
         continue;
       }
@@ -321,7 +322,7 @@ export function battleRoyaleRoutes(context) {
       // Saved after the profile's progress, so a win the profile is set up for the first time by this report doesn't
       // reach it as an earlier won season: that would grant its umbrellas while the profile loads, before awardVictory
       // can answer them as the end-of-match screen's FirstWin items (#373).
-      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
+      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, playersOutlived, score, win, season });
       session.commit();
       notifyProfiles(context, session);
     }

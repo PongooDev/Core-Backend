@@ -201,8 +201,10 @@ export function createStatsStore(dataDir) {
     // One match: its place counts toward the playlist's placements below a win, and with win (1.8, whose server has no
     // recordwin) the win itself; otherwise recordWin counts it. score is the match's (br_score, the lobby leaderboards'
     // Score tab). season is the match's (Season 1 when none is given).
-    recordResult(accountId, playlistId, { place, kills, secondsAlive, score = 0, win = false, season = firstSeason }, now = new Date()) {
+    recordResult(accountId, playlistId, { place, kills, secondsAlive, playersOutlived = null, score = 0, win = false, season = firstSeason }, now = new Date()) {
       const counts = { matchesplayed: 1, kills, secondsplayed: secondsAlive, score };
+      // 9.30 CL-7095426: the LTM career tab reads GameplayStat.BR.playersoutlived. Older reports omit it.
+      if (playersOutlived !== null) counts.playersoutlived = playersOutlived;
       if (win && place === 1) counts.placetop1 = 1;
       for (const top of placements[playlistId] ?? []) {
         if (place <= top) counts[`placetop${top}`] = 1;

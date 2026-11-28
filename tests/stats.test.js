@@ -324,3 +324,36 @@ test("7.40's stats v2 account and query answer the recorded career stats", async
     backend.close();
   }
 });
+
+// Core-Backend #448: 9.30 CL-7095426's LTM tab reads GameplayStat.BR.playersoutlived.
+test("9.30's LTM career stats add the reported players outlived per playlist", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "LtmCareerPlayer");
+    const dedicated = await dedicatedServerToken(backend.port);
+    const record = async (playlistId, extra) => {
+      const result = { accountId: player.accountId, place: 1, kills: 2, secondsAlive: 60, ...extra };
+      const response = await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+        { playlistId, results: [result] });
+      assert.equal(response.status, 200);
+    };
+    await record(1024, { playersOutlived: 4 });
+    await record(1024, { playersOutlived: 9 });
+    await record(1028, { playersOutlived: 0 });
+    await record(514, {});
+    await record(514, { playersOutlived: -1 });
+
+    const account = await send({ host: "127.0.0.1", port: backend.port,
+      path: `/fortnite/api/statsv2/account/${player.accountId}`,
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-9.30-CL-7095426",
+        Authorization: `bearer ${player.token}` } });
+    assert.equal(account.status, 200);
+    const stats = account.body.stats;
+    assert.equal(stats.br_playersoutlived_keyboardmouse_m0_playlist_race, 13);
+    assert.equal(stats.br_playersoutlived_keyboardmouse_m0_playlist_tag_solo, 0);
+    assert.ok(!Object.hasOwn(stats, "br_playersoutlived_keyboardmouse_m0_playlist_mash_squads"));
+    assert.equal(stats.br_matchesplayed_keyboardmouse_m0_playlist_mash_squads, 2);
+  } finally {
+    backend.close();
+  }
+});
