@@ -59,10 +59,11 @@ import { currentEventsConfig } from "./events.js";
 // - 9.20 (CL-6822798) the same way: SLAB_1 streams Athena/Maps/Block/9_20's Block_25x25_Firebase_Omega (DrDoofenschmerz),
 //   SLAB_2 Block_25x25_Mythical_Mayhem (TeamFusion), SLAB_3 the blank Block; BP_SlabScripting (the same Blueprint) watches
 //   slab1 to slab3. 9.20's paks no longer have 9.10's two. 9.21 (CL-6922310) has the same three levels: it plays 9.20's.
-// - 9.30 (CL-7095426) isn't served: its paks (all but the keyed pakchunk1011) have no 9_20 or later Block level, only 7.20's,
-//   8.10's, 8.50's and the blank one, and its BP_SlabScripting's HotfixSlabDisabled defaults to 1 (the blank Block).
+// - 9.30 (CL-7095426, CoreV2 #729): Athena_POI_Foundations' SLAB_1 to SLAB_4 reference Looming Llama, Harmony Hotel,
+//   Tricky Tracks and Omega Pyramid. BP_SlabScripting reads HotfixSlabDisabled at level 0: the coefficient is 1 but its
+//   AthenaGameData row Default.Slab.Disabled is 0, so the Blueprint watches slab1 to slab4.
 // So this serves each build its own names by Epic's dates on Season 7's replay (events/datedflags.js block700 and
-// block710, block720, block730, block740, block800, block820, block830, block850, block900, block910 and block920; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
+// block710, block720, block730, block740, block800, block820, block830, block850, block900, block910, block920 and block930; the admin panel's cards set custom times). 7.10's blank Block isn't served: a Core gameserver loads its
 // match's playlist before it takes the hotfix (7.00's: the playlist's data at frame 393, the hotfix at 506, the calendar
 // at 526), so a Default.Slab.Disabled row would come after BP_SlabScripting had read it; and 7.10 shipped with Grimy Greens
 // up, so its dates start with it. The calendar comes after both builds' watchers are made, and a match keeps what it
@@ -85,11 +86,13 @@ export const block9100Build = 6573057;
 export const block910Build = 6639283;
 export const block920Build = 6822798;
 export const block921Build = 6922310;
+export const block930Build = 7095426;
 const blockEvents = { [block700Build]: "block700", [block710Build]: "block710", [block720Build]: "block720", [block730Build]: "block730",
   [block740Build]: "block740", [block800Build]: "block800", [block820Build]: "block820",
   [block830Build]: "block830", [block840Build]: "block830",
   [block850Build]: "block850", [block851Build]: "block850", [block900Build]: "block900", [block901Build]: "block900",
-  [block9100Build]: "block910", [block910Build]: "block910", [block920Build]: "block920", [block921Build]: "block920" };
+  [block9100Build]: "block910", [block910Build]: "block910", [block920Build]: "block920", [block921Build]: "block920",
+  [block930Build]: "block930" };
 
 export const block700Event = datedEvent("block700");
 export const block710Event = datedEvent("block710");

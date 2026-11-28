@@ -8,9 +8,9 @@ import { battlePassOffers } from "../src/battlepass/season2.js";
 import { allowedBuildList } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { releasedOn, seasonName, versionOf } from "../src/builds/detect.js";
-import { blockEventOf } from "../src/events/block.js";
+import { blockEventOf, blockStates } from "../src/events/block.js";
 import { buildPlaylists } from "../src/events/buildplaylists.js";
-import { activeEventFlags, configureEvents, lobbySeason9, ltm14DaysOfSummer, ltmMash, ltmVigilante, ltmWax, unvaultingDay } from "../src/events/events.js";
+import { activeEventFlags, blockSlab, configureEvents, lobbySeason9, ltm14DaysOfSummer, ltmMash, ltmVigilante, ltmWax, unvaultingDay } from "../src/events/events.js";
 import { eventDaysOf } from "../src/events/fourteendays.js";
 import { fourteenDaysSummerCalendarEvent, fourteenDaysSummerFlagsNow, fourteenDaysSummerQuests, fourteenDaysSummerStates } from "../src/events/fourteendayssummer.js";
 import { hordeRushFlagsNow } from "../src/events/horderush.js";
@@ -170,11 +170,19 @@ test("the 14 Days of Summer's modes, each by its day; Content Update v9.30 #3's 
   for (const id of ["endgame", "foodFight"]) assert.deepEqual([hasLtm(id, v930), isHeldLtm(id, v930)], [true, true], id);
 });
 
-test("Season 9's events run on to 9.30; no Block on 9.30", () => {
+test("Season 9's events run on to 9.30 with its four returning Block levels", () => {
   const flags = activeEventFlags(v930);
   for (const flag of [lobbySeason9, wargamesFlag, season9Phase1, season9Phase2]) assert.ok(flags.includes(flag), flag);
   assert.equal(flags.includes(ltm14DaysOfSummer), false, "the 14 Days of Summer are dated");
-  assert.equal(blockEventOf(v930), null);
+  assert.equal(blockEventOf(v930)?.id, "block930");
+  assert.deepEqual(eventCard("block930").ranges, [[7095426, 7095426]]);
+  withConfig(season9, () => {
+    for (const [day, slab] of [["05-09", 1], ["06-18", 1], ["06-24", 1], ["06-25", 2], ["07-01", 2],
+      ["07-02", 3], ["07-08", 3], ["07-09", 4]]) {
+      const states = inBuild(v930, () => blockStates(at(`2019-${day}T00:00:00Z`)));
+      assert.deepEqual(typesOf(states), [blockSlab(slab)], day);
+    }
+  });
   assert.equal(blockEventOf(v921)?.id, "block920");
   for (const id of ["season9Lobby", "wargames", "talesOfBeyond"]) assert.deepEqual(eventCard(id).ranges, [[6337466, 7095426]], id);
   assert.deepEqual(eventCard("stellarHorizon").ranges, [[6822798, 7095426]]);

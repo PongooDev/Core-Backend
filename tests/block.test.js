@@ -112,7 +112,7 @@ test("the Events page's two cards: always on, Start now lands the Block now, a c
   assert.equal(cards.find(({ id }) => id === "season7Warmup2018").state.tone, "off");
 });
 
-test("a 7.00, a 7.10, a 7.20, a 7.30, a 7.40 and an 8.00 gameserver's calendar timeline carries the Block's names", async () => {
+test("the gameserver calendar timeline carries the Block names for each build", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "TheBlock");
@@ -130,6 +130,10 @@ test("a 7.00, a 7.10, a 7.20, a 7.30, a 7.40 and an 8.00 gameserver's calendar t
     assert.deepEqual(names(await timeline("4834550", "7.30")), ["slab1"]);
     assert.deepEqual(names(await timeline("5046157", "7.40")), ["slab1"], "Oily Oaks");
     assert.deepEqual(names(await timeline("5203069", "8.00")), ["slab1"], "Cryptic Castle");
+    const season9 = await timeline("7095426", "9.30");
+    assert.deepEqual(names(season9), ["slab1"]);
+    assert.ok(season9.state.activeEventFlags.includes("slab1"));
+    assert.ok(season9.state.activeEventFlags.includes("EventFlag.LobbySeason9"));
     assert.deepEqual(names(await timeline(v631, "6.31")), []);
 
     // Start now on 7.00's card lands the Block; no card takes "off".
@@ -140,7 +144,7 @@ test("a 7.00, a 7.10, a 7.20, a 7.30, a 7.40 and an 8.00 gameserver's calendar t
 
     const overview = (await get(backend.port, "/admin/api/events/overview")).body;
     assert.deepEqual(overview.datedFlags.events.filter(({ id }) => id.startsWith("block")).map(({ id, mode }) => [id, mode]),
-      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"], ["block800", "dates"], ["block820", "dates"], ["block830", "dates"], ["block850", "dates"], ["block900", "dates"], ["block910", "dates"], ["block920", "dates"]]);
+      [["block700", "custom"], ["block710", "dates"], ["block720", "dates"], ["block730", "dates"], ["block740", "dates"], ["block800", "dates"], ["block820", "dates"], ["block830", "dates"], ["block850", "dates"], ["block900", "dates"], ["block910", "dates"], ["block920", "dates"], ["block930", "dates"]]);
   } finally {
     await backend.close();
   }

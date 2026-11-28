@@ -191,6 +191,9 @@ export const eventCards = [
   { id: "block920", kind: "dated", dated: "block920", seasons: [9], name: "The Block's community builds (9.20, 9.21)", builds: "9.20 – 9.21", ranges: [[6822798, 6922310]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Firebase Omega goes up", endLabel: "Mythical Mayhem goes up",
     about: "9.20's two community-built islands on the Block, each a level in its paks: Firebase Omega (DrDoofenschmerz; Update v9.20, 6 June 2019; 9.20 came out mid-season, so it is up from the replay's first day) and Mythical Mayhem (TeamFusion, 12 June, Update v9.21's day, on to the season's end). A match keeps the one it started with, so a change shows from the next match. 🟡 The Fortnite Wiki's days, no hours (00:00 UTC)." },
+  { id: "block930", kind: "dated", dated: "block930", seasons: [9], name: "The Block's community builds (9.30)", builds: "9.30", ranges: [[7095426, 7095426]], always: true,
+    key: "slab1", endStep: "slab4", startLabel: "Looming Llama goes up", endLabel: "Omega Pyramid goes up",
+    about: "Looming Llama returned on 18 June 2019 and appears from the start of the season replay. Harmony Hotel follows on 25 June, Tricky Tracks on 2 July and Omega Pyramid on 9 July. Each match keeps the level selected when it starts. 🟡 Changes use 00:00 UTC on the recorded dates." },
   // 8.50's Block (events/block.js): Tricky Tracks, then Alien Sanctuary on 8.51's day (both in 8.50's paks); 8.51's is 8.50's.
   { id: "block850", kind: "dated", dated: "block850", seasons: [8], name: "The Block's community builds (8.50, 8.51)", builds: "8.50 – 8.51", ranges: [[6058028, 6165369]], always: true,
     key: "slab1", endStep: "slab2", startLabel: "Tricky Tracks goes up", endLabel: "Alien Sanctuary goes up",

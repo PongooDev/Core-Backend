@@ -207,6 +207,10 @@ const blockBuilds910 = [["2019-05-09", "Swash-buckling Seas, by TheBoneRattler"]
 // wiki's next build, 18 June, is 9.30's). 9.20 came out mid-season, so its first build is up from the lap's first day, as
 // 9.10's.
 const blockBuilds920 = [["2019-05-09", "Firebase Omega, by DrDoofenschmerz"], ["2019-06-12", "Mythical Mayhem, by TeamFusion"]];
+// The Block's 9.30 rotation (Fortnite Wiki, The Block, Update v9.30) matches the four placed foundations in order.
+// Looming Llama returned June 18 and fills earlier replay days as in 9.20. The dates have no recorded switch hour.
+const blockBuilds930 = [["2019-05-09", "Looming Llama"], ["2019-06-25", "Harmony Hotel"],
+  ["2019-07-02", "Tricky Tracks"], ["2019-07-09", "Omega Pyramid"]];
 const blockSteps = (builds) => builds.map(([day, label], index) => step(`slab${index + 1}`, label, [blockSlab(index + 1)], at7(day),
   index + 1 < builds.length ? at7(builds[index + 1][0]) : null));
 // The Ice Storm Challenges (7.20, events/icestorm.js): the Fortnite Wiki's "available from January 19th 2019 to January
@@ -468,6 +472,8 @@ export const datedEvents = [
     steps: blockSteps(blockBuilds910) },
   { id: "block920", name: "The Block's community builds (9.20, 9.21)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 2, modes: blockModes,
     steps: blockSteps(blockBuilds920) },
+  { id: "block930", name: "The Block's community builds (9.30)", season: 9, flag: blockSlab(1), anchor: "slab1", parts: 4, modes: blockModes,
+    steps: blockSteps(blockBuilds930) },
   // 7.20's Ice King (events/icestorm.js): steps that overlap, each a calendar name's own window. Held "before" the event by
   // default (the sphere over Polar Peak and the default modes) until the admin starts it ("Start now", a time, or Epic's
   // dates on the replay); its storm switches Solo, Duos and Squads to the Ice Storm's (events/ltms.js fromIceStorm).
