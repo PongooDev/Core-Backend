@@ -438,6 +438,72 @@ test("AssignMatch's teams follow each party leader's Squad Fill choice (#78)", a
   }
 });
 
+test("8.50 and 8.51 Endgame reservations can assign either side while Squads keeps its team order", { timeout: 15000 }, async (t) => {
+  let side = 0;
+  const draw = t.mock.method(crypto, "randomInt", () => side);
+  const queues = [
+    ["6058028", "8.50", "playlist_ashton_sm", 0], ["6058028", "8.50", "playlist_ashton_sm", 1],
+    ["6165369", "8.51", "playlist_ashton_sm", 0], ["6165369", "8.51", "playlist_ashton_sm", 1],
+    ["6165369", "8.51", "playlist_defaultsquad", 1]
+  ];
+  for (const [build, version, playlist, pickedSide] of queues) {
+    side = pickedSide;
+    const backend = await startBackend({ matchmakingGatherMs: 100 });
+    const clients = [];
+    try {
+      assert.equal((await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { endgame: true } })).status, 200);
+      const player = await userLogin(backend.port, "EndgamePlayer");
+      const server = await userLogin(backend.port, "CoreServerEndgame");
+      const bucket = `${build}:0:NA:${playlist}`;
+      const request = (method, url, token, body) => {
+        const text = body === undefined ? undefined : JSON.stringify(body);
+        const headers = { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-${version}-CL-${build}`, Authorization: `bearer ${token}` };
+        if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+        return send({ host: "127.0.0.1", port: backend.port, method, path: url, headers }, text);
+      };
+      const ticket = await request("GET", `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}&bucketId=${bucket}&player.platform=Windows`, player.token);
+      assert.equal(ticket.status, 200);
+      clients.push(await matchmakingClient(backend.port, authorizationOf(ticket.body)));
+      const session = (await request("POST", "/fortnite/api/matchmaking/session", server.token, {
+        ownerId: server.accountId, ownerName: "Core", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+        maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: build, attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+      })).body;
+      const hostTicket = await request("GET",
+        `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent(`${build}:0:NA:**`)}&minPlayers=1&maxPlayers=100`, server.token);
+      assert.equal(hostTicket.status, 200);
+      const gameserver = await matchmakingClient(backend.port, authorizationOf(hostTicket.body));
+      clients.push(gameserver);
+      assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+      const assign = JSON.parse(await gameserver.next());
+      assert.equal(assign.name, "AssignMatch");
+      const hero = playlist === "playlist_ashton_sm" && pickedSide === 1;
+      assert.deepEqual(assign.payload.teams, hero ? [[], [[player.accountId]]] : [[[player.accountId]]]);
+      if (hero) assert.equal(assign.payload.matchOptionsV2["match.option.squads"], "0;1");
+    } finally {
+      for (const client of clients) client.close();
+      backend.close();
+    }
+  }
+  assert.equal(draw.mock.callCount(), 4);
+});
+
+test("preferring the second team for ties only mirrors Endgame's balanced party assignment", () => {
+  const parties = [
+    { players: ["a", "b", "c"], fill: true },
+    { players: ["d", "e"], fill: false },
+    { players: ["f"], fill: true },
+    { players: ["g"], fill: true }
+  ];
+  const teams = playlistTeamsOf("6165369:0:NA:playlist_ashton_sm", "6165369");
+  const first = formTeams(parties, teams, { teamsAreSquads: false });
+  assert.deepEqual(first, Object.assign([[["a", "b", "c"], ["g"]], [["d", "e"], ["f"]]], { squads: "2;1,1" }));
+  const second = formTeams(parties, teams, { teamsAreSquads: false, preferLastTeamOnTie: true });
+  assert.deepEqual(second, Object.assign([first[1], first[0]], { squads: "1,1;2" }));
+  assert.equal(formTeams([{ players: Array(21).fill("a"), fill: false }], teams, {
+    teamsAreSquads: false, preferLastTeamOnTie: true
+  }), null);
+});
+
 // Core-Backend #135: 1.10's 50v50 (playlist 11) is two teams of 50: AssignMatch's teams[i] goes to team i % 2.
 test("a 50v50 match's parties are shared out over its two teams, a No Fill party in a squad of its own", async () => {
   const backend = await startBackend({ matchmakingGatherMs: 200 });

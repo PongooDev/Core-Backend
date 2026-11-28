@@ -309,6 +309,7 @@ const playlistTeamsFrom850 = {
   258: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 }
 };
 const playlistTeams850Build = 6058028;
+const endgame851Build = 6165369;
 // 9.01 (CL-6428087): Wick's Bounty's Playlist_Wax_Solo, _Duos and _Squads (1002 to 1004), by their assets: MaxTeamCount 72
 // (MaxPlayers 72) in teams of 1, 2 and 4.
 const playlistTeamsFrom901 = {
@@ -613,7 +614,7 @@ export const teamsOfPlaylist = (playlistId, build = null) => {
 // counts of the team's parties that make each of its squads, in order. The squads count up from 1 across the teams;
 // without the option each team is one squad (SquadId i + 1). With teamsAreSquads false the result is that: one entry per
 // team (its parties, squad by squad) and the option on its `squads` property (null where a team is one squad).
-export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
+export function formTeams(parties, teams, { teamsAreSquads = true, preferLastTeamOnTie = false } = {}) {
   if (!teams) return parties.map((party) => [party.players]);
   const { maxTeamCount, maxTeamSize, maxSquadSize } = teams;
   const squadsOf = (group) => {
@@ -637,7 +638,10 @@ export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
 
   const sides = Array.from({ length: maxTeamCount }, () => ({ players: 0, members: [], squads: [] }));
   const roomFor = (size) => sides.filter((side) => side.players + size <= maxTeamSize)
-    .reduce((smallest, side) => (!smallest || side.players < smallest.players ? side : smallest), null);
+    .reduce((smallest, side) => {
+      if (!smallest || side.players < smallest.players || (preferLastTeamOnTie && side.players === smallest.players)) return side;
+      return smallest;
+    }, null);
   if (maxTeamSize > maxSquadSize && maxTeamCount <= 2) {
     for (const party of [...parties].sort((a, b) => b.players.length - a.players.length)) {
       const side = roomFor(party.players.length);
@@ -889,8 +893,15 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // In the format of the server's build when it is known (formTeams: teams of squads before 3.1, the beacon's teams from).
   const teamsFor = (parties, bucketId, serverBuild = null) => {
     const build = parties.find((party) => party.ticket.build)?.ticket.build ?? null;
-    return formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), playlistTeamsOf(bucketId, build),
-      { teamsAreSquads: Number(serverBuild ?? build) < teamSquadsOptionBuild });
+    const playlistId = parseBucket(bucketId, build).playlistId;
+    // Endgame (CoreV2 #735): AssignMatch fixes the beacon's team. Choose the order of equally full sides once
+    // per match, reflecting Smallest's even tie-break (8.50 CL-6058028 0x63B1B0 / 0x6221A0, 8.51 CL-6165369 0x630230 / 0x616FA0).
+    const serverCl = Number(serverBuild);
+    const isEndgameAssignment = (serverCl === playlistTeams850Build || serverCl === endgame851Build)
+      && Object.hasOwn(playlistTeamsFrom850, playlistId);
+    const preferLastTeamOnTie = isEndgameAssignment && crypto.randomInt(2) === 1;
+    return formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), teamsOfPlaylist(playlistId, build),
+      { teamsAreSquads: Number(serverBuild ?? build) < teamSquadsOptionBuild, preferLastTeamOnTie });
   };
 
   function issueTicket(kind, fields) {
